@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-11 09:42:07
+ * @LastEditTime: 2021-03-16 09:22:34
 -->
 <template>
   <div>
@@ -76,7 +76,7 @@ export default class UploadDemo extends Vue {
           {
             fileCat: ".docx",
             fileName: "word.docx",
-            preFileAdress: "5fa4055f282f22000106af9d",
+            preFileAdress: "60500845f5956b000618edd9",
             preFileCode: "leixing2",
             preFileName: "类型2",
             partCode: "partCode_first",

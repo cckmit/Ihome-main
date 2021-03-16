@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 09:44:08
+ * @LastEditTime: 2021-03-16 10:08:37
 -->
 <template>
   <div class="upload">
@@ -20,7 +20,6 @@
       :on-error="errorHandler"
       :on-change="onChangeHandler"
       :on-exceed="onExceedHandler"
-      :on-progress="onProgressHandler"
       :http-request="httpRequest"
       :before-upload="beforeUpload"
       :multiple="multiple"
@@ -51,9 +50,8 @@
             height: Object.keys($scopedSlots).length ? size : '',
           }"
             >
-              <span class="operation">
+              <div class="operation">
                 <span
-                  class="el-upload-list__item-preview"
                   v-if="previewPermi"
                   @click="handlePictureCardPreview(file)"
                 >
@@ -63,7 +61,6 @@
                   ></i>
                 </span>
                 <span
-                  class="el-upload-list__item-delete"
                   v-if="loadPermi"
                   @click="handleDownload(file)"
                 >
@@ -73,7 +70,6 @@
                   ></i>
                 </span>
                 <span
-                  class="el-upload-list__item-delete"
                   v-if="removePermi && !file.exAuto"
                   @click="handleRemove(file)"
                 >
@@ -82,8 +78,18 @@
                     title="删除"
                   ></i>
                 </span>
-              </span>
-              <span
+                <span
+                  class="editButton"
+                  v-if="editPermi && !file.exAuto"
+                  @click="handleEdit(file)"
+                >
+                  <i
+                    class="el-icon-edit-outline"
+                    title="编辑"
+                  ></i>
+                </span>
+              </div>
+              <div
                 class="move"
                 v-if="isMove"
               >
@@ -99,7 +105,7 @@
                     title="右移"
                   ></i>
                 </span>
-              </span>
+              </div>
             </span>
           </el-tooltip>
         </template>
@@ -107,7 +113,7 @@
           v-else
           class="uploadLoading"
           v-loading="file.uploadLoading"
-          element-loading-text="附件上传中"
+          element-loading-text="附件上传中..."
           element-loading-spinner="el-icon-loading"
           element-loading-background="rgba(0, 0, 0, 0.8)"
         >
@@ -136,13 +142,18 @@
         @finish="(data) => cropperFinish(data)"
       ></Cropper>
     </ih-dialog>
+    <input
+      v-show="false"
+      ref="editUpload"
+      type="file"
+      @change="editUploadChange"
+    />
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import ImageViewer from "./image-viewer.vue";
 import Cropper from "./cropper.vue";
-import { getToken } from "../../../../util/cookies";
 import {
   post_file_upload,
   get_file_remove__fid,
@@ -202,6 +213,11 @@ export default class IhUpload extends Vue {
   removePermi?: boolean;
   @Prop({
     type: Boolean,
+    default: true,
+  })
+  editPermi?: boolean;
+  @Prop({
+    type: Boolean,
     default: false,
   })
   isMove?: boolean;
@@ -245,12 +261,9 @@ export default class IhUpload extends Vue {
   private cropperName = "";
   private cropperImg = "";
   private changeFileList: any = [];
-  private action = `/sales-api/sales-document-cover/file/upload`;
-  private headers: any = {
-    Authorization: "bearer " + getToken(),
-  };
   private fdData: any = [];
   private checkSet = new Set();
+  private editIndex: any = 0;
 
   @Watch("list", { deep: true })
   getList(list: any) {
@@ -356,7 +369,6 @@ export default class IhUpload extends Vue {
   }
 
   successHandler(response: any, file: any, fileList: any) {
-    console.log(fileList, "success");
     if (response) {
       fileList.forEach((v: any, index: number) => {
         if (v?.response?.length) {
@@ -367,41 +379,45 @@ export default class IhUpload extends Vue {
       });
       this.$emit("newFileList", fileList, this.fileType);
     }
-    // file.uploadLoading = false;
   }
   errorHandler(file: any) {
     this.$message.error("上传失败");
-    file.uploadLoading = false;
-  }
-  // 上传中
-  onProgressHandler(file: any) {
-    const index = this.list.findIndex((v: any) => v.uid === file.uid);
-    this.$set(this.list, index, { ...file, uploadLoading: true });
-    debugger;
+    const index = this.changeFileList.findIndex((v: any) => v.uid === file.uid);
+    this.$set(this.changeFileList, index, { ...file, uploadLoading: false });
   }
 
   onChangeHandler(file: any, fileList: any) {
-    this.changeFileList = fileList;
-    if (this.isCrop && file.status === "ready") {
-      const $index = file?.name?.lastIndexOf(".");
-      const type = file?.name?.substring($index + 1);
-      switch (type) {
-        case "gif":
-        case "jpg":
-        case "png":
-        case "jpeg":
-          this.cropperName = file.name;
-          this.$nextTick(() => {
-            this.cropperImg = file.url;
-            this.dialogVisible = true;
-          });
-          break;
-        default:
+    if (!this.checkSet.has(file.uid)) {
+      this.changeFileList = fileList;
+      const index = this.changeFileList.findIndex(
+        (v: any) => v.uid === file.uid
+      );
+      if (file.status === "ready") {
+        this.$set(this.changeFileList, index, { ...file, uploadLoading: true });
+        if (this.isCrop) {
+          const $index = file?.name?.lastIndexOf(".");
+          const type = file?.name?.substring($index + 1);
+          switch (type) {
+            case "gif":
+            case "jpg":
+            case "png":
+            case "jpeg":
+              this.cropperName = file.name;
+              this.$nextTick(() => {
+                this.cropperImg = file.url;
+                this.dialogVisible = true;
+              });
+              break;
+            default:
+              (this.$refs.upload as any).submit();
+              break;
+          }
+        } else {
           (this.$refs.upload as any).submit();
-          break;
+        }
+      } else {
+        (this.$refs.upload as any).submit();
       }
-    } else {
-      (this.$refs.upload as any).submit();
     }
   }
   // 显示列表的图片URL
@@ -563,13 +579,51 @@ export default class IhUpload extends Vue {
       this.$message.warning("第一项不可左移");
     }
   }
-
   // 上传中
   uploadLoadingHander(file: any) {
-    const item = this.list.find((v: any) => v.uid === file.uid);
+    const item = this.changeFileList.find((v: any) => v.uid === file.uid);
     if (item) {
       return item.uploadLoading;
     }
+  }
+  // 图片编辑
+  handleEdit(file: any) {
+    this.$nextTick(() => {
+      (this.$refs.editUpload as any).click();
+      this.editIndex = this.list.findIndex(
+        (v: any) => v.fileId === file.fileId
+      );
+      console.log(this.editIndex, "图片编辑");
+    });
+  }
+
+  // 编辑附件确定
+  async editUploadChange({ target }: any) {
+    this.beforeUpload(target.files[0]).then(() => {
+      this.uploadRequer(target.files);
+    });
+  }
+
+  // 编辑上传
+  async uploadRequer(files: any) {
+    let fd = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      fd.append("files", files[i]);
+    }
+    let res: any = await post_file_upload(fd);
+    this.$set(this.list, this.editIndex, {
+      ...this.list[this.editIndex],
+      fileId: res[0].fileId,
+      name: `${res[0].originalFileName}.${res[0].originalFileType}`,
+      url: `/sales-api/sales-document-cover/file/browse/${res[0].fileId}`,
+    });
+    this.replaceUpload(
+      this.list[this.editIndex],
+      this.list,
+      this.editIndex,
+      res[0].fileId
+    );
+    this.$emit("update:fileList", [...this.list]);
   }
 }
 </script>
@@ -625,8 +679,12 @@ export default class IhUpload extends Vue {
   .move,
   .operation {
     width: 100%;
+    .editButton {
+      margin-left: 0;
+    }
   }
   .move {
+    margin-top: -8px !important;
     display: flex !important;
     justify-content: space-around !important;
     margin-left: 0 !important;
