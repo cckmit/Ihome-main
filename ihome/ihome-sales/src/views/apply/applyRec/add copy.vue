@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-02 19:39:04
+ * @LastEditTime: 2021-03-17 15:44:04
 -->
 <template>
   <IhPage class="text-left">
@@ -698,7 +698,7 @@ import {
   // get_devAgentFee_getAll__applyId,
   post_applyRecFile_getAll,
   post_applyRec_cancel__applyId,
-  post_applyRec_InvoiceApply__applyId,
+  // post_applyRec_InvoiceApply__applyId,
 } from "../../../api/apply/index";
 
 @Component({
@@ -1160,7 +1160,7 @@ export default class ApplyRecAdd extends Vue {
   private async invoiceApply() {
     let applyId = this.$route.query.id;
     try {
-      await post_applyRec_InvoiceApply__applyId({ applyId });
+      // await post_applyRec_InvoiceApply__applyId({ applyId });
       this.$message.success("发起开票成功");
       this.$goto({
         path: "/applyRec/list",

@@ -1623,6 +1623,7 @@
     ]; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
     baseInfoByTerm: any = {
+      exMinyuan: null, // // 是否明源源：1---是，0---否
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
@@ -1853,7 +1854,7 @@
       // 数据标志
       this.postData.dataSignName = (this as any).$root.dictAllName(res.dataSign, 'DealDataFlag');
       // 优惠告知书
-      await this.getNoticeList(res.id, res.parentId);
+      await this.getNoticeList(res?.id, res?.parentId, res?.cycleId);
       // 客户信息
       if (this.postData.customerList && this.postData.customerList.length) {
         this.postData.customerList.forEach((list: any) => {
@@ -2436,14 +2437,14 @@
     }
 
     // 通过成交id获取优惠告知书
-    async getNoticeList(dealId: any = '', parentId: any = '') {
-      if (!dealId || !parentId) return;
+    async getNoticeList(dealId: any = '', parentId: any = '', cycleId: any = '') {
+      if (!dealId || !parentId || !cycleId) return;
       if (dealId !== parentId) {
-        const dealList: any = await post_notice_customer_information({dealId: dealId});
-        const parentList: any = await post_notice_customer_information({dealId: parentId});
+        const dealList: any = await post_notice_customer_information({dealId: dealId, cycleId: cycleId});
+        const parentList: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         this.postData.offerNoticeVO = [...dealList, ...parentList];
       } else {
-        const list: any = await post_notice_customer_information({dealId: parentId});
+        const list: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         // console.log('组织info:', list);
         this.postData.offerNoticeVO = list;
       }
@@ -2948,6 +2949,7 @@
       if (data.length === 0) return;
       let customData: any = {
         addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
+        id: data[0].id,
         cardNo: data[0].certificateNumber,
         cardType: data[0].cardType,
         customerName: data[0].custName,
@@ -4078,13 +4080,24 @@
     * */
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
+      let isMingYuanFlag: any = this.baseInfoByTerm?.exMinyuan === 1;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = false;
-      // 2.对应明源字段是否有值
-      if (data[type][key] && this.postData.roomId) {
-        flag = true;
+      let flag: any = false;
+      // 对应明源字段是否有值
+      if (type === 'houseVO') {
+        // 针对房间vo特殊判断
+        if (data[type][key] && this.postData.roomId && isMingYuanFlag) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       } else {
-        flag = false;
+        // 其他vo的判断
+        if (data[type][key] && this.postData.roomId) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       }
       return flag;
     }

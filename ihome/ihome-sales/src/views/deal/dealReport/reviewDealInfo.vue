@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:08:10
+ * @LastEditTime: 2021-03-17 10:34:50
 -->
 <template>
   <ih-page class="text-left">
@@ -184,7 +184,12 @@
             :data="postData.offerNoticeList">
             <el-table-column prop="notificationType" label="名称" min-width="120">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}</div>
+                <div>
+                  {{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}
+                  <span
+                    class="color-red"
+                    v-if="scope.row.promotionMethod && scope.row.promotionMethod === 'Manual'">(自定义优惠)</span>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
@@ -685,7 +690,7 @@
         ...info
       };
       // 初始化优惠告知书信息
-      await this.getInformation(info.id, info.parentId);
+      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
@@ -747,15 +752,15 @@
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '', parentId: any = '') {
-      if (!id || !parentId) return;
+    async getInformation(id: any = '', parentId: any = '', cycleId: any = '') {
+      if (!id || !parentId || !cycleId) return;
       if (id !== parentId) {
-        const idList: any = await post_notice_customer_information({dealId: id});
-        const parentIdList: any = await post_notice_customer_information({dealId: parentId});
+        const idList: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
+        const parentIdList: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         console.log('有补充成交');
         this.postData.offerNoticeList = [...idList, ...parentIdList];
       } else {
-        const list: any = await post_notice_customer_information({dealId: this.id});
+        const list: any = await post_notice_customer_information({dealId: this.id, cycleId: cycleId});
         console.log('无补充成交');
         if (list && list.length > 0) {
           this.postData.offerNoticeList = list;
@@ -1046,10 +1051,8 @@
   }
 </script>
 <style lang="scss" scoped>
-  .add-all-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 10px;
+  .color-red {
+    color: red;
   }
 
   .cycle-name-wrapper {

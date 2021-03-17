@@ -766,6 +766,7 @@
     contNoList: any = []; // 分销协议列表---initPage接口
     packageIdsList: any = []; // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
     baseInfoByTerm: any = {
+      exMinyuan: null, // 是否明源源：1---是，0---否
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
       termStageEnum: null, // 项目周期阶段
@@ -1033,7 +1034,7 @@
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
-      await this.getInformation(id);
+      await this.getInformation(id, res?.cycleId);
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
@@ -1272,9 +1273,9 @@
     }
 
     // 编辑 --- 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '') {
-      if (!id) return;
-      const list: any = await post_notice_customer_information({dealId: id});
+    async getInformation(id: any = '', cycleId: any = '') {
+      if (!id || !cycleId) return;
+      const list: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.postData.offerNoticeVO = list;
@@ -1315,13 +1316,24 @@
     * */
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
-      if (!key || !type || !data[type]?.[key]) return false;
-      let flag = false;
-      // 2.对应明源字段是否有值
-      if (data[type][key] && this.postData.roomId) {
-        flag = true;
+      let isMingYuanFlag: any = this.baseInfoByTerm?.exMinyuan === 1;
+      if (!key || !type || !data?.[type]?.[key]) return false;
+      let flag: any = false;
+      // 对应明源字段是否有值
+      if (type === 'houseVO') {
+        // 针对房间vo特殊判断
+        if (data[type][key] && this.postData.roomId && isMingYuanFlag) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       } else {
-        flag = false;
+        // 其他vo的判断
+        if (data[type][key] && this.postData.roomId) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       }
       return flag;
     }
@@ -2086,6 +2098,7 @@
       if (data.length === 0) return;
       let customData: any = {
         addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
+        id: data[0].id,
         cardNo: data[0].certificateNumber,
         cardType: data[0].cardType,
         customerName: data[0].custName,

@@ -805,7 +805,7 @@
         })
       }
       // 初始化优惠告知书信息
-      await this.getInformation(info.id, info.parentId);
+      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
       // 初始化附件
       this.infoForm.documentLists = this.initDocumentList(info.documentList);
       // 初始化开票信息
@@ -852,17 +852,17 @@
     }
 
     // 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '', parentId: any = '') {
-      if (!id || !parentId) return;
+    async getInformation(id: any = '', parentId: any = '', cycleId: any = '') {
+      if (!id || !parentId || !cycleId) return;
       if (id !== parentId) {
-        const idList: any = await post_notice_customer_information({dealId: id});
-        const parentIdList: any = await post_notice_customer_information({dealId: parentId});
+        const idList: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
+        const parentIdList: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         // console.log('优惠告知书列表', list);
         this.$nextTick(() => {
           this.infoForm.offerNoticeList = [...idList, ...parentIdList];
         });
       } else {
-        const list: any = await post_notice_customer_information({dealId: id});
+        const list: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
         // console.log('优惠告知书列表', list);
         if (list && list.length > 0) {
           this.infoForm.offerNoticeList = list;
