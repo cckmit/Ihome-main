@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 09:16:56
+ * @LastEditTime: 2021-03-17 15:48:07
 -->
 <template>
   <IhPage class="text-left">
@@ -46,23 +46,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="甲方公司">
-              <el-input
-                :value="form.developName"
-                disabled
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="甲方开票帐号">
-              <el-input
-                v-model="form.developAccount"
-                disabled
-              >
-              </el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="收款公司">
               <IhSelectPageByCompany
                 v-model="form.polyCompanyId"
@@ -79,6 +62,23 @@
                 v-model="form.receBankAccount"
                 disabled
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="甲方公司">
+              <el-input
+                :value="form.developName"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="甲方开票帐号">
+              <el-input
+                v-model="form.developAccount"
+                disabled
+              >
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">

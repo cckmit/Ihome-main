@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-15 16:37:27
+ * @LastEditTime: 2021-03-17 10:53:35
 -->
 <template>
   <IhPage label-width="80px">
@@ -600,6 +600,10 @@ export default class InvoiceList extends Vue {
   }
 
   created() {
+    let code = this.$route.query.code;
+    if (code) {
+      this.queryPageParameters.businessNo = code;
+    }
     this.getListMixin();
   }
 }

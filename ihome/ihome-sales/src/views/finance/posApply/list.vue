@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-22 19:30:19
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-20 16:28:33
+ * @LastEditTime: 2021-03-17 09:52:44
 -->
 <template>
   <IhPage label-width="80px">
@@ -100,23 +100,23 @@
             <el-dropdown-item
               @click.native.prevent="handleApply('Use')"
               v-has="'B.SALES.FINANCE.POSAPPLYLIST.USE'"
-            >领用</el-dropdown-item>
+            >财务领用</el-dropdown-item>
             <el-dropdown-item
               @click.native.prevent="handleApply('Apply')"
               v-has="'B.SALES.FINANCE.POSAPPLYLIST.APPLY'"
-            >申领</el-dropdown-item>
+            >业务申领</el-dropdown-item>
             <el-dropdown-item
               @click.native.prevent="handleApply('Move')"
               v-has="'B.SALES.FINANCE.POSAPPLYLIST.MOVE'"
-            >调动</el-dropdown-item>
+            >业务调动</el-dropdown-item>
             <el-dropdown-item
               @click.native.prevent="handleApply('Return')"
               v-has="'B.SALES.FINANCE.POSAPPLYLIST.RETURN'"
-            >退还</el-dropdown-item>
+            >财务退还</el-dropdown-item>
             <el-dropdown-item
               @click.native.prevent="handleApply('GiveBack')"
               v-has="'B.SALES.FINANCE.POSAPPLYLIST.GIVEBACK'"
-            >归还</el-dropdown-item>
+            >业务归还</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </el-row>

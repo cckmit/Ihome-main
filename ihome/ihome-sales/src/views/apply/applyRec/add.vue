@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-16 17:38:19
+ * @LastEditTime: 2021-03-17 15:43:12
 -->
 <template>
   <IhPage class="text-left">
@@ -65,17 +65,65 @@
                   :value="i.id"
                 ></el-option>
               </el-select>
-              <!-- <IhSelectPageDivision
-                v-model="form.orgId"
-                placeholder="请选择所在事业部"
-                @changeOption="(data) => {
-                  dealParams.termOrgId = data.id
-                }"
-              ></IhSelectPageDivision> -->
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
+          <el-col :span="8">
+            <el-form-item
+              label="收款公司"
+              prop="polyCompanyId"
+            >
+              <el-select
+                v-model="polyCompanyData"
+                placeholder="请选择收款公司"
+                class="width--100"
+                ref="polyCompany"
+                value-key="id"
+                @visible-change="companyVisibleChange"
+                @change="(data) => {
+                  dealParams.polyCompanyId = data.id
+                  form.polyCompanyId = data.id
+                  form.sellerTaxNo = data.creditCode
+                  getAccount(data.id)
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in companyOption"
+                  :key="n"
+                  :label="i.name"
+                  :value="i"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="收款账号"
+              required
+            >
+              <el-select
+                v-model="accountData"
+                class="width--100"
+                placeholder="请选择收款账号"
+                value-key="id"
+                ref="accountSelect"
+                @visible-change="selectVisibleChange"
+                @change="(data) => {
+                  dealParams.receAccountId = data.id
+                  form.receAccountId = data.id
+                  getBankInfo(data.id)
+                }"
+              >
+                <el-option
+                  v-for="(i, n) in accountList"
+                  :key="n"
+                  :label="i.accountNo"
+                  :value="i"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item
               label="甲方公司"
@@ -85,9 +133,11 @@
                 v-model="developData"
                 ref="develop"
                 placeholder="请选择甲方公司"
+                value-key="partyA"
                 @visible-change="devVisibleChange"
                 @change="(data) => {
                   dealParams.developId = data.partyA;
+                  form.developId = data.partyA;
                   form.developName = data.partyAName;
                   form.invoiceTitle = data.partyAName;
                   getWaitList(data.partyA);
@@ -119,6 +169,8 @@
               ></IhSelectPageByDeveloper> -->
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item
               label="甲方开票帐号"
@@ -139,75 +191,6 @@
                   v-for="(i, n) in devAccount"
                   :key="n"
                   :label="i.number"
-                  :value="i"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="收款公司"
-              prop="polyCompanyId"
-            >
-              <el-select
-                v-model="polyCompanyData"
-                placeholder="请选择收款公司"
-                class="width--100"
-                ref="polyCompany"
-                value-key="id"
-                @visible-change="companyVisibleChange"
-                @change="(data) => {
-                  dealParams.polyCompanyId = data.id
-                  form.polyCompanyId = data.id
-                  form.sellerTaxNo = data.creditCode
-                  getAccount(data.id)
-                }"
-              >
-                <el-option
-                  v-for="(i, n) in companyOption"
-                  :key="n"
-                  :label="i.name"
-                  :value="i"
-                ></el-option>
-              </el-select>
-              <!-- <IhSelectPageByPayer
-                clearable
-                placeholder="请选择收款公司"
-                v-model="polyCompanyData"
-                :proId="form.orgId"
-                @changeOption="(data) => {
-                  dealParams.polyCompanyId = data.id
-                  form.polyCompanyId = data.id
-                  form.sellerTaxNo = data.creditCode
-                  getAccount(data.id)
-                }"
-              ></IhSelectPageByPayer> -->
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item
-              label="收款账号"
-              required
-            >
-              <el-select
-                v-model="accountData"
-                class="width--100"
-                placeholder="请选择收款账号"
-                value-key="id"
-                ref="accountSelect"
-                @visible-change="selectVisibleChange"
-                @change="(data) => {
-                  dealParams.receAccountId = data.id
-                  form.receAccountId = data.id
-                  getBankInfo(data.id)
-                }"
-              >
-                <el-option
-                  v-for="(i, n) in accountList"
-                  :key="n"
-                  :label="i.accountNo"
                   :value="i"
                 ></el-option>
               </el-select>
@@ -937,6 +920,8 @@
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
+                :limit="row.limit ? row.fileList.length : 999"
+                :upload-show="row.limit && !!row.fileList.length"
                 @newFileList="queryNew"
               ></IhUpload>
             </template>
@@ -1000,7 +985,10 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
-import { post_contract_contract_PartyAs_PleaseHelp } from "../../../api/contract/index";
+import {
+  post_contract_contract_PartyAs_PleaseHelp,
+  post_contract_contractInfo,
+} from "../../../api/contract/index";
 import {
   get_org_getUserDepartmentList,
   post_company_getAll,
@@ -1026,7 +1014,7 @@ import {
   get_devDeductRec_getAll__applyId,
   get_devOtherSub_getAll__applyId,
   post_applyRecFile_getAll,
-  post_applyRec_InvoiceApply__applyId,
+  post_applyRec_InvoiceApply,
 } from "../../../api/apply/index";
 
 @Component({
@@ -1103,6 +1091,7 @@ export default class ApplyRecAdd extends Vue {
   private polyCompanyData: any = null;
   private developData: any = null;
   private devOption: any[] = [];
+  private updateList: any[] = [];
   private rules: any = {
     proId: [{ required: true, message: "请选择项目", trigger: "change" }],
     orgId: [{ required: true, message: "请选择事业部", trigger: "change" }],
@@ -1238,7 +1227,6 @@ export default class ApplyRecAdd extends Vue {
   private applyPercentSum(row: any) {
     let sum = 0;
     sum = this.$math.div(row.applyMoney, row.receiveAmount);
-    console.log(sum, "bili");
     sum = sum < 0.0001 ? 0 : sum;
     row.applyPercent = this.$math.tofixed(sum, 4);
     return row.applyPercent;
@@ -1579,9 +1567,30 @@ export default class ApplyRecAdd extends Vue {
           developId: this.dealParams.developId,
           polyCompanyId: this.dealParams.polyCompanyId,
         });
-        console.log(this.form.taxMoney);
-
         this.taxMoneyChange(this.form.taxMoney);
+        const res: any = await post_contract_contractInfo({
+          archiveStatus: "ScansAreArchived",
+          partyAId: this.dealParams.developId,
+          cycleIds: [...new Set(newTermIdList)],
+        });
+        console.log(res);
+        let mapList: any[] = [];
+        res.forEach((i: any) => {
+          mapList.push(...i.annexList);
+        });
+        mapList = mapList.map((i: any) => ({
+          fileId: i.fileNo,
+          fileName: i.attachmentSuffix,
+          type: "Contract",
+        }));
+        if (this.updateList.length) {
+          let newMapList = this.updateList
+            .filter((i: any) => i.type !== "Contract")
+            .concat(mapList);
+          this.getFileListType(newMapList);
+        } else {
+          this.getFileListType(mapList);
+        }
         this.uploadLoad = false;
       } catch (error) {
         console.log(error);
@@ -1716,10 +1725,12 @@ export default class ApplyRecAdd extends Vue {
     const list = (this.$root as any)
       .dictAllList("ApplyFileType")
       .filter((i: any) => !i.code.includes("Pdf"));
-    console.log(list);
     this.fileListType = list.map((i: any) => {
+      console.log(i.code === "Contract", this.form.status === "InvoiceApply");
+
       return {
         ...i,
+        subType: i.code === "Contract" || this.form.status === "InvoiceApply",
         fileList: data
           .filter((j: any) => j.type === i.code)
           .map((h: any) => ({
@@ -1728,6 +1739,24 @@ export default class ApplyRecAdd extends Vue {
           })),
       };
     });
+    this.fileListType = this.fileListType.map((v: any) => {
+      if (["Contract"].includes(v.code)) {
+        return {
+          ...v,
+          limit: true,
+          fileList: v.fileList.map((h: any) => ({
+            ...h,
+            exAuto: 1,
+          })),
+        };
+      } else {
+        return {
+          ...v,
+        };
+      }
+    });
+    console.log(this.fileListType);
+
     let obj: any = {};
     this.fileListType.forEach((h: any) => {
       obj[h.code] = h.fileList;
@@ -1885,7 +1914,7 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.$message({
         type: "warning",
-        message: `${msgList.join(";")}, 请上传附件`,
+        message: `${this.form.dealList.dealCode}所属周期的甲方合同暂未归档，请先完成归档`,
       });
       return;
     }
@@ -1931,6 +1960,49 @@ export default class ApplyRecAdd extends Vue {
   }
   private async invoiceApply() {
     let applyId = this.$route.query.id;
+    // 校验提示
+    let arr: any = [];
+    let fileList: any[] = [];
+    Object.values(this.submitFile).forEach((v: any) => {
+      if (v.length) {
+        arr = arr.concat(v);
+      }
+    });
+    // 以下操作仅仅是为了校验必上传项
+    let submitList: any = this.fileListType.map((v: any) => {
+      return {
+        ...v,
+        fileList: arr
+          .filter((j: any) => j.type === v.code)
+          .map((h: any) => ({
+            ...h,
+            name: h.fileName,
+          })),
+      };
+    });
+    let isSubmit = true;
+    let msgList: any = [];
+    submitList.forEach((v: any) => {
+      if (v.subType && !v.fileList.length) {
+        msgList.push(v.name);
+        isSubmit = false;
+      }
+    });
+    if (isSubmit) {
+      fileList = arr.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.name,
+        type: v.type,
+      }));
+    } else {
+      this.$message({
+        type: "warning",
+        message: `${msgList.join(",")}, 附件不能为空`,
+      });
+      return;
+    }
+    fileList = fileList.filter((i: any) => i.type !== "Contract");
+    console.log(fileList, "fileList");
     let loading = this.$loading({
       lock: true,
       text: "请耐心等待...",
@@ -1939,7 +2011,7 @@ export default class ApplyRecAdd extends Vue {
       customClass: "ih-loading-spinner",
     });
     try {
-      await post_applyRec_InvoiceApply__applyId({ applyId });
+      await post_applyRec_InvoiceApply({ applyId, fileList });
       this.$message.success("发起开票成功");
       loading.close();
       this.$goto({
@@ -2011,6 +2083,7 @@ export default class ApplyRecAdd extends Vue {
         projectId: this.form.proId,
         receivingAccountId: this.form.receAccountId,
       });
+      this.developData = { partyA: info.developId };
       // if (this.form.status === "Draft") {
       //   await this.getHisRec({
       //     developId: info.developId,
@@ -2026,11 +2099,12 @@ export default class ApplyRecAdd extends Vue {
   async created() {
     let id = this.$route.query.id;
     if (id) {
-      this.getInfo(id);
+      await this.getInfo(id);
       let list = await post_applyRecFile_getAll({
         applyId: id,
         typeList: ["Contract", "Invoice", "ApplyReport"],
       });
+      this.updateList = list;
       this.getFileListType(list);
       this.orgOption = await get_org_getUserDepartmentList({
         orgType: "Department",
