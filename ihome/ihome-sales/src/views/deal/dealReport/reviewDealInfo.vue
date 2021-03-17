@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:08:10
+ * @LastEditTime: 2021-03-17 10:34:50
 -->
 <template>
   <ih-page class="text-left">
@@ -184,7 +184,12 @@
             :data="postData.offerNoticeList">
             <el-table-column prop="notificationType" label="名称" min-width="120">
               <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}</div>
+                <div>
+                  {{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}
+                  <span
+                    class="color-red"
+                    v-if="scope.row.promotionMethod && scope.row.promotionMethod === 'Manual'">(自定义优惠)</span>
+                </div>
               </template>
             </el-table-column>
             <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
@@ -1046,10 +1051,8 @@
   }
 </script>
 <style lang="scss" scoped>
-  .add-all-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    margin-bottom: 10px;
+  .color-red {
+    color: red;
   }
 
   .cycle-name-wrapper {
