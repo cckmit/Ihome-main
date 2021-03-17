@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 09:29:17
+ * @LastEditTime: 2021-03-17 19:19:08
  */
 import { RouteConfig } from 'vue-router'
 
@@ -60,6 +60,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '渠道分销协议详情', icon: 'form' }
+      },
+      {
+        path: 'duplicate',
+        name: 'DistributionDuplicate',
+        component: () => import( /* webpackChunkName: "DistributionDuplicate" */ '@/views/contract/distribution/info.vue'),
+        meta: { title: '渠道分销协议盖章版归档', icon: 'form' }
       },
       {
         path: 'original',

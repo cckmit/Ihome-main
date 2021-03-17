@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 18:30:18
+ * @LastEditTime: 2021-03-17 19:21:32
 -->
 <template>
   <IhPage label-width="100px">
@@ -378,7 +378,7 @@
                   v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="duplicate(row)"
+                  @click.native.prevent="handleTo(row, 'duplicate')"
                   :class="{ 'ih-data-disabled': !duplicateChange(row) }"
                   v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
                 >盖章版归档</el-dropdown-item>
@@ -430,7 +430,6 @@ import {
   post_distribution_distribute,
   post_distribution_disallowance,
   post_distribution_withdraw,
-  post_distribution_duplicate,
   post_distribution_delete,
 } from "@/api/contract/index";
 
@@ -765,19 +764,6 @@ export default class DistributionList extends Vue {
     } else {
       this.$message.warning("请先勾选表格数据");
       return;
-    }
-  }
-  /**
-   * @description: 渠道分销合同扫描件归档
-   */
-  private async duplicate(row: any) {
-    try {
-      await this.$confirm("此操作将进行盖章版归档, 是否继续?", "提示");
-      await post_distribution_duplicate({ distributionId: row.id });
-      this.$message.success("盖章版归档成功");
-      this.getListMixin();
-    } catch (err) {
-      console.log(err);
     }
   }
   handleTo(row: any, page: string) {

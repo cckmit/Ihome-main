@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:18:52
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-17 19:33:01
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -309,10 +309,10 @@
           <el-col :span="18">
             <el-form-item label="盖章版归档">
               <IhUpload
-                v-if="$route.name === 'DistributionDetail' ? true : fileList.length"
+                v-if="['DistributionDetail', 'DistributionDuplicate'].includes($route.name)  ? true : fileList.length"
                 :file-list="fileList"
                 @newFileList="handleSealFile"
-                :limit="$route.name === 'DistributionDetail' ? 10 : fileList.length"
+                :limit="['DistributionDetail', 'DistributionDuplicate'].includes($route.name) ? 99 : fileList.length"
                 size="100px"
                 class="upload"
               ></IhUpload>
@@ -341,6 +341,17 @@
         >提交</el-button>
         <el-button @click="$router.go(-1)">取消</el-button>
       </div>
+      <div
+        v-if="$route.name === 'DistributionDuplicate'"
+        class="text-center"
+      >
+        <br />
+        <el-button
+          type="primary"
+          @click="duplicateMethod()"
+        >提交</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -353,6 +364,7 @@ import {
   get_distribution_deal_detail__contractNo,
   post_distribution_original_archive,
   post_distribution_annex,
+  post_distribution_duplicate,
 } from "@/api/contract/index";
 
 @Component({})
@@ -363,6 +375,28 @@ export default class DistributionDetail extends Vue {
   private sealFile: any = [];
   private fileList: any = [];
 
+  /**
+   * @description: 渠道分销合同扫描件归档
+   */
+  private async duplicateMethod() {
+    if (!this.sealFile.length) {
+      this.$message.warning("请先上传文件");
+      return;
+    }
+    try {
+      await post_distribution_annex({
+        annexCreateListList: this.sealFile,
+        distributionId: this.ruleForm.id,
+      });
+      await post_distribution_duplicate({ distributionId: this.ruleForm.id });
+      this.$message.success("盖章版归档成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
   private async archive() {
     if (!this.ruleForm.archiveNo) {
       this.$message.warning("归档编号不能为空");
@@ -372,10 +406,10 @@ export default class DistributionDetail extends Vue {
       distributionId: this.ruleForm.id,
       archiveNo: this.ruleForm.archiveNo,
     });
+    this.$message.success("原件归档成功");
     this.$goto({
       path: "/distribution/list",
     });
-    this.$message.success("原件归档成功");
   }
   private handleSealFile(val: any) {
     this.sealFile = val
