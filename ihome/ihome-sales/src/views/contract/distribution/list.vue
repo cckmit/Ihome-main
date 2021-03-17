@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-02 09:38:58
+ * @LastEditTime: 2021-03-17 18:30:18
 -->
 <template>
   <IhPage label-width="100px">
@@ -195,23 +195,23 @@
         >重置</el-button>
         <el-button
           type="success"
-          @click="review()"
+          @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
         >审核</el-button>
         <el-button
           type="success"
-          @click="distribute()"
+          @click="distribute(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
         >派发</el-button>
         <el-button
           type="danger"
-          @click="handleDis()"
+          @click="handleDis(selectionData)"
           :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
-          @click="handleWith()"
+          @click="handleWith(selectionData)"
           :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
@@ -306,12 +306,12 @@
         <el-table-column
           label="合同编号"
           prop="contractNo"
-          width="265"
+          width="285"
         ></el-table-column>
         <el-table-column
           label="审核状态"
           prop="distributionState"
-          width="100"
+          width="110"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.distributionState, 'DistributionState')}}
@@ -356,10 +356,27 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
-                  @click.native.prevent="remove(row)"
-                  v-has="'B.SALES.CONTRACT.DISTLIST.DELETE'"
-                >删除</el-dropdown-item>
+                  @click.native.prevent="review([{ ...row }])"
+                  :disabled="row.distributionState !== 'Pending'"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
+                >审核</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="distribute([{ ...row }])"
+                  :disabled="row.distributionState !== 'NotDistributed'"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
+                >派发</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleDis([{ ...row }])"
+                  :disabled="!['NotDistributed', 'Pending'].includes(row.distributionState)"
+                  :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
+                >驳回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleWith([{ ...row }])"
+                  :disabled="!['NotDistributed', 'Pending'].includes(row.distributionState)"
+                  :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
+                >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="duplicate(row)"
                   :class="{ 'ih-data-disabled': !duplicateChange(row) }"
@@ -375,6 +392,11 @@
                   v-has="'B.SALES.CONTRACT.DISTLIST.EXPRORTATTCH'"
                   :class="{ 'ih-data-disabled': !exportChange()}"
                 >导出附件</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
+                  @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.DELETE'"
+                >删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -516,15 +538,15 @@ export default class DistributionList extends Vue {
     this.selectionData = val;
   }
   // 根据角色来撤回
-  private handleWith() {
-    if (this.selectionData.length) {
+  private handleWith(selection: any) {
+    if (selection.length) {
       if (this.channelChange()) {
         if (
-          this.selectionData
+          selection
             .map((i: any) => i.distributionState)
             .every((v: any) => v === "Pending")
         ) {
-          this.withdraw();
+          this.withdraw(selection);
         } else {
           this.$message.warning("只有待审核的合同才能操作撤回");
           return;
@@ -532,11 +554,11 @@ export default class DistributionList extends Vue {
       }
       if (this.contractChange()) {
         if (
-          this.selectionData
+          selection
             .map((i: any) => i.distributionState)
             .every((v: any) => v === "NotDistributed")
         ) {
-          this.withdraw();
+          this.withdraw(selection);
         } else {
           this.$message.warning("只有待派发的合同才能操作撤回");
           return;
@@ -550,10 +572,10 @@ export default class DistributionList extends Vue {
   /**
    * @description: 渠道分销合同撤回
    */
-  private async withdraw() {
+  private async withdraw(selection: any) {
     try {
       await post_distribution_withdraw({
-        ids: this.selectionData.map((i: any) => i.id),
+        ids: selection.map((i: any) => i.id),
       });
       this.$message.success("撤回成功");
       this.getListMixin();
@@ -645,15 +667,15 @@ export default class DistributionList extends Vue {
     });
   }
   // 根据角色驳回不同的操作
-  private handleDis() {
-    if (this.selectionData.length) {
+  private handleDis(selectionData: any) {
+    if (selectionData.length) {
       if (this.contractChange()) {
         if (
-          this.selectionData
+          selectionData
             .map((i: any) => i.distributionState)
             .every((v: any) => v === "Pending")
         ) {
-          this.disallowance();
+          this.disallowance(selectionData);
         } else {
           this.$message.warning("只有待审核的合同才能操作驳回");
           return;
@@ -661,11 +683,11 @@ export default class DistributionList extends Vue {
       }
       if (this.channelChange()) {
         if (
-          this.selectionData
+          selectionData
             .map((i: any) => i.distributionState)
             .every((v: any) => v === "NotDistributed")
         ) {
-          this.disallowance();
+          this.disallowance(selectionData);
         } else {
           this.$message.warning("只有待派发的合同才能操作驳回");
           return;
@@ -679,10 +701,10 @@ export default class DistributionList extends Vue {
   /**
    * @description: 渠道分销合同驳回
    */
-  private async disallowance() {
+  private async disallowance(selectionData: any) {
     try {
       await post_distribution_disallowance({
-        ids: this.selectionData.map((i: any) => i.id),
+        ids: selectionData.map((i: any) => i.id),
       });
       this.$message.success("驳回成功");
       this.getListMixin();
@@ -693,15 +715,15 @@ export default class DistributionList extends Vue {
   /**
    * @description: 渠道分销合同审核
    */
-  private async review() {
-    if (this.selectionData.length) {
-      const isPend = this.selectionData
+  private async review(selectionData: any) {
+    if (selectionData.length) {
+      const isPend = selectionData
         .map((i: any) => i.distributionState)
         .every((v: any) => v === "Pending");
       if (isPend) {
         try {
           await post_distribution_review({
-            ids: this.selectionData.map((i: any) => i.id),
+            ids: selectionData.map((i: any) => i.id),
           });
           this.$message.success("审核成功");
           this.getListMixin();
@@ -721,15 +743,15 @@ export default class DistributionList extends Vue {
    * @description: 派发合同
    * @param {*}
    */
-  private async distribute() {
-    if (this.selectionData.length) {
-      const isPend = this.selectionData
+  private async distribute(selectionData: any) {
+    if (selectionData.length) {
+      const isPend = selectionData
         .map((i: any) => i.distributionState)
         .every((v: any) => v === "NotDistributed");
       if (isPend) {
         try {
           await post_distribution_distribute({
-            ids: this.selectionData.map((i: any) => i.id),
+            ids: selectionData.map((i: any) => i.id),
           });
           this.$message.success("派发成功");
           this.getListMixin();
