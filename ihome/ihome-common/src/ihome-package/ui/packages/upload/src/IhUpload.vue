@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 09:43:28
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-17 16:42:16
 -->
 <template>
   <div class="upload">
@@ -245,14 +245,16 @@ export default class IhUpload extends Vue {
 
   @Watch("list", { deep: true })
   getList(list: any) {
-    let push = (this.$refs.upload as any)?.$children[
-      (this.$refs.upload as any)?.$children?.length - 1
-    ]?.$el;
-    if (list.length < this.limit) {
-      push.style.display = "inline-block";
-    } else {
-      push.style.display = "none";
-    }
+    this.$nextTick(() => {
+      let push = (this.$refs.upload as any)?.$children[
+        (this.$refs.upload as any)?.$children?.length - 1
+      ]?.$el;
+      if (list.length < this.limit) {
+        push.style.display = "inline-block";
+      } else {
+        push.style.display = "none";
+      }
+    });
   }
   @Watch("fileList", { immediate: true, deep: true })
   getFileList(fileList: any) {
