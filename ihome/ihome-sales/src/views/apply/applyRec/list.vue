@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 10:29:38
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 15:41:50
+ * @LastEditTime: 2021-03-17 16:39:58
 -->
 <template>
   <IhPage label-width="100px">
@@ -178,9 +178,8 @@
         ></el-table-column>
         <el-table-column
           label="状态"
-          prop="status"
-          width="185"
-          align="center"
+          width="125"
+          class-name="status-class"
         >
           <template v-slot="{row}">
             <div :class="{ 'status-style': row.isReject == 1 }">
@@ -342,20 +341,21 @@ export default class ApplyRecList extends Vue {
     }
   }
   private async handleExport() {
-    let flag = this.timeList && this.timeList.length;
-    this.queryPageParameters.applyTimeStart = flag ? this.timeList[0] : null;
-    this.queryPageParameters.applyTimeEnd = flag ? this.timeList[1] : null;
+    if (!this.selection.length) {
+      this.$message.warning("请勾选至少一条表格数据");
+      return;
+    }
     const token: any = getToken();
     axios({
       method: "POST",
-      url: "/sales-api/apply/applyRec/excelBatchApplyInfo",
+      url: "/sales-api/apply/applyRec/exportZip",
       xsrfHeaderName: "Authorization",
       responseType: "blob",
       headers: {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: { ...this.queryPageParameters },
+      data: { applyIdList: this.selection.map((i: any) => i.id) },
     }).then((res: any) => {
       if (res.data.type === "application/json") {
         let reader = new FileReader();
@@ -370,7 +370,11 @@ export default class ApplyRecList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "请款信息.zip";
+      $a.download = `${
+        this.selection.length === 1
+          ? this.selection[0].proName + this.selection[0].applyNo
+          : "请款附件"
+      }.zip`;
       $a.click();
       $a.remove();
     });
@@ -430,7 +434,7 @@ export default class ApplyRecList extends Vue {
   }
 }
 .ih-table {
-  /deep/ .is-center {
+  /deep/ .status-class {
     overflow: hidden;
   }
 }

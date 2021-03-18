@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 15:42:06
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 15:19:34
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 14:24:18
 -->
 <template>
   <el-dialog
@@ -38,7 +38,7 @@
         <el-input v-model="ruleForm.refundName" :disabled="true"></el-input>
       </el-form-item>
       <el-form-item label="收款方帐号" prop="refundAccount">
-        <el-input v-model="ruleForm.refundAccount"></el-input>
+        <el-input v-digits="0" v-model="ruleForm.refundAccount"></el-input>
       </el-form-item>
       <el-form-item label="付款方名称" prop="companyId">
         <IhSelectPageByPayer

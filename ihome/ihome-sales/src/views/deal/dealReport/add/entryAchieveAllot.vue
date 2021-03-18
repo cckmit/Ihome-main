@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:01:20
+ * @LastEditTime: 2021-03-15 19:02:38
 -->
 <template>
   <ih-page class="text-left">
@@ -1136,6 +1136,7 @@
     contNoList: any = []; // 分销协议列表---initPage接口
     packageIdsList: any = []; // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
     baseInfoByTerm: any = {
+      exMinyuan: null, // // 是否明源源：1---是，0---否
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
@@ -1166,6 +1167,7 @@
       isOtherProUse: false, // 是否允许跨项目使用其他渠道费用 --- 用来校验收派金额，其他渠道费
       chargeMode: null, // 收费模式 --- 初始化收派金额，有无服务费、代理费
       dealCode: null,
+      proId: null, // 接口用到的id
       cycleId: null, // 接口用到的id
       cycleName: null, // 只用于显示
       modelCode: null,
@@ -1470,8 +1472,8 @@
       this.editBaseInfo = res;
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
-      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
-      await this.getInformation(id); // 优惠告知书
+      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
+      await this.getInformation(id, res?.cycleId); // 优惠告知书
       if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
         let params: any = {
           channelId: res.agencyList[0].agencyId,
@@ -1485,6 +1487,7 @@
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
         this.postData.dealCode = res.dealCode;
+        this.postData.proId = res.projectId;
         this.postData.cycleId = res.cycleId;
         this.postData.cycleName = res.cycleName;
         this.postData.modelCode = res.modelCode;
@@ -1644,14 +1647,15 @@
     }
 
     // 编辑 --- 通过房号、物业类型、周期获取分销协议编号
-    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
-      if (!cycleId || !roomId || !propertyType) return;
+    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
+      if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
         parentId: parentId, // 编辑要传主成交id
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: true, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
@@ -1746,9 +1750,9 @@
     }
 
     // 编辑 --- 根据成交id获取优惠告知书列表
-    async getInformation(id: any = '') {
-      if (!id) return;
-      const list: any = await post_notice_customer_information({dealId: id});
+    async getInformation(id: any = '', cycleId: any = '') {
+      if (!id || !cycleId) return;
+      const list: any = await post_notice_customer_information({dealId: id, cycleId: cycleId});
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
         this.postData.offerNoticeVO = list;
@@ -1818,13 +1822,24 @@
     * */
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
+      let isMingYuanFlag: any = this.baseInfoByTerm?.exMinyuan === 1;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = false;
-      // 2.对应明源字段是否有值
-      if (data[type][key] && this.postData.roomId) {
-        flag = true;
+      let flag: any = false;
+      // 对应明源字段是否有值
+      if (type === 'houseVO') {
+        // 针对房间vo特殊判断
+        if (data[type][key] && this.postData.roomId && isMingYuanFlag) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       } else {
-        flag = false;
+        // 其他vo的判断
+        if (data[type][key] && this.postData.roomId) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       }
       return flag;
     }
@@ -2121,6 +2136,7 @@
         }
         (this as any).$nextTick(async () => {
           this.postData.cycleName = data[0].termName;
+          this.postData.proId = data[0].proId;
           this.postData.cycleId = data[0].termId;
           this.cycleCheckedData = [...data];
           await this.getBaseDealInfo(this.postData.cycleId);
@@ -2371,6 +2387,7 @@
         roomId: roomId,
         isMainDeal: true, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
@@ -2815,7 +2832,8 @@
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
-      if (!postData.signPrice && !postData.subscribePrice) {
+      // 价格排除0
+      if (['', null, undefined].includes(postData.signPrice) && ['', null, undefined].includes(postData.subscribePrice)) {
         this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
@@ -2954,6 +2972,7 @@
       if (data.length === 0) return;
       let customData: any = {
         addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
+        id: data[0].id,
         cardNo: data[0].certificateNumber,
         cardType: data[0].cardType,
         customerName: data[0].custName,
@@ -3503,6 +3522,7 @@
             "charge": "",
             "contNo": "",
             "contType": "",
+            "proId": "",
             "cycleId": '',
             "dataSign": "",
             "dealOrgId": '',
@@ -3615,6 +3635,7 @@
       obj.basic.dealVO.businessType = this.baseInfoByTerm.busTypeEnum;
       obj.basic.dealVO.charge = this.baseInfoByTerm.chargeEnum;
       obj.basic.dealVO.contType = this.postData.contType;
+      obj.basic.dealVO.proId = this.postData.proId;
       obj.basic.dealVO.cycleId = this.postData.cycleId;
       obj.basic.dealVO.dataSign = this.postData.dataSign;
       obj.basic.dealVO.dealOrgId = this.postData.dealOrgId;

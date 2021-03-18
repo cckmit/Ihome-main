@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-04 19:17:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 14:08:08
+ * @LastEditTime: 2021-03-13 16:47:42
 -->
 <template>
   <section>
@@ -34,6 +34,7 @@
               <el-select
                 v-model="form.formList[0].templateType"
                 placeholder="终止协议类型"
+                :disabled="data.ownerType === 'Enterprise'"
                 class="width--100"
               >
                 <el-option
@@ -203,6 +204,12 @@ export default class SceneTwo extends Vue {
     } else {
       console.log("error submit!!");
       return false;
+    }
+  }
+
+  created() {
+    if (this.data.ownerType === "Enterprise") {
+      this.form.formList[0].templateType = "PaperTemplate";
     }
   }
 }

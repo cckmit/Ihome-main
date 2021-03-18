@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-12-10 15:17:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-10 16:20:10
+ * @LastEditTime: 2021-03-15 19:03:51
 -->
 <template>
   <ih-page class="text-left">
@@ -166,19 +166,19 @@
         this.currentActiveIndex = 0;
         // 初始化步骤条
         switch(this.changeType){
-          case 'ChangeBasicInf' :
+          case 'ChangeBasicInf':
             // 变更基础信息
             this.currentStepsList = (this as any).$tool.deepClone(this.baseInfoStepsList);
             break;
-          case 'ChangeAchieveInf' :
+          case 'ChangeAchieveInf':
             // 变更业绩信息
             this.currentStepsList = (this as any).$tool.deepClone(this.achieveStepsList);
             break;
-          case 'RetreatRoom' :
+          case 'RetreatRoom':
             // 退房
             this.currentStepsList = (this as any).$tool.deepClone(this.checkOutStepsList);
             break;
-          case 'ChangeInternalAchieveInf' :
+          case 'ChangeInternalAchieveInf':
             // 内部员工业绩变更
             this.currentStepsList = (this as any).$tool.deepClone(this.staffStepsList);
             break;
@@ -188,16 +188,28 @@
 
     // 下一步
     handleStepNext(type: any, data: any = null) {
+      let charge: any = null;
+      if (data) {
+        this.pageData = data; // 保存页面数据
+        charge = data?.charge; // 收费类型
+      }
       if (type === 'next') {
         // 下一步
-        this.currentActiveIndex = this.currentActiveIndex + 1;
+        if (['ChangeBasicInf', 'ChangeAchieveInf', 'RetreatRoom'].includes(this.changeType) && charge === 'Agent') {
+          // 补充成交报告对应的周期收费类型是纯代理费的，用户录入补充成交报告时跳过告知书补充发起步骤页面
+          this.currentActiveIndex = this.currentActiveIndex + 2;
+        } else {
+          this.currentActiveIndex = this.currentActiveIndex + 1;
+        }
       } else {
         // 上一步 - 返回
         if (this.currentActiveIndex === 0) return;
-        this.currentActiveIndex = this.currentActiveIndex - 1;
-      }
-      if (data) {
-        this.pageData = data; // 保存页面数据
+        if (['ChangeBasicInf', 'ChangeAchieveInf', 'RetreatRoom'].includes(this.changeType) && charge === 'Agent') {
+          // 补充成交报告对应的周期收费类型是纯代理费的，用户录入补充成交报告时跳过告知书补充发起步骤页面
+          this.currentActiveIndex = this.currentActiveIndex - 2;
+        } else {
+          this.currentActiveIndex = this.currentActiveIndex - 1;
+        }
       }
     }
 

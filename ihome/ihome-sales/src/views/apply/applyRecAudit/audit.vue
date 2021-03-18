@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-08 11:33:17
+ * @LastEditTime: 2021-03-17 17:52:09
 -->
 <template>
   <IhPage class="text-left">
@@ -45,23 +45,8 @@
               ></IhSelectPageDivision> -->
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="甲方公司">
-              <el-input
-                :value="form.developName"
-                disabled
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="甲方开票帐号">
-              <el-input
-                v-model="form.developAccount"
-                disabled
-              >
-              </el-input>
-            </el-form-item>
-          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="收款公司">
               <IhSelectPageByCompany
@@ -79,6 +64,25 @@
                 v-model="form.receBankAccount"
                 disabled
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="甲方公司">
+              <el-input
+                :value="form.developName"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="甲方开票帐号">
+              <el-input
+                v-model="form.developAccount"
+                disabled
+              >
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -107,6 +111,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="申请人">
               <el-input
@@ -344,9 +350,21 @@
             <td class="width-150">本批申请请款金额</td>
             <td width="150">{{totalApplyMoney}}</td>
             <td width="150">本批不含税金额</td>
-            <td width="150">{{totalNoTaxMoneySum}}</td>
+            <td width="150">
+              <template v-if="totalNoTaxMoneyNewSum() >= 0">
+                <del>{{totalNoTaxMoneySum}}</del>
+                <div style="color: red;">{{totalNoTaxMoneyNewSum()}}</div>
+              </template>
+              <span v-else>{{totalNoTaxMoneySum}}</span>
+            </td>
             <td width="150">本批税额</td>
-            <td width="150">{{totalTax}}</td>
+            <td width="150">
+              <template v-if="totalTaxNew() >= 0">
+                <del>{{totalTax}}</del>
+                <div style="color: red;">{{totalTaxNew()}}</div>
+              </template>
+              <span v-else>{{totalTax}}</span>
+            </td>
           </tr>
         </table>
       </div>
@@ -644,8 +662,14 @@
           <tr>
             <td>经办部门意见</td>
             <td colspan="5">
-              <div class="height-100 text-left padding-left-20">
-                <pre>{{form.remark || '--'}}</pre>
+              <div
+                class="text-left padding-left-20"
+                style="min-height: 100px;"
+              >
+                <pre
+                  class="width--100"
+                  style="white-space: pre-wrap;"
+                >{{form.remark || '--'}}</pre>
               </div>
             </td>
           </tr>
@@ -664,11 +688,7 @@
             align="center"
           >
             <template v-slot="{ row }">
-              <div><span
-                  style="color: red"
-                  v-if="row.subType"
-                >*</span>{{row.name}}
-              </div>
+              <div>{{row.name}}</div>
             </template>
           </el-table-column>
           <el-table-column label="附件">
@@ -870,6 +890,38 @@ export default class ApplyAudit extends Vue {
     return sum;
   }
 
+  // 加减计算过后的本批不含税金额
+  private totalNoTaxMoneyNewSum() {
+    let sum = 0;
+    let sumNew = 0;
+    let isNew = false;
+    this.dealList.forEach((i: any) => {
+      if (i.noTaxMoneyNew || i.noTaxMoneyNew === 0) {
+        isNew = true;
+        sum = this.$math.add(sum, i.noTaxMoneyNew);
+      } else {
+        sum = this.$math.add(sum, i.noTaxMoney);
+      }
+    });
+    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = -1);
+    return sumNew;
+  }
+  // 加减计算过后的税额的本批税额
+  private totalTaxNew() {
+    let sum = 0;
+    let sumNew = 0;
+    let isNew = false;
+    this.dealList.forEach((i: any) => {
+      if (i.taxMoneyNew || i.taxMoneyNew === 0) {
+        isNew = true;
+        sum = this.$math.add(sum, i.taxMoneyNew);
+      } else {
+        sum = this.$math.add(sum, i.taxMoney);
+      }
+    });
+    isNew ? (sumNew = this.$math.tofixed(sum, 2)) : (sumNew = -1);
+    return sumNew;
+  }
   // private getSummaries({ columns, data }: any) {
   //   const sums: any = [];
   //   columns.forEach((column: any, index: number) => {
@@ -1060,7 +1112,7 @@ export default class ApplyAudit extends Vue {
       this.$message.warning("审批意见不能为空");
       return;
     }
-    let params;
+    let params: any;
     if (this.taxMoney !== this.form.taxMoney) {
       params = {
         isReject,
@@ -1086,11 +1138,32 @@ export default class ApplyAudit extends Vue {
       };
     }
     try {
-      await post_applyRec_audit(params);
-      this.$message.success(`${isReject ? "驳回" : "通过"}成功`);
-      this.$goto({
-        path: "/applyRecAudit/list",
-      });
+      if (this.form.status === "InvoiceClerk" && isReject === 0) {
+        this.$confirm("是否现在开具发票", "提示")
+          .then(async () => {
+            await post_applyRec_audit(params);
+            this.$router.push({
+              path: `/invoice/list`,
+              query: {
+                code: this.form.applyNo,
+              },
+            });
+            // window.open(router.href, "_blank");
+          })
+          .catch(async () => {
+            await post_applyRec_audit(params);
+            this.$message.success("通过成功");
+            this.$goto({
+              path: "/applyRecAudit/list",
+            });
+          });
+      } else {
+        await post_applyRec_audit(params);
+        this.$message.success(`${isReject ? "驳回" : "通过"}成功`);
+        this.$goto({
+          path: "/applyRecAudit/list",
+        });
+      }
     } catch (error) {
       console.log(error);
     }

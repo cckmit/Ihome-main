@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-11 11:25:45
+ * @LastEditTime: 2021-03-17 16:13:05
 -->
 <template>
   <IhPage label-width="100px">
@@ -117,6 +117,10 @@
           type="info"
           @click="reset()"
         >重置</el-button>
+        <el-button
+          type="success"
+          @click="exportList()"
+        >导出</el-button>
         <el-button
           type="success"
           v-if="tabsValue === 'PendingPayment'"
@@ -238,6 +242,12 @@
                 </template>
               </el-table-column>
               <el-table-column
+                label="摘要"
+                prop="summary"
+                width="250"
+              >
+              </el-table-column>
+              <el-table-column
                 v-if="i.name !== 'PendingPayment'"
                 label="支付唯一编码"
                 prop="paymentCode"
@@ -271,7 +281,7 @@
                 </template>
               </el-table-column>
               <el-table-column
-                v-if="['all', 'TicketRefunded'].includes(i.name)"
+                v-if="['all'].includes(i.name)"
                 label="失败原因"
                 prop="reason"
                 width="150"
@@ -313,13 +323,13 @@
                     v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.EDIT'"
                   >修改</el-link>
                   <el-link
-                    v-if="['TicketRefunded', 'Paying', 'PaymentSuccess'].includes(row.paymentStatus) && ['Centralization'].includes(row.settlementMethod)"
+                    v-if="['Paying', 'PaymentSuccess'].includes(row.paymentStatus) && ['Centralization'].includes(row.settlementMethod)"
                     type="primary"
                     v-has="'B.SALES.PAYOFF.PAYOFFPAYMENT.TBZT'"
                     @click="synchronization(row)"
                   >同步状态
                   </el-link>
-                  <span v-if="['TicketRefunded', 'Paying', 'PaymentSuccess'].includes(row.paymentStatus) && ['OnlineBanking'].includes(row.settlementMethod)">---</span>
+                  <span v-if="['Paying', 'PaymentSuccess'].includes(row.paymentStatus) && ['OnlineBanking'].includes(row.settlementMethod)">---</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -374,6 +384,8 @@ import {
   post_payDetail_push,
   post_payDetail_sys_status__paymentCode,
 } from "@/api/payoff/index";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 
 @Component({
   mixins: [PaginationMixin],
@@ -415,10 +427,6 @@ export default class ReturnConfirmList extends Vue {
     {
       label: "待付款",
       name: "PendingPayment",
-    },
-    {
-      label: "已退票",
-      name: "TicketRefunded",
     },
     {
       label: "付款中",
@@ -469,7 +477,6 @@ export default class ReturnConfirmList extends Vue {
         "PendingPayment",
         "Paying",
         "PaymentSuccess",
-        "TicketRefunded",
       ];
     }
     this.getListMixin();
@@ -491,6 +498,34 @@ export default class ReturnConfirmList extends Vue {
 
   selectionChange(selection: any) {
     this.selection = selection;
+  }
+
+  // 导出
+  exportList() {
+    if (!this.resPageInfo.list.length) {
+      this.$message.warning("暂无数据");
+      return;
+    } else {
+      const token: any = getToken();
+      axios({
+        method: "POST",
+        url: `/sales-api/payoff/file/excel/detail/list`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: this.queryPageParameters,
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        $a.download = "待付款推送列表.xlsx";
+        $a.click();
+        $a.remove();
+      });
+    }
   }
 
   // 合并推送

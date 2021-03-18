@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-10 17:03:53
+ * @LastEditTime: 2021-03-17 15:58:54
 -->
 <template>
   <IhPage>
@@ -40,6 +40,11 @@
                 clearable
                 @changeOption="(data) => {
                   info.projectName = data.proName;
+                  projectCity = data.city;
+                  channelSearch = {
+                    cycleCity: data.city,
+                    departmentOrgId: info.belongOrgId,
+                  }
                 }"
               ></IhSelectPageByProject>
             </el-form-item>
@@ -49,16 +54,20 @@
               label="事业部"
               prop="belongOrgId"
             >
-              <IhSelectPageDivision
-                clearable
-                placeholder="事业部"
+              <el-select
                 v-model="info.belongOrgId"
-                :search-name="info.belongOrgName"
-                @changeOption="(data) => {
-                  info.belongOrgName = data.name;
-                }"
+                clearable
+                placeholder="请选择事业部"
+                class="width--100"
+                @change="belongOrgIdChange"
               >
-              </IhSelectPageDivision>
+                <el-option
+                  v-for="item in divisionOptins"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -71,6 +80,7 @@
                 placeholder="请选择渠道商"
                 v-model="info.agencyId"
                 :search-name="info.agencyName"
+                :params="channelSearch"
                 @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
             </el-form-item>
@@ -150,6 +160,48 @@
                   :key="item.code"
                   :label="item.name"
                   :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="付款方"
+              prop="payerId"
+            >
+              <el-select
+                v-model="info.payerId"
+                clearable
+                placeholder="付款方"
+                class="width--100"
+                @change="companyChange"
+              >
+                <el-option
+                  v-for="item in accountOptins"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="付款帐号"
+              prop="paymentAccount"
+            >
+              <el-select
+                v-model="info.paymentAccount"
+                clearable
+                placeholder="付款帐号"
+                class="width--100"
+                @change="accountNoChange"
+              >
+                <el-option
+                  v-for="item in payerAccountOptions"
+                  :key="item.id"
+                  :label="item.accountNo"
+                  :value="item.accountNo"
                 ></el-option>
               </el-select>
             </el-form-item>
@@ -919,7 +971,7 @@
   </IhPage>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   get_payApply_get__id,
   post_payApply_entryApply,
@@ -927,7 +979,12 @@ import {
   post_payApply_calculation_results,
   post_payDeductDetail_deduct_details,
 } from "@/api/payoff/index";
-import { get_channel_get__id } from "@/api/channel/index";
+import { post_bankAccount_getByOrgId__orgId } from "@/api/finance/index";
+import { get_channelBank_getAll__channelId } from "@/api/channel/index";
+import {
+  get_org_getUserDepartmentList,
+  post_company_getAll,
+} from "@/api/system/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "./dialog/obligation.vue";
 import axios from "axios";
@@ -950,6 +1007,10 @@ import AgencyEdit from "./dialog/agencyEdit.vue";
 export default class PayoffEdit extends Vue {
   private fileList: Array<object> = [];
   info: any = {
+    payerId: null,
+    payerName: null,
+    paymentAccount: null,
+    payerAccountBank: null,
     applyCode: null,
     projectId: null,
     projectName: null,
@@ -999,7 +1060,6 @@ export default class PayoffEdit extends Vue {
   submitFile: any = {};
   contactsData: any = {};
   contactsDialogVisible = false;
-  updateList: any = [];
   modify = false;
   computedLoading: any = false;
   submitLoading: any = false;
@@ -1071,9 +1131,127 @@ export default class PayoffEdit extends Vue {
         trigger: "change",
       },
     ],
+    payerId: [
+      {
+        required: true,
+        message: "请选择付款方",
+        trigger: "change",
+      },
+    ],
+    paymentAccount: [
+      {
+        required: true,
+        message: "请选择付款帐号",
+        trigger: "change",
+      },
+    ],
   };
   isAgainComputed: any = true;
   oldTaxRate: any = null;
+  divisionOptins: any = [];
+  accountOptins: any = [];
+  payerAccountOptions: any = [];
+  projectCity: any = null;
+  channelSearch: any = {
+    cycleCity: null,
+    departmentOrgId: null,
+  };
+
+  @Watch("info.belongOrgId", { deep: true })
+  getAccountOptins(val: any) {
+    if (val) {
+      this.getAccount(val);
+    } else {
+      this.info.belongOrgName = null;
+      this.info.payerId = null;
+      this.info.payerName = null;
+      this.info.payerAccountBank = null;
+      this.info.paymentAccount = null;
+      this.accountOptins = [];
+      this.payerAccountOptions = [];
+    }
+  }
+
+  @Watch("info.payerId", { deep: true })
+  getPayerAccountOptions(val: any) {
+    if (val) {
+      this.getPayerInfo(val);
+    } else {
+      this.info.payerName = null;
+      this.info.payerAccountBank = null;
+      this.info.paymentAccount = null;
+      this.accountOptins = [];
+      this.payerAccountOptions = [];
+    }
+  }
+
+  // 获取事业部
+  async getDivision() {
+    let res = await get_org_getUserDepartmentList({
+      orgType: "Department",
+      status: "Valid",
+    });
+    if (res.length === 1) {
+      this.info.orgId = res[0].id;
+    }
+    this.divisionOptins = res;
+  }
+
+  belongOrgIdChange(val: any) {
+    if (val) {
+      const item = this.divisionOptins.find((v: any) => v.id === val);
+      this.info.belongOrgId = item.id;
+      this.info.belongOrgName = item.name;
+      this.channelSearch = {
+        cycleCity: this.projectCity,
+        departmentOrgId: item.id,
+      };
+    }
+  }
+
+  // 获取付款方
+  async getAccount(orgId: any) {
+    let res = await post_company_getAll({
+      orgId,
+    });
+    if (res.length === 1) {
+      this.info.payerId = res[0].id;
+      this.info.payerName = res[0].name;
+    }
+    this.accountOptins = res;
+  }
+
+  companyChange(val: any) {
+    if (val) {
+      const item = this.accountOptins.find((v: any) => v.id === val);
+      this.info.payerId = item.id;
+      this.info.payerName = item.name;
+    }
+  }
+
+  // 获取付款账号
+  async getPayerInfo(val: any) {
+    const res = await post_bankAccount_getByOrgId__orgId({
+      orgId: val,
+    });
+    if (res.length === 1) {
+      this.info.paymentAccount = res[0].accountNo;
+    }
+    this.payerAccountOptions = res;
+  }
+
+  accountNoChange(data: any) {
+    if (data) {
+      const item = this.payerAccountOptions.find(
+        (v: any) => v.accountNo === data
+      );
+      this.info.payerAccountBank = item.branchName;
+      this.info.paymentAccount = item.accountNo;
+    } else {
+      this.info.payerAccountBank = null;
+      this.info.paymentAccount = null;
+    }
+  }
 
   filterTabs(val: any) {
     let obj: any = {};
@@ -1379,6 +1557,7 @@ export default class PayoffEdit extends Vue {
 
   async created() {
     this.getInfo();
+    this.getDivision();
   }
 
   async getInfo() {
@@ -1407,7 +1586,6 @@ export default class PayoffEdit extends Vue {
         2
       );
       this.oldTaxRate = res.taxRate;
-      this.updateList = res.documentList;
       this.getFileListType(res.documentList);
       this.getChannelInfo(
         {
@@ -1516,19 +1694,12 @@ export default class PayoffEdit extends Vue {
           ...v,
         };
       });
-      if (this.updateList.length) {
-        this.updateList.forEach((v: any) => {
-          res.documentList.forEach((j: any) => {
-            if (j.fileType === v.fileType) {
-              v.fileId = j.fileId;
-              v.fileName = j.fileName;
-            }
-          });
-        });
-        this.getFileListType(this.updateList);
-      } else {
-        this.getFileListType(res.documentList);
-      }
+      let arr: any = this.info.documentList
+        .filter(
+          (v: any) => !["Contract", "BusinessLicense"].includes(v.fileType)
+        )
+        .concat(res.documentList);
+      this.getFileListType(arr);
       this.modify = true;
       this.isAgainComputed = true;
     } catch (err) {
@@ -1810,21 +1981,21 @@ export default class PayoffEdit extends Vue {
   }
 
   async getChannelInfo(item: any, type: any) {
-    if (this.info.projectId) {
+    if (this.info.projectId && this.info.belongOrgId) {
       this.info.agencyName = item.name;
-      let res = await get_channel_get__id({ id: item.id });
-      this.channelAccountOptions = res.channelBanks;
+      let res = await get_channelBank_getAll__channelId({ channelId: item.id });
+      this.channelAccountOptions = res;
       if (!type) {
         this.info.receiveAccount = null;
         // 获取本期需抵扣金额明细
         this.queryDeductionData(item.id, this.info.projectId);
       }
-      if (res.channelBanks.length === 1) {
-        this.info.receiveAccount = res.channelBanks[0].accountNo;
-        this.info.agencyAccountBank = res.channelBanks[0].branchName;
+      if (res.length === 1) {
+        this.info.receiveAccount = res[0].accountNo;
+        this.info.agencyAccountBank = res[0].branchName;
       }
     } else {
-      this.$message.warning("请先选择结佣项目");
+      this.$message.warning("请先选择结佣项目、事业部");
       this.info.agencyId = null;
       this.info.agencyName = null;
       return;
@@ -1857,6 +2028,10 @@ export default class PayoffEdit extends Vue {
             payApplyDetailList: [],
           };
           obj.modify = this.modify;
+          obj.payApplyVO.payerId = this.info.payerId;
+          obj.payApplyVO.payerName = this.info.payerName;
+          obj.payApplyVO.paymentAccount = this.info.paymentAccount;
+          obj.payApplyVO.payerAccountBank = this.info.payerAccountBank;
           obj.payApplyVO.deductionCategory = this.info.deductionCategory;
           obj.payApplyVO.description = this.info.description;
           obj.payApplyVO.actualAmount = this.info.actualAmount;
@@ -1964,6 +2139,14 @@ export default class PayoffEdit extends Vue {
             type: "success",
             message: val === "Unconfirm" ? "保存成功!" : "提交成功!",
           });
+        } else {
+          setTimeout(() => {
+            let isError: any = document.getElementsByClassName("is-error");
+            if (isError != null) {
+              isError[0].querySelector("input").focus();
+            }
+          }, 100);
+          return false;
         }
       });
     } else {

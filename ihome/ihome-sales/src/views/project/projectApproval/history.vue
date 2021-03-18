@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 15:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:09:25
+ * @LastEditTime: 2021-03-16 16:42:06
 -->
 <template>
   <ih-page>
@@ -145,6 +145,9 @@ export default class ProjectApprovalInfo extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+  /deep/ .el-image-viewer__wrapper {
+    right: 75px;
+  }
 }
 .tabClass {
   /deep/ .el-tabs__content {

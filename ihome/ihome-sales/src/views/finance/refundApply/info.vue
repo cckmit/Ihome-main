@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-27 15:33:16
+ * @LastEditTime: 2021-03-16 17:18:35
 -->
 <template>
   <IhPage>
@@ -63,12 +63,12 @@
           <el-col :span="8">
             <el-form-item
               label="付款方账户名称"
-              prop="accountId"
+              prop="companyId"
             >
               <IhSelectPageByPayer
                 disabled
                 placeholder="付款方账户名称"
-                v-model="info.accountId"
+                v-model="info.companyId"
                 :proId="info.orgId"
                 :search-name="info.accountName"
               ></IhSelectPageByPayer>
@@ -352,8 +352,10 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款附件"
+            label="退款附件"
             width="100"
+            fixed="right"
+            align="center"
           >
             <template v-slot="{ row, $index }">
               <el-link

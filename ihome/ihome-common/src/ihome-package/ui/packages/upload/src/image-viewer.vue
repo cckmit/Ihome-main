@@ -246,19 +246,19 @@ export default {
       let $index = file?.name?.lastIndexOf(".");
       const type = file?.name?.substring($index + 1);
       switch (type) {
-        case "doc":
-        case "docx":
-        case "docm":
-        case "rtf":
-        case "xls":
-        case "xlsx":
-        case "pptx":
-        case "potx":
-        case "ppt":
-          window.open(
-            `https://view.officeapps.live.com/op/view.aspx?src=http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=${file.url}`
-          );
-          break;
+        // case "doc":
+        // case "docx":
+        // case "docm":
+        // case "rtf":
+        // case "xls":
+        // case "xlsx":
+        // case "pptx":
+        // case "potx":
+        // case "ppt":
+        // window.open(
+        //   `https://view.officeapps.live.com/op/view.aspx?src=http://filesvr.polyihome.test/aist-filesvr-web/JQeryUpload/getfile?fileId=${file.url}`
+        // );
+        // break;
         case "pdf":
           window.open(file.url);
           break;
@@ -425,5 +425,8 @@ export default {
 }
 .el-image-viewer__close {
   color: #fff;
+}
+.el-image-viewer__wrapper {
+  right: 20px;
 }
 </style>

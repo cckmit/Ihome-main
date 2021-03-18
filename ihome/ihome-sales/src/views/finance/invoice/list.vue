@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 17:45:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 14:55:57
+ * @LastEditTime: 2021-03-17 10:53:35
 -->
 <template>
   <IhPage label-width="80px">
@@ -150,7 +150,7 @@
           fixed
           prop="businessNo"
           label="业务单号"
-          min-width="120"
+          min-width="185"
         ></el-table-column>
         <el-table-column
           prop="invoiceTitle"
@@ -261,6 +261,7 @@
     <IhDialog :show="dialogVisible">
       <HandmadelInvoice
         :data="itemData.data"
+        :isAgencyFee="isAgencyFee"
         @cancel="() => (dialogVisible = false)"
         @finish="() => {
           dialogVisible = false;
@@ -290,6 +291,17 @@
         }"
       />
     </IhDialog>
+    <IhDialog :show="autoAgencyVisble">
+      <AutoAgencyFee
+        :data="selectData"
+        :isAgencyFee="isAgencyFee"
+        @cancel="() => (autoAgencyVisble = false)"
+        @finish="() => {
+          autoAgencyVisble = false;
+          getListMixin();
+        }"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -299,6 +311,7 @@ import PaginationMixin from "../../../mixins/pagination";
 import HandmadelInvoice from "./dialog/handmadeInvoice.vue";
 import AutoInvoice from "./dialog/autoInvoice.vue";
 import RedDashed from "./dialog/redDashed.vue";
+import AutoAgencyFee from "./dialog/autoAgencyFee.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import {
@@ -309,7 +322,7 @@ import {
 } from "../../../api/finance/index";
 
 @Component({
-  components: { HandmadelInvoice, AutoInvoice, RedDashed },
+  components: { HandmadelInvoice, AutoInvoice, RedDashed, AutoAgencyFee },
   mixins: [PaginationMixin],
 })
 export default class InvoiceList extends Vue {
@@ -336,7 +349,10 @@ export default class InvoiceList extends Vue {
   };
   isAll = false;
   isHandmade = true;
+  isAgencyFee = false;
+  autoAgencyVisble = false;
   private selection: any = [];
+  private selectData: any = [];
 
   private handleDownload() {
     if (this.selection.length) {
@@ -502,17 +518,37 @@ export default class InvoiceList extends Vue {
   }
   private handleHand(row: any) {
     this.dialogVisible = true;
+    this.isAgencyFee = row.feeType === "AgencyFee";
     this.itemData.data = { ...row };
   }
   /**
    * @description: 自动开票弹窗--批量
    */
-  private handleAutoAll() {
+  private async handleAutoAll() {
     if (this.selection.length) {
       if (!this.selection.map((i: any) => i.status).includes("Done")) {
-        this.itemData.ids = this.selection.map((i: any) => i.id);
-        this.isAll = true;
-        this.autoVisble = true;
+        if (
+          this.selection
+            .map((i: any) => i.feeType)
+            .every((item: any) => item === "AgencyFee")
+        ) {
+          // 代理费批量
+          this.selectData = this.selection;
+          this.isAgencyFee = true;
+          this.autoAgencyVisble = true;
+          this.isAll = true;
+        } else if (
+          this.selection
+            .map((i: any) => i.feeType)
+            .every((item: any) => item === "ServiceFee")
+        ) {
+          // 服务费批量
+          this.itemData.ids = this.selection.map((i: any) => i.id);
+          this.isAll = true;
+          this.autoVisble = true;
+        } else {
+          this.$message.warning("请筛选一致的费用类型");
+        }
       } else {
         this.$message.warning("请选择开票状态为未开票的数据");
       }
@@ -526,10 +562,16 @@ export default class InvoiceList extends Vue {
    * @param {any} row
    */
   private handleAutoItem(row: any) {
-    this.itemData.ids = [row.id];
-    this.itemData.data = { ...row };
-    this.isAll = false;
-    this.autoVisble = true;
+    if (row.feeType === "AgencyFee") {
+      this.selectData = [{ ...row }];
+      this.isAgencyFee = true;
+      this.autoAgencyVisble = true;
+    } else {
+      this.itemData.ids = [row.id];
+      this.itemData.data = { ...row };
+      this.isAll = false;
+      this.autoVisble = true;
+    }
   }
   private handleSelectionChange(val: any) {
     this.selection = val;
@@ -558,6 +600,10 @@ export default class InvoiceList extends Vue {
   }
 
   created() {
+    let code = this.$route.query.code;
+    if (code) {
+      this.queryPageParameters.businessNo = code;
+    }
     this.getListMixin();
   }
 }

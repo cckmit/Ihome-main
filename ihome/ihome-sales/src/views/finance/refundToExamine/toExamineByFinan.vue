@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-11 14:43:31
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-16 10:49:25
 -->
 <template>
   <IhPage>
@@ -363,8 +363,10 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款附件"
+            label="退款附件"
             width="100"
+            fixed="right"
+            align="center"
           >
             <template v-slot="{ row, $index }">
               <el-link

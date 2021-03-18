@@ -845,7 +845,7 @@
 
     // 返回
     handleStepNext() {
-      this.$emit("next", 'up');
+      this.$emit("next", 'up', this.pageData);
     }
 
     // 计算收派金额总计
