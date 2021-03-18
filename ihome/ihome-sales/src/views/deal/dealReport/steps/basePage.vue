@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 16:41:50
+ * @LastEditTime: 2021-03-18 14:40:20
 -->
 <template>
   <ih-page class="text-left">
@@ -2131,9 +2131,9 @@
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
-      this.commissionServiceFeeObj = {};
-      this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
+      // this.commissionServiceFeeObj = {};
+      // this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
+      // console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
       // 初始化上传附件
       await this.getUploadDocumentList(baseInfo.contType);
     }
@@ -3226,7 +3226,7 @@
       if (this.postData[updateType] && this.postData[updateType].length) {
         this.postData[updateType].forEach((list: any) => {
           if (list[type] === "ServiceFee") {
-            list.partyACustomer = isNull ? null : id;
+            // list.partyACustomer = isNull ? null : id;
             list.partyACustomerName = isNull ? null : name;
           }
         });
