@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 16:52:32
+ * @LastEditTime: 2021-03-17 20:00:45
 -->
 <template>
   <IhPage label-width="80px">
@@ -160,6 +160,28 @@
                       :key="n"
                       :label="i.name"
                       :value="i.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item
+                  label="业管审核状态"
+                  class="formItem"
+                >
+                  <el-select
+                    v-model="queryPageParameters.reviewStatus"
+                    placeholder="请选择业管审核状态"
+                    clearable
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('ReviewStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -374,6 +396,7 @@ export default class DiscountList extends Vue {
     notificationTypes: null,
     buyUnit: null,
     templateType: null,
+    reviewStatus: null,
   };
   private timeList: any = [];
   private searchOpen = true;
@@ -499,6 +522,7 @@ export default class DiscountList extends Vue {
       notificationTypes: null,
       buyUnit: null,
       templateType: null,
+      reviewStatus: null,
     });
     this.timeList = [];
   }
@@ -522,3 +546,11 @@ export default class DiscountList extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
+}
+</style>
