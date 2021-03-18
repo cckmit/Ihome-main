@@ -9,7 +9,7 @@
     <div class="text-center margin-top-40">
       <el-button
         round
-        type="primary"
+        type="info"
         @click="$router.push('/')"
       >返回首页</el-button>
     </div>
