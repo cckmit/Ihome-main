@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 20:00:45
+ * @LastEditTime: 2021-03-18 11:17:58
 -->
 <template>
   <IhPage label-width="80px">
@@ -233,12 +233,12 @@
           fixed
           label="编号"
           prop="noticeNo"
-          min-width="300"
+          min-width="230"
         ></el-table-column>
         <el-table-column
           label="类型"
           prop="notificationType"
-          min-width="140"
+          width="120"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.notificationType, 'NotificationType')}}
@@ -252,17 +252,17 @@
         <el-table-column
           label="联动周期"
           prop="cycleName"
-          width="130"
+          width="230"
         ></el-table-column>
         <el-table-column
           label="栋座"
           prop="buyUnitName"
-          width="160"
+          width="120"
         ></el-table-column>
         <el-table-column
           label="房号"
           prop="roomNumberName"
-          min-width="160"
+          min-width="120"
         ></el-table-column>
         <el-table-column
           label="甲方名称"
@@ -271,7 +271,7 @@
         ></el-table-column>
         <el-table-column
           label="区域"
-          width="200"
+          width="220"
           prop="area"
         ></el-table-column>
         <el-table-column
@@ -308,6 +308,14 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="业管审核状态"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.reviewStatus, 'ReviewStatus') || '一'}}
+          </template>
+        </el-table-column>
+        <el-table-column
           fixed="right"
           label="操作"
           min-width="120"
@@ -335,8 +343,14 @@
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.finish === 'No' || row.notificationType !== 'Notification'}"
                   :disabled="row.notificationStatus !== 'BecomeEffective' || !!row.dealId"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.AGREEMENT'"
                   @click.native.prevent="handleGo(row)"
                 >发起补充协议</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.reviewStatus !== 'Pending'}"
+                  @click.native.prevent="$router.push(`/discount/audit?id=${row.id}`)"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.AUDIT'"
+                >业管审核</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-link
