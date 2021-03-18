@@ -1,10 +1,22 @@
 <template>
-  <div>
-    <p>Error404找不到页面</p>
-    <p>
+  <IhPage>
+    <div style="margin-top: 150px">
+      <img
+        src="../../assets/404.png"
+        alt=""
+      />
+    </div>
+    <div class="text-center margin-top-40">
+      <el-button
+        round
+        type="info"
+        @click="$router.push('/')"
+      >返回首页</el-button>
+    </div>
+    <!-- <p>
       {{ source }}
-    </p>
-  </div>
+    </p> -->
+  </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
