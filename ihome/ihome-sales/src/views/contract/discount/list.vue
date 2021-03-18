@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 16:52:32
+ * @LastEditTime: 2021-03-18 14:23:16
 -->
 <template>
   <IhPage label-width="80px">
@@ -165,6 +165,28 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item
+                  label="业管审核状态"
+                  class="formItem"
+                >
+                  <el-select
+                    v-model="queryPageParameters.reviewStatus"
+                    placeholder="请选择业管审核状态"
+                    clearable
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('ReviewStatus')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </el-collapse-transition>
       </el-form>
@@ -211,12 +233,12 @@
           fixed
           label="编号"
           prop="noticeNo"
-          min-width="300"
+          min-width="230"
         ></el-table-column>
         <el-table-column
           label="类型"
           prop="notificationType"
-          min-width="140"
+          width="120"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.notificationType, 'NotificationType')}}
@@ -230,17 +252,17 @@
         <el-table-column
           label="联动周期"
           prop="cycleName"
-          width="130"
+          width="230"
         ></el-table-column>
         <el-table-column
           label="栋座"
           prop="buyUnitName"
-          width="160"
+          width="120"
         ></el-table-column>
         <el-table-column
           label="房号"
           prop="roomNumberName"
-          min-width="160"
+          min-width="120"
         ></el-table-column>
         <el-table-column
           label="甲方名称"
@@ -249,7 +271,7 @@
         ></el-table-column>
         <el-table-column
           label="区域"
-          width="200"
+          width="220"
           prop="area"
         ></el-table-column>
         <el-table-column
@@ -286,13 +308,21 @@
           </template>
         </el-table-column>
         <el-table-column
+          label="业管审核状态"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.reviewStatus, 'ReviewStatus') || '-'}}
+          </template>
+        </el-table-column>
+        <el-table-column
           fixed="right"
           label="操作"
           min-width="120"
         >
           <template v-slot="{ row }">
+            <!-- :class="{'ih-data-disabled':row.notificationType !== 'Notification'}" -->
             <el-link
-              :class="{'ih-data-disabled':row.notificationType !== 'Notification'}"
               type="primary"
               class="margin-right-10"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
@@ -313,8 +343,14 @@
                 <el-dropdown-item
                   :class="{'ih-data-disabled': row.finish === 'No' || row.notificationType !== 'Notification'}"
                   :disabled="row.notificationStatus !== 'BecomeEffective' || !!row.dealId"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.AGREEMENT'"
                   @click.native.prevent="handleGo(row)"
                 >发起补充协议</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': row.reviewStatus !== 'Pending'}"
+                  @click.native.prevent="$router.push(`/discount/audit?id=${row.id}`)"
+                  v-has="'B.SALES.CONTRACT.DISCOUNTLIST.AUDIT'"
+                >业管审核</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
             <!-- <el-link
@@ -374,6 +410,7 @@ export default class DiscountList extends Vue {
     notificationTypes: null,
     buyUnit: null,
     templateType: null,
+    reviewStatus: null,
   };
   private timeList: any = [];
   private searchOpen = true;
@@ -499,6 +536,7 @@ export default class DiscountList extends Vue {
       notificationTypes: null,
       buyUnit: null,
       templateType: null,
+      reviewStatus: null,
     });
     this.timeList = [];
   }
@@ -522,3 +560,11 @@ export default class DiscountList extends Vue {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.formItem {
+  /deep/ .el-form-item__label {
+    line-height: 20px;
+  }
+}
+</style>

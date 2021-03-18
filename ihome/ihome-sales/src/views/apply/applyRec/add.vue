@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 15:43:12
+ * @LastEditTime: 2021-03-18 11:44:11
 -->
 <template>
   <IhPage class="text-left">
@@ -918,6 +918,8 @@
               <IhUpload
                 :file-list.sync="row.fileList"
                 :file-size="10"
+                uploadAccept="image"
+                accept="image/*"
                 :file-type="row.code"
                 size="100px"
                 :limit="row.limit ? row.fileList.length : 999"
@@ -1914,7 +1916,7 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.$message({
         type: "warning",
-        message: `${this.form.dealList.dealCode}所属周期的甲方合同暂未归档，请先完成归档`,
+        message: `所选成交所属周期的甲方合同暂未归档，请先完成归档`,
       });
       return;
     }

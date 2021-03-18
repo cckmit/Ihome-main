@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-01-15 07:57:55
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-15 08:02:13
+ * @LastEditTime: 2021-03-18 14:27:16
 -->
 <template>
   <IhPage label-width="120px">
@@ -23,7 +23,7 @@
               range-separator="到"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
             ></el-date-picker>
             <el-button type="primary" @click="search">查询</el-button>
             <el-button type="success">导出</el-button>

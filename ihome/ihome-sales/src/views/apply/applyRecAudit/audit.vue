@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 15:49:06
+ * @LastEditTime: 2021-03-17 17:52:09
 -->
 <template>
   <IhPage class="text-left">
@@ -45,6 +45,8 @@
               ></IhSelectPageDivision> -->
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="收款公司">
               <IhSelectPageByCompany
@@ -72,6 +74,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="甲方开票帐号">
               <el-input
@@ -107,6 +111,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="申请人">
               <el-input
@@ -656,8 +662,14 @@
           <tr>
             <td>经办部门意见</td>
             <td colspan="5">
-              <div class="height-100 text-left padding-left-20">
-                <pre>{{form.remark || '--'}}</pre>
+              <div
+                class="text-left padding-left-20"
+                style="min-height: 100px;"
+              >
+                <pre
+                  class="width--100"
+                  style="white-space: pre-wrap;"
+                >{{form.remark || '--'}}</pre>
               </div>
             </td>
           </tr>
@@ -676,11 +688,7 @@
             align="center"
           >
             <template v-slot="{ row }">
-              <div><span
-                  style="color: red"
-                  v-if="row.subType"
-                >*</span>{{row.name}}
-              </div>
+              <div>{{row.name}}</div>
             </template>
           </el-table-column>
           <el-table-column label="附件">
