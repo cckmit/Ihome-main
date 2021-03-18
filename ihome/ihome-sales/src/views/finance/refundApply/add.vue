@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 16:17:53
+ * @LastEditTime: 2021-03-18 14:40:48
 -->
 <template>
   <IhPage>
@@ -54,6 +54,7 @@
                 clearable
                 placeholder="请选择事业部"
                 class="width--100"
+                @change="computedDisabled = false;isAgainComputed = false"
               >
                 <el-option
                   v-for="item in divisionOptins"
@@ -870,6 +871,8 @@ export default class RefundApplyEdit extends Vue {
   }
 
   companyChange(val: any) {
+    this.computedDisabled = false;
+    this.isAgainComputed = false;
     if (val) {
       const item = this.accountOptins.find((v: any) => v.id === val);
       this.info.companyId = item.id;
@@ -890,6 +893,8 @@ export default class RefundApplyEdit extends Vue {
   }
 
   accountNoChange(data: any) {
+    this.computedDisabled = false;
+    this.isAgainComputed = false;
     if (data) {
       const item = this.payerAccountOptions.find(
         (v: any) => v.accountNo === data
@@ -1111,6 +1116,14 @@ export default class RefundApplyEdit extends Vue {
               console.log(err);
             }
           }
+        } else {
+          setTimeout(() => {
+            let isError: any = document.getElementsByClassName("is-error");
+            if (isError != null) {
+              isError[0].querySelector("input").focus();
+            }
+          }, 100);
+          return false;
         }
       });
     } else {

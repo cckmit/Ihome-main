@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 14:44:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 17:39:03
+ * @LastEditTime: 2021-03-18 14:25:04
 -->
 <template>
   <IhPage label-width="100px">
@@ -86,7 +86,8 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -104,7 +105,8 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
               ></el-date-picker>
             </el-form-item>
           </el-col>
@@ -280,16 +282,16 @@ export default class DeductList extends Vue {
     let flag = this.cteationTime && this.cteationTime.length;
     let flag2 = this.deductionTime && this.deductionTime.length;
     this.queryPageParameters.generateBeginTime = flag
-      ? this.deductionTime[0]
-      : null;
-    this.queryPageParameters.generateEndTime = flag
-      ? this.deductionTime[1]
-      : null;
-    this.queryPageParameters.deductionBeginTime = flag2
       ? this.cteationTime[0]
       : null;
-    this.queryPageParameters.deductionEndTime = flag2
+    this.queryPageParameters.generateEndTime = flag
       ? this.cteationTime[1]
+      : null;
+    this.queryPageParameters.deductionBeginTime = flag2
+      ? this.deductionTime[0]
+      : null;
+    this.queryPageParameters.deductionEndTime = flag2
+      ? this.deductionTime[1]
       : null;
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
