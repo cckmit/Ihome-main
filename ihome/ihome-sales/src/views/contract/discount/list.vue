@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 11:17:58
+ * @LastEditTime: 2021-03-18 14:23:16
 -->
 <template>
   <IhPage label-width="80px">
@@ -312,7 +312,7 @@
           width="120"
         >
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.reviewStatus, 'ReviewStatus') || '一'}}
+            {{$root.dictAllName(row.reviewStatus, 'ReviewStatus') || '-'}}
           </template>
         </el-table-column>
         <el-table-column
@@ -321,8 +321,8 @@
           min-width="120"
         >
           <template v-slot="{ row }">
+            <!-- :class="{'ih-data-disabled':row.notificationType !== 'Notification'}" -->
             <el-link
-              :class="{'ih-data-disabled':row.notificationType !== 'Notification'}"
               type="primary"
               class="margin-right-10"
               @click.native.prevent="$router.push(`/discount/info?id=${row.id}`)"
