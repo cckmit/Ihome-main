@@ -1,58 +1,65 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 17:23:07
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 19:26:11
 --> 
 <template >
-  <div class="main">
-    <el-form
-      style="
-        background: #eee;
-        padding: 20px 20px;
-        margin-top: 200px;
-        width: 500px !important;
-        border-radius: 5px;
-        border: 1px solid #eee;
-      "
-      class="demo-ruleForm"
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-    >
-      <h3
-        style="text-align: center; margin: 10px; color: red"
-        v-if="env != 'prd'"
-      >
-        {{ envName }}
-      </h3>
-      <h3 style="text-align: center; margin: 10px">居恒新房分销系统·登录</h3>
-
-      <br />
-      <el-form-item label="账号" prop="username">
-        <el-input placeholder="账号" v-model="ruleForm.username"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input
-          placeholder="密码"
-          v-model="ruleForm.password"
-          type="password"
-          @keyup.enter.native="submitForm('ruleForm')"
-        ></el-input>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="submitForm('ruleForm')"
-          :loading="loading"
-          >登录</el-button
-        >
-      </el-form-item>
-    </el-form>
+  <div class="main login-bg">
+    <div class="login-wrapper">
+      <div class="title margin-20">
+        <img src="../assets/img/login/title-zh.png" width="310px" height="46px">
+      </div>
+      <div class="title margin-47">
+        <img src="../assets/img/login/title-en.png" width="310px" height="14px">
+      </div>
+      <div class="login-form">
+        <div class="login-tip">
+          用户登录
+          <span v-if="env !== 'prd'" style="color: red">({{ envName }})</span>
+        </div>
+        <div class="form-wrapper">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px">
+            <el-form-item label="" prop="username" label-width="0">
+              <el-input placeholder="账号" v-model="ruleForm.username">
+                <img
+                  class="icon-img"
+                  slot="prefix"
+                  src="../assets/img/login/user-icon.png"
+                  width="24px" height="24px">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="" prop="password" label-width="0">
+              <el-input
+                placeholder="密码"
+                v-model="ruleForm.password"
+                type="password"
+                @keyup.enter.native="submitForm('ruleForm')">
+                <img
+                  class="icon-img"
+                  slot="prefix"
+                  src="../assets/img/login/pwd-icon.png"
+                  width="24px" height="24px">
+              </el-input>
+            </el-form-item>
+            <el-form-item label-width="0">
+              <el-button
+                class="btn"
+                type="success"
+                @click="submitForm('ruleForm')"
+                :loading="loading"
+              >登录</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
  
@@ -137,7 +144,127 @@ export default class Login extends Vue {
   }
 }
 </script>
-<style>
+<style lang="scss">
+.login-bg {
+  background-image: url('../assets/img/login/login-bg.jpg');
+  zoom: 1;
+  background-size: 100% 100%;
+  background-position: center;
+  position: relative;
+  top: 0;
+  left: 0;
+  align-items: normal !important;
+}
+
+.login-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  //margin-left: 98px;
+  //margin-bottom: 190px;
+
+  .title {
+    text-align: center;
+  }
+  .margin-20 {
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    //margin-bottom: 1.94%;
+  }
+
+  .margin-47 {
+    box-sizing: border-box;
+    margin-bottom: 47px;
+    //margin-bottom: 4.35%;
+  }
+
+  .login-form {
+    //width: 621px;
+    width: 32.9%;
+    //width: 100%;
+    height: 431px;
+    //height: 40.54%;
+    background-image: url('../assets/img/login/login-form-bg.png');
+    zoom: 1;
+    background-size: 100% 100%;
+    background-position: center;
+    //position: relative;
+
+    .login-tip {
+      //width: 147px;
+      width: 100%;
+      height: 30px;
+      //height: 6.86%;
+      font-size: 32px;
+      font-family: Source Han Sans CN;
+      font-weight: 400;
+      color: #85F2FB;
+      line-height: 25px;
+      text-align: center;
+      box-sizing: border-box;
+      margin-top: 40px;
+      //margin-top: 8.92%;
+      //position: absolute;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      box-sizing: border-box;
+      //position: absolute;
+      //margin-top: 107px;
+      margin-top: 37px;
+      //margin-top: 24.26%;
+      padding: 0px 58px;
+      //padding: 0px 9.19%;
+
+      /deep/.el-form-item {
+        margin-bottom: 24px;
+        //margin-bottom: 2.42%;
+      }
+
+      /deep/.el-input__inner {
+        //width: 515px;
+        width: 100%;
+        height: 56px;
+        //height: 12.77%;
+        background: #003B99 !important;
+        border: 1px solid #85F2FB !important;;
+        opacity: 0.7;
+        font-size: 18px;
+        font-family: Source Han Sans CN;
+        font-weight: 400;
+        color: #85F2FB;
+        line-height: 25px;
+        padding-left: 62px;
+        //padding-left: 18.6%;
+      }
+
+      /deep/.el-input__prefix {
+        display: inline-block;
+        width: 60px;
+        line-height: 70px;
+      }
+
+      .icon-img {
+        box-sizing: border-box;
+        //margin: 16px 10px 15px 18px;
+      }
+
+      .btn {
+        width: 100%;
+        //height: 52px;
+        height: 12.77%;
+        box-sizing: border-box;
+        margin-top: 30px;
+        //margin-top: 3.15%;
+      }
+    }
+  }
+}
+
 .layout-router {
   width: 100%;
   height: 100%;
