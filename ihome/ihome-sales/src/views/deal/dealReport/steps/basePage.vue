@@ -3223,6 +3223,7 @@
     * isNull: Boolean，true: 置空，false: 置为对应值
     * */
     updateList(updateType: any = '', type: any = '', id: any = '', name: any = '', isNull: any = false) {
+      console.log(id);
       if (this.postData[updateType] && this.postData[updateType].length) {
         this.postData[updateType].forEach((list: any) => {
           if (list[type] === "ServiceFee") {
