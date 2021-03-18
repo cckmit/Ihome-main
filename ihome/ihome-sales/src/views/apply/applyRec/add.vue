@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 15:41:36
+ * @LastEditTime: 2021-03-18 17:40:02
 -->
 <template>
   <IhPage class="text-left">
@@ -56,6 +56,7 @@
                 class="width--100"
                 @change="(data) => {
                   dealParams.termOrgId = data
+                  changeOrgId(data.id)
                 }"
               >
                 <el-option
@@ -988,10 +989,7 @@
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
-import {
-  post_contract_contract_PartyAs_PleaseHelp,
-  post_contract_contractInfo,
-} from "../../../api/contract/index";
+import { post_contract_contract_PartyAs_PleaseHelp } from "../../../api/contract/index";
 import {
   get_org_getUserDepartmentList,
   post_company_getAll,
@@ -1018,6 +1016,7 @@ import {
   get_devOtherSub_getAll__applyId,
   post_applyRecFile_getAll,
   post_applyRec_InvoiceApply,
+  post_applyRecFile_getContractFileList,
 } from "../../../api/apply/index";
 
 @Component({
@@ -1108,20 +1107,6 @@ export default class ApplyRecAdd extends Vue {
       { required: true, message: "请选择开票类型", trigger: "change" },
     ],
   };
-
-  @Watch("form.orgId") async watchOrgId(val: any) {
-    if (val) {
-      let res = await post_company_getAll({ orgId: val });
-      this.companyOption = res;
-      if (res.length === 1) {
-        this.form.polyCompanyId = res[0].id;
-        this.dealParams.polyCompanyId = res[0].id;
-        this.form.sellerTaxNo = res[0].creditCode;
-        this.polyCompanyData = { id: res[0].id };
-        this.getAccount(this.form.polyCompanyId);
-      }
-    }
-  }
 
   private get otherDealList() {
     let obj: any = {},
@@ -1569,21 +1554,20 @@ export default class ApplyRecAdd extends Vue {
           polyCompanyId: this.dealParams.polyCompanyId,
         });
         this.taxMoneyChange(this.form.taxMoney);
-        const res: any = await post_contract_contractInfo({
+        const res: any = await post_applyRecFile_getContractFileList({
           archiveStatus: "ScansAreArchived",
           partyAId: this.dealParams.developId,
           cycleIds: [...new Set(newTermIdList)],
         });
-        console.log(res);
-        let mapList: any[] = [];
-        res.forEach((i: any) => {
-          mapList.push(...i.annexList);
-        });
-        mapList = mapList.map((i: any) => ({
-          fileId: i.fileNo,
-          fileName: i.attachmentSuffix,
-          type: "Contract",
-        }));
+        let mapList: any[] = res;
+        // res.forEach((i: any) => {
+        //   mapList.push(...i.annexList);
+        // });
+        // mapList = mapList.map((i: any) => ({
+        //   fileId: i.fileNo,
+        //   fileName: i.attachmentSuffix,
+        //   type: "Contract",
+        // }));
         console.log(mapList);
 
         if (this.updateList.length) {
@@ -1601,6 +1585,19 @@ export default class ApplyRecAdd extends Vue {
       }
     } else {
       this.$message.warning("请完成上面操作再更新页面");
+    }
+  }
+  private async changeOrgId(val: any) {
+    if (val) {
+      let res = await post_company_getAll({ orgId: val });
+      this.companyOption = res;
+      if (res.length === 1) {
+        this.form.polyCompanyId = res[0].id;
+        this.dealParams.polyCompanyId = res[0].id;
+        this.form.sellerTaxNo = res[0].creditCode;
+        this.polyCompanyData = { id: res[0].id };
+        this.getAccount(this.form.polyCompanyId);
+      }
     }
   }
   /**
@@ -2076,6 +2073,7 @@ export default class ApplyRecAdd extends Vue {
           termId: i.termId,
         },
       }));
+      this.companyOption = await post_company_getAll({ orgId: info.orgId });
       this.waitList = await get_devDeductRec_getAll__applyId({ applyId });
       this.form = { ...this.form, ...info };
       // this.getAccount(info.polyCompanyId);
@@ -2128,6 +2126,7 @@ export default class ApplyRecAdd extends Vue {
       if (this.orgOption.length === 1) {
         this.form.orgId = this.orgOption[0].id;
         this.dealParams.termOrgId = this.orgOption[0].id;
+        this.changeOrgId(this.form.orgId);
       }
     }
   }
