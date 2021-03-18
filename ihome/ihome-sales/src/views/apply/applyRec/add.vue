@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 11:44:11
+ * @LastEditTime: 2021-03-18 15:41:36
 -->
 <template>
   <IhPage class="text-left">
@@ -133,6 +133,7 @@
                 v-model="developData"
                 ref="develop"
                 placeholder="请选择甲方公司"
+                class="width--100"
                 value-key="partyA"
                 @visible-change="devVisibleChange"
                 @change="(data) => {
@@ -1210,8 +1211,6 @@ export default class ApplyRecAdd extends Vue {
   }
   // 计算不含税金额 -- 其他扣除项
   private otherSubMoneyNoTax(row: any) {
-    console.log(row);
-
     let subMoneyNoTax = this.countNoTax(
       row.subMoney,
       Number(this.form.taxRate)
@@ -1502,8 +1501,8 @@ export default class ApplyRecAdd extends Vue {
   private async getAccount(companyId: any) {
     this.accountList = await get_bankAccount_get__companyId({ companyId });
     let account = this.accountList.find((i: any) => i.defaultFlag);
-    console.log(this.accountData, "accountData");
-    if (account && !this.form.receAccountId) {
+    console.log(this.accountData, this.form.receAccountId, "accountData");
+    if (account) {
       this.accountData = { ...account };
       this.dealParams.receAccountId = account.id;
       this.form.receAccountId = account.id;
@@ -1585,6 +1584,8 @@ export default class ApplyRecAdd extends Vue {
           fileName: i.attachmentSuffix,
           type: "Contract",
         }));
+        console.log(mapList);
+
         if (this.updateList.length) {
           let newMapList = this.updateList
             .filter((i: any) => i.type !== "Contract")
@@ -2042,7 +2043,6 @@ export default class ApplyRecAdd extends Vue {
       //   2
       // );
       this.getListAccount(info.developId);
-      this.getAccount(info.polyCompanyId);
       this.accountData = { id: info.receAccountId };
       this.devAccountData = { bankId: info.developAccountId };
       this.dealParams = {
@@ -2078,6 +2078,10 @@ export default class ApplyRecAdd extends Vue {
       }));
       this.waitList = await get_devDeductRec_getAll__applyId({ applyId });
       this.form = { ...this.form, ...info };
+      // this.getAccount(info.polyCompanyId);
+      this.accountList = await get_bankAccount_get__companyId({
+        companyId: info.polyCompanyId,
+      });
       this.taxMoneyChange(info.taxMoney);
       this.devOption = await post_contract_contract_PartyAs_PleaseHelp({
         companyId: this.form.polyCompanyId,
@@ -2086,6 +2090,7 @@ export default class ApplyRecAdd extends Vue {
         receivingAccountId: this.form.receAccountId,
       });
       this.developData = { partyA: info.developId };
+      this.polyCompanyData = { id: info.polyCompanyId };
       // if (this.form.status === "Draft") {
       //   await this.getHisRec({
       //     developId: info.developId,
