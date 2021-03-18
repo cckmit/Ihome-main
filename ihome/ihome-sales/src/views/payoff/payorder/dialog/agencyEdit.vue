@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-05 16:44:29
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 16:40:04
+ * @LastEditTime: 2021-03-18 16:48:59
 -->
 <template>
   <el-dialog
@@ -85,6 +85,10 @@ export default class AgencyEdit extends Vue {
   @NoRepeatHttp()
   async submit(valid: any) {
     if (valid) {
+      this.form.agencyData = this.form.agencyData.map((v: any) => ({
+        ...v,
+        agencyFeesAmount: v.agencyFeesAmount ? v.agencyFeesAmount : 0,
+      }));
       this.$emit("finish", this.form.agencyData);
     } else {
       console.log("error submit!!");
