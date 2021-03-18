@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-13 14:44:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 14:25:04
+ * @LastEditTime: 2021-03-18 15:02:52
 -->
 <template>
   <IhPage label-width="100px">
@@ -330,6 +330,7 @@ export default class DeductList extends Vue {
       path: `/dealReport/info`,
       query: {
         id: id,
+        type: "ID",
       },
     });
     window.open(router.href, "_blank");
