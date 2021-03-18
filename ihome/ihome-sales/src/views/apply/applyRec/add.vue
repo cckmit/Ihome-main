@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 17:40:02
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 19:29:10
 -->
 <template>
   <IhPage class="text-left">
@@ -987,7 +987,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
 import { post_contract_contract_PartyAs_PleaseHelp } from "../../../api/contract/index";
 import {
