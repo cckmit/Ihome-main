@@ -1882,7 +1882,48 @@
     // 改变细分业务模式
     async changeRefineModel() {
       // 要初始化收派套餐
-      await this.initReceive();
+      let self: any = this;
+      this.$nextTick(async () => {
+        // 有房号需要请求initBasic接口获取新的代理费类型收派
+        if (self.postData.roomId) {
+          await this.initReceiveByRoom();
+        } else {
+          await this.initReceive();
+        }
+      });
+    }
+
+    // 改变了细分业务模式需要重置收派套餐信息
+    async initReceiveByRoom() {
+      if (!this.postData.cycleId || !this.postData.roomId || !this.postData.propertyType) return;
+      let params: any = {
+        parentId: this.id ? this.editBaseInfo.parentId : null,
+        cycleId: this.postData.cycleId,
+        roomId: this.postData.roomId,
+        isMainDeal: true, // 是否主成交
+        property: this.postData.propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
+      };
+      let baseInfo: any = await post_pageData_initBasic(params);
+      // 先清空代理费类型的收派
+      if (this.postData.receiveVO && this.postData.receiveVO.length) {
+        this.postData.receiveVO = this.postData.receiveVO.filter((vo: any) => {
+          return vo.type === 'ServiceFee';
+        });
+      }
+      // 收派金额 --- 代理费
+      if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+        let tempList: any = await (this as any).$parent.initReceiveVOS(baseInfo.receiveVOS);
+        console.log('receiveVO:', tempList);
+        if (this.postData.receiveVO && this.postData.receiveVO.length) {
+          this.postData.receiveVO.push(...tempList);
+        } else {
+          this.postData.receiveVO = tempList;
+        }
+        // console.log('postData.receiveVO:', tempList);
+      }
+      // 初始化
+      // this.initReceive();
     }
 
     // 只有一个分销协议的时候默认选中
@@ -1938,7 +1979,7 @@
 
     // 合同类型、分销协议编号、细分业务模式、认购价格、签约价格改变之后要初始化收派金额
     initReceive() {
-      if (this.postData.receiveVO.length) {
+      if (this.postData.receiveVO && this.postData.receiveVO.length) {
         this.postData.receiveVO = (this as any).$parent.resetReceiveVOS(this.postData.receiveVO);
       }
     }

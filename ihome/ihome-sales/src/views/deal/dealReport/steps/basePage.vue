@@ -2453,7 +2453,49 @@
     // 改变细分业务模式
     changeRefineModel() {
       // 初始化收派金额
-      this.initAllReceiveList();
+      let self: any = this;
+      this.$nextTick(async () => {
+        // 有房号需要请求initBasic接口获取新的代理费类型收派
+        if (self.postData.roomId) {
+          await this.initReceiveByRoom();
+        } else {
+          await this.initAllReceiveList();
+        }
+      });
+    }
+
+    // 改变了细分业务模式需要重置收派套餐信息
+    async initReceiveByRoom() {
+      if (!this.postData.cycleId || !this.postData.roomId || !this.postData.propertyType) return;
+      let params: any = {
+        parentId: this.dealParentId ? this.dealParentId : null,
+        cycleId: this.postData.cycleId,
+        roomId: this.postData.roomId,
+        isMainDeal: false, // 是否主成交
+        property: this.postData.propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
+      };
+      let baseInfo: any = await post_pageData_initBasic(params);
+      // 先清空代理费类型的收派
+      if (this.postData.receiveList && this.postData.receiveList.length) {
+        this.postData.receiveList = this.postData.receiveList.filter((vo: any) => {
+          return vo.type === 'ServiceFee';
+        });
+      }
+      // 收派金额 --- 代理费
+      if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+        let tempList: any = await this.initReceiveVOS(baseInfo.receiveVOS);
+        console.log('receiveVO:', tempList);
+        if (this.postData.receiveList && this.postData.receiveList.length) {
+          this.postData.receiveList.push(...tempList);
+        } else {
+          this.postData.receiveList = tempList;
+        }
+      }
+      // 初始化
+      // await this.initAllReceiveList();
+      // 显示手动按钮
+      this.showChangeTips();
     }
 
     // 一手代理公司选项发生改变
