@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 16:42:25
+ * @LastEditTime: 2021-03-19 15:04:56
 -->
 <template>
   <ih-page>
@@ -35,15 +35,6 @@
           >
             <PartyA
               v-if="componetName === 'PartyA'"
-              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
-            />
-          </el-tab-pane>
-          <el-tab-pane
-            label="报备规则"
-            name="ReportedRules"
-          >
-            <ReportedRules
-              v-if="componetName === 'ReportedRules'"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
             />
           </el-tab-pane>
@@ -115,7 +106,6 @@ import LogOA from "./edit-tabs/logOA.vue";
 import Notification from "./edit-tabs/notification.vue";
 import Other from "./edit-tabs/other.vue";
 import PartyA from "./edit-tabs/partyA.vue";
-import ReportedRules from "./edit-tabs/reportedRules.vue";
 import SetMeal from "./edit-tabs/setMeal.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
@@ -128,7 +118,6 @@ Component.registerHooks(["beforeRouteEnter"]);
     Notification,
     Other,
     PartyA,
-    ReportedRules,
     SetMeal,
   },
 })
