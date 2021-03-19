@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 14:59:31
+ * @LastEditTime: 2021-03-19 15:15:26
 -->
 <template>
   <IhPage class="text-left">
@@ -1925,6 +1925,8 @@ export default class ApplyRecAdd extends Vue {
         isSubmit = false;
       }
     });
+    console.log(submitList, this.fileListType, "fileListType-submit");
+
     if (isSubmit) {
       this.form.fileList = arr.map((v: any) => ({
         fileId: v.fileId,
