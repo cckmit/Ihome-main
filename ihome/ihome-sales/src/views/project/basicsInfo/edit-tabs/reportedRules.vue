@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 10:27:34
+ * @LastEditTime: 2021-03-19 15:29:49
 -->
 <template>
   <div class="text-left">
@@ -174,10 +174,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Edit from "../dialog/reportedRules-dialog/edit.vue";
-import Business from "../dialog/reportedRules-dialog/channelLevelBusiness.vue";
+import Edit from "../dialog/reportedRulesEdit.vue";
+import Business from "../dialog/channelLevelBusiness.vue";
 import {
-  get_customerReportRule_get__termId,
+  get_customerReportRule_get__proId,
   post_customerReportRule_delWXBB__wxId,
 } from "@/api/project/index";
 @Component({
@@ -192,7 +192,7 @@ export default class ReportedRules extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    const res = await get_customerReportRule_get__termId({ termId: id });
+    const res = await get_customerReportRule_get__proId({ proId: id });
     this.info = {
       ...res,
       developersRules: res.developersRules

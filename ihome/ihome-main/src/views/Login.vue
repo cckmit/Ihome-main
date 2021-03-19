@@ -29,7 +29,6 @@
             <el-form-item label="" prop="username" label-width="0">
               <el-input placeholder="请输入登录ID" v-model="ruleForm.username">
                 <img
-                  class="icon-img"
                   slot="prefix"
                   src="../assets/img/login/user-icon.png"
                   width="19px" height="19px">
@@ -42,7 +41,6 @@
                 type="password"
                 @keyup.enter.native="submitForm('ruleForm')">
                 <img
-                  class="icon-img"
                   slot="prefix"
                   src="../assets/img/login/pwd-icon.png"
                   width="19px" height="19px">
@@ -205,44 +203,37 @@ export default class Login extends Vue {
         margin-top: 32px;
         padding: 0px 58px;
 
-        /deep/.el-form-item {
-          margin-bottom: 20px;
+        .el-form .el-input{
+          background-color: #003B99 !important;
+        }
 
-          /deep/.el-input {
-            background-color: #003B99 !important;
-
-            /deep/.el-input__inner {
-              //width: 515px;
-              width: 100%;
-              height: 46px;
-              background-color: #003B99 !important;
-              border: 1px solid #85F2FB !important;
-              opacity: 0.7;
-              font-size: 16px;
-              font-family: Source Han Sans CN;
-              font-weight: 400;
-              color: #85F2FB;
-              line-height: 25px;
-              padding-left: 51px;
-            }
-
-            /deep/.el-input__prefix {
-              display: inline-block;
-              width: 47px;
-              line-height: 55px;
-            }
-
-            input::-webkit-input-placeholder {
-              /* placeholder颜色 */
-              color: #85F2FB !important;
-              /* placeholder字体大小 */
-              font-size: 16px;
-            }
+        .el-form .el-input {
+          input::-webkit-input-placeholder {
+            /* placeholder颜色 */
+            color: #85F2FB !important;
+            /* placeholder字体大小 */
+            font-size: 16px !important;
           }
         }
 
-        .icon-img {
-          box-sizing: border-box;
+        .el-form .el-input .el-input__inner {
+          width: 100% !important;
+          height: 46px !important;
+          background-color: #003B99 !important;
+          border: 1px solid #85F2FB !important;
+          opacity: 0.7 !important;
+          font-size: 16px !important;
+          font-family: Source Han Sans CN;
+          font-weight: 400 !important;
+          color: #85F2FB !important;
+          line-height: 25px !important;
+          padding-left: 51px !important;
+        }
+
+        .el-form .el-input .el-input__prefix {
+          display: inline-block !important;
+          width: 47px !important;
+          line-height: 55px !important;
         }
 
         .btn {
