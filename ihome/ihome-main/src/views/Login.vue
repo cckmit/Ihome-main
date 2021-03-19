@@ -10,10 +10,10 @@
   <div class="main login-bg">
     <div class="login-wrapper">
       <div class="title margin-20">
-        <img src="../assets/img/login/title-zh.png" width="310px" height="46px">
+        <img src="../assets/img/login/title-zh.png" width="310px" height="40px">
       </div>
       <div class="title margin-47">
-        <img src="../assets/img/login/title-en.png" width="310px" height="14px">
+        <img src="../assets/img/login/title-en.png" width="310px" height="11px">
       </div>
       <div class="login-form">
         <div class="login-tip">
@@ -27,17 +27,17 @@
             ref="ruleForm"
             label-width="100px">
             <el-form-item label="" prop="username" label-width="0">
-              <el-input placeholder="账号" v-model="ruleForm.username">
+              <el-input placeholder="请输入登录ID" v-model="ruleForm.username">
                 <img
                   class="icon-img"
                   slot="prefix"
                   src="../assets/img/login/user-icon.png"
-                  width="24px" height="24px">
+                  width="19px" height="19px">
               </el-input>
             </el-form-item>
             <el-form-item label="" prop="password" label-width="0">
               <el-input
-                placeholder="密码"
+                placeholder="请输入密码"
                 v-model="ruleForm.password"
                 type="password"
                 @keyup.enter.native="submitForm('ruleForm')">
@@ -45,7 +45,7 @@
                   class="icon-img"
                   slot="prefix"
                   src="../assets/img/login/pwd-icon.png"
-                  width="24px" height="24px">
+                  width="19px" height="19px">
               </el-input>
             </el-form-item>
             <el-form-item label-width="0">
@@ -162,104 +162,97 @@ export default class Login extends Vue {
     align-items: center;
     justify-content: center;
     box-sizing: border-box;
-    //margin-left: 98px;
-    //margin-bottom: 190px;
 
     .title {
       text-align: center;
     }
     .margin-20 {
       box-sizing: border-box;
-      margin-bottom: 20px;
-      //margin-bottom: 1.94%;
+      margin-bottom: 18px;
     }
 
     .margin-47 {
       box-sizing: border-box;
-      margin-bottom: 47px;
-      //margin-bottom: 4.35%;
+      margin-bottom: 40px;
     }
 
     .login-form {
-      //width: 621px;
-      width: 32.9%;
-      //width: 100%;
-      height: 431px;
-      //height: 40.54%;
+      width: 28.5%;
+      //width: 32.9%;
+      height: 360px;
       background-image: url('../assets/img/login/login-form-bg.png');
       zoom: 1;
       background-size: 100% 100%;
       background-position: center;
-      //position: relative;
+      margin-bottom: 130px;
 
       .login-tip {
-        //width: 147px;
         width: 100%;
         height: 30px;
-        //height: 6.86%;
-        font-size: 32px;
+        font-size: 25px;
         font-family: Source Han Sans CN;
         font-weight: 400;
         color: #85F2FB;
         line-height: 25px;
         text-align: center;
         box-sizing: border-box;
-        margin-top: 40px;
-        //margin-top: 8.92%;
-        //position: absolute;
+        margin-top: 32px;
       }
 
       .form-wrapper {
         width: 100%;
         box-sizing: border-box;
-        //position: absolute;
-        //margin-top: 107px;
-        margin-top: 37px;
-        //margin-top: 24.26%;
+        margin-top: 32px;
         padding: 0px 58px;
-        //padding: 0px 9.19%;
 
         /deep/.el-form-item {
-          margin-bottom: 24px;
-          //margin-bottom: 2.42%;
-        }
+          margin-bottom: 20px;
 
-        /deep/.el-input__inner {
-          //width: 515px;
-          width: 100%;
-          height: 56px;
-          //height: 12.77%;
-          background: #003B99 !important;
-          border: 1px solid #85F2FB !important;;
-          opacity: 0.7;
-          font-size: 18px;
-          font-family: Source Han Sans CN;
-          font-weight: 400;
-          color: #85F2FB;
-          line-height: 25px;
-          padding-left: 62px;
-          //padding-left: 18.6%;
-        }
+          /deep/.el-input {
+            background-color: #003B99 !important;
 
-        /deep/.el-input__prefix {
-          display: inline-block;
-          width: 60px;
-          line-height: 70px;
+            /deep/.el-input__inner {
+              //width: 515px;
+              width: 100%;
+              height: 46px;
+              background-color: #003B99 !important;
+              border: 1px solid #85F2FB !important;
+              opacity: 0.7;
+              font-size: 16px;
+              font-family: Source Han Sans CN;
+              font-weight: 400;
+              color: #85F2FB;
+              line-height: 25px;
+              padding-left: 51px;
+            }
+
+            /deep/.el-input__prefix {
+              display: inline-block;
+              width: 47px;
+              line-height: 55px;
+            }
+
+            input::-webkit-input-placeholder {
+              /* placeholder颜色 */
+              color: #85F2FB !important;
+              /* placeholder字体大小 */
+              font-size: 16px;
+            }
+          }
         }
 
         .icon-img {
           box-sizing: border-box;
-          //margin: 16px 10px 15px 18px;
         }
 
         .btn {
           width: 100%;
-          height: 56px;
-          //height: 12.77%;
           box-sizing: border-box;
-          margin-top: 30px;
-          //margin-top: 3.15%;
-          font-size: 24px;
+          margin-top: 20px;
+          font-size: 20px;
+          font-family: Source Han Sans CN;
+          font-weight: 400;
+          color: #FFFFFF;
         }
       }
     }
