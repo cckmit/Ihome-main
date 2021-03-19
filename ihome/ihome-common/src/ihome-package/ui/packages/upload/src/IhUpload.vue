@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 15:14:22
+ * @LastEditTime: 2021-03-19 14:12:14
 -->
 <template>
   <div class="upload">
@@ -588,6 +588,7 @@ export default class IhUpload extends Vue {
   }
   // 图片编辑
   handleEdit(file: any) {
+    this.changeFileList = this.list;
     this.$nextTick(() => {
       (this.$refs.editUpload as any).click();
       this.editIndex = this.list.findIndex(
@@ -600,6 +601,10 @@ export default class IhUpload extends Vue {
   async editUploadChange({ target }: any) {
     if (target.files.length) {
       this.beforeUpload(target.files[0]).then(() => {
+        this.$set(this.changeFileList, this.editIndex, {
+          ...this.changeFileList[this.editIndex],
+          uploadLoading: true,
+        });
         this.uploadRequer(target.files);
       });
     }
@@ -607,6 +612,7 @@ export default class IhUpload extends Vue {
 
   // 编辑上传
   async uploadRequer(files: any) {
+    console.log(this.changeFileList, "change");
     let fd = new FormData();
     for (let i = 0; i < files.length; i++) {
       fd.append("files", files[i]);
