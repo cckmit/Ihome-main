@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-16 09:23:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-16 14:46:54
+ * @LastEditTime: 2021-03-19 11:05:34
 -->
 <template>
   <el-dialog
@@ -147,7 +147,7 @@
       <el-button
         type="primary"
         @click="submit()"
-      >保 存</el-button>
+      >确 定</el-button>
     </template>
   </el-dialog>
 </template>
