@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 11:30:34
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-19 14:08:05
 -->
 <template>
   <IhPage label-width="90px">
@@ -249,6 +249,11 @@
                   :class="{ 'ih-data-disabled': !agentChange(row) }"
                   v-has="'B.SALES.CHANNEL.BASELIST.MAINTAINAGENT'"
                 >维护渠道经纪人</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleGoAdd(row)"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.ADD'"
+                  :class="{ 'ih-data-disabled': !['Confirmed', 'PASS', 'Changing'].includes(row.status) }"
+                >添加等级</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -400,6 +405,13 @@ export default class List extends Vue {
     }
     this.dialogVisible = true;
     this.isInput = true;
+  }
+  private handleGoAdd(row: any) {
+    sessionStorage.setItem(
+      "channelData",
+      JSON.stringify({ name: row.name, id: row.id })
+    );
+    this.$router.push("/channelLevel/add");
   }
   /**
    * @description: 退回起草

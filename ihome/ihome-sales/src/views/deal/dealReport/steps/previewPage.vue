@@ -606,7 +606,7 @@
     // 应收信息表格
     get receiveAchieveVO() {
       let arr: any = []
-      if (this.pageData.receiveList.length > 0) {
+      if (this.pageData.receiveList && this.pageData.receiveList.length > 0) {
         let obj = {
           receiveAmount: 0,
           achieveAmount: 0,
@@ -692,7 +692,7 @@
     // 对外拆佣 --- 差值
     get getChannelCommList() {
       let list: any = [];
-      if (this.pageData.callBackInfo.channelCommVO && this.pageData.callBackInfo.channelCommVO.length) {
+      if (this.pageData.callBackInfo && this.pageData.callBackInfo.channelCommVO && this.pageData.callBackInfo.channelCommVO.length) {
         list = this.pageData.callBackInfo.channelCommVO;
       }
       return list;
@@ -757,7 +757,7 @@
           name: v.attachmentSuffix,
           preFileName: "优惠告知书",
         }));
-        if (this.srcList.length) {
+        if (this.srcList && this.srcList.length) {
           this.isShowImg = true;
         } else {
           this.$message.warning("暂无图片");
@@ -778,19 +778,19 @@
             // 变更基础信息
             if (this.btnType === "add") {
               // 去新增
-              postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList : null;
+              postData.noticeDealList = this.pageData.noticeDealList && this.pageData.noticeDealList.length ? this.pageData.noticeDealList : null;
               postData.dealAddInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
               await post_suppDeal_entryBasicInfChange(postData);
             } else if (this.btnType === "edit") {
               // 去修改
-              postData.noticeAgreementCreateRequest = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList : null;
+              postData.noticeAgreementCreateRequest = this.pageData.noticeDealList && this.pageData.noticeDealList.length ? this.pageData.noticeDealList : null;
               postData.dealUpdateInputVO.status = type === 'save' ? 'Draft' : 'PlatformClerkUnreview';
               await post_suppDeal_updateBasicInfChange(postData);
             }
             break
           case "ChangeAchieveInf":
             // 变更业绩信息
-            postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList : null;
+            postData.noticeDealList = this.pageData.noticeDealList && this.pageData.noticeDealList.length ? this.pageData.noticeDealList : null;
             postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
             postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
             postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;
@@ -806,7 +806,7 @@
             break
           case "RetreatRoom":
             // 退房
-            postData.noticeDealList = this.pageData?.noticeDealList.length ? this.pageData?.noticeDealList : null;
+            postData.noticeDealList = this.pageData.noticeDealList && this.pageData.noticeDealList.length ? this.pageData.noticeDealList : null;
             postData.achieveVO = this.pageData?.callBackInfo?.achieveVO;
             postData.receiveAchieveVO = this.pageData?.callBackInfo?.receiveAchieveVO;
             postData.receiveVO = this.pageData?.callBackInfo?.receiveVO;

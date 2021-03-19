@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
- * @LastEditors: lsj
- * @LastEditTime: 2021-03-18 19:29:10
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-19 15:15:26
 -->
 <template>
   <IhPage class="text-left">
@@ -56,7 +56,7 @@
                 class="width--100"
                 @change="(data) => {
                   dealParams.termOrgId = data
-                  changeOrgId(data.id)
+                  changeOrgId(data)
                 }"
               >
                 <el-option
@@ -837,7 +837,7 @@
             <td class="width-150">{{$root.dictAllName(form.billTypeCode, 'InvoiceType')}}</td>
             <td class="width-150">开票税率</td>
             <td class="width-150">{{form.taxRate | percent}}</td>
-            <td class="width-150">纳税人识别号</td>
+            <td class="width-150"><span style="color: red">*</span>纳税人识别号</td>
             <td class="width-150">
               <el-input
                 v-model="form.developTaxNo"
@@ -861,7 +861,7 @@
             <td class="width-150">{{form.sellerOpeningBankBranch}}</td> -->
           </tr>
           <tr>
-            <td class="width-150">住所(地址)</td>
+            <td class="width-150"><span style="color: red">*</span>住所(地址)</td>
             <td colspan="2">
               <el-input
                 v-model="form.developAddress"
@@ -869,7 +869,7 @@
                 placeholder="请输入住所"
               />
             </td>
-            <td class="width-150">电话</td>
+            <td class="width-150"><span style="color: red">*</span>电话</td>
             <td colspan="2">
               <el-input
                 v-model="form.developPhone"
@@ -879,7 +879,7 @@
             </td>
           </tr>
           <tr>
-            <td>经办部门意见</td>
+            <td><span style="color: red">*</span>经办部门意见</td>
             <td colspan="5">
               <el-input
                 class="table-input"
@@ -933,7 +933,7 @@
         </el-table>
         <br />
       </div>
-      <div
+      <!-- <div
         class="padding-left-20"
         v-if="form.status === 'InvoiceApply'"
       >
@@ -950,17 +950,21 @@
           </template>
         </el-alert>
         <br />
-      </div>
+      </div> -->
       <div class="text-center">
         <template v-if="form.status === 'InvoiceApply'">
           <el-button
+            type="primary"
+            @click="confirmVisible = true"
+          >提交</el-button>
+          <!-- <el-button
             type="success"
             @click.stop="invoiceApply()"
           >发起开票申请</el-button>
           <el-button
             type="primary"
             @click.stop="submit('SaveAndInvoiceApply')"
-          >保存并发起开票申请</el-button>
+          >保存并发起开票申请</el-button> -->
         </template>
         <template v-else>
           <el-button
@@ -983,12 +987,19 @@
         @finish="dealConfirm"
       />
     </IhDialog>
+    <IhDialog :show="confirmVisible">
+      <Invoice
+        @cancel="() => (confirmVisible = false)"
+        @finish="invoiceConfirm"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import SelectDeal from "./dialog/selectDeal.vue";
+import Invoice from "./dialog/invoice.vue";
 import { post_contract_contract_PartyAs_PleaseHelp } from "../../../api/contract/index";
 import {
   get_org_getUserDepartmentList,
@@ -1020,7 +1031,7 @@ import {
 } from "../../../api/apply/index";
 
 @Component({
-  components: { SelectDeal },
+  components: { SelectDeal, Invoice },
 })
 export default class ApplyRecAdd extends Vue {
   private form: any = {
@@ -1094,6 +1105,7 @@ export default class ApplyRecAdd extends Vue {
   private developData: any = null;
   private devOption: any[] = [];
   private updateList: any[] = [];
+  private confirmVisible = false;
   private rules: any = {
     proId: [{ required: true, message: "请选择项目", trigger: "change" }],
     orgId: [{ required: true, message: "请选择事业部", trigger: "change" }],
@@ -1469,6 +1481,14 @@ export default class ApplyRecAdd extends Vue {
       applyPercent: 0,
       ...i,
     }));
+  }
+  private invoiceConfirm(type: any) {
+    this.confirmVisible = false;
+    if (type) {
+      this.submit("SaveAndInvoiceApply");
+    } else {
+      this.invoiceApply();
+    }
   }
   private handleInput(e: any, row: any) {
     if (parseFloat(row.applyMoney) > parseFloat(row.canApplyAmountNow)) {
@@ -1905,6 +1925,8 @@ export default class ApplyRecAdd extends Vue {
         isSubmit = false;
       }
     });
+    console.log(submitList, this.fileListType, "fileListType-submit");
+
     if (isSubmit) {
       this.form.fileList = arr.map((v: any) => ({
         fileId: v.fileId,
