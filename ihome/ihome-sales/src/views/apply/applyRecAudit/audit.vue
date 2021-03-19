@@ -1006,11 +1006,11 @@ export default class ApplyAudit extends Vue {
           thisTaxMoney === i.taxMoney
             ? { taxMoney: i.taxMoney }
             : { taxMoney: thisTaxMoney, taxMoneyNew: i.taxMoney };
+        // 不含税金额
         let thisNoTax = this.$math.tofixed(
           this.$math.sub(i.applyMoney, thisTaxMoney),
           2
         );
-        // 不含税金额
         let noTaxData =
           thisNoTax === i.noTaxMoney
             ? { noTaxMoney: i.noTaxMoney }
