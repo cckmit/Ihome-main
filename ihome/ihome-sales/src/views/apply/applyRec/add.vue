@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 11:11:52
+ * @LastEditTime: 2021-03-19 14:44:35
 -->
 <template>
   <IhPage class="text-left">
@@ -813,7 +813,7 @@
             <td class="width-150">{{actMoneyTaxSum()}}</td>
             <td class="width-150">本期实际请款金额（不含税）</td>
             <td class="width-150">{{actMoneySum()}}</td>
-            <td class="width-150">本期实际请款税额</td>
+            <td class="width-150"><span style="color: red">*</span>本期实际请款税额</td>
             <td class="width-150">
               <el-input-number
                 controls-position="right"
@@ -837,7 +837,7 @@
             <td class="width-150">{{$root.dictAllName(form.billTypeCode, 'InvoiceType')}}</td>
             <td class="width-150">开票税率</td>
             <td class="width-150">{{form.taxRate | percent}}</td>
-            <td class="width-150">纳税人识别号</td>
+            <td class="width-150"><span style="color: red">*</span>纳税人识别号</td>
             <td class="width-150">
               <el-input
                 v-model="form.developTaxNo"
@@ -861,7 +861,7 @@
             <td class="width-150">{{form.sellerOpeningBankBranch}}</td> -->
           </tr>
           <tr>
-            <td class="width-150">住所(地址)</td>
+            <td class="width-150"><span style="color: red">*</span>住所(地址)</td>
             <td colspan="2">
               <el-input
                 v-model="form.developAddress"
@@ -869,7 +869,7 @@
                 placeholder="请输入住所"
               />
             </td>
-            <td class="width-150">电话</td>
+            <td class="width-150"><span style="color: red">*</span>电话</td>
             <td colspan="2">
               <el-input
                 v-model="form.developPhone"
@@ -879,7 +879,7 @@
             </td>
           </tr>
           <tr>
-            <td>经办部门意见</td>
+            <td><span style="color: red">*</span>经办部门意见</td>
             <td colspan="5">
               <el-input
                 class="table-input"
