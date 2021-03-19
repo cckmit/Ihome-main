@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 15:42:30
+ * @LastEditTime: 2021-03-19 16:32:58
 --> 
 <template>
   <el-dialog
@@ -26,12 +26,12 @@
       <el-row>
         <el-col :span="24">
           <el-form-item
-            label="账户姓名"
+            label="账户名称"
             prop="name"
           >
             <el-input
               v-model="info.name"
-              placeholder="账户姓名"
+              placeholder="账户名称"
               maxlength="64"
             ></el-input>
           </el-form-item>
