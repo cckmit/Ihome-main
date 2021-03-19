@@ -154,112 +154,113 @@ export default class Login extends Vue {
   top: 0;
   left: 0;
   align-items: normal !important;
-}
 
-.login-wrapper {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  box-sizing: border-box;
-  //margin-left: 98px;
-  //margin-bottom: 190px;
-
-  .title {
-    text-align: center;
-  }
-  .margin-20 {
+  .login-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     box-sizing: border-box;
-    margin-bottom: 20px;
-    //margin-bottom: 1.94%;
-  }
+    //margin-left: 98px;
+    //margin-bottom: 190px;
 
-  .margin-47 {
-    box-sizing: border-box;
-    margin-bottom: 47px;
-    //margin-bottom: 4.35%;
-  }
-
-  .login-form {
-    //width: 621px;
-    width: 32.9%;
-    //width: 100%;
-    height: 431px;
-    //height: 40.54%;
-    background-image: url('../assets/img/login/login-form-bg.png');
-    zoom: 1;
-    background-size: 100% 100%;
-    background-position: center;
-    //position: relative;
-
-    .login-tip {
-      //width: 147px;
-      width: 100%;
-      height: 30px;
-      //height: 6.86%;
-      font-size: 32px;
-      font-family: Source Han Sans CN;
-      font-weight: 400;
-      color: #85F2FB;
-      line-height: 25px;
+    .title {
       text-align: center;
+    }
+    .margin-20 {
       box-sizing: border-box;
-      margin-top: 40px;
-      //margin-top: 8.92%;
-      //position: absolute;
+      margin-bottom: 20px;
+      //margin-bottom: 1.94%;
     }
 
-    .form-wrapper {
-      width: 100%;
+    .margin-47 {
       box-sizing: border-box;
-      //position: absolute;
-      //margin-top: 107px;
-      margin-top: 37px;
-      //margin-top: 24.26%;
-      padding: 0px 58px;
-      //padding: 0px 9.19%;
+      margin-bottom: 47px;
+      //margin-bottom: 4.35%;
+    }
 
-      /deep/.el-form-item {
-        margin-bottom: 24px;
-        //margin-bottom: 2.42%;
-      }
+    .login-form {
+      //width: 621px;
+      width: 32.9%;
+      //width: 100%;
+      height: 431px;
+      //height: 40.54%;
+      background-image: url('../assets/img/login/login-form-bg.png');
+      zoom: 1;
+      background-size: 100% 100%;
+      background-position: center;
+      //position: relative;
 
-      /deep/.el-input__inner {
-        //width: 515px;
+      .login-tip {
+        //width: 147px;
         width: 100%;
-        height: 56px;
-        //height: 12.77%;
-        background: #003B99 !important;
-        border: 1px solid #85F2FB !important;;
-        opacity: 0.7;
-        font-size: 18px;
+        height: 30px;
+        //height: 6.86%;
+        font-size: 32px;
         font-family: Source Han Sans CN;
         font-weight: 400;
         color: #85F2FB;
         line-height: 25px;
-        padding-left: 62px;
-        //padding-left: 18.6%;
-      }
-
-      /deep/.el-input__prefix {
-        display: inline-block;
-        width: 60px;
-        line-height: 70px;
-      }
-
-      .icon-img {
+        text-align: center;
         box-sizing: border-box;
-        //margin: 16px 10px 15px 18px;
+        margin-top: 40px;
+        //margin-top: 8.92%;
+        //position: absolute;
       }
 
-      .btn {
+      .form-wrapper {
         width: 100%;
-        //height: 52px;
-        height: 12.77%;
         box-sizing: border-box;
-        margin-top: 30px;
-        //margin-top: 3.15%;
+        //position: absolute;
+        //margin-top: 107px;
+        margin-top: 37px;
+        //margin-top: 24.26%;
+        padding: 0px 58px;
+        //padding: 0px 9.19%;
+
+        /deep/.el-form-item {
+          margin-bottom: 24px;
+          //margin-bottom: 2.42%;
+        }
+
+        /deep/.el-input__inner {
+          //width: 515px;
+          width: 100%;
+          height: 56px;
+          //height: 12.77%;
+          background: #003B99 !important;
+          border: 1px solid #85F2FB !important;;
+          opacity: 0.7;
+          font-size: 18px;
+          font-family: Source Han Sans CN;
+          font-weight: 400;
+          color: #85F2FB;
+          line-height: 25px;
+          padding-left: 62px;
+          //padding-left: 18.6%;
+        }
+
+        /deep/.el-input__prefix {
+          display: inline-block;
+          width: 60px;
+          line-height: 70px;
+        }
+
+        .icon-img {
+          box-sizing: border-box;
+          //margin: 16px 10px 15px 18px;
+        }
+
+        .btn {
+          width: 100%;
+          height: 56px;
+          //height: 12.77%;
+          box-sizing: border-box;
+          margin-top: 30px;
+          //margin-top: 3.15%;
+          font-size: 24px;
+        }
       }
     }
   }

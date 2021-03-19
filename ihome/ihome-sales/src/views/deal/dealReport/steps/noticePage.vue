@@ -482,21 +482,21 @@
 
     async activated() {
       console.log('noticePage-activated');
-      // 处理优惠告知书类型的附件类型可选值
-      this.TemplateTypeByNotice = await this.getTemplateTypeList(this.pageData?.originalCustType);
-      console.log('noticePage-activated', this.TemplateTypeByNotice);
+      // 处理其他类型的文件类型选项
+      this.TemplateTypeByOther = await this.getTemplateTypeList(this.pageData?.originalCustType);
+      console.log('noticePage-activated', this.TemplateTypeByOther);
       await this.initTemplateType();
     }
 
-    // 初始化类型的选项
+    // 初始化优惠告知书类型的选项
     initTemplateType() {
       if (this.pageData && this.pageData.customerList && this.pageData.customerList.length) {
-        // 处理其他类型的文件类型选项
-        this.TemplateTypeByOther = this.getTemplateTypeList(this.pageData.customerList[0].customerType);
+        // 处理优惠告知书类型的附件类型可选值
+        this.TemplateTypeByNotice = this.getTemplateTypeList(this.pageData.customerList[0].customerType);
       } else {
-        this.TemplateTypeByOther = this.getTemplateTypeList();
+        this.TemplateTypeByNotice = this.getTemplateTypeList();
       }
-      console.log('this.TemplateTypeByOther', this.TemplateTypeByOther);
+      console.log('this.TemplateTypeByOther', this.TemplateTypeByNotice);
     }
 
     // 获取附件类型选项值
