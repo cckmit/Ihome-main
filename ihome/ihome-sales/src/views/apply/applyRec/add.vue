@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 14:44:35
+ * @LastEditTime: 2021-03-19 14:59:31
 -->
 <template>
   <IhPage class="text-left">
@@ -813,7 +813,7 @@
             <td class="width-150">{{actMoneyTaxSum()}}</td>
             <td class="width-150">本期实际请款金额（不含税）</td>
             <td class="width-150">{{actMoneySum()}}</td>
-            <td class="width-150"><span style="color: red">*</span>本期实际请款税额</td>
+            <td class="width-150">本期实际请款税额</td>
             <td class="width-150">
               <el-input-number
                 controls-position="right"
