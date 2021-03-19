@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 11:55:24
+ * @LastEditTime: 2021-03-19 14:08:05
 -->
 <template>
   <IhPage label-width="90px">
@@ -251,7 +251,7 @@
                 >维护渠道经纪人</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleGoAdd(row)"
-                  v-has="'B.SALES.CHANNEL.BASELIST.ADDGRADE'"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.ADD'"
                   :class="{ 'ih-data-disabled': !['Confirmed', 'PASS', 'Changing'].includes(row.status) }"
                 >添加等级</el-dropdown-item>
               </el-dropdown-menu>
