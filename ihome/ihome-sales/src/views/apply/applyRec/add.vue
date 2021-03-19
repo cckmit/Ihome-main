@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 15:15:26
+ * @LastEditTime: 2021-03-19 16:30:28
 -->
 <template>
   <IhPage class="text-left">
@@ -1936,7 +1936,11 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.$message({
         type: "warning",
-        message: `所选成交所属周期的甲方合同暂未归档，请先完成归档`,
+        message: `${
+          this.form.status === "InvoiceApply"
+            ? "开票资料和请款报告附件不能为空"
+            : "所选成交所属周期的甲方合同暂未归档，请先完成归档"
+        }`,
       });
       return;
     }

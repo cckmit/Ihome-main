@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 17:52:09
+ * @LastEditTime: 2021-03-19 16:42:21
 -->
 <template>
   <IhPage class="text-left">
@@ -994,21 +994,34 @@ export default class ApplyAudit extends Vue {
   private async getInfo(applyId: any) {
     try {
       const info = await get_applyRec_getApplyRecById__applyId({ applyId });
-      this.globalTaxMoney = this.$math.tofixed(
-        this.$math.sub(
-          info.actMoneyTax,
-          info.actMoneyTax / (1 + info.taxRate || 0)
-        ),
-        2
-      );
+      this.globalTaxMoney = this.countTaxMoney(info.actMoneyTax, info.taxRate);
       console.log(this.globalTaxMoney);
       this.taxMoney = info.taxMoney;
       this.form = info;
       let dealList = await get_applyRecDeal_getAll__applyId({ applyId });
-      this.dealList = dealList.map((i: any) => ({
-        taxRate: info.taxRate,
-        ...i,
-      }));
+      this.dealList = dealList.map((i: any) => {
+        // 税额
+        let thisTaxMoney = this.countTaxMoney(i.applyMoney, info.taxRate);
+        let taxData =
+          thisTaxMoney === i.taxMoney
+            ? { taxMoney: i.taxMoney }
+            : { taxMoney: thisTaxMoney, taxMoneyNew: i.taxMoney };
+        let thisNoTax = this.$math.tofixed(
+          this.$math.sub(i.applyMoney, thisTaxMoney),
+          2
+        );
+        // 不含税金额
+        let noTaxData =
+          thisNoTax === i.noTaxMoney
+            ? { noTaxMoney: i.noTaxMoney }
+            : { noTaxMoney: thisNoTax, noTaxMoneyNew: i.noTaxMoney };
+        return {
+          ...i,
+          taxRate: info.taxRate,
+          ...taxData,
+          ...noTaxData,
+        };
+      });
       this.termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });
@@ -1021,15 +1034,27 @@ export default class ApplyAudit extends Vue {
       console.log(error);
     }
   }
+  /**
+   * @description: 计算税额公式
+   * @param {*} money
+   * @param {*} taxRate
+   * @return {*} 税额
+   */
+  private countTaxMoney(money: number, taxRate: any) {
+    let sum = this.$math.tofixed(
+      this.$math.sub(money, money / (1 + parseFloat(taxRate))),
+      2
+    );
+    return sum;
+  }
   // 税额修改
   private taxMoneyChange(number: any) {
     if (!number) {
-      this.taxMoney =
-        this.globalTaxMoney - 10 < 0 ? 0 : this.globalTaxMoney - 10;
+      this.taxMoney = this.globalTaxMoney;
     }
     let val = this.taxMoney;
     let sub = this.$math.sub(this.globalTaxMoney, val); // 差额
-    console.log(val, sub, number);
+    console.log(val, sub, this.globalTaxMoney);
     let listArr: any = [];
     let isSub = true;
     if (sub === 0) {
@@ -1040,12 +1065,9 @@ export default class ApplyAudit extends Vue {
     for (let index = 0; index < this.dealList.length; index++) {
       const element = this.dealList[index];
       // 税额
-      let thisTaxMoney = this.$math.tofixed(
-        this.$math.sub(
-          element.applyMoney,
-          element.applyMoney / (1 + Number(this.form.taxRate) || 0)
-        ),
-        2
+      let thisTaxMoney = this.countTaxMoney(
+        element.applyMoney,
+        parseFloat(this.form.taxRate)
       );
       // 不含税金额
       let thisNoTaxMoney = this.$math.tofixed(
@@ -1124,7 +1146,10 @@ export default class ApplyAudit extends Vue {
         updateDealList: this.dealList.map((i: any) => ({
           dealCode: i.dealCode,
           id: i.id,
-          noTaxMoney: i.noTaxMoneyNew ? i.noTaxMoneyNew : i.noTaxMoney,
+          noTaxMoney:
+            i.noTaxMoneyNew || i.noTaxMoneyNew === 0
+              ? i.noTaxMoneyNew
+              : i.noTaxMoney,
           taxMoney:
             i.taxMoneyNew || i.taxMoneyNew === 0 ? i.taxMoneyNew : i.taxMoney,
         })),
