@@ -29,7 +29,6 @@
             <el-form-item label="" prop="username" label-width="0">
               <el-input placeholder="请输入登录ID" v-model="ruleForm.username">
                 <img
-                  class="icon-img"
                   slot="prefix"
                   src="../assets/img/login/user-icon.png"
                   width="19px" height="19px">
@@ -42,7 +41,6 @@
                 type="password"
                 @keyup.enter.native="submitForm('ruleForm')">
                 <img
-                  class="icon-img"
                   slot="prefix"
                   src="../assets/img/login/pwd-icon.png"
                   width="19px" height="19px">
@@ -236,10 +234,6 @@ export default class Login extends Vue {
           display: inline-block !important;
           width: 47px !important;
           line-height: 55px !important;
-        }
-
-        .icon-img {
-          box-sizing: border-box;
         }
 
         .btn {
