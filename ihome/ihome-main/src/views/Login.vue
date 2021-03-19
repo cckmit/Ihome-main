@@ -214,6 +214,11 @@ export default class Login extends Vue {
             /* placeholder字体大小 */
             font-size: 16px !important;
           }
+
+          input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px #003B99 inset !important;	/**通过边框阴影遮挡住背景*/
+            -webkit-text-fill-color: #85F2FB !important;
+          }
         }
 
         .el-form .el-input .el-input__inner {
