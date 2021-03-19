@@ -271,13 +271,15 @@
               </el-select>
             </el-form-item>
             <el-form-item label="退款金额">
-              <el-input disabled class="input" placeholder="退款金额" v-model="pageData.refundAmount"/>
+              <el-input
+                style="width: 50%"
+                disabled class="input" placeholder="退款金额" v-model="pageData.refundAmount"/>
             </el-form-item>
             <el-form-item
-              :prop="form.refundSwitch && form.refundProtocolType === 'refundBranchName' ? '' : 'empty'"
+              :prop="form.refundSwitch && form.refundProtocolType === 'PaperTemplate' ? 'refundBranchName' : 'empty'"
               v-if="form.refundProtocolType === 'PaperTemplate'"
               label="开户银行">
-              <el-input v-model="form.refundBranchName" readonly>
+              <el-input style="width: 50%" v-model="form.refundBranchName" readonly>
                 <el-button
                   slot="append"
                   icon="el-icon-search"
@@ -286,16 +288,16 @@
               </el-input>
             </el-form-item>
             <el-form-item
-              :prop="form.refundSwitch && form.refundProtocolType === 'refundAccountName' ? '' : 'empty'"
+              :prop="form.refundSwitch && form.refundProtocolType === 'PaperTemplate' ? 'refundAccountName' : 'empty'"
               v-if="form.refundProtocolType === 'PaperTemplate'"
               label="开户人">
-              <el-input v-model="form.refundAccountName"></el-input>
+              <el-input style="width: 50%" v-model="form.refundAccountName"></el-input>
             </el-form-item>
             <el-form-item
-              :prop="form.refundSwitch && form.refundProtocolType === 'refundAccount' ? '' : 'empty'"
+              :prop="form.refundSwitch && form.refundProtocolType === 'PaperTemplate' ? 'refundAccount' : 'empty'"
               v-if="form.refundProtocolType === 'PaperTemplate'"
               label="银行账号">
-              <el-input v-digits="0" v-model="form.refundAccount"></el-input>
+              <el-input style="width: 50%" v-digits="0" v-model="form.refundAccount"></el-input>
             </el-form-item>
             <el-form-item v-if="form.refundProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
