@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 15:15:26
+ * @LastEditTime: 2021-03-19 17:38:02
 -->
 <template>
   <IhPage class="text-left">
@@ -1936,7 +1936,11 @@ export default class ApplyRecAdd extends Vue {
     } else {
       this.$message({
         type: "warning",
-        message: `所选成交所属周期的甲方合同暂未归档，请先完成归档`,
+        message: `${
+          this.form.status === "InvoiceApply"
+            ? "开票资料和请款报告附件不能为空"
+            : "所选成交所属周期的甲方合同暂未归档，请先完成归档"
+        }`,
       });
       return;
     }
@@ -2072,10 +2076,29 @@ export default class ApplyRecAdd extends Vue {
         termOrgId: info.orgId,
       };
       let dealList = await get_applyRecDeal_getAll__applyId({ applyId });
-      this.form.dealList = dealList.map((i: any) => ({
-        taxRate: info.taxRate,
-        ...i,
-      }));
+      this.form.dealList = dealList.map((i: any) => {
+        // 税额
+        let thisTaxMoney = this.countTaxMoney(i.applyMoney, info.taxRate);
+        let taxData =
+          thisTaxMoney === i.taxMoney
+            ? { taxMoney: i.taxMoney }
+            : { taxMoney: thisTaxMoney, taxMoneyNew: i.taxMoney };
+        // 不含税金额
+        let thisNoTax = this.$math.tofixed(
+          this.$math.sub(i.applyMoney, thisTaxMoney),
+          2
+        );
+        let noTaxData =
+          thisNoTax === i.noTaxMoney
+            ? { noTaxMoney: i.noTaxMoney }
+            : { noTaxMoney: thisNoTax, noTaxMoneyNew: i.noTaxMoney };
+        return {
+          ...i,
+          taxRate: info.taxRate,
+          ...taxData,
+          ...noTaxData,
+        };
+      });
       let termList = await get_applyRecDealTerm_getAll__applyId({
         applyId,
       });

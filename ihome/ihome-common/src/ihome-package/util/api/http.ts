@@ -101,7 +101,8 @@ service.interceptors.response.use(
                 message: '权限不足',
                 type: 'error',
                 duration: messageTime
-            })
+            });
+            (window as any).location = "/web-sales/error403?source=" + encodeURIComponent((window as any).location.href) + "&api=" + encodeURIComponent(error.response.config.url);
         } else if (error.response.status == 404) {
             Message({
                 message: '接口404',
@@ -117,7 +118,7 @@ service.interceptors.response.use(
             })
         } else {
             Message({
-                message: error.message,
+                message: `[${error.response.status}]` + error.message,
                 type: 'error',
                 duration: messageTime
             })
