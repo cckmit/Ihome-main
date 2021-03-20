@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-03 10:50:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 11:42:57
+ * @LastEditTime: 2021-03-20 17:35:17
 -->
 <template>
   <el-dialog
@@ -385,7 +385,7 @@ export default class CalculationDialog extends Vue {
       });
     }
     data.calcComplateVO.estimatedPadCommission = this.$math.tofixed(
-      (num * (Number(val) / 100)) / 10000,
+      num * (Number(val) / 100),
       6
     );
   }
