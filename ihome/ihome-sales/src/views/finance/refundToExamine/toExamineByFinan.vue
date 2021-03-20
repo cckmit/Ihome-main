@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-11 14:43:31
+ * @LastEditTime: 2021-03-18 14:56:05
 -->
 <template>
   <IhPage>
@@ -163,6 +163,7 @@
                 v-model="info.payType"
                 :disabled="paymentMethodDisabled"
                 placeholder="请选择付款方式"
+                @change="() => {isAgainComputed = false;computedDisabled = false;}"
               >
                 <el-option
                   v-for="item in $root.dictAllList('RefundPayType')"
@@ -363,8 +364,10 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="付款附件"
+            label="退款附件"
             width="100"
+            fixed="right"
+            align="center"
           >
             <template v-slot="{ row, $index }">
               <el-link
@@ -760,6 +763,7 @@ export default class RefundToExamineToExamine extends Vue {
   computedLoading: any = false;
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
+  isAgainComputed = true;
 
   private get returnId() {
     return this.$route.query.id;
@@ -773,41 +777,47 @@ export default class RefundToExamineToExamine extends Vue {
       this.paymentMethodDisabled = false;
       this.info.payType = "CashPay";
     }
+    this.isAgainComputed = false;
+    this.computedDisabled = false;
   }
   async submit(buttonType: any) {
-    if (["TemporaryStorage", "Reject"].includes(buttonType) && !this.remark) {
-      this.$message.warning("审核意见不能为空");
-      return;
-    }
-    let typeStr = "";
-    switch (buttonType) {
-      case "TemporaryStorage":
-        typeStr = "暂存";
-        break;
-      case "Through":
-        typeStr = "通过";
-        break;
-      case "Reject":
-        typeStr = "驳回";
-        break;
-    }
-    try {
-      await post_refundApply_financialAudit({
-        buttonType,
-        ...this.info,
-        remark: this.remark,
-        itemAttachmentVOs: this.info.refundItems.map((v: any) => ({
-          attachmentVOs: v.attachmentVOs,
-          itemID: v.id,
-          attachmentComplete: v.attachmentComplete,
-        })),
-      });
-      this.$message.success(`${typeStr}成功`);
-      this.$goto({
-        path: "/refundToExamine/list",
-      });
-    } catch (error) {
-      console.log(error);
+    if (this.isAgainComputed) {
+      if (["TemporaryStorage", "Reject"].includes(buttonType) && !this.remark) {
+        this.$message.warning("审核意见不能为空");
+        return;
+      }
+      let typeStr = "";
+      switch (buttonType) {
+        case "TemporaryStorage":
+          typeStr = "暂存";
+          break;
+        case "Through":
+          typeStr = "通过";
+          break;
+        case "Reject":
+          typeStr = "驳回";
+          break;
+      }
+      try {
+        await post_refundApply_financialAudit({
+          buttonType,
+          ...this.info,
+          remark: this.remark,
+          itemAttachmentVOs: this.info.refundItems.map((v: any) => ({
+            attachmentVOs: v.attachmentVOs,
+            itemID: v.id,
+            attachmentComplete: v.attachmentComplete,
+          })),
+        });
+        this.$message.success(`${typeStr}成功`);
+        this.$goto({
+          path: "/refundToExamine/list",
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      this.$message.warning("请重新点击计算结佣统计数据及成本归属明细");
     }
   }
   async routeTo(row: any, where: any) {
@@ -898,6 +908,8 @@ export default class RefundToExamineToExamine extends Vue {
     return sums;
   }
   accountNoChange(data: any) {
+    this.isAgainComputed = false;
+    this.computedDisabled = false;
     if (data) {
       const item = this.payerAccountOptions.find(
         (v: any) => v.accountNo === data
@@ -965,18 +977,22 @@ export default class RefundToExamineToExamine extends Vue {
       orgId: this.info.accountId,
     });
     this.payerAccountOptions = res;
+    this.isAgainComputed = false;
+    this.computedDisabled = false;
   }
   addFefundFinish(data: any) {
     this.info.refundItems = data;
     console.log(this.info.refundItems, "add");
     this.addFefundDialogVisible = false;
     this.computedDisabled = false;
+    this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
   }
   async delContacts(index: number) {
     this.info.refundItems.splice(index, 1);
     console.log(this.info.refundItems, "del");
     this.computedDisabled = false;
+    this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
   }
   addContacts() {
@@ -1016,10 +1032,12 @@ export default class RefundToExamineToExamine extends Vue {
       this.computedDisabled = true;
       this.$message.success("操作成功，已展示最新数据");
       this.computedLoading = false;
+      this.isAgainComputed = true;
       this.info.countVOs = res.countVOs;
       this.info.refundInfo = { ...res.refundInfo };
     } catch (err) {
       this.computedLoading = false;
+      this.isAgainComputed = false;
     }
   }
   async getInfo() {

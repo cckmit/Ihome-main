@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-3-4 2:24:02 ├F10: PM┤
+//2021-3-16 5:03:43 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/contract"
 /**附件上传*/
@@ -10,6 +10,14 @@ return await request.post< boolean,boolean> (basePath+'/contract/annex', d)
 /**审核状态查询*/
 export async function post_contract_approval_status (d?: any) {
 return await request.post< ContractApprovalStatus[],ContractApprovalStatus[]> (basePath+'/contract/approval/status', d)
+}
+/**请佣：查询甲方信息*/
+export async function post_contract_contract_PartyAs_PleaseHelp (d?: any) {
+return await request.post< ContractPartyAsPleaseHelpResponse[],ContractPartyAsPleaseHelpResponse[]> (basePath+'/contract/contract/PartyAs/PleaseHelp', d)
+}
+/**请佣：通过甲方ID和周期ID查询合同信息*/
+export async function post_contract_contractInfo (d?: any) {
+return await request.post< ContractInfoPleaseHelpResponse[],ContractInfoPleaseHelpResponse[]> (basePath+'/contract/contractInfo', d)
 }
 /**甲方合同录入*/
 export async function post_contract_create (d?: any) {
@@ -471,6 +479,29 @@ contractIds: number[];
 /**(必填)附件类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
 type: string;
 }
+/**AnnexVO*/
+export interface AnnexVO {
+/**附件后缀*/
+attachmentSuffix: string;
+/**甲方合同(外键)*/
+contractId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件编号*/
+fileNo: string;
+/**主键*/
+id: number;
+/**类型(Stamped-战略已盖章扫描件、NotStamped-战略未盖章扫描件、ContractAnnex-甲方合同附件、ArchiveAnnex-盖章版归档附件、NoArchiveAnnex-未盖章版归档附件、ScanArchiveAnnex-扫描件归档、NoticeAttachment-告知书附件、Subscription-认购书附件)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**AppletsChannelRequest*/
 export interface AppletsChannelRequest {
 /**(必填)渠道商Id*/
@@ -651,6 +682,68 @@ partyBId: number;
 /**标题*/
 title: string;
 }
+/**ContractInfoPleaseHelpRequest*/
+export interface ContractInfoPleaseHelpRequest {
+/**归档状态(ScansAreNotArchived-扫描件未归档、ScansAreArchived-扫描件已归档)*/
+archiveStatus: string;
+/**周期ID*/
+cycleIds: number[];
+/**甲方ID*/
+partyAId: number;
+}
+/**ContractInfoPleaseHelpResponse*/
+export interface ContractInfoPleaseHelpResponse {
+/**附件信息*/
+annexList: AnnexVO[];
+/**审核状态(Drafting-起草、OAUnderReview-OA审核中、OAReviewRejected-OA审核驳回、OAAudited-已审核)*/
+approvalStatus: string;
+/**归档编号*/
+archiveNo: string;
+/**归档状态(ScansAreNotArchived-扫描件未归档、ScansAreArchived-扫描件已归档)*/
+archiveStatus: string;
+/**成交确认人*/
+confirmer: string;
+/**成交确认人联系方式*/
+confirmerContact: string;
+/**合同编号*/
+contractNo: string;
+/**结束时间(yyyy-MM-dd)*/
+cooperationEnd: string;
+/**合作项目名称*/
+cooperationProjectsName: string;
+/**开始时间(yyyy-MM-dd)*/
+cooperationTime: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**周期ID*/
+cycleId: number;
+/**已删除*/
+deleted: number;
+/**合同录入人id*/
+enteringPersonId: number;
+/**店组ID*/
+groupId: number;
+/**跟进人ID*/
+handlerId: number;
+/**主键*/
+id: number;
+/**归属组织id*/
+organizationId: number;
+/**甲方信息*/
+partyA: ContractPartyListVO[];
+/**乙方*/
+partyBId: number;
+/**乙方收款账号*/
+receivingAccountId: number;
+/**合同标题*/
+title: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**ContractListVO*/
 export interface ContractListVO {
 /**审核状态(Drafting-起草、OAUnderReview-OA审核中、OAReviewRejected-OA审核驳回、OAAudited-已审核)*/
@@ -787,6 +880,24 @@ partyAId: number;
 partyBId: number;
 /**标题*/
 title: string;
+}
+/**ContractPartyAsPleaseHelpRequest*/
+export interface ContractPartyAsPleaseHelpRequest {
+/**收款方ID*/
+companyId: number;
+/**事业部ID*/
+orgId: number;
+/**项目ID*/
+projectId: number;
+/**收款账号*/
+receivingAccountId: number;
+}
+/**ContractPartyAsPleaseHelpResponse*/
+export interface ContractPartyAsPleaseHelpResponse {
+/**甲方ID*/
+partyA: number;
+/**甲方名字*/
+partyAName: string;
 }
 /**ContractPartyEditVO*/
 export interface ContractPartyEditVO {
@@ -1767,6 +1878,8 @@ templateType: string;
 export interface NoticeCustomerInformationRequest {
 /**(必填)新栋座*/
 buyUnit: number;
+/**(必填)周期ID*/
+cycleId: number;
 /**(必填)成交报告ID/补充报告ID*/
 dealId: number;
 /**(必填)告知书ID*/
@@ -1964,6 +2077,8 @@ promotionMethod: string;
 refundDays: number;
 /**房号*/
 roomNumberId: number;
+/**模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
+templateType: string;
 }
 /**NoticeExcelListRequest*/
 export interface NoticeExcelListRequest {
@@ -2008,6 +2123,13 @@ noticeId: number;
 ownerList: NoticeOwnerUpdateVO[];
 /**房号*/
 roomNumberId: number;
+}
+/**NoticeListCreateCaseRequest*/
+export interface NoticeListCreateCaseRequest {
+/**告知书*/
+noticeListCreateRequestList: NoticeListCreateRequest[];
+/**场景*/
+supplementaryScene: string;
 }
 /**NoticeListCreateRequest*/
 export interface NoticeListCreateRequest {
@@ -2068,6 +2190,8 @@ noticeNo: string;
 notificationStatus: string;
 /**告知书类型(Notification-优惠告知书、SupplementaryAgreement-补充协议、TerminationAgreement-终止协议、Confirmation-房号确定书、RefundApplication-退款申请书)*/
 notificationType: string;
+/**退款信息状态*/
+refundInfoStatus: boolean;
 /**模版ID*/
 templateId: string;
 /**告知书模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
@@ -2143,8 +2267,6 @@ ownerMobile: string;
 ownerName: string;
 /**签署结果 2:签署完成 3:失败 4:拒签*/
 signResult: number;
-/**签署地址*/
-signedAddress: string;
 /**签署标示(Yes-是、No-否)*/
 signingStatus: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -2179,8 +2301,6 @@ ownerCertificateNo: string;
 ownerMobile: string;
 /**业主名字*/
 ownerName: string;
-/**签署地址*/
-signedAddress: string;
 /**签署标示(Yes-是、No-否)*/
 signingStatus: string;
 }
@@ -2237,8 +2357,6 @@ ownerMobile: string;
 ownerName: string;
 /**签署结果 2:签署完成 3:失败 4:拒签*/
 signResult: number;
-/**签署地址*/
-signedAddress: string;
 /**签署标示(Yes-是、No-否)*/
 signingStatus: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -2286,8 +2404,12 @@ createUser: number;
 cycleId: number;
 /**周期名字*/
 cycleName: string;
+/**成交ID*/
+dealId: number;
 /**已删除*/
 deleted: number;
+/**优惠方式描述*/
+explain: string;
 /**补充协议是否完结(Yes-是、No-否)*/
 finish: string;
 /**undefined*/
@@ -2300,6 +2422,8 @@ notificationStatus: string;
 notificationType: string;
 /**乙方信息*/
 ownerList: NoticeOwnerEditVO[];
+/**业主类型(Personal-个人、Enterprise-企业)*/
+ownerType: string;
 /**甲方ID*/
 partyAId: number;
 /**甲方名字*/
@@ -2395,6 +2519,8 @@ area: string;
 beginTime: string;
 /**栋座*/
 buyUnit: number;
+/**报备查询：中文就是查询名字，数字就是查询手机号码*/
+costInfo: string;
 /**立项周期主键*/
 cycleId: number;
 /**成交ID*/
@@ -2648,6 +2774,10 @@ supplementNoticeList: SupplementNotice[];
 }
 /**NoticeWeChatDetailResponseVo*/
 export interface NoticeWeChatDetailResponseVo {
+/**成交编号*/
+dealCode: string;
+/**成交ID*/
+dealId: number;
 /**优惠信息*/
 discountInformationResponseVo: NoticeDiscountInformationResponseVo;
 /**优惠告知书ID*/

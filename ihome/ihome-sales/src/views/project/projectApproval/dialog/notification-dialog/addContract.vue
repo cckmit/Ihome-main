@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 11:44:39
+ * @LastEditTime: 2021-03-20 10:06:15
 -->
 <template>
   <el-dialog
@@ -193,6 +193,7 @@
               clearable
               placeholder="请选择"
               class="width--50"
+              @change="agencySettleCondtionChange"
             >
               <el-option
                 v-for="item in $root.dictAllList('AgencySettleCondtion')"
@@ -503,6 +504,7 @@ export default class AddContract extends Vue {
   setMealDialogData: any = {};
   searchConditon: any = {};
   info: any = {
+    agencySettleCondtion: null,
     contractTitle: null,
     contractSubtitle: null,
     partyCompany: null,
@@ -629,7 +631,6 @@ export default class AddContract extends Vue {
     }
   }
 
-  @Watch("info.agencySettleCondtion", { immediate: true })
   agencySettleCondtionChange(val: any) {
     if (val === "ComNoPad") {
       this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，且甲方收到项目开发商或委托方相应代理费后，具备代理费结算条件。`;
@@ -637,6 +638,8 @@ export default class AddContract extends Vue {
       this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），开发商完成结算明细确认（即开发商明源系统转签约且项目开发商相关营销负责人书面签字确认），乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，具备代理费结算条件。`;
     } else if (val === "SpecialDiscount") {
       this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），且开发商完成结算明细确认（即项目开发商总经理书面签字确认）后，乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，具备代理费结算条件。`;
+    } else {
+      this.info.agencyCostCondition = "";
     }
   }
 

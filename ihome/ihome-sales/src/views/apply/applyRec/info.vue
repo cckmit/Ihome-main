@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 09:16:56
+ * @LastEditTime: 2021-03-17 17:53:14
 -->
 <template>
   <IhPage class="text-left">
@@ -45,23 +45,8 @@
               ></IhSelectPageDivision> -->
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="甲方公司">
-              <el-input
-                :value="form.developName"
-                disabled
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="甲方开票帐号">
-              <el-input
-                v-model="form.developAccount"
-                disabled
-              >
-              </el-input>
-            </el-form-item>
-          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="收款公司">
               <IhSelectPageByCompany
@@ -79,6 +64,25 @@
                 v-model="form.receBankAccount"
                 disabled
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="甲方公司">
+              <el-input
+                :value="form.developName"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="甲方开票帐号">
+              <el-input
+                v-model="form.developAccount"
+                disabled
+              >
+              </el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -107,6 +111,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="申请人">
               <el-input
@@ -647,11 +653,7 @@
             align="center"
           >
             <template v-slot="{ row }">
-              <div><span
-                  style="color: red"
-                  v-if="row.subType"
-                >*</span>{{row.name}}
-              </div>
+              <div>{{row.name}}</div>
             </template>
           </el-table-column>
           <el-table-column label="附件">

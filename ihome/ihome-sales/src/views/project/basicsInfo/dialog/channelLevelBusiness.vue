@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 15:16:37
+ * @LastEditTime: 2021-03-19 15:23:12
 -->
 <template>
   <el-dialog
@@ -373,7 +373,7 @@ export default class UserList extends Vue {
         let obj = {
           status: "PASS",
           channelCompanyId: arr,
-          termId: this.$route.query.id,
+          proId: this.$route.query.id,
         };
         if (this.$route.name === "businessManagementEdit") {
           await post_customerReportRule_busnissManage_addWXBB(obj);

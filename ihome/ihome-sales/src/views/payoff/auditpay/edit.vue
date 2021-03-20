@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 15:15:14
+ * @LastEditTime: 2021-03-18 16:45:54
 -->
 <template>
   <IhPage>
@@ -1678,11 +1678,16 @@ export default class PayoffEdit extends Vue {
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
     obj.applyId = Number(this.payoffId);
-    obj.payApplyDetailList = this.info.payApplyDetailList;
+    obj.payApplyDetailList = this.info.payApplyDetailList.map((v: any) => ({
+      ...v,
+      serThisCommFees: v.serThisCommFees ? v.serThisCommFees : 0,
+      ageThisCommFees: v.ageThisCommFees ? v.ageThisCommFees : 0,
+      thisDeduct: v.thisDeduct ? v.thisDeduct : 0,
+    }));
     let otherArr: any = this.info.otherDeductionDetailResponseList.map(
       (v: any) => ({
         ...v,
-        deductAmount: Number(v.deductAmount) * -1,
+        deductAmount: v.deductAmount ? Number(v.deductAmount) * -1 : 0,
       })
     );
     otherArr = otherArr.filter((v: any) => v.otherDeductionType);
@@ -2029,13 +2034,16 @@ export default class PayoffEdit extends Vue {
                   ? v.noTaxAmountNew
                   : v.noTaxAmount,
                 tax: v.taxNew ? v.taxNew : v.tax,
+                serThisCommFees: v.serThisCommFees ? v.serThisCommFees : 0,
+                ageThisCommFees: v.ageThisCommFees ? v.ageThisCommFees : 0,
+                thisDeduct: v.thisDeduct ? v.thisDeduct : 0,
               })
             );
             obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
             obj.otherDeductionDetailCalculationRequestList = this.info.otherDeductionDetailResponseList.map(
               (v: any) => ({
                 ...v,
-                deductAmount: Number(v.deductAmount) * -1,
+                deductAmount: v.deductAmount ? Number(v.deductAmount) * -1 : 0,
               })
             );
             // 校验提示

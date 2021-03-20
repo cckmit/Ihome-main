@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 10:29:59
+ * @LastEditTime: 2021-03-19 14:45:04
 -->
 <template>
   <div>
@@ -704,14 +704,15 @@ export default class EditBasicInfo extends Vue {
   oldSubmitFile: any = {};
   secureSave() {
     const Adopt = this.form.auditEnum === "Adopt";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (
-      (Adopt &&
-        (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
-      RFrontLineClerk
-    );
+    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    // const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    // return (
+    //   (Adopt &&
+    //     (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
+    //   RFrontLineClerk
+    // );
+    return Adopt;
   }
   submitChange() {
     const Draft = this.form.auditEnum === "Draft";

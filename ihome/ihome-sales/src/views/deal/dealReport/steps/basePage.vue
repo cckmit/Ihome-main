@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:06:13
+ * @LastEditTime: 2021-03-18 14:40:20
 -->
 <template>
   <ih-page class="text-left">
@@ -1356,6 +1356,9 @@
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
     postData: any = {
+      charge: null, // 收费类型(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
+      refundAmount: null, // 退款金额 --- 用于补充发起优惠告知书页展示
+      originalCustType: null, // 原来的客户类型 --- 用于补充发起优惠告知书页判断可选类型
       changeTypeByDeal: null, // 补充成交类型
       calculation: 'Auto',
       calculationName: null,
@@ -1620,6 +1623,7 @@
     ]; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
     baseInfoByTerm: any = {
+      exMinyuan: null, // // 是否明源源：1---是，0---否
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
       termStageEnum: null, // 判断优惠告知书是否有添加按钮
@@ -1654,7 +1658,7 @@
       let arr: any = []
       let rewardTotal: any = 0; // 派发内场总金额合计，用于判断一手代理团队是否必选
       let totalAmount: any = 0; // 派发佣金合计金额+派发内场奖励合计金额
-      if (this.postData.receiveList.length > 0) {
+      if (this.postData.receiveList && this.postData.receiveList.length > 0) {
         let obj = {
           receiveAmount: 0,
           achieveAmount: 0,
@@ -1850,12 +1854,15 @@
       // 数据标志
       this.postData.dataSignName = (this as any).$root.dictAllName(res.dataSign, 'DealDataFlag');
       // 优惠告知书
-      await this.getNoticeList(res.id, res.parentId);
+      await this.getNoticeList(res?.id, res?.parentId, res?.cycleId);
       // 客户信息
       if (this.postData.customerList && this.postData.customerList.length) {
         this.postData.customerList.forEach((list: any) => {
           list.addId = list.id;
         });
+        // 记录初始化时客户的类型 --- 用于告知书补发页面判断类型选择
+        this.postData.originalCustType = this.postData?.customerList[0]?.customerType;
+        console.log('originalCustType', this.postData.originalCustType);
       }
       // 调整收派金额信息
       await this.initReceiveList(this.postData.receiveList);
@@ -1879,20 +1886,21 @@
       // 初始化附件信息
       await this.initDocumentList(res.charge, res.contType, res.documentShowList);
       // 根据项目周期和房号初始化页面数据
-      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId);
+      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
       await this.initAchieveRole();
     }
 
     // 根据项目周期和房号初始化页面数据
-    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '') {
-      if (!cycleId || !roomId || !propertyType) return;
+    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
+      if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
         parentId: parentId, // 补充成交要加parentId
         cycleId: cycleId,
         roomId: roomId,
         isMainDeal: false, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
@@ -1943,7 +1951,7 @@
     initAgency(data: any = [], flag: any = false) {
       if (flag) {
         // 分销成交模式
-        if(data.length > 0) {
+        if(data && data.length > 0) {
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
@@ -1989,6 +1997,7 @@
         roomId: roomId,
         isMainDeal: false, // 是否主成交
         property: propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
       };
       let baseInfo: any = await post_pageData_initBasic(params);
       this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
@@ -2122,9 +2131,9 @@
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
-      this.commissionServiceFeeObj = {};
-      this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-      console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
+      // this.commissionServiceFeeObj = {};
+      // this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
+      // console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
       // 初始化上传附件
       await this.getUploadDocumentList(baseInfo.contType);
     }
@@ -2173,6 +2182,7 @@
         this.postData.isConsign = baseInfo.exConsignment === 1 ? 'Yes' : 'No';
         // 处理优惠告知书的nav
         // this.postData.offerNoticeVO = []; // 先重置优惠告知书的数据
+        this.postData.charge = baseInfo?.chargeEnum;
         if (baseInfo.chargeEnum === 'Agent') {
           this.navList = this.navList.filter((item: any) => {
             return item.id !== 3;
@@ -2307,7 +2317,7 @@
     // 初始化收派金额中的代理费的甲方数组 --- 代理费
     initCommissionCustomer(data: any = []) {
       let tempArr: any = [];
-      if (data.length) {
+      if (data && data.length) {
         data.forEach((item: any) => {
           if (item.type === 'AgencyFee') {
             tempArr.push(
@@ -2329,14 +2339,14 @@
         partyACustomer: null
       };
       let tempArr: any = [];
-      if (data.length) {
+      if (data && data.length) {
         data.forEach((item: any) => {
           if (item.type === 'ServiceFee') {
             tempArr.push(item);
           }
         });
       }
-      if (tempArr.length) {
+      if (tempArr && tempArr.length) {
         tempObj.partyACustomerName = tempArr[0].partyACustomerName;
         tempObj.partyACustomer = tempArr[0].partyACustomer;
       }
@@ -2347,7 +2357,7 @@
     initDocument(info: any) {
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 附件类型增加key
-      if (fileList.length > 0) {
+      if (fileList && fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
@@ -2397,7 +2407,7 @@
           return !["VisitConfirForm", "DealConfirForm"].includes(item.code);
         });
       }
-      if (fileList.length > 0) {
+      if (fileList && fileList.length > 0) {
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
@@ -2427,14 +2437,14 @@
     }
 
     // 通过成交id获取优惠告知书
-    async getNoticeList(dealId: any = '', parentId: any = '') {
-      if (!dealId || !parentId) return;
+    async getNoticeList(dealId: any = '', parentId: any = '', cycleId: any = '') {
+      if (!dealId || !parentId || !cycleId) return;
       if (dealId !== parentId) {
-        const dealList: any = await post_notice_customer_information({dealId: dealId});
-        const parentList: any = await post_notice_customer_information({dealId: parentId});
+        const dealList: any = await post_notice_customer_information({dealId: dealId, cycleId: cycleId});
+        const parentList: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         this.postData.offerNoticeVO = [...dealList, ...parentList];
       } else {
-        const list: any = await post_notice_customer_information({dealId: parentId});
+        const list: any = await post_notice_customer_information({dealId: parentId, cycleId: cycleId});
         // console.log('组织info:', list);
         this.postData.offerNoticeVO = list;
       }
@@ -2443,7 +2453,49 @@
     // 改变细分业务模式
     changeRefineModel() {
       // 初始化收派金额
-      this.initAllReceiveList();
+      let self: any = this;
+      this.$nextTick(async () => {
+        // 有房号需要请求initBasic接口获取新的代理费类型收派
+        if (self.postData.roomId) {
+          await this.initReceiveByRoom();
+        } else {
+          await this.initAllReceiveList();
+        }
+      });
+    }
+
+    // 改变了细分业务模式需要重置收派套餐信息
+    async initReceiveByRoom() {
+      if (!this.postData.cycleId || !this.postData.roomId || !this.postData.propertyType) return;
+      let params: any = {
+        parentId: this.dealParentId ? this.dealParentId : null,
+        cycleId: this.postData.cycleId,
+        roomId: this.postData.roomId,
+        isMainDeal: false, // 是否主成交
+        property: this.postData.propertyType, // 物业类型
+        refineModel: this.postData.refineModel, // 细分业务模式
+      };
+      let baseInfo: any = await post_pageData_initBasic(params);
+      // 先清空代理费类型的收派
+      if (this.postData.receiveList && this.postData.receiveList.length) {
+        this.postData.receiveList = this.postData.receiveList.filter((vo: any) => {
+          return vo.type === 'ServiceFee';
+        });
+      }
+      // 收派金额 --- 代理费
+      if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
+        let tempList: any = await this.initReceiveVOS(baseInfo.receiveVOS);
+        console.log('receiveVO:', tempList);
+        if (this.postData.receiveList && this.postData.receiveList.length) {
+          this.postData.receiveList.push(...tempList);
+        } else {
+          this.postData.receiveList = tempList;
+        }
+      }
+      // 初始化
+      // await this.initAllReceiveList();
+      // 显示手动按钮
+      this.showChangeTips();
     }
 
     // 一手代理公司选项发生改变
@@ -2675,7 +2727,7 @@
       this.postData.isMat = null;
       this.packageIdsList = [];
       if (!value) return;
-      if (this.contNoList.length > 0) {
+      if (this.contNoList && this.contNoList.length > 0) {
         this.contNoList.forEach((item: any) => {
           if (item.contractNo === value) {
             // 是否垫佣
@@ -2752,7 +2804,7 @@
         docs = this.baseInfoInDeal.docs;
       }
       // 放入对应的文件
-      if (this.postData.uploadDocumentList.length) {
+      if (this.postData.uploadDocumentList && this.postData.uploadDocumentList.length) {
         this.postData.uploadDocumentList.forEach((list: any) => {
           list.fileList = [];
           list.defaultFileList = [];
@@ -2794,7 +2846,7 @@
     * */
     resetObject(objName: any = '', keyList: any = []) {
       if (!objName || !(this as any)[objName]) return;
-      if (keyList.length > 0) {
+      if (keyList && keyList.length > 0) {
         keyList.forEach((item: any) => {
           (this as any)[objName][item] = null;
         })
@@ -2920,7 +2972,7 @@
           name: v.attachmentSuffix,
           preFileName: "优惠告知书",
         }));
-        if (this.srcList.length) {
+        if (this.srcList && this.srcList.length) {
           this.isShowImg = true;
         } else {
           this.$message.warning("暂无图片");
@@ -2939,6 +2991,7 @@
       if (data.length === 0) return;
       let customData: any = {
         addId: data[0].id, // 手动添加的时候保存id --- 为了回显收派金额
+        id: data[0].id,
         cardNo: data[0].certificateNumber,
         cardType: data[0].cardType,
         customerName: data[0].custName,
@@ -2948,7 +3001,7 @@
         email: data[0].email,
         isCustomer: null // 是否主要客户
       }
-      if (this.postData.customerList.length > 0) {
+      if (this.postData.customerList && this.postData.customerList.length > 0) {
         customData.isCustomer = "No";
         this.postData.customerList.push(customData);
       } else {
@@ -2975,7 +3028,7 @@
           return list.addId !== scope.row.addId;
         });
         if (scope.$index === 0) {
-          if (this.postData.customerList.length) {
+          if (this.postData.customerList && this.postData.customerList.length) {
             // 修改当前第一个客户为主要客户
             this.postData.customerList.forEach((item: any, index: any) => {
               if (index === 0) {
@@ -3212,10 +3265,11 @@
     * isNull: Boolean，true: 置空，false: 置为对应值
     * */
     updateList(updateType: any = '', type: any = '', id: any = '', name: any = '', isNull: any = false) {
+      console.log(id);
       if (this.postData[updateType] && this.postData[updateType].length) {
         this.postData[updateType].forEach((list: any) => {
           if (list[type] === "ServiceFee") {
-            list.partyACustomer = isNull ? null : id;
+            // list.partyACustomer = isNull ? null : id;
             list.partyACustomerName = isNull ? null : name;
           }
         });
@@ -3253,13 +3307,13 @@
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
       }
-      if (!postData.signPrice && !postData.subscribePrice) {
+      if (['', null, undefined].includes(postData.signPrice) && ['', null, undefined].includes(postData.subscribePrice)) {
         this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
       let info: any = await post_pageData_calculateReceiveAmount(postData);
       // console.log(info);
-      if (this.postData.receiveList.length > 0) {
+      if (this.postData.receiveList && this.postData.receiveList.length > 0) {
         this.postData.receiveList.forEach((vo: any, index: any) => {
           if (index === this.currentReceiveIndex) {
             vo.showData = data;
@@ -3428,7 +3482,7 @@
         tempList = [...list, data];
       } else if (btnType === 'edit') {
         let tempArr = JSON.parse(JSON.stringify(list));
-        if (tempArr.length > 0) {
+        if (tempArr && tempArr.length > 0) {
           tempArr.forEach((item: any, index: any) => {
             if (index === currentIndex) {
               tempList.push(
@@ -3512,7 +3566,7 @@
     // 获取拆佣总金额
     getCommAmount() {
       let total = 0;
-      if (this.postData.channelCommList.length) {
+      if (this.postData.channelCommList && this.postData.channelCommList.length) {
         this.postData.channelCommList.forEach((vo: any) => {
           let commValue: any = vo.commAmount ? vo.commAmount : 0;
           let rewardValue: any = vo.rewardAmount ? vo.rewardAmount : 0;
@@ -3529,7 +3583,7 @@
     getTotalAmount(type: any = '') {
       if (!type) return;
       let total = 0;
-      if (this.postData.receiveList.length) {
+      if (this.postData.receiveList && this.postData.receiveList.length) {
         this.postData.receiveList.forEach((vo: any) => {
           let value: any = vo[type] ? vo[type] : 0;
           total = (this as any).$math.tofixed((this as any).$math.add(total * 1, value * 1), 2);
@@ -3545,7 +3599,7 @@
     getNewFile(data: any, type?: any) {
       // console.log(data);
       // console.log(type);
-      if (this.postData.uploadDocumentList.length > 0) {
+      if (this.postData.uploadDocumentList && this.postData.uploadDocumentList.length > 0) {
         this.postData.uploadDocumentList.forEach((vo: any) => {
           if (vo.code === type) {
             vo.fileList = data;
@@ -3614,6 +3668,7 @@
               callBackInfo = await post_suppDeal_previewUpdateBasicInfChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3632,6 +3687,7 @@
               callBackInfo = await post_suppDeal_previewUpdateAchieveInfChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3650,6 +3706,7 @@
               callBackInfo = await post_suppDeal_previewUpdateRetreatRoom(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit('next', 'next', {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3669,6 +3726,7 @@
               callBackInfo = await post_suppDeal_previewUpdateStaffAchieveChange(data);
             }
             this.btnLoading = false;
+            this.postData.refundAmount = callBackInfo?.refundAmount;
             this.$emit("preview", {
               ...this.postData,
               // receiveAchieveVO: this.receiveAchieveVO,
@@ -3687,8 +3745,9 @@
     initBaseDataByAdd() {
       let dataObj: any = {
         agencyVO: [], // 中介信息
-        customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
+        customerVO: this.postData.customerList && this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealAddInputVO: {
+          sceneSales: this.postData.sceneSales,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3696,7 +3755,7 @@
           status: null, // 最后点击提交/保存的时候才会赋值
           subscribeDate: this.postData.subscribeDate,
         }, // 主成交信息
-        documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
+        documentVO: this.postData.uploadDocumentList && this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseAddInputVO: {
           area: this.postData.area,
           buildingId: this.postData.buildingId,
@@ -3730,10 +3789,11 @@
     initBaseDataByUpdated() {
       let dataObj: any = {
         agencyVO: [], // 中介信息
-        customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
+        customerVO: this.postData.customerList && this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealUpdateInputVO: {
           dealCode: this.postData.dealCode ? this.postData.dealCode : null,
           id: this.id ? this.id : null,
+          sceneSales: this.postData.sceneSales,
           parentId: this.postData.parentId, // 主成交id
           signDate: this.postData.signDate,
           signType: this.postData.signType,
@@ -3741,7 +3801,7 @@
           status: null, // 最后点击提交/保存的时候才会赋值
           subscribeDate: this.postData.subscribeDate,
         }, // 主成交信息
-        documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
+        documentVO: this.postData.uploadDocumentList && this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseUpdateInputVO: {
           dealId: this.id ? this.id : null,
           id: this.postData?.house?.id,
@@ -3791,8 +3851,8 @@
         achieveVO: [...this.postData.achieveTotalBagList, ...this.postData.achieveDistriList], // 平台费用信息
         agencyVO: [], // 中介信息
         calculation: this.postData.calculation, // 计算方式
-        channelCommVO: this.postData.channelCommList.length ? this.postData.channelCommList : null, // 对外拆佣信息
-        customerVO: this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
+        channelCommVO: this.postData.channelCommList && this.postData.channelCommList.length ? this.postData.channelCommList : null, // 对外拆佣信息
+        customerVO: this.postData.customerList && this.postData.customerList.length ? this.postData.customerList : null, // 客户信息
         dealVO: {
           ...this.postData,
           id: this.btnType === "edit" ? this.id : null,
@@ -3801,7 +3861,7 @@
           contNo: this.postData.contType === 'DistriDeal' ? this.postData.contNo : null, // 分销成交再传
           noticeIds: [] // 优惠告知书Id
         }, // 成交基础信息
-        documentVO: this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
+        documentVO: this.postData.uploadDocumentList && this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseVO: {
           dealId: this.btnType === "edit" ? this.id : null,
           id: this.postData?.house?.id,
@@ -3816,7 +3876,7 @@
           toilet: this.postData.toilet
         },
         receiveAchieveVO: [], // 应收业绩信息
-        receiveVO: this.postData.receiveList.length ? this.postData.receiveList : null, // 收派金额
+        receiveVO: this.postData.receiveList && this.postData.receiveList.length ? this.postData.receiveList : null, // 收派金额
         parentId: this.postData.parentId, // 父成交Id
         status: null, // 成交状态
       }
@@ -4063,13 +4123,24 @@
     * */
     isDisabled(key: any = '', type: any = '') {
       const data: any = this.baseInfoInDeal.myReturnVO;
+      let isMingYuanFlag: any = this.baseInfoByTerm?.exMinyuan === 1;
       if (!key || !type || !data[type]?.[key]) return false;
-      let flag = false;
-      // 2.对应明源字段是否有值
-      if (data[type][key] && this.postData.roomId) {
-        flag = true;
+      let flag: any = false;
+      // 对应明源字段是否有值
+      if (type === 'houseVO') {
+        // 针对房间vo特殊判断
+        if (data[type][key] && this.postData.roomId && isMingYuanFlag) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       } else {
-        flag = false;
+        // 其他vo的判断
+        if (data[type][key] && this.postData.roomId) {
+          flag = true;
+        } else {
+          flag = false;
+        }
       }
       return flag;
     }

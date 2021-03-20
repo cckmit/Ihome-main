@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-2-17 16:11:35
+//2021-3-13 3:54:49 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/system"
 /**查询所有行政区划信息*/
@@ -302,6 +302,34 @@ return await request.get<Org[],Org[]>(basePath+'/org/getUserDepartmentList', { p
 /**修改组织*/
 export async function post_org_update (d?: any) {
 return await request.post< number,number> (basePath+'/org/update', d)
+}
+/**添加组织架构前缀*/
+export async function post_orgprefix_add (d?: any) {
+return await request.post< number,number> (basePath+'/orgprefix/add', d)
+}
+/**批量初始化组织架构前缀*/
+export async function post_orgprefix_batchInitializesOrgPrefix__id (d?: any) {
+return await request.post< number,number> (basePath+'/orgprefix/batchInitializesOrgPrefix/{id}', d)
+}
+/**批量初始化组织架构前缀*/
+export async function post_orgprefix_batchInitializesOrgPrefixV2 (d?: any) {
+return await request.post< number,number> (basePath+'/orgprefix/batchInitializesOrgPrefixV2', d)
+}
+/**删除组织架构前缀*/
+export async function post_orgprefix_delete__id (d?: any) {
+return await request.post< number,number> (basePath+'/orgprefix/delete/{id}', d)
+}
+/**查找详情*/
+export async function get_orgprefix_get__id (d?: any) {
+return await request.get<any,any>(basePath+'/orgprefix/get/{id}', { params: d })
+}
+/**查找所有*/
+export async function post_orgprefix_getList (d?: any) {
+return await request.post< any,any> (basePath+'/orgprefix/getList', d)
+}
+/**修改组织架构前缀*/
+export async function post_orgprefix_update (d?: any) {
+return await request.post< number,number> (basePath+'/orgprefix/update', d)
 }
 /**查询组织参数*/
 export async function post_paramDefine_getOrgParam (d?: any) {
@@ -1042,6 +1070,8 @@ closeDate: string;
 createTime: string;
 /**创建用户*/
 createUser: number;
+/**数据节点(Yes-是、No-否)*/
+dataNode: string;
 /**已删除*/
 deleted: number;
 /**部门分类(Business-营业线、Function-职能线)*/
@@ -1158,6 +1188,55 @@ parentId: number;
 /**是否具有权限*/
 permissionFlag: boolean;
 }
+/**OrgPrefixBaseVO*/
+export interface OrgPrefixBaseVO {
+/**分销系统组织ID*/
+orgId: number;
+/**分销系统组织名称*/
+orgName: string;
+/**组织前缀*/
+orgPrefix: string;
+}
+/**OrgPrefixQueryVO*/
+export interface OrgPrefixQueryVO {
+/**创建时间(yyyy-MM-dd)*/
+createTimeBegin: string;
+/**创建时间(yyyy-MM-dd)*/
+createTimeEnd: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**分销系统组织ID*/
+orgId: number;
+/**分销系统组织名称*/
+orgName: string;
+/**组织前缀*/
+orgPrefix: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**修改时间(yyyy-MM-dd)*/
+updateTimeBegin: string;
+/**修改时间(yyyy-MM-dd)*/
+updateTimeEnd: string;
+/**修改用户*/
+updateUser: number;
+}
+/**OrgPrefixUpdateVO*/
+export interface OrgPrefixUpdateVO {
+/**(必填)id*/
+id: number;
+/**分销系统组织ID*/
+orgId: number;
+/**分销系统组织名称*/
+orgName: string;
+/**组织前缀*/
+orgPrefix: string;
+}
 /**OrgQueryVO*/
 export interface OrgQueryVO {
 /**部门分类(Business-营业线、Function-职能线)*/
@@ -1223,6 +1302,8 @@ createTime: string;
 createUser: number;
 /**创建用户姓名*/
 createUserName: string;
+/**数据节点(Yes-是、No-否)*/
+dataNode: string;
 /**已删除*/
 deleted: number;
 /**部门分类(Business-营业线、Function-职能线)*/
@@ -1726,6 +1807,8 @@ closeDate: string;
 createTime: string;
 /**创建用户*/
 createUser: number;
+/**数据节点(Yes-是、No-否)*/
+dataNode: string;
 /**已删除*/
 deleted: number;
 /**部门分类(Business-营业线、Function-职能线)*/

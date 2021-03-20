@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:28:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-19 11:46:05
 -->
 <template>
   <IhPage>
@@ -343,6 +343,16 @@ export default class ChannelRates extends Vue {
 
   async created() {
     this.getInfo();
+    let paramsJson: any = sessionStorage.getItem("channelData");
+    let params = JSON.parse(paramsJson);
+    if (params) {
+      this.resPageInfo.channelId = params.id;
+      this.resPageInfo.channelName = params.name;
+    }
+  }
+
+  destroyed() {
+    sessionStorage.removeItem("channelData");
   }
 
   get dictsList() {

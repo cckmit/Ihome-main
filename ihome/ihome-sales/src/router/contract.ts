@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 09:29:17
+ * @LastEditTime: 2021-03-18 10:26:14
  */
 import { RouteConfig } from 'vue-router'
 
@@ -60,6 +60,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '渠道分销协议详情', icon: 'form' }
+      },
+      {
+        path: 'duplicate',
+        name: 'DistributionDuplicate',
+        component: () => import( /* webpackChunkName: "DistributionDuplicate" */ '@/views/contract/distribution/info.vue'),
+        meta: { title: '渠道分销协议盖章版归档', icon: 'form' }
       },
       {
         path: 'original',
@@ -128,9 +134,15 @@ const contractRoutes: Array<RouteConfig> = [
       {
         path: 'replenish',
         name: 'DiscountReplenish',
-        component: () => import('@/views/contract/discount/replenish.vue'),
+        component: () => import( /* webpackChunkName: "DiscountReplenish" */ '@/views/contract/discount/replenish.vue'),
         meta: { title: '发起补充协议', icon: 'form' }
-      }
+      },
+      {
+        path: 'audit',
+        name: 'DiscountAudit',
+        component: () => import( /* webpackChunkName: "DiscountAudit" */ '@/views/contract/discount/audit.vue'),
+        meta: { title: '优惠告知书业管审核', icon: 'form' }
+      },
     ]
   },
 ];

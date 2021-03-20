@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 10:19:04
+ * @LastEditTime: 2021-03-19 15:04:48
 -->
 <template>
   <ih-page>
@@ -22,7 +22,7 @@
             name="BasicInfo"
           >
             <BasicInfo
-               ref="basicInfo"
+              ref="basicInfo"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               v-if="componetName === 'BasicInfo'"
               @cutOther="querybasicInfo"
@@ -47,6 +47,15 @@
             />
           </el-tab-pane>
           <el-tab-pane
+            label="报备规则"
+            name="ReportedRules"
+          >
+            <ReportedRules
+              v-if="componetName === 'ReportedRules'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
+          </el-tab-pane>
+          <el-tab-pane
             label="推广信息"
             name="PopularizeInfo"
           >
@@ -66,11 +75,12 @@ import { Component, Vue } from "vue-property-decorator";
 import BasicInfo from "./edit-tabs/basicInfo.vue";
 import HouseType from "./edit-tabs/houseType.vue";
 import PopularizeInfo from "./edit-tabs/popularizeInfo.vue";
+import ReportedRules from "./edit-tabs/reportedRules.vue";
 import RoomNum from "./edit-tabs/roomNum.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({
-  components: { BasicInfo, HouseType, PopularizeInfo, RoomNum },
+  components: { BasicInfo, HouseType, PopularizeInfo, RoomNum, ReportedRules },
 })
 export default class ProjectChildEdit extends Vue {
   tabActive: any = "BasicInfo";
@@ -95,21 +105,21 @@ export default class ProjectChildEdit extends Vue {
         // });
         // return false;
 
-     
-        this.$confirm('请保存后再切换?', '提示', {
-          confirmButtonText: '保存',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(async  () => {
-            await (this.$refs.basicInfo as any).submit('save');
-        }).catch(() => {
-          this.$message({
-            type: 'info',
-            message: '已取消'
-          });   
-  
-        });
-        return false;        
+        this.$confirm("请保存后再切换?", "提示", {
+          confirmButtonText: "保存",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(async () => {
+            await (this.$refs.basicInfo as any).submit("save");
+          })
+          .catch(() => {
+            this.$message({
+              type: "info",
+              message: "已取消",
+            });
+          });
+        return false;
       }
     }
   }
@@ -130,6 +140,9 @@ export default class ProjectChildEdit extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+  /deep/ .el-image-viewer__wrapper {
+    right: 75px;
+  }
 }
 .tabClass {
   /deep/ .el-tabs__content {

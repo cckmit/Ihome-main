@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 15:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-18 11:09:25
+ * @LastEditTime: 2021-03-19 15:03:34
 -->
 <template>
   <ih-page>
@@ -32,15 +32,6 @@
           >
             <PartyA
               v-if="componetName === 'PartyA'"
-              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
-            />
-          </el-tab-pane>
-          <el-tab-pane
-            label="报备规则"
-            name="ReportedRules"
-          >
-            <ReportedRules
-              v-if="componetName === 'ReportedRules'"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
             />
           </el-tab-pane>
@@ -103,7 +94,6 @@ import Close from "./history-tabs/close.vue";
 import Notification from "./history-tabs/notification.vue";
 import Other from "./history-tabs/other.vue";
 import PartyA from "./history-tabs/partyA.vue";
-import ReportedRules from "./history-tabs/reportedRules.vue";
 import SetMeal from "./history-tabs/setMeal.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
@@ -115,7 +105,6 @@ Component.registerHooks(["beforeRouteEnter"]);
     Notification,
     Other,
     PartyA,
-    ReportedRules,
     SetMeal,
   },
 })
@@ -145,6 +134,9 @@ export default class ProjectApprovalInfo extends Vue {
 <style lang="scss" scoped>
 .ih-page {
   overflow: hidden;
+  /deep/ .el-image-viewer__wrapper {
+    right: 75px;
+  }
 }
 .tabClass {
   /deep/ .el-tabs__content {
