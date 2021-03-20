@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-21 15:28:30
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 10:25:33
 --> 
 <template>
   <div class="app">
@@ -121,7 +121,7 @@
         </div>
       </el-container>
     </el-container>
-    <div class="layout-router" v-show="loginPage">
+    <div class="layout-router" v-show="loginPage" :style="{ height: screenHeight + 'px' }">
       <router-view />
     </div>
   </div>

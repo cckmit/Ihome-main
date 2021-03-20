@@ -1,58 +1,63 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-26 17:23:07
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-03-18 19:26:11
 --> 
 <template >
-  <div class="main">
-    <el-form
-      style="
-        background: #eee;
-        padding: 20px 20px;
-        margin-top: 200px;
-        width: 500px !important;
-        border-radius: 5px;
-        border: 1px solid #eee;
-      "
-      class="demo-ruleForm"
-      :model="ruleForm"
-      :rules="rules"
-      ref="ruleForm"
-      label-width="100px"
-    >
-      <h3
-        style="text-align: center; margin: 10px; color: red"
-        v-if="env != 'prd'"
-      >
-        {{ envName }}
-      </h3>
-      <h3 style="text-align: center; margin: 10px">居恒新房分销系统·登录</h3>
-
-      <br />
-      <el-form-item label="账号" prop="username">
-        <el-input placeholder="账号" v-model="ruleForm.username"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input
-          placeholder="密码"
-          v-model="ruleForm.password"
-          type="password"
-          @keyup.enter.native="submitForm('ruleForm')"
-        ></el-input>
-      </el-form-item>
-
-      <el-form-item>
-        <el-button
-          type="primary"
-          @click="submitForm('ruleForm')"
-          :loading="loading"
-          >登录</el-button
-        >
-      </el-form-item>
-    </el-form>
+  <div class="main login-bg">
+    <div class="login-wrapper">
+      <div class="title margin-20">
+        <img src="../assets/img/login/title-zh.png" width="310px" height="40px">
+      </div>
+      <div class="title margin-47">
+        <img src="../assets/img/login/title-en.png" width="310px" height="11px">
+      </div>
+      <div class="login-form">
+        <div class="login-tip">
+          用户登录
+          <span v-if="env !== 'prd'" style="color: red">({{ envName }})</span>
+        </div>
+        <div class="form-wrapper">
+          <el-form
+            :model="ruleForm"
+            :rules="rules"
+            ref="ruleForm"
+            label-width="100px">
+            <el-form-item label="" prop="username" label-width="0">
+              <el-input placeholder="请输入登录ID" v-model="ruleForm.username">
+                <img
+                  slot="prefix"
+                  src="../assets/img/login/user-icon.png"
+                  width="19px" height="19px">
+              </el-input>
+            </el-form-item>
+            <el-form-item label="" prop="password" label-width="0">
+              <el-input
+                placeholder="请输入密码"
+                v-model="ruleForm.password"
+                type="password"
+                @keyup.enter.native="submitForm('ruleForm')">
+                <img
+                  slot="prefix"
+                  src="../assets/img/login/pwd-icon.png"
+                  width="19px" height="19px">
+              </el-input>
+            </el-form-item>
+            <el-form-item label-width="0">
+              <el-button
+                class="btn"
+                type="success"
+                @click="submitForm('ruleForm')"
+                :loading="loading"
+              >登录</el-button>
+            </el-form-item>
+          </el-form>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
  
@@ -137,7 +142,119 @@ export default class Login extends Vue {
   }
 }
 </script>
-<style>
+<style lang="scss">
+.login-bg {
+  background-image: url('../assets/img/login/login-bg.jpg');
+  zoom: 1;
+  background-size: 100% 100%;
+  background-position: center;
+  position: relative;
+  top: 0;
+  left: 0;
+  align-items: normal !important;
+
+  .login-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+
+    .title {
+      text-align: center;
+    }
+    .margin-20 {
+      box-sizing: border-box;
+      margin-bottom: 18px;
+    }
+
+    .margin-47 {
+      box-sizing: border-box;
+      margin-bottom: 40px;
+    }
+
+    .login-form {
+      width: 28.5%;
+      //width: 32.9%;
+      height: 360px;
+      background-image: url('../assets/img/login/login-form-bg.png');
+      zoom: 1;
+      background-size: 100% 100%;
+      background-position: center;
+      margin-bottom: 130px;
+
+      .login-tip {
+        width: 100%;
+        height: 30px;
+        font-size: 25px;
+        font-family: Source Han Sans CN;
+        font-weight: 400;
+        color: #85F2FB;
+        line-height: 25px;
+        text-align: center;
+        box-sizing: border-box;
+        margin-top: 32px;
+      }
+
+      .form-wrapper {
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 32px;
+        padding: 0px 58px;
+
+        .el-form .el-input{
+          background-color: #003B99 !important;
+        }
+
+        .el-form .el-input {
+          input::-webkit-input-placeholder {
+            /* placeholder颜色 */
+            color: #85F2FB !important;
+            /* placeholder字体大小 */
+            font-size: 16px !important;
+          }
+
+          input:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0px 1000px #003B99 inset !important;	/**通过边框阴影遮挡住背景*/
+            -webkit-text-fill-color: #85F2FB !important;
+          }
+        }
+
+        .el-form .el-input .el-input__inner {
+          width: 100% !important;
+          height: 46px !important;
+          background-color: #003B99 !important;
+          border: 1px solid #85F2FB !important;
+          opacity: 0.7 !important;
+          font-size: 16px !important;
+          font-family: Source Han Sans CN;
+          font-weight: 400 !important;
+          color: #85F2FB !important;
+          line-height: 25px !important;
+          padding-left: 51px !important;
+        }
+
+        .el-form .el-input .el-input__prefix {
+          display: inline-block !important;
+          width: 47px !important;
+          line-height: 55px !important;
+        }
+
+        .btn {
+          width: 100%;
+          box-sizing: border-box;
+          margin-top: 20px;
+          font-size: 20px;
+          font-family: Source Han Sans CN;
+          font-weight: 400;
+          color: #FFFFFF;
+        }
+      }
+    }
+  }
+}
+
 .layout-router {
   width: 100%;
   height: 100%;

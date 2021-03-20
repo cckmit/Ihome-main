@@ -4,24 +4,11 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:21:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-11 09:01:54
+ * @LastEditTime: 2021-03-19 15:32:52
 -->
 <template>
   <div class="text-left">
-    <div class="rules">
-      <p class="ih-info-title">客户报备规则</p>
-      <div
-        style="margin: 6px 0 0 20px"
-        v-if="businessManagementChange"
-      >
-        <el-button
-          class="rulesButton"
-          size="small"
-          type="success"
-          @click="edit()"
-        >编辑</el-button>
-      </div>
-    </div>
+    <p class="ih-info-title">客户报备规则</p>
     <el-form label-width="120px">
       <el-row>
         <el-col :span="16">
@@ -116,20 +103,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="rules">
-      <p class="ih-info-title">无需在爱家系统报备的渠道</p>
-      <div
-        style="margin: 6px 0 0 20px"
-        v-if="businessManagementChange"
-      >
-        <el-button
-          class="rulesButton"
-          size="small"
-          type="success"
-          @click="addChannel"
-        >+增加</el-button>
-      </div>
-    </div>
+    <p class="ih-info-title">无需在爱家系统报备的渠道</p>
     <span
       class="hint"
       style="font-size: 14px"
@@ -145,47 +119,18 @@
         align="center"
       >
       </el-table-column>
-      <el-table-column
-        v-if="businessManagementChange"
-        label="操作"
-        align="center"
-      >
-        <template v-slot="{ row }">
-          <el-button
-            size="small"
-            type="danger"
-            @click="delChannel(row)"
-          >删除</el-button>
-        </template>
-      </el-table-column>
     </el-table>
-    <ih-dialog :show="dialogVisible">
-      <Edit
-        :data="editData"
-        @cancel="() => (dialogVisible = false)"
-        @finish="dialogVisible = false;getInfo()"
-      />
-    </ih-dialog>
-    <ih-dialog :show="businessDialogVisible">
-      <Business
-        :data="businessData"
-        @cancel="() => (businessDialogVisible = false)"
-        @finish="(data) => businessFinish(data)"
-      />
-    </ih-dialog>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Edit from "../dialog/reportedRules-dialog/edit.vue";
-import Business from "../dialog/reportedRules-dialog/channelLevelBusiness.vue";
 import {
-  get_customerReportRule_get__termId,
+  get_customerReportRule_get__proId,
   post_customerReportRule_busnissManage_delWXBB__wxId,
 } from "@/api/project/index";
 @Component({
-  components: { Edit, Business },
+  components: {},
 })
 export default class ReportedRules extends Vue {
   info: any = {};
@@ -196,20 +141,13 @@ export default class ReportedRules extends Vue {
 
   async getInfo() {
     let id = this.$route.query.id;
-    const res = await get_customerReportRule_get__termId({ termId: id });
+    const res = await get_customerReportRule_get__proId({ proId: id });
     this.info = {
       ...res,
       developersRules: res.developersRules
         ? res.developersRules
         : "以合同为准。",
     };
-  }
-
-  private get businessManagementChange() {
-    const ConstractAdopt = this.info.auditEnum === "ConstractAdopt"; // 合同审核通过
-    const businessManagementEdit =
-      this.$route.name === "businessManagementEdit"; //路由判断
-    return ConstractAdopt && businessManagementEdit;
   }
 
   async created() {

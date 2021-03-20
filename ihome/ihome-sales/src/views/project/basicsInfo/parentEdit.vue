@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 12:07:03
+ * @LastEditTime: 2021-03-19 14:39:37
 -->
 <template>
   <ih-page>
@@ -222,14 +222,15 @@ export default class EditBasicInfo extends Vue {
 
   secureSave() {
     const Adopt = this.form.auditEnum === "Adopt";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (
-      (Adopt &&
-        (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
-      RFrontLineClerk
-    );
+    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
+    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
+    // const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
+    // return (
+    //   (Adopt &&
+    //     (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
+    //   RFrontLineClerk
+    // );
+    return Adopt;
   }
 
   submitChange() {

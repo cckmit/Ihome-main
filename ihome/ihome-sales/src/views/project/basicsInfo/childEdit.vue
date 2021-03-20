@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 16:42:38
+ * @LastEditTime: 2021-03-19 15:04:48
 -->
 <template>
   <ih-page>
@@ -47,6 +47,15 @@
             />
           </el-tab-pane>
           <el-tab-pane
+            label="报备规则"
+            name="ReportedRules"
+          >
+            <ReportedRules
+              v-if="componetName === 'ReportedRules'"
+              :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+            />
+          </el-tab-pane>
+          <el-tab-pane
             label="推广信息"
             name="PopularizeInfo"
           >
@@ -66,11 +75,12 @@ import { Component, Vue } from "vue-property-decorator";
 import BasicInfo from "./edit-tabs/basicInfo.vue";
 import HouseType from "./edit-tabs/houseType.vue";
 import PopularizeInfo from "./edit-tabs/popularizeInfo.vue";
+import ReportedRules from "./edit-tabs/reportedRules.vue";
 import RoomNum from "./edit-tabs/roomNum.vue";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({
-  components: { BasicInfo, HouseType, PopularizeInfo, RoomNum },
+  components: { BasicInfo, HouseType, PopularizeInfo, RoomNum, ReportedRules },
 })
 export default class ProjectChildEdit extends Vue {
   tabActive: any = "BasicInfo";

@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-3-17 11:16:54 ├F10: AM┤
+//2021-3-18 4:18:50 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/apply"
 /**发起开票申请*/
@@ -23,11 +23,11 @@ return await request.post< number,number> (basePath+'/applyRec/cancel/{applyId}'
 export async function post_applyRec_deleteBatch (d?: any) {
 return await request.post< DelResVO[],DelResVO[]> (basePath+'/applyRec/deleteBatch', d)
 }
-/**批量导出(excel或压缩包)*/
+/**批量导出(excel或压缩包)-作废*/
 export async function post_applyRec_excelBatchApplyInfo (d?: any) {
 return await request.post< any,any> (basePath+'/applyRec/excelBatchApplyInfo', d)
 }
-/**批量导出(根据勾选的ID)*/
+/**批量导出(根据勾选的请佣ID)*/
 export async function post_applyRec_exportZip (d?: any) {
 return await request.post< any,any> (basePath+'/applyRec/exportZip', d)
 }
@@ -114,6 +114,10 @@ return await request.post< TermTotalResVO[],TermTotalResVO[]> (basePath+'/applyR
 /**根据条件返回附件列表*/
 export async function post_applyRecFile_getAll (d?: any) {
 return await request.post< ApplyRecFileBaseVO[],ApplyRecFileBaseVO[]> (basePath+'/applyRecFile/getAll', d)
+}
+/**根据条件获取合同附件列表*/
+export async function post_applyRecFile_getContractFileList (d?: any) {
+return await request.post< ContractFileVO[],ContractFileVO[]> (basePath+'/applyRecFile/getContractFileList', d)
 }
 /**待选成交报告新增*/
 export async function post_deal_add (d?: any) {
@@ -750,6 +754,28 @@ applyId: number;
 /**操作后状态(Draft-草稿、PlatformClerk-待平台文员审核、BusinessMan-待分公司业管审核、BranchAccount-待分公司财务审核、Oa-OA领导审核中、InvoiceApply-待申请开票、BusinessManAgain-待分公司业管复审、InvoiceClerk-待开票员审核、InvoiceMake-待开票员开票、Confirm-待回款确认、Complete-已完成、Stop-终止)*/
 opAfter: string;
 }
+/**ContractFileVO*/
+export interface ContractFileVO {
+/**附件ID*/
+fileId: string;
+/**文件名，带文件后缀*/
+fileName: string;
+/**附件逻辑ID*/
+id: number;
+/**周期ID*/
+termIdList: number[];
+/**附件类型(Contract-合同附件、Invoice-开票资料、ApplyReport-请款报告、DealPdf-成交报告明细PDF、DeductPdf-需扣除金额明细PDF、OtherSubPdf-其他扣除项明细PDF、TermPdf-请款汇总清单PDF)*/
+type: string;
+}
+/**ContractInfoPleaseHelpRequest*/
+export interface ContractInfoPleaseHelpRequest {
+/**归档状态(ScansAreNotArchived-扫描件未归档、ScansAreArchived-扫描件已归档)*/
+archiveStatus: string;
+/**周期ID*/
+cycleIds: number[];
+/**甲方ID*/
+partyAId: number;
+}
 /**CorrectConVO*/
 export interface CorrectConVO {
 /**(必填)冲正ID（请佣申请单逻辑ID或退款逻辑ID）*/
@@ -1292,9 +1318,9 @@ export interface DevDeductTotalQueryVO {
 /**甲方公司名称*/
 developName: string;
 }
-/**ExportConVo*/
-export interface ExportConVo {
-/**请佣申请单ID列表*/
+/**ExportConVO*/
+export interface ExportConVO {
+/**(必填)请佣申请单ID列表*/
 applyIdList: number[];
 }
 /**FlowComment*/
