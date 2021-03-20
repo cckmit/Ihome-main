@@ -4,16 +4,16 @@
  * @Author: zyc
  * @Date: 2020-06-22 16:44:13
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-18 19:26:11
+ * @LastEditTime: 2021-03-20 15:40:12
 --> 
 <template >
   <div class="main login-bg">
     <div class="login-wrapper">
       <div class="title margin-20">
-        <img src="../assets/img/login/title-zh.png" width="310px" height="40px">
+        <img src="../assets/img/login/title-zh.png">
       </div>
       <div class="title margin-47">
-        <img src="../assets/img/login/title-en.png" width="310px" height="11px">
+        <img src="../assets/img/login/title-en.png">
       </div>
       <div class="login-form">
         <div class="login-tip">
@@ -39,6 +39,7 @@
                 placeholder="请输入密码"
                 v-model="ruleForm.password"
                 type="password"
+                show-password
                 @keyup.enter.native="submitForm('ruleForm')">
                 <img
                   slot="prefix"
@@ -167,11 +168,21 @@ export default class Login extends Vue {
     .margin-20 {
       box-sizing: border-box;
       margin-bottom: 18px;
+
+      img {
+        width: 310px;
+        height: 40px;
+      }
     }
 
     .margin-47 {
       box-sizing: border-box;
       margin-bottom: 40px;
+
+      img {
+        width: 310px;
+        height: 11px;
+      }
     }
 
     .login-form {
@@ -201,7 +212,7 @@ export default class Login extends Vue {
         width: 100%;
         box-sizing: border-box;
         margin-top: 32px;
-        padding: 0px 58px;
+        padding: 0px 9.18%;
 
         .el-form .el-input{
           background-color: #003B99 !important;
@@ -249,6 +260,102 @@ export default class Login extends Vue {
           font-family: Source Han Sans CN;
           font-weight: 400;
           color: #FFFFFF;
+        }
+      }
+    }
+
+  }
+
+  @media screen and(max-width: 1280px){
+    .login-wrapper .login-form {
+      width: 40% !important;
+    }
+  }
+
+  @media screen and(max-width: 1024px){
+    .login-wrapper .login-form {
+      width: 50% !important;
+    }
+  }
+
+  @media screen and(max-width: 768px){
+    .login-wrapper .title {
+      img {
+        width: 100% !important;
+      }
+    }
+
+    .login-wrapper .login-form {
+      width: 70% !important;
+    }
+  }
+
+  @media screen and(max-width: 460px){
+    .login-wrapper {
+      .title {
+        img {
+          width: 60% !important;
+        }
+      }
+
+      .margin-20 {
+        margin-bottom: 10px;
+        img {
+          height: 20px;
+        }
+      }
+
+      .margin-47 {
+        margin-bottom: 25px;
+        img {
+          height: 8px;
+        }
+      }
+    }
+
+    .login-wrapper .login-form {
+      width: 85% !important;
+      height: auto;
+      margin-bottom: 0px !important;
+
+      .login-tip {
+        font-size: 15px;
+        margin-top: 15px;
+      }
+
+      .form-wrapper {
+        padding: 0px 15px;
+        margin-top: 20px;
+
+        .el-form .el-input {
+          input::-webkit-input-placeholder {
+            /* placeholder颜色 */
+            color: #85F2FB !important;
+            /* placeholder字体大小 */
+            font-size: 14px !important;
+          }
+        }
+
+        .el-form .el-input .el-input__inner {
+          height: 37px !important;
+          font-size: 15px !important;
+          line-height: 25px !important;
+          padding-left: 47px !important;
+        }
+
+        .el-form .el-input .el-input__prefix {
+          width: 43px !important;
+          line-height: 44px !important;
+
+          img {
+            width: 15px !important;
+            height: 15px !important;
+          }
+        }
+
+        .btn {
+          margin-top: 0px;
+          font-size: 15px;
         }
       }
     }
