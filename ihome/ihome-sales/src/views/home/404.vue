@@ -1,17 +1,15 @@
 <template>
   <IhPage>
     <div style="margin-top: 150px">
-      <img
-        src="../../assets/404.png"
-        alt=""
-      />
+      <img src="../../assets/404.png" alt="" />
+    </div>
+    <div>
+      <p v-if="source">页面：{{ source }}</p>
     </div>
     <div class="text-center margin-top-40">
-      <el-button
-        round
-        type="info"
-        @click="$router.push('/')"
-      >返回首页</el-button>
+      <el-button round type="info" @click="$router.push('/')"
+        >返回首页</el-button
+      >
     </div>
     <!-- <p>
       {{ source }}
