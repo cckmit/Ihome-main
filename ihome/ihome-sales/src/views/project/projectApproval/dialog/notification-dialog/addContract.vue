@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-20 10:01:34
+ * @LastEditTime: 2021-03-20 10:06:15
 -->
 <template>
   <el-dialog
@@ -504,6 +504,7 @@ export default class AddContract extends Vue {
   setMealDialogData: any = {};
   searchConditon: any = {};
   info: any = {
+    agencySettleCondtion: null,
     contractTitle: null,
     contractSubtitle: null,
     partyCompany: null,
