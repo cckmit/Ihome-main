@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:07:20
+ * @LastEditTime: 2021-03-22 15:29:13
 -->
 <template>
   <ih-page label-width="100px">
@@ -564,6 +564,13 @@
         this.$message({
           type: "warning",
           message: "请选择对应查询时间!",
+        });
+        return
+      }
+      if (!this.queryPageParameters.timeType && this.selectTimeRange && this.selectTimeRange.length) {
+        this.$message({
+          type: "warning",
+          message: "请选择查询时间类型!",
         });
         return
       }
