@@ -394,6 +394,7 @@
         <el-col :span="8" class="form-item-label-wrapper">
           <el-form-item label="房款回笼比例">
             <el-input
+              v-digits="2"
               v-model="postData.returnRatio"
               :disabled="changeType !== 'ChangeAchieveInf'"></el-input>
           </el-form-item>
