@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 19:21:32
+ * @LastEditTime: 2021-03-22 10:24:46
 -->
 <template>
   <IhPage label-width="100px">
@@ -357,24 +357,28 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="review([{ ...row }])"
-                  :disabled="row.distributionState !== 'Pending'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="distribute([{ ...row }])"
-                  :disabled="row.distributionState !== 'NotDistributed'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'NotDistributed' }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
                 >派发</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleDis([{ ...row }])"
-                  :disabled="!['NotDistributed', 'Pending'].includes(row.distributionState)"
-                  :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
+                  :class="{
+                    'ih-data-disabled': !channelChange() || !contractChange(),
+                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                  }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
                 >驳回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleWith([{ ...row }])"
-                  :disabled="!['NotDistributed', 'Pending'].includes(row.distributionState)"
-                  :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
+                  :class="{
+                    'ih-data-disabled': !channelChange() || !contractChange(),
+                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                  }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item

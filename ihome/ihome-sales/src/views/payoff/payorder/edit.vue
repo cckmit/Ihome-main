@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 16:42:59
+ * @LastEditTime: 2021-03-20 11:10:12
 -->
 <template>
   <IhPage>
@@ -1699,12 +1699,22 @@ export default class PayoffEdit extends Vue {
           ...v,
         };
       });
-      let arr: any = this.info.documentList
-        .filter(
-          (v: any) => !["Contract", "BusinessLicense"].includes(v.fileType)
-        )
-        .concat(res.documentList);
-      this.getFileListType(arr);
+      let arr: any = [];
+      for (let item in this.submitFile) {
+        if (
+          !["Contract", "BusinessLicense"].includes(item) &&
+          this.submitFile[item].length
+        ) {
+          let hasArr: any = this.submitFile[item].map((v: any) => ({
+            exAuto: 0,
+            fileId: v.fileId,
+            fileName: v.name,
+            fileType: v.type,
+          }));
+          arr.push(...hasArr);
+        }
+      }
+      this.getFileListType(arr.concat(res.documentList));
       this.modify = true;
       this.isAgainComputed = true;
     } catch (err) {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-06 16:38:20
+ * @LastEditTime: 2021-03-20 15:20:33
 -->
 <template>
   <el-dialog
@@ -151,11 +151,12 @@
               <template v-slot="{ data }">
                 <span style="float: left">{{ data.name }}</span>
                 <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
+                  margin-left: 20px;
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;">
+                  {{ data.account }}
+                </span>
               </template>
             </IhSelectPageUser>
           </el-form-item>
@@ -185,7 +186,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="甲方合同附件">
+          <el-form-item
+            label="甲方合同附件"
+            required
+          >
             <IhUpload
               :file-list="partyFileList"
               size="100px"
@@ -196,7 +200,10 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item label="盖章版归档">
+          <el-form-item
+            label="盖章版归档"
+            required
+          >
             <IhUpload
               :file-list="stampFileList"
               size="100px"
@@ -299,13 +306,6 @@ export default class PartyAAdd extends Vue {
         trigger: "change",
       },
     ],
-    // confirmer: [
-    //   {
-    //     required: true,
-    //     message: "请填写成交确认人",
-    //     trigger: "change",
-    //   },
-    // ],
     confirmerContact: [{ validator: phoneValidator, trigger: "change" }],
     receivingAccountId: [
       {
