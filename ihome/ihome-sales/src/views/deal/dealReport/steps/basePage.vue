@@ -405,7 +405,8 @@
               v-digits="2"
               @blur="changePrice($event, 'SubscribePrice')"
               v-model="postData.subscribePrice"
-              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType) || isDisabled('subscribePrice', 'dealVO')"></el-input>
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType) || isDisabled('subscribePrice', 'dealVO')"
+              placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1047,7 +1048,7 @@
               <div v-else>{{scope.row.belongOrgName}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
+          <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
             <template slot-scope="scope">
               <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                 <div class="fee">{{item.achieveFees}}</div>
@@ -1129,7 +1130,7 @@
               <div v-else>{{scope.row.belongOrgName}}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
+          <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
             <template slot-scope="scope">
               <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                 <div class="fee">{{item.achieveFees}}</div>

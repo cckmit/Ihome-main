@@ -357,7 +357,8 @@
               v-digits="2"
               @blur="changePrice($event, 'SubscribePrice')"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
-              v-model="postData.subscribePrice"></el-input>
+              v-model="postData.subscribePrice"
+              placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -885,7 +886,7 @@
                 <div v-else>{{scope.row.belongOrgName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
@@ -968,7 +969,7 @@
                 <div v-else>{{scope.row.belongOrgName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
