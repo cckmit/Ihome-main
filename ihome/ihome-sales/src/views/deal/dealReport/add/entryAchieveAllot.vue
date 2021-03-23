@@ -357,7 +357,8 @@
               v-digits="2"
               @blur="changePrice($event, 'SubscribePrice')"
               :disabled="isDisabled('subscribePrice', 'dealVO')"
-              v-model="postData.subscribePrice"></el-input>
+              v-model="postData.subscribePrice"
+              placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">

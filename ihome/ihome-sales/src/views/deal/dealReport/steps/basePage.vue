@@ -405,7 +405,8 @@
               v-digits="2"
               @blur="changePrice($event, 'SubscribePrice')"
               v-model="postData.subscribePrice"
-              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType) || isDisabled('subscribePrice', 'dealVO')"></el-input>
+              :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType) || isDisabled('subscribePrice', 'dealVO')"
+              placeholder="请输入认购价格"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
