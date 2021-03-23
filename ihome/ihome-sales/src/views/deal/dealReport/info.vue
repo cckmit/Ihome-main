@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-23 16:49:38
+ * @LastEditTime: 2021-03-23 17:23:18
 -->
 <template>
   <ih-page class="text-left">
@@ -285,36 +285,38 @@
             </el-col>
           </el-row>
         </el-form>
-        <p id="anchor-2" class="ih-info-title">优惠告知书信息</p>
-        <el-row style="padding-left: 20px">
-          <el-col>
-            <el-table
-              class="ih-table"
-              :data="infoForm.offerNoticeList">
-              <el-table-column prop="notificationType" label="名称" min-width="120">
-                <template slot-scope="scope">
-                  <div>{{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
-              <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
-                <template slot-scope="scope">
-                  <div>{{$root.dictAllName(scope.row.notificationStatus, 'NotificationStatus')}}</div>
-                </template>
-              </el-table-column>
-              <el-table-column fixed="right" label="操作" width="130">
-                <template slot-scope="scope">
-                  <el-link
-                    class="margin-right-10"
-                    type="primary"
-                    @click.native.prevent="previewNotice(scope)"
-                  >预览
-                  </el-link>
-                </template>
-              </el-table-column>
-            </el-table>
-          </el-col>
-        </el-row>
+        <div v-if="infoForm.charge !== 'Agent'">
+          <p id="anchor-2" class="ih-info-title">优惠告知书信息</p>
+          <el-row style="padding-left: 20px">
+            <el-col>
+              <el-table
+                class="ih-table"
+                :data="infoForm.offerNoticeList">
+                <el-table-column prop="notificationType" label="名称" min-width="120">
+                  <template slot-scope="scope">
+                    <div>{{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
+                <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
+                  <template slot-scope="scope">
+                    <div>{{$root.dictAllName(scope.row.notificationStatus, 'NotificationStatus')}}</div>
+                  </template>
+                </el-table-column>
+                <el-table-column fixed="right" label="操作" width="130">
+                  <template slot-scope="scope">
+                    <el-link
+                      class="margin-right-10"
+                      type="primary"
+                      @click.native.prevent="previewNotice(scope)"
+                    >预览
+                    </el-link>
+                  </template>
+                </el-table-column>
+              </el-table>
+            </el-col>
+          </el-row>
+        </div>
         <p id="anchor-3" class="ih-info-title">客户信息</p>
         <el-row style="padding-left: 20px">
           <el-col>
@@ -703,6 +705,7 @@
     private srcList: any = [];
     private srcData: any = [];
     infoForm: any = {
+      charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
       dealCode: null,
       dealOrgName: null, // 成交组织name
       house: {}, // 房产信息
@@ -805,7 +808,14 @@
         })
       }
       // 初始化优惠告知书信息
-      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
+      if (info && info.charge === 'Agent') {
+        // 纯代理费没有优惠告知书
+        this.navList = this.navList.filter((list: any) => {
+          return list.id !== 2;
+        });
+      } else {
+        await this.getInformation(info?.id, info?.parentId, info?.cycleId);
+      }
       // 初始化附件
       this.infoForm.documentLists = this.initDocumentList(info.documentList);
       // 初始化开票信息

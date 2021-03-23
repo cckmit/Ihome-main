@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-23 16:48:50
+ * @LastEditTime: 2021-03-23 17:28:18
 -->
 <template>
   <ih-page class="text-left">
@@ -175,7 +175,7 @@
         </el-row>
       </el-form>
     </div>
-    <div id="anchor-2" v-if="!['achieveDeal'].includes(currentType)">
+    <div id="anchor-2" v-if="!['achieveDeal'].includes(currentType) && postData.charge !== 'Agent'">
       <p class="ih-info-title">优惠告知书信息</p>
       <el-row style="padding-left: 20px">
         <el-col>
@@ -608,6 +608,7 @@
     private srcList: any = [];
     private srcData: any = [];
     postData: any = {
+      charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
       parentId: null,
       dealCode: null,
       dealOrgName: null,
@@ -690,7 +691,14 @@
         ...info
       };
       // 初始化优惠告知书信息
-      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
+      if (info && info.charge === 'Agent') {
+        // 纯代理费没有优惠告知书
+        this.navList = this.navList.filter((list: any) => {
+          return list.id !== 2;
+        });
+      } else {
+        await this.getInformation(info?.id, info?.parentId, info?.cycleId);
+      }
       // console.log(this.postData);
       // 收派金额数据整理 showData
       if (this.postData.receiveList && this.postData.receiveList.length > 0) {
