@@ -79,7 +79,7 @@
             v-if="i === index"
             :key="i"
           >{{
-            `${preFileName} ${viewerMsg[i].name} ${imgIndex + 1}/${viewerMsg.length}`
+            `${preFileName} ${viewerMsg[i].fileName} ${imgIndex + 1}/${viewerMsg.length}`
           }}</span>
         </template>
       </div>
@@ -210,14 +210,15 @@ export default {
     viewerIndex: {
       handler: function (val) {
         this.imgIndex = val;
+        this.index = val;
       },
       immediate: true,
     },
   },
   methods: {
     imageType(file, url, index) {
-      let $index = file?.name?.lastIndexOf(".");
-      const type = file?.name?.substring($index + 1);
+      let $index = file?.fileName?.lastIndexOf(".");
+      const type = file?.fileName?.substring($index + 1);
       switch (type) {
         case "gif":
         case "jpg":
@@ -243,8 +244,8 @@ export default {
     },
     // 点击预览图片事件
     clickHandler(file) {
-      let $index = file?.name?.lastIndexOf(".");
-      const type = file?.name?.substring($index + 1);
+      let $index = file?.fileName?.lastIndexOf(".");
+      const type = file?.fileName?.substring($index + 1);
       switch (type) {
         // case "doc":
         // case "docx":
@@ -260,7 +261,9 @@ export default {
         // );
         // break;
         case "pdf":
-          window.open(file.url);
+          window.open(
+            `/sales-api/sales-document-cover/file/browse/${file.fileId}`
+          );
           break;
       }
     },
