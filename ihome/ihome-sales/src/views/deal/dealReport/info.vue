@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:05:13
+ * @LastEditTime: 2021-03-23 16:49:38
 -->
 <template>
   <ih-page class="text-left">
@@ -46,7 +46,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
@@ -98,7 +98,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
@@ -518,7 +518,7 @@
                     <div class="ratio" v-else>{{item.ratio ? item.ratio : 0}}%</div>
                     <div class="name">
                       <span>{{item.manager ? item.manager : '---'}}</span>
-                      (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                      (<span>{{item.managerPosition}}</span>)
                     </div>
                   </div>
                 </template>
@@ -570,7 +570,7 @@
                     <div class="ratio" v-else>{{item.ratio ? item.ratio : 0}}%</div>
                     <div class="name">
                       <span>{{item.manager ? item.manager : '---'}}</span>
-                      (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                      (<span>{{item.managerPosition}}</span>)
                     </div>
                   </div>
                 </template>

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-17 10:34:50
+ * @LastEditTime: 2021-03-23 16:48:50
 -->
 <template>
   <ih-page class="text-left">
@@ -412,7 +412,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
@@ -420,7 +420,7 @@
                   <div v-else class="ratio">-</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
-                    (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                    (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
               </template>
@@ -466,7 +466,7 @@
               </template>
             </el-table-column>
             <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="150">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
@@ -474,7 +474,7 @@
                   <div v-else class="ratio">-</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
-                    (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                    (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
               </template>

@@ -886,7 +886,7 @@
                 <div v-else>{{scope.row.belongOrgName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
@@ -969,7 +969,7 @@
                 <div v-else>{{scope.row.belongOrgName}}</div>
               </template>
             </el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="210">
+            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
               <template slot-scope="scope">
                 <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
                   <div class="fee">{{item.achieveFees}}</div>
