@@ -4,11 +4,11 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-24 10:23:12
+ * @LastEditTime: 2021-03-24 17:38:40
 -->
 <template>
   <div class="upload-container">
-    <template v-if="fileList.length">
+    <template v-if="uploadShow">
       <div
         class="item uploader img-item"
         v-for="(file, i) in fileList"
@@ -67,31 +67,74 @@
                   title="删除"
                 ></i>
               </span>
+              <span
+                class="editButton"
+                v-if="editPermi && !file.exAuto"
+                @click="edit(file, i)"
+              >
+                <i
+                  class="el-icon-edit-outline"
+                  title="编辑"
+                ></i>
+              </span>
+            </div>
+            <div
+              class="move"
+              v-if="isMove"
+            >
+              <span @click="leftShift(file, i)">
+                <i
+                  class="el-icon-back"
+                  title="左移"
+                ></i>
+              </span>
+              <span @click="rightShift(file, i)">
+                <i
+                  class="el-icon-right"
+                  title="右移"
+                ></i>
+              </span>
             </div>
           </div>
         </el-tooltip>
       </div>
+      <div
+        v-if="limitComputed"
+        class="item uploader"
+        :style="{ width: size, height: size }"
+      >
+        <i class="el-icon-plus icon"></i>
+        <input
+          ref="upload"
+          type="file"
+          :multiple="Multiple"
+          :accept="accept"
+          @change="uploadChange"
+        />
+      </div>
     </template>
-    <div
-      class="item uploader"
-      :style="{ width: size, height: size }"
-    >
-      <i class="el-icon-plus icon"></i>
-      <input
-        ref="imageUploader"
-        type="file"
-        :multiple="multiple"
-        :accept="accept"
-        @change="uploadChange"
-      />
-    </div>
     <ImageViewer
       v-if="isVisible"
       :url-list="urlList"
       :on-close="() => (isVisible = false)"
-      :viewer-msg="viewerArr"
+      :viewer-msg="fileList"
       :viewer-index="viewerIndex"
     ></ImageViewer>
+    <ih-dialog :show="dialogVisible">
+      <Cropper
+        ref="cropper"
+        :img="cropperImg"
+        :cropper-name="cropperName"
+        @cancel="dialogVisible = false"
+        @finish="(data) => cropperFinish(data)"
+      ></Cropper>
+    </ih-dialog>
+    <input
+      v-show="false"
+      ref="editUpload"
+      type="file"
+      @change="editUploadChange"
+    />
   </div>
 </template>
 
@@ -99,6 +142,7 @@
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { uploadType } from "./uploadMethod";
 import ImageViewer from "./image-viewer.vue";
+import Cropper from "./cropper.vue";
 import {
   post_file_upload,
   get_file_remove__fid,
@@ -106,6 +150,7 @@ import {
 @Component({
   components: {
     ImageViewer,
+    Cropper,
   },
   filters: {
     filterImgUrl(val: any) {
@@ -124,12 +169,12 @@ export default class IhUpload extends Vue {
     type: String,
     default: "",
   })
-  accept!: string; // 图片上传类型
+  accept?: string; // 图片上传类型
   @Prop({
     type: String,
     default: "100px",
   })
-  size!: string; // 图片的宽高
+  size?: string; // 图片的宽高
   @Prop({
     type: Number,
     default: 10,
@@ -183,28 +228,88 @@ export default class IhUpload extends Vue {
     type: Function,
   })
   clickDownloadMsg?: any; // 下载按钮报错信息
-  props?: object; // 初始化默认属性
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isMove?: boolean; // 附件左右移动开关
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isCrop?: boolean; // 图片裁切开关
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  editPermi?: boolean; // 附件编辑按钮开关
+  @Prop({
+    type: Object,
+    default: () => {
+      return {
+        fileId: "fileId",
+        fileName: "fileName",
+      };
+    },
+  })
+  props?: object;
+
   private fileList: any = [];
   private isVisible: any = false;
   private viewerIndex: any = 0;
-  private viewerArr: any = [];
   private urlList: any = [];
+  private dialogVisible = false;
+  private cropperName = "";
+  private cropperImg = "";
+  private Multiple: any = true;
+  private editIndex: any = 0;
+
   @Watch("value", { immediate: true, deep: true })
   handler(val: any) {
     this.fileList = val.map((v: any) => ({
       ...v,
     }));
   }
+
+  @Watch("isCrop", { immediate: true, deep: true })
+  cropHandler(val: any) {
+    if (val) {
+      this.Multiple = false;
+    } else {
+      this.Multiple = true;
+    }
+  }
+
+  @Watch("multiple", { immediate: true, deep: true })
+  multipleHandler(val: any) {
+    if (!this.isCrop) {
+      if (val) {
+        this.Multiple = true;
+      } else {
+        this.Multiple = false;
+      }
+    }
+  }
+
+  get limitComputed() {
+    if (this.fileList.length < this.limit) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  get fileName() {
+    return (this.props as any).fileName || "fileName";
+  }
+  get fileId() {
+    return (this.props as any).fileId || "fileId";
+  }
+
   preview(file: any, index: number) {
     if (file.fileId) {
       this.viewerIndex = index;
-      this.viewerArr = this.fileList.map((v: any) => ({
-        ...v,
-        preFileName: this.fileList[0]?.fileType,
-      }));
-      this.urlList = this.fileList.map(
-        (v: any) => `/sales-api/sales-document-cover/file/browse/${v.fileId}`
-      );
+      this.urlList = this.fileList.map((v: any) => v.url);
       this.isVisible = true;
     } else {
       this.clickViewMsg();
@@ -214,8 +319,8 @@ export default class IhUpload extends Vue {
     if (this.isServeDel) {
       try {
         await get_file_remove__fid(file.fileId);
-      } catch (error) {
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     } else {
       this.fileList.splice(index, 1);
@@ -237,7 +342,7 @@ export default class IhUpload extends Vue {
       target.files.length > this.limit ||
       target.files.length + this.fileList.length > this.limit
     ) {
-      this.$message.warning(`最多只能上传${this.limit}张图片`);
+      this.$message.warning(`已超出文件上传数量限制, 请重新选择!`);
       return;
     }
     let arr: any = [];
@@ -249,7 +354,33 @@ export default class IhUpload extends Vue {
         console.log(err);
       }
     });
-    if (arr.length) this.uploadRequer(arr);
+    if (arr.length) {
+      if (this.isCrop) {
+        const $index = arr[0].name.lastIndexOf(".");
+        const type = arr[0].name.substring($index + 1);
+        switch (type) {
+          case "gif":
+          case "jpg":
+          case "png":
+          case "jpeg":
+            this.cropperName = arr[0].name;
+            this.$nextTick(() => {
+              const reader = new FileReader();
+              reader.onload = (e: any) => {
+                this.cropperImg = e.target.result;
+              };
+              reader.readAsDataURL(arr[0]);
+              this.dialogVisible = true;
+            });
+            break;
+          default:
+            this.uploadRequer(arr);
+            break;
+        }
+      } else {
+        this.uploadRequer(arr);
+      }
+    }
   }
 
   beforeUpload(file: any) {
@@ -320,24 +451,105 @@ export default class IhUpload extends Vue {
     for (let i = 0; i < files.length; i++) {
       fd.append("files", files[i]);
     }
-    const res: any = await post_file_upload(fd);
-    let list = res.map((v: any) => {
+    try {
+      const res: any = await post_file_upload(fd);
+      let list = res.map((v: any, i: number) => {
+        let obj: any = {};
+        obj[this.fileId] = v.fileId;
+        obj[this.fileName] = `${v.originalFileName}.${v.originalFileType}`;
+        obj.url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
+        obj.response = [res[i]];
+        obj.raw = files[i];
+        obj.size = files[i].size;
+        if (this.fileType) {
+          obj.fileType = this.fileType;
+        }
+        return obj;
+      });
+      let lists = this.fileList.concat(list);
+      this.$emit("input", lists);
+      this.$emit("newFileList", lists, this.fileType);
+      this.$message.success("上传成功");
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // 右移
+  rightShift(file: any, index: number) {
+    if (index + 1 < this.fileList.length) {
+      let arr = [...this.fileList];
+      arr.splice(index, 1);
+      arr.splice(index + 1, 0, file);
+      this.$emit("input", [...arr]);
+    } else {
+      this.$message.warning("最后一项不可右移");
+    }
+  }
+
+  // 左移
+  leftShift(file: any, index: number) {
+    if (index > 0) {
+      let arr = [...this.fileList];
+      arr.splice(index, 1);
+      arr.splice(index - 1, 0, file);
+      this.$emit("input", [...arr]);
+    } else {
+      this.$message.warning("第一项不可左移");
+    }
+  }
+
+  // 图片裁剪确定
+  cropperFinish(data: any) {
+    this.dialogVisible = false;
+    this.cropperImg = "";
+    this.uploadRequer([data]);
+  }
+
+  // 图片编辑
+  edit(file: any, index: number) {
+    this.$nextTick(() => {
+      (this.$refs.editUpload as any).click();
+      this.editIndex = index;
+    });
+  }
+
+  // 编辑附件确定
+  async editUploadChange({ target }: any) {
+    if (target.files.length) {
+      this.beforeUpload(target.files[0]).then(() => {
+        this.editUploadRequer(target.files);
+      });
+    }
+  }
+
+  async editUploadRequer(files: any) {
+    let fd = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      fd.append("files", files[i]);
+    }
+    let res: any = await post_file_upload(fd);
+    let list = res.map((v: any, i: number) => {
       let obj: any = {};
-      obj.fileId = v.fileId;
-      obj.fileName = `${v.originalFileName}.${v.originalFileType}`;
+      obj[this.fileId] = v.fileId;
+      obj[this.fileName] = `${v.originalFileName}.${v.originalFileType}`;
+      obj.url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
+      obj.response = [res[i]];
+      obj.raw = files[i];
+      obj.size = files[i].size;
       if (this.fileType) {
         obj.fileType = this.fileType;
       }
       return obj;
     });
-    let lists = this.fileList.concat(list);
-    this.$emit("input", lists);
-    this.$emit("newFileList", lists, this.fileType);
+    this.$set(this.fileList, this.editIndex, list[0]);
+    this.$emit("newFileList", this.fileList, this.fileType);
+    this.$message.success("附件编辑成功");
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .upload-container {
   display: flex;
   align-items: center;
@@ -399,7 +611,22 @@ export default class IhUpload extends Vue {
 .upload-container .img-item:hover .mask {
   opacity: 1;
 }
+
+.mask {
+  .move {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
 .image-slot {
+  display: flex;
+  justify-content: center;
+}
+
+.editButton {
+  margin-left: 0 !important;
   display: flex;
   justify-content: center;
 }

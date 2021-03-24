@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:36:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-23 15:27:08
+ * @LastEditTime: 2021-03-24 17:36:05
  */
 export const uploadType = (file: any) => {
   let $index = file?.fileName?.lastIndexOf(".");

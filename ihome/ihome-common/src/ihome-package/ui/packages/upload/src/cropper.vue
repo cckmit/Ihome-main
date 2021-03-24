@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-21 14:17:48
  * @LastEditors: wwq
- * @LastEditTime: 2020-11-05 16:38:23
+ * @LastEditTime: 2021-03-24 16:33:32
 -->
 <template>
   <el-dialog
@@ -16,7 +16,10 @@
     :close-on-click-modal="false"
   >
     <div class="cropper-content">
-      <div class="cropper" style="text-align: center">
+      <div
+        class="cropper"
+        style="text-align: center"
+      >
         <VueCropper
           ref="vueCropper"
           :img="img"
@@ -36,9 +39,15 @@
         />
       </div>
     </div>
-    <div slot="footer" class="dialog-footer">
+    <div
+      slot="footer"
+      class="dialog-footer"
+    >
       <el-button @click="cancel">取 消</el-button>
-      <el-button type="primary" @click="finish">确认</el-button>
+      <el-button
+        type="primary"
+        @click="finish"
+      >确认</el-button>
     </div>
   </el-dialog>
 </template>
@@ -72,8 +81,8 @@ export default class Cropper extends Vue {
     outputType: "jpeg", // 裁剪生成图片的格式
     canScale: true, // 图片是否允许滚轮缩放
     autoCrop: true, // 是否默认生成截图框
-    autoCropWidth: 500, // 默认生成截图框宽度
-    autoCropHeight: 300, // 默认生成截图框高度
+    autoCropWidth: 800, // 默认生成截图框宽度
+    autoCropHeight: 800, // 默认生成截图框高度
     fixedBox: false, // 固定截图框大小 不允许改变
     fixed: false, // 是否开启截图框宽高固定比例
     fixedNumber: [5, 3], // 截图框的宽高比例
