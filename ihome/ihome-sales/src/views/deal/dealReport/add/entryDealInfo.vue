@@ -2470,17 +2470,31 @@
           // 重新上传的
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
-              obj.documentVO.push(
-                {
-                  fileId: list.fileId,
-                  fileName: list.name,
-                  fileType: item.code
+              // 过滤之前的
+              if (list.response && list.response.length) {
+                if (this.id) {
+                  obj.documentVO.push(
+                    {
+                      dealId: this.id,
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
+                } else {
+                  obj.documentVO.push(
+                    {
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
                 }
-              )
+              }
             });
           }
-          // 初始化的 --- 2021-03-24
-          // obj.documentVO.push(...item.defaultFileList);
+          // 初始化的
+          obj.documentVO.push(...item.defaultFileList);
         });
         // console.log('obj.documentVO', obj.documentVO);
       }

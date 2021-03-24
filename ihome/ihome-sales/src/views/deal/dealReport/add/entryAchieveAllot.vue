@@ -3759,28 +3759,31 @@
         this.postData.documentVO.forEach((item: any) => {
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
-              if (this.id) {
-                obj.basic.documentVO.push(
-                  {
-                    dealId: this.id,
-                    fileId: list.fileId,
-                    fileName: list.name,
-                    fileType: item.code
-                  }
-                )
-              } else {
-                obj.basic.documentVO.push(
-                  {
-                    fileId: list.fileId,
-                    fileName: list.name,
-                    fileType: item.code
-                  }
-                )
+              // 过滤之前的
+              if (list.response && list.response.length) {
+                if (this.id) {
+                  obj.basic.documentVO.push(
+                    {
+                      dealId: this.id,
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
+                } else {
+                  obj.basic.documentVO.push(
+                    {
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
+                }
               }
             });
           }
-          // 初始化的 --- 2021-03-24
-          // obj.basic.documentVO.push(...item.defaultFileList);
+          // 初始化的
+          obj.basic.documentVO.push(...item.defaultFileList);
         });
         // console.log('obj.documentVO', obj.documentVO);
       }
