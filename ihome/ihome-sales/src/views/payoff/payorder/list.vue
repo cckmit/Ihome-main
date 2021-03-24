@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 10:57:03
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-24 15:18:23
 -->
 <template>
   <IhPage label-width="120px">
@@ -187,6 +187,7 @@
         <el-table-column
           label="扣除金额"
           prop="deductAmount"
+          width="120"
         ></el-table-column>
         <el-table-column
           label="实际支付金额"
