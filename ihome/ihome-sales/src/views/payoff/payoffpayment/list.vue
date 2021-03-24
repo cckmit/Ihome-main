@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-17 16:13:05
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-24 15:20:43
 -->
 <template>
   <IhPage label-width="100px">
@@ -198,6 +198,7 @@
               <el-table-column
                 label="付款金额"
                 prop="actualAmount"
+                width="120"
               ></el-table-column>
               <el-table-column
                 label="收款方信息"

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 10:14:46
+ * @LastEditTime: 2021-03-24 09:44:01
 -->
 <template>
   <div class="project-approval-box">
@@ -275,7 +275,7 @@
             <el-select
               v-model="info.exDirectDevelop"
               clearable
-              disabled
+              :disabled="exDirectDevelopDisabled"
               placeholder="请选择"
               class="width--100"
             >
@@ -1038,6 +1038,7 @@ export default class FirstAgencyEdit extends Vue {
   isShow: any = true;
   oldInfo: any = {};
   oldSubmitFile: any = {};
+  exDirectDevelopDisabled: any = true;
 
   @Watch("info.chargeEnum", { immediate: true })
   getIsShow(val: any) {
@@ -1256,6 +1257,11 @@ export default class FirstAgencyEdit extends Vue {
         this.getAttributeEnumOptions();
       }
       this.getFileListType(res.attachTermVOS);
+      if (this.info.exParent) {
+        this.exDirectDevelopDisabled = false;
+      } else {
+        this.exDirectDevelopDisabled = true;
+      }
     } else {
       this.getFileListType([]);
     }

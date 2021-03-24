@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-22 10:24:46
+ * @LastEditTime: 2021-03-24 17:49:59
 -->
 <template>
   <IhPage label-width="100px">
@@ -206,13 +206,13 @@
         <el-button
           type="danger"
           @click="handleDis(selectionData)"
-          :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
+          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           @click="handleWith(selectionData)"
-          :class="{ 'ih-data-disabled': !channelChange() || !contractChange() }"
+          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
         <el-button
@@ -368,7 +368,7 @@
                 <el-dropdown-item
                   @click.native.prevent="handleDis([{ ...row }])"
                   :class="{
-                    'ih-data-disabled': !channelChange() || !contractChange(),
+                    'ih-data-disabled': !(channelChange() || contractChange()),
                     'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
@@ -376,7 +376,7 @@
                 <el-dropdown-item
                   @click.native.prevent="handleWith([{ ...row }])"
                   :class="{
-                    'ih-data-disabled': !channelChange() || !contractChange(),
+                    'ih-data-disabled': !(channelChange() || contractChange()),
                     'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
@@ -485,6 +485,8 @@ export default class DistributionList extends Vue {
     return this.$roleTool.RContractManager();
   }
   private channelChange() {
+    console.log(this.$roleTool.RChannelStaff());
+
     return this.$roleTool.RChannelStaff();
   }
   private exportChange() {

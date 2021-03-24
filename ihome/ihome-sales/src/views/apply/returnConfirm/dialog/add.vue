@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-16 09:23:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 11:05:34
+ * @LastEditTime: 2021-03-23 09:11:15
 -->
 <template>
   <el-dialog
@@ -174,7 +174,7 @@ export default class AddRetPayment extends Vue {
       {
         receiveMoney: 0,
         receiveNo: null,
-        receDate: null,
+        receDate: (this.$tool as any).todayStr(),
         isEdit: false,
       },
     ],
@@ -196,7 +196,7 @@ export default class AddRetPayment extends Vue {
     this.form.receiveList.push({
       receiveNo: null,
       receiveMoney: 0,
-      receDate: null,
+      receDate: (this.$tool as any).todayStr(),
       isEdit: true,
     });
   }

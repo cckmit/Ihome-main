@@ -145,10 +145,11 @@ export default class Login extends Vue {
 </script>
 <style lang="scss">
 .login-bg {
-  background-image: url('../assets/img/login/login-bg.jpg');
+  background: url('../assets/img/login/login-bg.jpg') center no-repeat ;
   zoom: 1;
-  background-size: 100% 100%;
-  background-position: center;
+  //background-size: 100% 100%;
+  background-size: cover;
+  //background-position: center;
   position: relative;
   top: 0;
   left: 0;
@@ -186,8 +187,8 @@ export default class Login extends Vue {
     }
 
     .login-form {
-      width: 28.5%;
-      //width: 32.9%;
+      //width: 28.5%;
+      width: 547px;
       height: 360px;
       background-image: url('../assets/img/login/login-form-bg.png');
       zoom: 1;
@@ -268,13 +269,13 @@ export default class Login extends Vue {
 
   @media screen and(max-width: 1280px){
     .login-wrapper .login-form {
-      width: 40% !important;
+      //width: 40% !important;
     }
   }
 
   @media screen and(max-width: 1024px){
     .login-wrapper .login-form {
-      width: 50% !important;
+      //width: 50% !important;
     }
   }
 

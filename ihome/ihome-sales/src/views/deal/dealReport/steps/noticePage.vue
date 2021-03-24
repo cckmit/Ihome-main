@@ -639,6 +639,13 @@
     // 预览变更
     handlePreview() {
       // console.log(this.form);
+      // 增加判断是否要必传优惠告知书 --- 变更业绩信息的时候
+      if (this.pageData && this.pageData.changeTypeByDeal === "ChangeAchieveInf"
+        && this.pageData.callBackInfo && this.pageData.callBackInfo.isNotic
+        && this.form && !this.form.offerSwitch) {
+        this.$message.warning('服务费金额发生变动，需补充发起新的优惠告知书。');
+        return;
+      }
       (this.$refs["ruleForm"] as ElForm).validate(this.submitPreview);
     }
 

@@ -118,7 +118,7 @@ export default (Vue: any) => {
 
     // v-inputDigits：Input、inputNumber输入框输入位数限制
     Vue.directive("digits", {
-        bind(el: any, binding: any) {
+        bind(el: any, binding: any, vNode: any) {
             const El = el.querySelector('.el-input__inner');
             el.inputListen = function () {
                 if ([null, undefined, 0, ""].includes(binding.value)) {
@@ -135,7 +135,23 @@ export default (Vue: any) => {
                     El.value = El.value.replace(regDigits, '$1$2.$3');
                 }
                 // 重新赋值
-                El.dispatchEvent(new Event('input'));
+                // El.dispatchEvent(new Event('input'));
+                // 当输入汉字时会导致vue model 数据不同步，因此在回调函数添加上以下代码，手动触发数据的双向绑定。
+                if (vNode.componentInstance) {
+                    vNode.componentInstance.$emit('input', El.value);
+                    console.log('123')
+                } else {
+                    // 移动端可能不支持 CustomEvent. 下面是兼容方法
+                    // function CustomEvent(event, params) {
+                    //   params = params || { bubbles: false, cancelable: false, detail: undefined };
+                    //   var evt = document.createEvent('CustomEvent');
+                    //   evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+                    //   return evt;
+                    // };
+                    // CustomEvent.prototype = window.Event.prototype;
+                    console.log('456')
+                    vNode.elm.dispatchEvent(new CustomEvent('input', El.value));
+                }
             }
             el.addEventListener('input', el.inputListen);
 
