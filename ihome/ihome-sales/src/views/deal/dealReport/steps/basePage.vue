@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-18 14:40:20
+ * @LastEditTime: 2021-03-24 16:15:18
 -->
 <template>
   <ih-page class="text-left">
@@ -1886,7 +1886,7 @@
         })
       }
       // 初始化附件信息
-      await this.initDocumentList(res.charge, res.contType, res.documentShowList);
+      await this.initDocumentList(res.charge, res.contType, res.documentShowList, res.documentList);
       // 根据项目周期和房号初始化页面数据
       await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
@@ -2390,7 +2390,7 @@
     * contType：合同类型
     * list：回显的值
     * */
-    initDocumentList(charge: any = '', contType: any = '', list: any = []) {
+    initDocumentList(charge: any = '', contType: any = '', showList: any = [], list: any = []) {
       let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
       // 根据收费模式过滤
       if (charge === 'Agent') {
@@ -2413,6 +2413,15 @@
         fileList.forEach((vo: any) => {
           vo.defaultFileList = []; // 存放原来的数据
           vo.fileList = []; // 存放新上传的数据
+          if (showList && showList.length) {
+            showList.forEach((item: any) => {
+              if (item.fileType === vo.code) {
+                item.exAuto = true; // 不能删除
+                item.name = item.fileName; // 名字
+                vo.defaultFileList.push(item);
+              }
+            })
+          }
           if (list && list.length) {
             list.forEach((item: any) => {
               if (item.fileType === vo.code) {
