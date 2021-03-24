@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:40
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 18:57:21
+ * @LastEditTime: 2021-03-24 11:28:33
 -->
 <template>
   <ih-page class="text-left">
@@ -2470,13 +2470,27 @@
           // 重新上传的
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
-              obj.documentVO.push(
-                {
-                  fileId: list.fileId,
-                  fileName: list.name,
-                  fileType: item.code
+              // 过滤之前的
+              if (list.response && list.response.length) {
+                if (this.id) {
+                  obj.documentVO.push(
+                    {
+                      dealId: this.id,
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
+                } else {
+                  obj.documentVO.push(
+                    {
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
                 }
-              )
+              }
             });
           }
           // 初始化的

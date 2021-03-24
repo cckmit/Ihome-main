@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 19:02:38
+ * @LastEditTime: 2021-03-24 11:27:49
 -->
 <template>
   <ih-page class="text-left">
@@ -3759,23 +3759,26 @@
         this.postData.documentVO.forEach((item: any) => {
           if (item.fileList.length > 0) {
             item.fileList.forEach((list: any) => {
-              if (this.id) {
-                obj.basic.documentVO.push(
-                  {
-                    dealId: this.id,
-                    fileId: list.fileId,
-                    fileName: list.name,
-                    fileType: item.code
-                  }
-                )
-              } else {
-                obj.basic.documentVO.push(
-                  {
-                    fileId: list.fileId,
-                    fileName: list.name,
-                    fileType: item.code
-                  }
-                )
+              // 过滤之前的
+              if (list.response && list.response.length) {
+                if (this.id) {
+                  obj.basic.documentVO.push(
+                    {
+                      dealId: this.id,
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
+                } else {
+                  obj.basic.documentVO.push(
+                    {
+                      fileId: list.fileId,
+                      fileName: list.name,
+                      fileType: item.code
+                    }
+                  )
+                }
               }
             });
           }
