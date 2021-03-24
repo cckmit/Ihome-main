@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-15 19:02:38
+ * @LastEditTime: 2021-03-24 11:27:49
 -->
 <template>
   <ih-page class="text-left">
@@ -3779,8 +3779,8 @@
               }
             });
           }
-          // 初始化的
-          obj.basic.documentVO.push(...item.defaultFileList);
+          // 初始化的 --- 2021-03-24
+          // obj.basic.documentVO.push(...item.defaultFileList);
         });
         // console.log('obj.documentVO', obj.documentVO);
       }
