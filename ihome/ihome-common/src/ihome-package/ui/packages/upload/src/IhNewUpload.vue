@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-23 16:15:30
+ * @LastEditTime: 2021-03-24 10:23:12
 -->
 <template>
   <div class="upload-container">
@@ -82,7 +82,7 @@
         type="file"
         :multiple="multiple"
         :accept="accept"
-        @change="beforeUpload"
+        @change="uploadChange"
       />
     </div>
     <ImageViewer
@@ -232,8 +232,7 @@ export default class IhUpload extends Vue {
       this.clickDownloadMsg();
     }
   }
-  beforeUpload({ target }: any) {
-    console.log(target.files);
+  async uploadChange({ target }: any) {
     if (
       target.files.length > this.limit ||
       target.files.length + this.fileList.length > this.limit
@@ -241,9 +240,81 @@ export default class IhUpload extends Vue {
       this.$message.warning(`最多只能上传${this.limit}张图片`);
       return;
     }
-
-    this.uploadRequer(target.files);
+    let arr: any = [];
+    await target.files.forEach(async (v: any) => {
+      try {
+        const res = await this.beforeUpload(v);
+        arr.push(res);
+      } catch (err) {
+        console.log(err);
+      }
+    });
+    if (arr.length) this.uploadRequer(arr);
   }
+
+  beforeUpload(file: any) {
+    return new Promise((resolve: any, reject: any) => {
+      const size = file.size / 1024 / 1024 < this.fileSize;
+      const $index = file?.name?.lastIndexOf(".");
+      const type = file?.name?.substring($index + 1);
+      if (!size) {
+        this.$message({
+          message: `文件大小不能超过 ${this.fileSize}MB`,
+          type: "warning",
+        });
+        reject(`文件大小不能超过 ${this.fileSize}MB`);
+        return;
+      } else {
+        if (this.uploadAccept) {
+          switch (this.uploadAccept) {
+            case "image":
+              switch (type) {
+                case "gif":
+                case "jpg":
+                case "png":
+                case "jpeg":
+                  resolve(file);
+                  break;
+                default:
+                  this.$message({
+                    message: `只能上传图片类型`,
+                    type: "warning",
+                  });
+                  reject(`只能上传图片类型`);
+                  break;
+              }
+              break;
+          }
+        } else {
+          switch (type) {
+            case "gif":
+            case "jpg":
+            case "png":
+            case "jpeg":
+            case "doc":
+            case "docx":
+            case "docm":
+            case "xls":
+            case "xlsx":
+            case "pdf":
+            case "ppt":
+            case "potx":
+            case "pptx":
+              resolve(file);
+              break;
+            default:
+              this.$message({
+                message: `只能上传图片, 文档, 表格, pdf, ppt类型`,
+                type: "warning",
+              });
+              reject(`只能上传图片, 文档, 表格, pdf, ppt类型`);
+              break;
+          }
+        }
+      }
+    });
+  }
+
   async uploadRequer(files: any) {
     let fd = new FormData();
     for (let i = 0; i < files.length; i++) {
