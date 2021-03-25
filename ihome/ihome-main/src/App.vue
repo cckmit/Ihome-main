@@ -117,7 +117,7 @@
               class="app-view-box"
               v-html="content"
             ></div>
-             <div
+            <div
               id="root-ihome-web-report"
               class="app-view-box"
               v-html="content"
@@ -126,7 +126,11 @@
         </div>
       </el-container>
     </el-container>
-    <div class="layout-router" v-show="loginPage" :style="{ height: screenHeight + 'px' }">
+    <div
+      class="layout-router"
+      v-show="loginPage"
+      :style="{ height: screenHeight + 'px' }"
+    >
       <router-view />
     </div>
   </div>
@@ -242,29 +246,29 @@ export default class App extends Vue {
       }, 200);
     }
   }
-  mounted() {
-    window.addEventListener("resize", this.resize);
-    const setKeyStatus = (keyCode: any, status: any) => {
-      switch (keyCode) {
-        case 16:
-          if (this.onShfit === status) return;
+  // mounted() {
+  //   window.addEventListener("resize", this.resize);
+  //   const setKeyStatus = (keyCode: any, status: any) => {
+  //     switch (keyCode) {
+  //       case 16:
+  //         if (this.onShfit === status) return;
 
-          this.onShfit = status;
-          break;
-        case 17:
-          if (this.onCtrl === status) return;
+  //         this.onShfit = status;
+  //         break;
+  //       case 17:
+  //         if (this.onCtrl === status) return;
 
-          this.onCtrl = status;
-          break;
-      }
-    };
-    document.onkeydown = (e: any) => {
-      setKeyStatus(e.keyCode, true);
-    };
-    document.onkeyup = (e: any) => {
-      setKeyStatus(e.keyCode, false);
-    };
-  }
+  //         this.onCtrl = status;
+  //         break;
+  //     }
+  //   };
+  //   document.onkeydown = (e: any) => {
+  //     setKeyStatus(e.keyCode, true);
+  //   };
+  //   document.onkeyup = (e: any) => {
+  //     setKeyStatus(e.keyCode, false);
+  //   };
+  // }
   resize() {
     this.screenWidth =
       document.documentElement.clientWidth || document.body.clientWidth;
@@ -274,16 +278,19 @@ export default class App extends Vue {
 
   goto(url: string) {
     if (window.location.pathname != url) {
-      if (this.onCtrl) {
-        (window as any).open(url);
-        // this.$router.push({
-        //   path: url,
-        // });
-      } else {
-        this.$router.push({
-          path: url,
-        });
-      }
+      this.$router.push({
+        path: url,
+      });
+      // if (this.onCtrl) {
+      //   (window as any).open(url);
+      //   // this.$router.push({
+      //   //   path: url,
+      //   // });
+      // } else {
+      //   this.$router.push({
+      //     path: url,
+      //   });
+      // }
     }
   }
   changeState(value: any) {
