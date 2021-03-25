@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-24 17:38:40
+ * @LastEditTime: 2021-03-25 10:21:06
 -->
 <template>
   <div class="upload-container">
@@ -15,7 +15,7 @@
         :key="i"
       >
         <el-image
-          :src="file | filterImgUrl"
+          :src="uploadType(file)"
           :style="{ width: size, height: size }"
         >
 
@@ -33,12 +33,21 @@
           </div>
 
         </el-image>
+        <slot
+          name="extend"
+          :data="file"
+        />
         <el-tooltip
           effect="light"
-          :content="file.fileName"
+          :content="file[fileName]"
           placement="top"
         >
-          <div class="mask">
+          <div
+            class="mask"
+            :style="{
+            width: size,
+            height: Object.keys($scopedSlots).length ? size : ''}"
+          >
             <div>
               <span
                 v-if="previewPermi"
@@ -140,7 +149,6 @@
 
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
-import { uploadType } from "./uploadMethod";
 import ImageViewer from "./image-viewer.vue";
 import Cropper from "./cropper.vue";
 import {
@@ -151,11 +159,6 @@ import {
   components: {
     ImageViewer,
     Cropper,
-  },
-  filters: {
-    filterImgUrl(val: any) {
-      return uploadType(val);
-    },
   },
 })
 export default class IhUpload extends Vue {
@@ -263,6 +266,7 @@ export default class IhUpload extends Vue {
   private cropperImg = "";
   private Multiple: any = true;
   private editIndex: any = 0;
+  private fileAddOrEdit: any = "";
 
   @Watch("value", { immediate: true, deep: true })
   handler(val: any) {
@@ -306,8 +310,37 @@ export default class IhUpload extends Vue {
     return (this.props as any).fileId || "fileId";
   }
 
+  uploadType(file: any) {
+    let $index = file[this.fileName]?.lastIndexOf(".");
+    const type = file[this.fileName]?.substring($index + 1);
+    switch (type) {
+      case "gif":
+      case "jpg":
+      case "png":
+      case "jpeg":
+        return `/sales-api/sales-document-cover/file/browse/${
+          file[this.fileId]
+        }`;
+      case "doc":
+      case "docx":
+      case "docm":
+        return require("../../../img/word.jpg");
+      case "xls":
+      case "xlsx":
+        return require("../../../img/excel.png");
+      case "pdf":
+        return require("../../../img/pdf.jpg");
+      case "ppt":
+      case "potx":
+      case "pptx":
+        return require("../../../img/ppt.png");
+      default:
+        return require("../../../img/file.jpg");
+    }
+  }
+
   preview(file: any, index: number) {
-    if (file.fileId) {
+    if (file[this.fileId]) {
       this.viewerIndex = index;
       this.urlList = this.fileList.map((v: any) => v.url);
       this.isVisible = true;
@@ -318,7 +351,7 @@ export default class IhUpload extends Vue {
   async remove(file: any, index: number) {
     if (this.isServeDel) {
       try {
-        await get_file_remove__fid(file.fileId);
+        await get_file_remove__fid(file[this.fileId]);
       } catch (err) {
         console.log(err);
       }
@@ -329,15 +362,16 @@ export default class IhUpload extends Vue {
     this.$emit("newFileList", this.fileList, this.fileType);
   }
   download(file: any) {
-    if (file.fileId) {
+    if (file[this.fileId]) {
       window.open(
-        `/sales-api/sales-document-cover/file/download/${file.fileId}`
+        `/sales-api/sales-document-cover/file/download/${file[this.fileId]}`
       );
     } else {
       this.clickDownloadMsg();
     }
   }
   async uploadChange({ target }: any) {
+    this.fileAddOrEdit = "add";
     if (
       target.files.length > this.limit ||
       target.files.length + this.fileList.length > this.limit
@@ -356,27 +390,7 @@ export default class IhUpload extends Vue {
     });
     if (arr.length) {
       if (this.isCrop) {
-        const $index = arr[0].name.lastIndexOf(".");
-        const type = arr[0].name.substring($index + 1);
-        switch (type) {
-          case "gif":
-          case "jpg":
-          case "png":
-          case "jpeg":
-            this.cropperName = arr[0].name;
-            this.$nextTick(() => {
-              const reader = new FileReader();
-              reader.onload = (e: any) => {
-                this.cropperImg = e.target.result;
-              };
-              reader.readAsDataURL(arr[0]);
-              this.dialogVisible = true;
-            });
-            break;
-          default:
-            this.uploadRequer(arr);
-            break;
-        }
+        this.cropperEdit(arr[0]);
       } else {
         this.uploadRequer(arr);
       }
@@ -499,15 +513,48 @@ export default class IhUpload extends Vue {
     }
   }
 
+  cropperEdit(file: any) {
+    const $index = file.name.lastIndexOf(".");
+    const type = file.name.substring($index + 1);
+    switch (type) {
+      case "gif":
+      case "jpg":
+      case "png":
+      case "jpeg":
+        this.dialogVisible = true;
+        this.cropperName = file.name;
+        this.$nextTick(() => {
+          const reader = new FileReader();
+          reader.onload = (e: any) => {
+            this.cropperImg = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+        break;
+      default:
+        if (this.fileAddOrEdit === "add") {
+          this.uploadRequer([file]);
+        } else {
+          this.editUploadRequer([file]);
+        }
+        break;
+    }
+  }
+
   // 图片裁剪确定
   cropperFinish(data: any) {
     this.dialogVisible = false;
     this.cropperImg = "";
-    this.uploadRequer([data]);
+    if (this.fileAddOrEdit === "add") {
+      this.uploadRequer([data]);
+    } else {
+      this.editUploadRequer([data]);
+    }
   }
 
   // 图片编辑
   edit(file: any, index: number) {
+    this.fileAddOrEdit = "edit";
     this.$nextTick(() => {
       (this.$refs.editUpload as any).click();
       this.editIndex = index;
@@ -517,9 +564,12 @@ export default class IhUpload extends Vue {
   // 编辑附件确定
   async editUploadChange({ target }: any) {
     if (target.files.length) {
-      this.beforeUpload(target.files[0]).then(() => {
+      await this.beforeUpload(target.files[0]);
+      if (this.isCrop) {
+        this.cropperEdit(target.files[0]);
+      } else {
         this.editUploadRequer(target.files);
-      });
+      }
     }
   }
 
