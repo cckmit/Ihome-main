@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-31 17:15:45
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-01 16:32:53
+ * @LastEditTime: 2021-03-25 09:37:47
 -->
 <template>
   <el-dialog
@@ -63,25 +63,28 @@ export default class BankImport extends Vue {
       pageSize: 10,
       templateName: "pos机终端信息.xlsx",
     });
-    const fileId = list[0].fileId;
-    axios({
-      method: "GET",
-      url: `/sales-api/sales-document-cover/file/download/${fileId}`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-    }).then((res: any) => {
-      const href = window.URL.createObjectURL(res.data);
-      const $a = document.createElement("a");
-      $a.href = href;
-      $a.download = "pos机终端信息 (导入模板).xlsx";
-      $a.click();
-      $a.remove();
-    });
-    console.log(token);
+    if (list.length) {
+      const fileId = list[0].fileId;
+      axios({
+        method: "GET",
+        url: `/sales-api/sales-document-cover/file/download/${fileId}`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        $a.download = "pos机终端信息 (导入模板).xlsx";
+        $a.click();
+        $a.remove();
+      });
+    } else {
+      this.$message.warning("没找到附件下载");
+    }
   }
   async httpRequest(req: any) {
     const fd = new FormData();

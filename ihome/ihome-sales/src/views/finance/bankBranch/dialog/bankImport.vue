@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-28 15:05:47
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-20 16:21:50
+ * @LastEditTime: 2021-03-25 09:39:56
 -->
 <template>
   <el-dialog
@@ -65,24 +65,28 @@ export default class BankImport extends Vue {
       pageSize: 10,
       templateName: "全国开户网点.xlsx",
     });
-    const fileId = list[0].fileId;
-    axios({
-      method: "GET",
-      url: `/sales-api/sales-document-cover/file/download/${fileId}`,
-      xsrfHeaderName: "Authorization",
-      responseType: "blob",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "bearer " + token,
-      },
-    }).then((res: any) => {
-      const href = window.URL.createObjectURL(res.data);
-      const $a = document.createElement("a");
-      $a.href = href;
-      $a.download = "全国开户网点 (导入模板).xlsx";
-      $a.click();
-      $a.remove();
-    });
+    if (list.length) {
+      const fileId = list[0].fileId;
+      axios({
+        method: "GET",
+        url: `/sales-api/sales-document-cover/file/download/${fileId}`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+      }).then((res: any) => {
+        const href = window.URL.createObjectURL(res.data);
+        const $a = document.createElement("a");
+        $a.href = href;
+        $a.download = "全国开户网点 (导入模板).xlsx";
+        $a.click();
+        $a.remove();
+      });
+    } else {
+      this.$message.warning("没找到附件下载");
+    }
   }
   async httpRequest(req: any) {
     const fd = new FormData();
