@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-24 11:27:49
+ * @LastEditTime: 2021-03-25 10:12:49
 -->
 <template>
   <ih-page class="text-left">
@@ -2938,8 +2938,18 @@
 
     // 确定添加优惠告知书
     handleAddNoticeList(info: any) {
-      this.postData.offerNoticeVO = info.dealNotices;
-      this.postData.customerVO = info.customerConvertResponse;
+      // 先清除原优惠告知书带出的附件
+      this.deleteNoticeAnnex(this.postData.offerNoticeVO);
+      this.$nextTick(() => {
+        this.postData.offerNoticeVO = info.dealNotices;
+        // 需要把对应附件展示在上传附件信息模块中
+        this.addNoticeAnnex(info.dealNotices);
+        this.postData.customerVO = info.customerConvertResponse;
+        this.showChangeTips();
+        (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
+      });
+      // this.postData.offerNoticeVO = info.dealNotices;
+      // this.postData.customerVO = info.customerConvertResponse;
       // 回显收派金额中类型为服务费的客户上
       // if (this.postData.customerVO.length && this.postData.receiveVO && this.postData.receiveVO.length) {
       //   this.postData.receiveVO.forEach((item: any) => {
@@ -2961,14 +2971,61 @@
       //   }
       // }
       // 提示框
-      this.showChangeTips();
+      // this.showChangeTips();
       // if (!this.addFlag) {
       //   this.addFlag = false;
       //   this.editFlag = true;
       //   this.tipsFlag = false;
       //   this.dividerTips = '刷新成功';
       // }
-      (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
+      // (this as any).$parent.handleAddNotice(this.baseInfoByTerm);
+    }
+
+    /* 删除优惠告知书带出的优惠告知书类型附件
+    *  delList：Array，当前删除的优惠告知书信息。
+    * */
+    deleteNoticeAnnex(delList: any = []) {
+      if (delList && delList.length && this.postData.documentVO && this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((vo: any) => {
+          // 只需要遍历上传附件类型为优惠告知书的类型
+          if (vo.code === 'Notice' && vo.defaultFileList && vo.defaultFileList.length) {
+            delList.forEach((list: any) => {
+              if (list.annexList && list.annexList.length) {
+                list.annexList.forEach((item: any) => {
+                  vo.defaultFileList = vo.defaultFileList.filter((voList: any) => {
+                    return voList.fileId !== item.fileId;
+                  });
+                })
+              }
+              if (list.noticeAttachmentList && list.noticeAttachmentList.length) {
+                list.noticeAttachmentList.forEach((item: any) => {
+                  vo.defaultFileList = vo.defaultFileList.filter((voList: any) => {
+                    return voList.fileId !== item.fileId;
+                  });
+                })
+              }
+            });
+          }
+        });
+      }
+    }
+
+    /* 需要把对应附件展示在上传附件信息模块中
+    *  addList：Array，当前添加的优惠告知书信息。
+    * */
+    addNoticeAnnex(addList: any = []) {
+      if (addList && addList.length && this.postData.documentVO && this.postData.documentVO.length) {
+        this.postData.documentVO.forEach((vo: any) => {
+          // 只需要遍历上传附件类型为优惠告知书的类型
+          if (vo.code === 'Notice') {
+            addList.forEach((list: any) => {
+              if (list.annexList && list.annexList.length) {
+                vo.defaultFileList.push(...list.annexList);
+              }
+            });
+          }
+        });
+      }
     }
 
     // 客户信息由优惠告知书带出 ---- 2021-01-16 待定
@@ -2985,9 +3042,16 @@
       // this.postData.offerNoticeVO = this.postData.offerNoticeVO.filter((item: any) => {
       //   return item.id !== scope.row.id;
       // });
-      this.postData.offerNoticeVO = [];
-      this.postData.customerVO = [];
-      this.showChangeTips();
+      let list: any = (this as any).$tool.deepClone(this.postData.offerNoticeVO || []);
+      this.deleteNoticeAnnex(list);
+      this.$nextTick(() => {
+        this.postData.offerNoticeVO = [];
+        this.postData.customerVO = [];
+        this.showChangeTips();
+      });
+      // this.postData.offerNoticeVO = [];
+      // this.postData.customerVO = [];
+      // this.showChangeTips();
       // if (this.baseInfoInDeal.dealNoticeStatus === 'MultipleNotice') {
       //   // 多份优惠告知书下，删除了优惠告知书，对应的客户也要删除
       //   this.postData.customerVO = [];
