@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 08:40:30
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:02:13
+ * @LastEditTime: 2021-03-25 10:11:32
 -->
 <template>
   <div class="deal-add-page-wrapper">
@@ -308,6 +308,14 @@
         let noticeInfo: any = await post_notice_deal_details__noticeId(postData);
         if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
           noticeInfo.dealNotices.forEach((item: any) => {
+            // 附件增加fileId
+            if (item.annexList && item.annexList.length) {
+              item.annexList.forEach((list: any) => {
+                list.canDelete = true;
+                list.fileId = list.fileNo; // 统一id
+                list.fileName = list.attachmentSuffix; // 统一名字
+              });
+            }
             item.noticeId = item.id;
             item.addType = "manual";
           });

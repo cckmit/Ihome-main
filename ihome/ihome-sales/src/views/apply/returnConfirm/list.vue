@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-02-26 14:24:26
+ * @LastEditTime: 2021-03-25 09:41:50
 -->
 <template>
   <IhPage label-width="100px">
@@ -279,6 +279,7 @@ export default class ReturnConfirmList extends Vue {
     applyTimeStart: null,
     billTypeCode: null,
     developName: null,
+    proId: null,
     status: "Confirm",
   };
   resPageInfo: any = {
@@ -313,6 +314,7 @@ export default class ReturnConfirmList extends Vue {
       applyTimeStart: null,
       billTypeCode: null,
       developName: null,
+      proId: null,
     });
     this.timeList = [];
   }
