@@ -79,6 +79,7 @@ import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '
 };
 let systemToast = false;//提示一次
 let salesToast = false;//提示一次
+let reportToast = false;//提示一次
 //全局异常捕获
 addGlobalUncaughtErrorHandler((event: any) => {
 
@@ -103,6 +104,17 @@ addGlobalUncaughtErrorHandler((event: any) => {
         });
         systemToast = true;
         console.log('qiankun-system全局异常捕获');
+        console.log(event);
+      }
+    }
+    else if (errMsg.includes("application 'ihome-web-report' died in status LOADING_SOURCE_CODE")) {
+      if (!reportToast) {
+        ElementUI.Message({
+          message: 'report模块加载失败',
+          type: 'error'
+        });
+        reportToast = true;
+        console.log('qiankun-report全局异常捕获');
         console.log(event);
       }
     }

@@ -26,7 +26,10 @@ pipeline {
                 sh 'cd ihome/ihome-system && npm install && npm run build'
 				
 				echo 'node build ihome-sales..'
-                sh 'cd ihome/ihome-sales && npm install && npm run build' 
+                sh 'cd ihome/ihome-sales && npm install && npm run build'
+
+				echo 'node build ihome-report..'
+                sh 'cd ihome/ihome-report && npm install && npm run build'	
             }
         }
 		
@@ -39,6 +42,7 @@ pipeline {
 				sh 'rm -rf ../html/web-main/* && cp -r ihome/ihome-main/dist/* ../html/web-main/'
 				sh 'rm -rf ../html/web-system/* && cp -r ihome/ihome-system/dist/* ../html/web-system/'
 				sh 'rm -rf ../html/web-sales/* && cp -r ihome/ihome-sales/dist/* ../html/web-sales/'
+				sh 'rm -rf ../html/web-report/* && cp -r ihome/ihome-report/dist/* ../html/web-report/'
 				
             }
         }	
