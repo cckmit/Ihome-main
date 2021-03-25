@@ -1,0 +1,67 @@
+{
+  "name": "ihome-report",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "api": "vue-cli-service api",
+    "api:dev": "vue-cli-service api  --mode dev",
+    "serve": "vue-cli-service serve",
+    "serve:dev": "vue-cli-service serve --mode dev",
+    "serve:mock": "vue-cli-service serve --mode mock",
+    "build": "vue-cli-service build",
+    "build:alpha": "vue-cli-service build --mode alpha",
+    "build:nginx": "npm run build && xcopy /s/e/y  .\\dist  ..\\..\\nginx\\html\\web-report",
+    "test:unit": "vue-cli-service test:unit",
+    "test:e2e": "vue-cli-service test:e2e",
+    "lint": "vue-cli-service lint"
+  },
+  "vuePlugins": {
+    "service": [
+      "./api.js"
+    ]
+  },
+  "dependencies": {
+    "@types/js-cookie": "^2.2.6",
+    "@types/nprogress": "^0.2.0",
+    "axios": "^0.19.2",
+    "core-js": "^3.6.5",
+    "driver.js": "^0.9.8",
+    "element-ui": "^2.13.2",
+    "ihome-common": "^1.2.95",
+    "js-cookie": "^2.2.1",
+    "nprogress": "^0.2.0",
+    "qiankun": "^2.0.24",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-cropper": "^0.5.5",
+    "vue-property-decorator": "^8.4.2",
+    "vue-router": "^3.2.0",
+    "vuex": "^3.4.0",
+    "vuex-module-decorators": "^0.17.0"
+  },
+  "devDependencies": {
+    "@types/chai": "^4.2.11",
+    "@types/mocha": "^5.2.4",
+    "@typescript-eslint/eslint-plugin": "^2.33.0",
+    "@typescript-eslint/parser": "^2.33.0",
+    "@vue/cli-plugin-babel": "~4.4.0",
+    "@vue/cli-plugin-e2e-nightwatch": "~4.4.0",
+    "@vue/cli-plugin-eslint": "~4.4.0",
+    "@vue/cli-plugin-router": "~4.4.0",
+    "@vue/cli-plugin-typescript": "~4.4.0",
+    "@vue/cli-plugin-unit-mocha": "~4.4.0",
+    "@vue/cli-plugin-vuex": "~4.4.0",
+    "@vue/cli-service": "~4.4.0",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "@vue/test-utils": "^1.0.3",
+    "chai": "^4.1.2",
+    "cross-env": "^7.0.2",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "node-sass": "^4.12.0",
+    "sass-loader": "^8.0.2",
+    "typescript": "~3.9.3",
+    "vue-template-compiler": "^2.6.11",
+    "mockjs": "^1.1.0"
+  }
+}

@@ -117,6 +117,11 @@
               class="app-view-box"
               v-html="content"
             ></div>
+             <div
+              id="root-ihome-web-report"
+              class="app-view-box"
+              v-html="content"
+            ></div>
           </el-main>
         </div>
       </el-container>

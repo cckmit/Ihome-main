@@ -60,27 +60,34 @@ const baseProps: IProps<IPropsData> = {
 let props = Object.assign(baseProps)
 
 const devArray: Array<IRegisterApp<IProps<IPropsData>>> = [
-//     {
-//     routerPrefix: 'web-common',
-//     publicPath: '/web-common/',
-//     port: 8084,
-//     ip: 'localhost',
-//     props: props
-// },
-{
-    routerPrefix: 'web-system',
-    publicPath: '/web-system/',
-    port: 8085,
-    ip: 'localhost',
-    props: props
-},
-{
-    routerPrefix: 'web-sales',
-    publicPath: '/web-sales/',
-    port: 8086,
-    ip: 'localhost',
-    props: props
-}];
+    //     {
+    //     routerPrefix: 'web-common',
+    //     publicPath: '/web-common/',
+    //     port: 8084,
+    //     ip: 'localhost',
+    //     props: props
+    // },
+    {
+        routerPrefix: 'web-system',
+        publicPath: '/web-system/',
+        port: 8085,
+        ip: 'localhost',
+        props: props
+    },
+    {
+        routerPrefix: 'web-sales',
+        publicPath: '/web-sales/',
+        port: 8086,
+        ip: 'localhost',
+        props: props
+    },
+    {
+        routerPrefix: 'web-report',
+        publicPath: '/web-report/',
+        port: 8087,
+        ip: 'localhost',
+        props: props
+    }];
 const proIp = window.location.hostname;
 const proPort = 10280;
 const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [
@@ -104,7 +111,15 @@ const proArray: Array<IRegisterApp<IProps<IPropsData>>> = [
         port: proPort,
         ip: proIp,
         props: props
-    }];
+    },
+    {
+        routerPrefix: 'web-report',
+        publicPath: '/web-report/',
+        port: proPort,
+        ip: proIp,
+        props: props
+    },
+];
 
 const apps: Array<RegistrableApp<any>> = (process.env.NODE_ENV === 'production' ? proArray : devArray).map((item) => {
     let r: RegistrableApp<any> = {
