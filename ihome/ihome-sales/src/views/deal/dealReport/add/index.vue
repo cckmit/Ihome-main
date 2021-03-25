@@ -314,6 +314,7 @@
                 list.canDelete = true;
                 list.fileId = list.fileNo; // 统一id
                 list.fileName = list.attachmentSuffix; // 统一名字
+                list.name = list.attachmentSuffix; // 统一名字
               });
             }
             item.noticeId = item.id;
