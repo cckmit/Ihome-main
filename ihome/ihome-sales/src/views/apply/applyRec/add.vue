@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 17:38:02
+ * @LastEditTime: 2021-03-24 15:41:34
 -->
 <template>
   <IhPage class="text-left">
@@ -1104,7 +1104,6 @@ export default class ApplyRecAdd extends Vue {
   private polyCompanyData: any = null;
   private developData: any = null;
   private devOption: any[] = [];
-  private updateList: any[] = [];
   private confirmVisible = false;
   private rules: any = {
     proId: [{ required: true, message: "请选择项目", trigger: "change" }],
@@ -1580,24 +1579,20 @@ export default class ApplyRecAdd extends Vue {
           cycleIds: [...new Set(newTermIdList)],
         });
         let mapList: any[] = res;
-        // res.forEach((i: any) => {
-        //   mapList.push(...i.annexList);
-        // });
-        // mapList = mapList.map((i: any) => ({
-        //   fileId: i.fileNo,
-        //   fileName: i.attachmentSuffix,
-        //   type: "Contract",
-        // }));
         console.log(mapList);
 
-        if (this.updateList.length) {
-          let newMapList = this.updateList
-            .filter((i: any) => i.type !== "Contract")
-            .concat(mapList);
-          this.getFileListType(newMapList);
-        } else {
-          this.getFileListType(mapList);
+        let arr: any = [];
+        for (let item in this.submitFile) {
+          if (!["Contract"].includes(item) && this.submitFile[item].length) {
+            let hasArr: any = this.submitFile[item].map((v: any) => ({
+              fileId: v.fileId,
+              fileName: v.name,
+              type: v.type,
+            }));
+            arr.push(...hasArr);
+          }
         }
+        this.getFileListType(arr.concat(mapList));
         this.uploadLoad = false;
       } catch (error) {
         console.log(error);
@@ -2154,7 +2149,6 @@ export default class ApplyRecAdd extends Vue {
         applyId: id,
         typeList: ["Contract", "Invoice", "ApplyReport"],
       });
-      this.updateList = list;
       this.getFileListType(list);
       this.orgOption = await get_org_getUserDepartmentList({
         orgType: "Department",

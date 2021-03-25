@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-14 15:38:19
+ * @LastEditTime: 2021-03-22 17:02:38
 -->
 <template>
   <IhPage>
@@ -207,13 +207,13 @@ export default class PartyAadd extends Vue {
         if (i.type === "ContractAnnex") {
           this.contractList.push({
             name: i.attachmentSuffix,
-            url: i.fileNo,
+            fileId: i.fileNo,
           });
         }
         if (i.type === "ArchiveAnnex") {
           this.archiveList.push({
             name: i.attachmentSuffix,
-            url: i.fileNo,
+            fileId: i.fileNo,
           });
         }
       });

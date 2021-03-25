@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-16 15:47:02
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-16 16:08:18
+ * @LastEditTime: 2021-03-23 09:14:30
 -->
 <template>
   <el-dialog
@@ -169,11 +169,10 @@ export default class AddRetPayment extends Vue {
           receiveMoney: i.shuoldReceMoney,
           receiveNo: null,
           applyNo: i.applyNo,
-          receDate: null,
+          receDate: (this.$tool as any).todayStr(),
         },
       ],
     }));
-    console.log(this.data, this.form.addReceList);
   }
 }
 </script>

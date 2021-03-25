@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 16:42:59
+ * @LastEditTime: 2021-03-23 17:34:07
 -->
 <template>
   <IhPage>
@@ -1699,12 +1699,22 @@ export default class PayoffEdit extends Vue {
           ...v,
         };
       });
-      let arr: any = this.info.documentList
-        .filter(
-          (v: any) => !["Contract", "BusinessLicense"].includes(v.fileType)
-        )
-        .concat(res.documentList);
-      this.getFileListType(arr);
+      let arr: any = [];
+      for (let item in this.submitFile) {
+        if (
+          !["Contract", "BusinessLicense"].includes(item) &&
+          this.submitFile[item].length
+        ) {
+          let hasArr: any = this.submitFile[item].map((v: any) => ({
+            exAuto: 0,
+            fileId: v.fileId,
+            fileName: v.name,
+            fileType: v.type,
+          }));
+          arr.push(...hasArr);
+        }
+      }
+      this.getFileListType(arr.concat(res.documentList));
       this.modify = true;
       this.isAgainComputed = true;
     } catch (err) {
@@ -2019,7 +2029,13 @@ export default class PayoffEdit extends Vue {
       channelId,
       projectId,
     });
-    this.info.payDeductDetailResponseList = res ? res : [];
+    this.info.payDeductDetailResponseList = res
+      ? res.map((v: any) => ({
+          ...v,
+          noTaxAmount: v.noTaxAmount ? v.noTaxAmount : 0,
+          tax: v.tax ? v.tax : 0,
+        }))
+      : [];
   }
 
   submit(val: string) {
@@ -2068,7 +2084,6 @@ export default class PayoffEdit extends Vue {
               thisDeduct: v.thisDeduct ? v.thisDeduct : 0,
             })
           );
-          obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
           let arr: any = [];
           Object.values(this.submitFile).forEach((v: any) => {
             if (v.length) {
@@ -2119,6 +2134,7 @@ export default class PayoffEdit extends Vue {
           otherArr = otherArr.filter((v: any) => v.otherDeductionType);
           if (this.$route.name === "payoffAdd") {
             obj.otherDeductionDetailCalculationRequestList = otherArr;
+            obj.payDeductDetailCalculationRequestList = this.info.payDeductDetailResponseList;
             try {
               await post_payApply_entryApply(obj);
               this.finishLoading = false;
@@ -2130,6 +2146,7 @@ export default class PayoffEdit extends Vue {
             }
           } else if (this.$route.name === "payoffEdit") {
             obj.otherDeductionDetailResponseList = otherArr;
+            obj.payDeductDetailResponseList = this.info.payDeductDetailResponseList;
             obj.payApplyVO.id = this.payoffId;
             obj.applyCode = this.info.applyCode;
             try {

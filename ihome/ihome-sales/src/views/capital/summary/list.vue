@@ -205,4 +205,10 @@ export default class SummaryList extends Vue {
 .color-red {
   color: red;
 }
+
+.ih-table {
+  /deep/.el-table__body-wrapper{
+    z-index: 2
+  }
+}
 </style>

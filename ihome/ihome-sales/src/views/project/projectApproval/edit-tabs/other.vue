@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 20:28:51
+ * @LastEditTime: 2021-03-24 10:30:15
 -->
 <template>
   <div>
@@ -507,7 +507,7 @@ export default class Other extends Vue {
       await this.$confirm("是否确定移除?", "提示");
       await post_other_del({
         shareId: row.shareId,
-        termId: row.termId,
+        termId: this.termId,
       });
       this.$message({
         type: "success",
