@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:30:33
+ * @LastEditTime: 2021-03-25 17:46:45
 -->
 <template>
   <IhPage>
@@ -799,7 +799,7 @@ export default class RefundApplyEdit extends Vue {
       (v: any) => ({
         fileId: v.fileId,
         fileName: v.fileName,
-        fileType: v.fileType,
+        type: v.type,
       })
     );
     if (isSubmit) {
@@ -1068,7 +1068,7 @@ export default class RefundApplyEdit extends Vue {
             obj.approvalForms = arr.map((v: any) => ({
               fileId: v.fileId,
               fileName: v.fileName,
-              fileType: v.fileType,
+              type: v.fileType,
             }));
           } else {
             this.$message({

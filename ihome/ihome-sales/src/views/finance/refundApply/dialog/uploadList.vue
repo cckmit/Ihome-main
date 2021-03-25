@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-16 14:57:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-16 18:10:06
+ * @LastEditTime: 2021-03-25 17:36:56
 -->
 <template>
   <el-dialog
@@ -43,7 +43,7 @@
       >
         <template v-slot="{ row }">
           <IhUpload
-            :file-list.sync="row.fileList"
+            v-model="row.fileList"
             :file-size="10"
             :file-type="row.code"
             size="100px"
@@ -57,7 +57,7 @@
       >
         <template v-slot="{ row }">
           <IhUpload
-            :file-list.sync="row.fileList"
+            v-model="row.fileList"
             :file-size="10"
             :file-type="row.code"
             size="100px"
@@ -108,12 +108,7 @@ export default class UploadList extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};
