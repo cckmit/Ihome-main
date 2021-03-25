@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-19 14:45:04
+ * @LastEditTime: 2021-03-25 16:34:06
 -->
 <template>
   <div>
@@ -355,7 +355,7 @@
             prop="name"
           >
             <IhUpload
-              :file-list.sync="houseFileList"
+              v-model="houseFileList"
               :limit="5"
               :file-size="10"
               size="100px"
@@ -518,7 +518,7 @@
             <el-table-column label="附件">
               <template v-slot="{ row }">
                 <IhUpload
-                  :file-list.sync="row.fileList"
+                  v-model="row.fileList"
                   :file-size="10"
                   :file-type="row.code"
                   size="100px"
@@ -817,13 +817,13 @@ export default class EditBasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseList = this.form.proPics.map((v: any) => ({
-        name: v.fileName,
+        fileName: v.fileName,
         fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.fileName,
+        fileName: v.fileName,
         fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
@@ -843,12 +843,7 @@ export default class EditBasicInfo extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};
@@ -917,14 +912,14 @@ export default class EditBasicInfo extends Vue {
       if (this.houseFileList.length) {
         this.houseList = data.map((v: any) => ({
           fileId: v.fileId,
-          fileName: v.name,
+          fileName: v.fileName,
           proAttachEnum: "ProPic",
           exIndex: v.exIndex ? v.exIndex : 0, // 是否设为主页
         }));
       } else {
         this.houseList = data.map((v: any) => ({
           fileId: v.fileId,
-          fileName: v.name,
+          fileName: v.fileName,
           proAttachEnum: "ProPic",
           exIndex: 1, // 是否设为主页
         }));
@@ -1014,7 +1009,7 @@ export default class EditBasicInfo extends Vue {
         }));
         obj.proPics = this.houseList.map((v: any) => ({
           fileId: v.fileId,
-          fileName: v.name ? v.name : v.fileName,
+          fileName: v.fileName,
           proAttachEnum: "ProPic",
           exIndex: v.exIndex,
         }));
@@ -1029,12 +1024,7 @@ export default class EditBasicInfo extends Vue {
         let submitList: any = this.fileListType.map((v: any) => {
           return {
             ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
+            fileList: arr.filter((j: any) => j.type === v.code),
           };
         });
         let isSubmit = true;
@@ -1048,7 +1038,7 @@ export default class EditBasicInfo extends Vue {
         if (isSubmit) {
           obj.attachPics = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
+            fileName: v.fileName,
             type: v.type,
           }));
         } else {
@@ -1127,7 +1117,8 @@ export default class EditBasicInfo extends Vue {
 }
 
 .font {
-  padding: 0 5px;
+  padding: 5px;
+  line-height: 0;
   /deep/ .el-radio__label {
     font-size: 12px;
   }

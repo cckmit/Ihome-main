@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-13 15:24:47
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-25 14:41:33
 -->
 <template>
   <IhPage>
@@ -233,7 +233,7 @@
             <el-table-column label="附件">
               <template v-slot="{ row }">
                 <IhUpload
-                  :file-list.sync="row.fileList"
+                  v-model="row.fileList"
                   :file-size="10"
                   :file-type="row.code"
                   size="100px"
@@ -389,12 +389,7 @@ export default class ChannelRates extends Vue {
           let submitList: any = this.fileListType.map((v: any) => {
             return {
               ...v,
-              fileList: arr
-                .filter((j: any) => j.type === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
+              fileList: arr.filter((j: any) => j.type === v.code),
             };
           });
           let isSubmit = true;
@@ -409,7 +404,7 @@ export default class ChannelRates extends Vue {
             this.resPageInfo.channelGradeAttachmentChanges = arr.map(
               (v: any) => ({
                 fileId: v.fileId,
-                fileName: v.name,
+                fileName: v.fileName,
                 type: v.type,
               })
             );
@@ -469,17 +464,17 @@ export default class ChannelRates extends Vue {
         .filter((j: any) => j.type === v.code)
         .forEach((h: any) => {
           if (h.fileId) {
-            arr.push({
-              ...h,
-              name: h.fileName,
-            });
+            arr.push(h);
           } else {
             arr = [];
           }
         });
       return {
         ...v,
-        fileList: arr,
+        fileList: arr.map((v: any) => ({
+          ...v,
+          exAuto: 1,
+        })),
       };
     });
     let obj: any = {};

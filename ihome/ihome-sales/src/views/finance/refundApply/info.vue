@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 17:18:35
+ * @LastEditTime: 2021-03-25 17:22:47
 -->
 <template>
   <IhPage>
@@ -588,11 +588,12 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
                 :removePermi="false"
+                :editPermi="false"
                 :upload-show="!!row.fileList.length"
                 :limit="row.fileList.length"
               ></IhUpload>
@@ -796,12 +797,7 @@ export default class RefundApplyInfo extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};

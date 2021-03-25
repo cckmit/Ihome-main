@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:29:29
+ * @LastEditTime: 2021-03-25 17:18:06
 -->
 <template>
   <div class="text-left">
@@ -211,12 +211,13 @@
         <el-table-column label="附件">
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               :limit="row.fileList.length"
               size="100px"
               :removePermi="false"
+              :editPermi="false"
               :upload-show="!!row.fileList.length"
             ></IhUpload>
           </template>
@@ -335,12 +336,7 @@ export default class Home extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
   }
@@ -366,11 +362,16 @@ export default class Home extends Vue {
       this.$message.warning("请填写审核意见");
       return;
     }
-    await post_company_audit({
-      reason: this.resPageInfo.checkOpinion,
-      id: this.developerId,
-      pass: val,
-    });
+    try {
+      await post_company_audit({
+        reason: this.resPageInfo.checkOpinion,
+        id: this.developerId,
+        pass: val,
+      });
+    } catch (err) {
+      console.log(err);
+      return;
+    }
     this.$message({
       type: "success",
       message: val ? "审核通过!" : "驳回成功!",

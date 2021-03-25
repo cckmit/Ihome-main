@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-06 17:15:23
+ * @LastEditTime: 2021-03-25 17:17:47
 -->
 <template>
   <div>
@@ -243,12 +243,13 @@
         <el-col :span="24">
           <el-form-item label="楼盘图片">
             <IhUpload
-              :file-list="houseFileList"
+              v-model="houseFileList"
               :limit="houseFileList.length"
               :file-size="10"
               size="100px"
               accept="image/*"
               :removePermi="false"
+              :editPermi="false"
               :upload-show="!!houseFileList.length"
             >
               <template #extend="{ data }">
@@ -257,7 +258,8 @@
                     v-model="radio"
                     :label="data.fileId"
                     disabled
-                  >设为封面图</el-radio>
+                  >设为封面图
+                  </el-radio>
                 </div>
               </template>
             </IhUpload>
@@ -368,13 +370,14 @@
             <el-table-column label="附件">
               <template v-slot="{ row }">
                 <IhUpload
-                  :file-list.sync="row.fileList"
+                  v-model="row.fileList"
                   :file-size="10"
                   :file-type="row.code"
                   :limit="row.fileList.length"
                   :upload-show="!!row.fileList.length"
                   size="100px"
                   :removePermi="false"
+                  :editPermi="false"
                 ></IhUpload>
               </template>
             </el-table-column>
@@ -551,7 +554,7 @@ export default class InfoBasicInfo extends Vue {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
       this.houseFileList = this.form.proPics.map((v: any) => ({
-        name: v.fileName,
+        fileName: v.fileName,
         fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
@@ -569,12 +572,7 @@ export default class InfoBasicInfo extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
   }
@@ -633,7 +631,8 @@ export default class InfoBasicInfo extends Vue {
 }
 
 .font {
-  padding: 0 5px;
+  padding: 5px;
+  line-height: 0;
   /deep/ .el-radio__label {
     font-size: 12px;
   }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-25 15:15:51
+ * @LastEditTime: 2021-03-25 16:04:44
 -->
 <template>
   <div class="house-type text-left">
@@ -35,7 +35,7 @@
         {{ `${item.houseName} ${item.space}m²` }}<br />
         {{
           `${item.room}室${item.hall}厅 ${item.kitchen}厨
-              ${item.toilet}卫 ${item.space}m²`
+          ${item.toilet}卫 ${item.space}m²`
         }}
       </div>
     </div>

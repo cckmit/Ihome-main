@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 10:21:06
+ * @LastEditTime: 2021-03-25 16:29:06
 -->
 <template>
   <div class="upload-container">
@@ -48,7 +48,7 @@
             width: size,
             height: Object.keys($scopedSlots).length ? size : ''}"
           >
-            <div>
+            <div class="mask-button">
               <span
                 v-if="previewPermi"
                 @click="preview(file, i)"
@@ -77,7 +77,6 @@
                 ></i>
               </span>
               <span
-                class="editButton"
                 v-if="editPermi && !file.exAuto"
                 @click="edit(file, i)"
               >
@@ -110,9 +109,11 @@
       <div
         v-if="limitComputed"
         class="item uploader"
-        :style="{ width: size, height: size }"
       >
-        <i class="el-icon-plus icon"></i>
+        <i
+          class="el-icon-plus icon"
+          :style="{ width: size, height: size }"
+        ></i>
         <input
           ref="upload"
           type="file"
@@ -342,7 +343,9 @@ export default class IhUpload extends Vue {
   preview(file: any, index: number) {
     if (file[this.fileId]) {
       this.viewerIndex = index;
-      this.urlList = this.fileList.map((v: any) => v.url);
+      this.urlList = this.fileList.map(
+        (v: any) => `/sales-api/sales-document-cover/file/browse/${v.fileId}`
+      );
       this.isVisible = true;
     } else {
       this.clickViewMsg();
@@ -477,6 +480,7 @@ export default class IhUpload extends Vue {
         obj.size = files[i].size;
         if (this.fileType) {
           obj.fileType = this.fileType;
+          obj.type = this.fileType;
         }
         return obj;
       });
@@ -589,6 +593,7 @@ export default class IhUpload extends Vue {
       obj.size = files[i].size;
       if (this.fileType) {
         obj.fileType = this.fileType;
+        obj.type = this.fileType;
       }
       return obj;
     });
@@ -615,6 +620,7 @@ export default class IhUpload extends Vue {
   border: 1px dashed #ddd;
   display: flex;
   justify-content: space-around;
+  flex-direction: column;
   align-items: center;
   font-size: 40px;
   color: #ddd;
@@ -658,6 +664,9 @@ export default class IhUpload extends Vue {
 .img-item .mask span + span {
   margin-left: 15px;
 }
+.img-item .mask span:nth-child(4) {
+  margin: 0;
+}
 .upload-container .img-item:hover .mask {
   opacity: 1;
 }
@@ -668,15 +677,14 @@ export default class IhUpload extends Vue {
     display: flex;
     justify-content: space-around;
   }
+  .mask-button {
+    display: flex;
+    justify-content: center;
+    flex-flow: row wrap;
+  }
 }
 
 .image-slot {
-  display: flex;
-  justify-content: center;
-}
-
-.editButton {
-  margin-left: 0 !important;
   display: flex;
   justify-content: center;
 }

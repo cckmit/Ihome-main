@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 14:40:48
+ * @LastEditTime: 2021-03-25 17:30:33
 -->
 <template>
   <IhPage>
@@ -556,7 +556,7 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
@@ -784,12 +784,7 @@ export default class RefundApplyEdit extends Vue {
     let submitList: any = data.fileListType.map((v: any) => {
       return {
         ...v,
-        fileList: arr
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr.filter((j: any) => j.type === v.code),
       };
     });
     let isSubmit = true;
@@ -803,8 +798,8 @@ export default class RefundApplyEdit extends Vue {
     this.info.refundItems[this.showUploadIndex].attachmentVOs = arr.map(
       (v: any) => ({
         fileId: v.fileId,
-        fileName: v.name,
-        type: v.type,
+        fileName: v.fileName,
+        fileType: v.fileType,
       })
     );
     if (isSubmit) {
@@ -953,12 +948,7 @@ export default class RefundApplyEdit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};
@@ -1062,12 +1052,7 @@ export default class RefundApplyEdit extends Vue {
           let submitList: any = this.fileListType.map((v: any) => {
             return {
               ...v,
-              fileList: arr
-                .filter((j: any) => j.type === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
+              fileList: arr.filter((j: any) => j.type === v.code),
             };
           });
           let isSubmit = true;
@@ -1082,8 +1067,8 @@ export default class RefundApplyEdit extends Vue {
           if (isSubmit) {
             obj.approvalForms = arr.map((v: any) => ({
               fileId: v.fileId,
-              fileName: v.name,
-              type: v.type,
+              fileName: v.fileName,
+              fileType: v.fileType,
             }));
           } else {
             this.$message({

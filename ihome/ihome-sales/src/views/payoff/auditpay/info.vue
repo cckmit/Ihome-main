@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-26 16:41:13
+ * @LastEditTime: 2021-03-25 17:13:01
 -->
 <template>
   <IhPage>
@@ -674,12 +674,13 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
                 :limit="row.fileList.length"
                 :removePermi="false"
+                :editPermi="false"
                 :upload-show="!!row.fileList.length"
               ></IhUpload>
             </template>
@@ -960,13 +961,7 @@ export default class PayoffEdit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.fileType === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-            exAuto: 1,
-          })),
+        fileList: data.filter((j: any) => j.fileType === v.code),
       };
     });
     this.fileListType = this.fileListType.map((v: any) => {
@@ -1181,8 +1176,9 @@ export default class PayoffEdit extends Vue {
           });
           obj.documentList = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
-            fileType: v.type,
+            fileName: v.fileName,
+            fileType: v.fileType,
+            exAuto: v.exAuto ? v.exAuto : 0,
           }));
         }
         switch (val) {

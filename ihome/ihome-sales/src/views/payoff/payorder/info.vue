@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 11:06:52
+ * @LastEditTime: 2021-03-25 17:16:40
 -->
 <template>
   <IhPage>
@@ -759,12 +759,13 @@
           >
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
                 :limit="row.fileList.length"
                 :removePermi="false"
+                :editPermi="false"
                 :upload-show="!!row.fileList.length"
               ></IhUpload>
             </template>
@@ -775,7 +776,7 @@
           >
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
@@ -1063,12 +1064,7 @@ export default class PayoffEdit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.fileType === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.fileType === v.code),
       };
     });
     this.fileListType = this.fileListType.map((v: any) => {
@@ -1302,12 +1298,7 @@ export default class PayoffEdit extends Vue {
         let submitList: any = this.fileListType.map((v: any) => {
           return {
             ...v,
-            fileList: arr
-              .filter((j: any) => j.fileType === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
+            fileList: arr.filter((j: any) => j.fileType === v.code),
           };
         });
         let isSubmit = true;
@@ -1321,8 +1312,8 @@ export default class PayoffEdit extends Vue {
         if (isSubmit) {
           arr = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
-            fileType: v.type,
+            fileName: v.fileName,
+            fileType: v.fileType,
             exAuto: v.exAuto,
           }));
           obj.documents = arr.filter((v: any) => !v.exAuto);

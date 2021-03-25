@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 11:46:05
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-25 14:47:35
 -->
 <template>
   <IhPage>
@@ -247,7 +247,7 @@
             <el-table-column label="附件">
               <template v-slot="{ row }">
                 <IhUpload
-                  :file-list.sync="row.fileList"
+                  v-model="row.fileList"
                   :file-size="10"
                   :file-type="row.code"
                   size="100px"
@@ -396,10 +396,7 @@ export default class ChannelRates extends Vue {
         .filter((j: any) => j.type === v.code)
         .forEach((h: any) => {
           if (h.fileId) {
-            arr.push({
-              ...h,
-              name: h.fileName,
-            });
+            arr.push(h);
           } else {
             arr = [];
           }
@@ -477,12 +474,7 @@ export default class ChannelRates extends Vue {
         let submitList: any = this.fileListType.map((v: any) => {
           return {
             ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
+            fileList: arr.filter((j: any) => j.type === v.code),
           };
         });
         let isSubmit = true;
@@ -496,7 +488,7 @@ export default class ChannelRates extends Vue {
         if (isSubmit) {
           this.resPageInfo.channelGradeAttachments = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
+            fileName: v.fileName,
             type: v.type,
           }));
         } else {
@@ -510,7 +502,12 @@ export default class ChannelRates extends Vue {
         switch (this.$route.name) {
           case "channelLevelEdit":
             this.resPageInfo.id = this.Id;
-            await post_channelGrade_edit(this.resPageInfo);
+            try {
+              await post_channelGrade_edit(this.resPageInfo);
+            } catch (err) {
+              console.log(err);
+              return;
+            }
             break;
           case "channelLevelChange":
             if (this.changeReason) {
@@ -523,16 +520,10 @@ export default class ChannelRates extends Vue {
               ];
               this.resPageInfo.changeReason = this.changeReason;
               try {
-                // let flag = await post_channelGradeChange_changeCheck({
-                //   oldGradeId: this.resPageInfo.oldGradeId,
-                // });
-                // if (flag) {
                 await post_channelGradeChange_add(this.resPageInfo);
-                // } else {
-                //   this.$message.warning("渠道等级变更中, 请不要提交重复变更");
-                // }
-              } catch (error) {
-                console.log(error);
+              } catch (err) {
+                console.log(err);
+                return;
               }
             } else {
               this.$message.warning("请填写变更原因");
@@ -541,7 +532,12 @@ export default class ChannelRates extends Vue {
             break;
           case "channelLevelAdd":
             if (this.resPageInfo.channelGradeItems.length) {
-              await post_channelGrade_add(this.resPageInfo);
+              try {
+                await post_channelGrade_add(this.resPageInfo);
+              } catch (err) {
+                console.log(err);
+                return;
+              }
             } else {
               this.$message.warning("请填写评级信息");
               return;

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 09:45:37
+ * @LastEditTime: 2021-03-25 12:11:30
 -->
 <template>
   <IhPage>
@@ -339,7 +339,7 @@
         <el-table-column label="附件">
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               size="100px"
@@ -598,12 +598,7 @@ export default class ModifyThe extends Vue {
         let submitList: any = this.fileListType.map((v: any) => {
           return {
             ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
+            fileList: arr.filter((j: any) => j.type === v.code),
           };
         });
         let isSubmit = true;
@@ -617,7 +612,7 @@ export default class ModifyThe extends Vue {
         if (isSubmit) {
           this.info.channelAttachments = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
+            fileName: v.fileName,
             type: v.type,
           }));
         } else {
@@ -697,7 +692,6 @@ export default class ModifyThe extends Vue {
         break;
       case "new-edit":
         this.$set(this.info.channelBanks, value.index, value);
-        // console.log(this.info.channelBanks);
         break;
     }
     this.dialogFormVisible = false;
@@ -742,12 +736,7 @@ export default class ModifyThe extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};

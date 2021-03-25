@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 16:10:04
+ * @LastEditTime: 2021-03-25 14:59:45
 -->
 <template>
   <ih-page>
@@ -303,7 +303,7 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
@@ -506,12 +506,7 @@ export default class Edit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};
@@ -615,12 +610,7 @@ export default class Edit extends Vue {
         let submitList: any = this.fileListType.map((v: any) => {
           return {
             ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
+            fileList: arr.filter((j: any) => j.type === v.code),
           };
         });
         let isSubmit = true;
@@ -634,7 +624,7 @@ export default class Edit extends Vue {
         if (isSubmit) {
           this.resPageInfo.attachmentList = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
+            fileName: v.fileName,
             type: v.type,
           }));
         } else {
@@ -646,17 +636,32 @@ export default class Edit extends Vue {
         }
         switch (this.$route.name) {
           case "firstAgencyAdd":
-            await post_company_add(this.resPageInfo);
+            try {
+              await post_company_add(this.resPageInfo);
+            } catch (err) {
+              console.log(err);
+              return;
+            }
             break;
           case "firstAgencyEdit":
-            await post_company_updateDraft(this.resPageInfo);
+            try {
+              await post_company_updateDraft(this.resPageInfo);
+            } catch (err) {
+              console.log(err);
+              return;
+            }
             break;
           case "firstAgencyChange":
             if (!this.resPageInfo.reason) {
               this.$message.warning("请填写变更原因");
               return;
             }
-            await post_company_update(this.resPageInfo);
+            try {
+              await post_company_update(this.resPageInfo);
+            } catch (err) {
+              console.log(err);
+              return;
+            }
             break;
         }
         this.$goto({ path: `/firstAgency/list` });

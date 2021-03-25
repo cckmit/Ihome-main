@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-03 11:47:34
+ * @LastEditTime: 2021-03-25 17:18:33
 -->
 <template>
   <div>
@@ -469,13 +469,14 @@
         <el-table-column label="附件">
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               :limit="row.fileList.length"
               :upload-show="!!row.fileList.length"
               size="100px"
               :removePermi="false"
+              :editPermi="false"
             ></IhUpload>
           </template>
         </el-table-column>
@@ -580,12 +581,7 @@ export default class FirstAgencyEdit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
   }

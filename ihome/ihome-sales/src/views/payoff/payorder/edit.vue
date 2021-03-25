@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-23 17:34:07
+ * @LastEditTime: 2021-03-25 16:58:03
 -->
 <template>
   <IhPage>
@@ -927,7 +927,7 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
@@ -1609,12 +1609,7 @@ export default class PayoffEdit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.fileType === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.fileType === v.code),
       };
     });
     this.fileListType = this.fileListType.map((v: any) => {
@@ -1708,7 +1703,7 @@ export default class PayoffEdit extends Vue {
           let hasArr: any = this.submitFile[item].map((v: any) => ({
             exAuto: 0,
             fileId: v.fileId,
-            fileName: v.name,
+            fileName: v.fileName,
             fileType: v.type,
           }));
           arr.push(...hasArr);
@@ -2094,12 +2089,7 @@ export default class PayoffEdit extends Vue {
           let submitList: any = this.fileListType.map((v: any) => {
             return {
               ...v,
-              fileList: arr
-                .filter((j: any) => j.fileType === v.code)
-                .map((h: any) => ({
-                  ...h,
-                  name: h.fileName,
-                })),
+              fileList: arr.filter((j: any) => j.fileType === v.code),
             };
           });
           let isSubmit = true;
@@ -2113,9 +2103,9 @@ export default class PayoffEdit extends Vue {
           if (isSubmit) {
             let filterDocumentList = arr.map((v: any) => ({
               fileId: v.fileId,
-              fileName: v.name,
-              fileType: v.type,
-              exAuto: v.exAuto,
+              fileName: v.fileName,
+              fileType: v.fileType,
+              exAuto: v.exAuto ? v.exAuto : 0,
             }));
             obj.documentList = filterDocumentList.filter((v: any) => !v.exAuto);
           } else {

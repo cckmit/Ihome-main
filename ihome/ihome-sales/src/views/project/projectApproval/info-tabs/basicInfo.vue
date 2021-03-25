@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 16:55:40
+ * @LastEditTime: 2021-03-25 17:18:49
 -->
 <template>
   <div>
@@ -471,7 +471,7 @@
         >
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               size="100px"
@@ -485,13 +485,14 @@
         >
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               :limit="row.fileList.length"
               :upload-show="!!row.fileList.length"
               size="100px"
               :removePermi="false"
+              :editPermi="false"
             ></IhUpload>
           </template>
         </el-table-column>
@@ -648,12 +649,7 @@ export default class FirstAgencyEdit extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};
@@ -684,12 +680,7 @@ export default class FirstAgencyEdit extends Vue {
     let submitList: any = this.fileListType.map((v: any) => {
       return {
         ...v,
-        fileList: arr
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr.filter((j: any) => j.type === v.code),
       };
     });
     let isSubmit = true;
@@ -703,7 +694,7 @@ export default class FirstAgencyEdit extends Vue {
     if (isSubmit) {
       let isSubmitArr: any = arr.map((v: any) => ({
         fileId: v.fileId,
-        fileName: v.name,
+        fileName: v.fileName,
         type: v.type,
         exAuto: v.exAuto,
       }));

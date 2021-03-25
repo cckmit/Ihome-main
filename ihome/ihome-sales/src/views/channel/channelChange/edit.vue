@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-20 15:40:38
+ * @LastEditTime: 2021-03-25 14:35:57
 -->
 <template>
   <IhPage>
@@ -332,7 +332,7 @@
         <el-table-column label="附件">
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               size="100px"
@@ -584,12 +584,7 @@ export default class ModifyThe extends Vue {
         let submitList: any = this.fileListType.map((v: any) => {
           return {
             ...v,
-            fileList: arr
-              .filter((j: any) => j.type === v.code)
-              .map((h: any) => ({
-                ...h,
-                name: h.fileName,
-              })),
+            fileList: arr.filter((j: any) => j.type === v.code),
           };
         });
         let isSubmit = true;
@@ -603,7 +598,7 @@ export default class ModifyThe extends Vue {
         if (isSubmit) {
           this.info.channelAttachmentChanges = arr.map((v: any) => ({
             fileId: v.fileId,
-            fileName: v.name,
+            fileName: v.fileName,
             type: v.type,
           }));
         } else {

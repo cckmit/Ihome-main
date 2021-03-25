@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:28:41
+ * @LastEditTime: 2021-03-25 17:15:38
 -->
 <template>
   <div class="text-left">
@@ -187,13 +187,14 @@
         >
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               :limit="row.fileList.length"
               :upload-show="!!row.fileList.length"
               size="100px"
               :removePermi="false"
+              :editPermi="false"
             ></IhUpload>
           </template>
         </el-table-column>
@@ -340,10 +341,7 @@ export default class Home extends Vue {
         .filter((j: any) => j.type === v.code)
         .forEach((h: any) => {
           if (h.fileId) {
-            arr.push({
-              ...h,
-              name: h.fileName,
-            });
+            arr.push(h);
           } else {
             arr = [];
           }

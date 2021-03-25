@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-16 14:54:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 10:45:45
+ * @LastEditTime: 2021-03-25 11:42:50
 -->
 <template>
   <div>
@@ -52,8 +52,8 @@ import { Component, Vue } from "vue-property-decorator";
 export default class UploadDemo extends Vue {
   private tableData: any = [];
   private fileList: any = [];
-  private isCrop = true; // 图片裁剪(只针对于图片上传且开启后不可多传)
-  private size = "100px"; // 上传框的长宽为100px
+  private isCrop = false; // 图片裁剪(只针对于图片上传且开启后不可多传)
+  private size = "150px"; // 上传框的长宽为100px
   private limit = 5; // 上传文件的个数
   private fileSize = 10; // 限制上传文件大小为10M
   private isMove = true; // 是否开启左右切换功能
