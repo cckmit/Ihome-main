@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-28 15:05:47
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-25 09:39:56
+ * @LastEditTime: 2021-03-25 11:51:38
 -->
 <template>
   <el-dialog
@@ -38,6 +38,7 @@
         class="margin-left-20"
         size="small"
         type="primary"
+        :loading="downLoad"
         @click="download()"
       >下载模板</el-button>
     </el-upload>
@@ -49,44 +50,40 @@ import { Component, Vue } from "vue-property-decorator";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import { post_bankBranch_importData } from "../../../../api/finance/index";
-import { post_fileTemplate_list } from "../../../../api/sales-document-cover/index";
 
 @Component({})
 export default class BankImport extends Vue {
   dialogVisible = true;
   fileList: any = [];
   loading: any = null;
+  downLoad = false;
 
   private async download() {
     const token: any = getToken();
-    let { list } = await post_fileTemplate_list({
-      moduleName: "Finance",
-      pageNum: 1,
-      pageSize: 10,
-      templateName: "全国开户网点.xlsx",
-    });
-    if (list.length) {
-      const fileId = list[0].fileId;
-      axios({
-        method: "GET",
-        url: `/sales-api/sales-document-cover/file/download/${fileId}`,
-        xsrfHeaderName: "Authorization",
-        responseType: "blob",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "bearer " + token,
-        },
-      }).then((res: any) => {
+    this.downLoad = true;
+    axios({
+      method: "GET",
+      url: `/sales-api/finance/bankBranch/getExcelTemplate`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+    })
+      .then((res: any) => {
         const href = window.URL.createObjectURL(res.data);
         const $a = document.createElement("a");
         $a.href = href;
         $a.download = "全国开户网点 (导入模板).xlsx";
         $a.click();
         $a.remove();
+        this.downLoad = false;
+      })
+      .catch((err: any) => {
+        console.log(err);
+        this.downLoad = false;
       });
-    } else {
-      this.$message.warning("没找到附件下载");
-    }
   }
   async httpRequest(req: any) {
     const fd = new FormData();
