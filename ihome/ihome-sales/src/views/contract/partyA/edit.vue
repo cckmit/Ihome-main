@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-22 17:02:38
+ * @LastEditTime: 2021-03-26 10:32:19
 -->
 <template>
   <IhPage>
@@ -123,10 +123,11 @@
             <el-form-item label="甲方合同附件">
               <IhUpload
                 v-if="contractList.length"
-                :file-list="contractList"
+                v-model="contractList"
                 size="100px"
                 :limit="1"
                 :removePermi="false"
+                :editPermi="false"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -136,10 +137,11 @@
             <el-form-item label="盖章版归档">
               <IhUpload
                 v-if="archiveList.length"
-                :file-list="archiveList"
+                v-model="archiveList"
                 size="100px"
                 :limit="1"
                 :removePermi="false"
+                :editPermi="false"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -206,13 +208,13 @@ export default class PartyAadd extends Vue {
       res.fileList.forEach((i: any) => {
         if (i.type === "ContractAnnex") {
           this.contractList.push({
-            name: i.attachmentSuffix,
+            fileName: i.attachmentSuffix,
             fileId: i.fileNo,
           });
         }
         if (i.type === "ArchiveAnnex") {
           this.archiveList.push({
-            name: i.attachmentSuffix,
+            fileName: i.attachmentSuffix,
             fileId: i.fileNo,
           });
         }

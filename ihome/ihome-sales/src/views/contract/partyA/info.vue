@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 16:00:37
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-15 16:56:01
+ * @LastEditTime: 2021-03-26 10:26:14
 -->
 <template>
   <IhPage class="text-left partyA-info">
@@ -123,7 +123,7 @@
           <el-col :span="24">
             <el-form-item label="甲方合同附件">
               <IhUpload
-                :file-list="contractList"
+                v-model="contractList"
                 size="100px"
                 @newFileList="handleContract"
               ></IhUpload>
@@ -139,7 +139,7 @@
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
-                :file-list="archiveList"
+                v-model="archiveList"
                 size="100px"
                 class="upload"
                 @newFileList="handleArchive"
@@ -261,7 +261,7 @@ export default class PartyAadd extends Vue {
         return i.response;
       })
       .map((item: any) => ({
-        attachmentSuffix: item.name,
+        attachmentSuffix: item.fileName,
         fileNo: item.fileId,
         type: "ContractAnnex",
       }));
@@ -272,7 +272,7 @@ export default class PartyAadd extends Vue {
         return i.response;
       })
       .map((item: any) => ({
-        attachmentSuffix: item.name,
+        attachmentSuffix: item.fileName,
         fileNo: item.fileId,
         type: "ArchiveAnnex",
       }));
@@ -320,14 +320,14 @@ export default class PartyAadd extends Vue {
       this.formData.fileList.forEach((i: any) => {
         if (i.type === "ContractAnnex") {
           this.contractList.push({
-            name: i.attachmentSuffix,
+            fileName: i.attachmentSuffix,
             fileId: i.fileNo,
             exAuto: 1,
           });
         }
         if (i.type === "ArchiveAnnex") {
           this.archiveList.push({
-            name: i.attachmentSuffix,
+            fileName: i.attachmentSuffix,
             fileId: i.fileNo,
             exAuto: 1,
           });

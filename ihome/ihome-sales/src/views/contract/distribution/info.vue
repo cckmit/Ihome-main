@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-17 19:33:01
+ * @LastEditTime: 2021-03-26 10:43:44
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -310,7 +310,7 @@
             <el-form-item label="盖章版归档">
               <IhUpload
                 v-if="['DistributionDetail', 'DistributionDuplicate'].includes($route.name)  ? true : fileList.length"
-                :file-list="fileList"
+                v-model="fileList"
                 @newFileList="handleSealFile"
                 :limit="['DistributionDetail', 'DistributionDuplicate'].includes($route.name) ? 99 : fileList.length"
                 size="100px"
@@ -418,7 +418,7 @@ export default class DistributionDetail extends Vue {
       })
       .map((v: any) => ({
         type: "ArchiveAnnex",
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         fileNo: v.fileId,
       }));
   }
@@ -448,7 +448,7 @@ export default class DistributionDetail extends Vue {
       let res = await get_distribution_detail__id({ id: id });
       this.ruleForm = { ...this.ruleForm, ...res };
       this.fileList = res.annexList.map((i: any) => ({
-        name: i.attachmentSuffix,
+        fileName: i.attachmentSuffix,
         fileId: i.fileNo,
         exAuto: 1,
       }));
@@ -458,7 +458,7 @@ export default class DistributionDetail extends Vue {
       let res = await get_distribution_deal_detail__contractNo({ contractNo });
       this.ruleForm = { ...this.ruleForm, ...res };
       this.fileList = res.annexList.map((i: any) => ({
-        name: i.attachmentSuffix,
+        fileName: i.attachmentSuffix,
         fileId: i.fileNo,
         exAuto: 1,
       }));

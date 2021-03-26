@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 17:27:00
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-06 15:11:00
+ * @LastEditTime: 2021-03-26 10:03:56
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -164,7 +164,7 @@
           <el-col :span="24">
             <el-form-item label="附件">
               <IhUpload
-                :file-list="fileList"
+                v-model="fileList"
                 @newFileList="handleFile"
                 uploadAccept="image"
                 accept="image/*"
@@ -184,7 +184,7 @@
           <el-col :span="24">
             <el-form-item label="认购书附件">
               <IhUpload
-                :file-list="subscripList"
+                v-model="subscripList"
                 @newFileList="handleAddSub"
                 uploadAccept="image"
                 accept="image/*"
@@ -232,7 +232,7 @@ export default class DiscountDetail extends Vue {
         return i.response;
       })
       .map((v: any) => ({
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         fileNo: v.fileId,
         type: "NoticeAttachment",
         contractId: this.resInfo.id,
@@ -244,7 +244,7 @@ export default class DiscountDetail extends Vue {
         return i.response;
       })
       .map((v: any) => ({
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         fileNo: v.fileId,
         type: "Subscription",
         contractId: this.resInfo.id,
@@ -266,12 +266,12 @@ export default class DiscountDetail extends Vue {
           return i.type === "NoticeAttachment";
         })
         .map((item: any) => ({
-          name: item.attachmentSuffix,
+          fileName: item.attachmentSuffix,
           fileId: item.fileNo,
           exAuto: 1,
         }));
       this.subscripList = this.resInfo.subscriptionAnnex.map((i: any) => ({
-        name: i.attachmentSuffix,
+        fileName: i.attachmentSuffix,
         fileId: i.fileNo,
         exAuto: 1,
       }));
