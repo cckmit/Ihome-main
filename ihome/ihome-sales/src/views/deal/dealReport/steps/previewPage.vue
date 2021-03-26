@@ -490,10 +490,11 @@
                   :isCrop="false"
                   :isMove="false"
                   :removePermi="false"
+                  :editPermi="false"
                   size="100px"
                   :file-type="scope.row.code"
                   :limit="scope.row.showFileList.length"
-                  :file-list.sync="scope.row.showFileList"
+                  v-model="scope.row.showFileList"
                   :upload-show="!!scope.row.showFileList.length"
                 ></IhUpload>
               </template>

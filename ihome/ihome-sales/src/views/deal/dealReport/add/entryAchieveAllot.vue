@@ -1021,13 +1021,10 @@
             <template slot-scope="scope">
               <IhUpload
                 @newFileList="getNewFile"
-                :isCrop="false"
-                :isMove="false"
-                :removePermi="true"
                 size="100px"
                 :limit="100"
                 :file-size="10"
-                :file-list.sync="scope.row.defaultFileList"
+                v-model="scope.row.defaultFileList"
                 :file-type="scope.row.code"
               ></IhUpload>
             </template>
@@ -1738,7 +1735,7 @@
                 vo.defaultFileList.push(
                   {
                     ...item,
-                    name: item.fileName,
+                    // name: item.fileName,
                     exAuto: true
                   }
                 );
@@ -2694,8 +2691,8 @@
               list.defaultFileList.push(
                 {
                   ...item,
-                  name: item.fileName,
-                  canDelete: true, // 是否可以删除
+                  // name: item.fileName,
+                  exAuto: true, // 是否可以删除
                 }
               )
             }
@@ -3830,7 +3827,7 @@
                     {
                       dealId: this.id,
                       fileId: list.fileId,
-                      fileName: list.name,
+                      fileName: list.fileName,
                       fileType: item.code
                     }
                   )
@@ -3838,7 +3835,7 @@
                   obj.basic.documentVO.push(
                     {
                       fileId: list.fileId,
-                      fileName: list.name,
+                      fileName: list.fileName,
                       fileType: item.code
                     }
                   )
