@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 16:34:06
+ * @LastEditTime: 2021-03-26 16:43:10
 -->
 <template>
   <div>
@@ -1072,6 +1072,7 @@ export default class EditBasicInfo extends Vue {
               this.loadSave = false;
             }
           } else if (submittype === "submit") {
+            await post_project_update(obj);
             await post_project_auditWait(obj);
             this.houseList = [];
             this.$message.success("提交成功");
