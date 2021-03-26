@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 14:40:48
+ * @LastEditTime: 2021-03-26 14:51:54
 -->
 <template>
   <IhPage>
@@ -511,7 +511,10 @@
             <td height="50">原收款金额</td>
             <td>{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>{{info.refundInfo.amount}}</td>
+            <td>
+              <div>{{info.refundInfo.capitalizedAmount}}</div>
+              <div>{{info.refundInfo.lowercaseAmount}}</div>
+            </td>
           </tr>
           <tr>
             <td colspan="6">
@@ -679,6 +682,7 @@ export default class RefundApplyEdit extends Vue {
   computedLoading: any = false;
   showUploadIndex: any = 0;
   isAgainComputed: any = true;
+  checkSet: any = new Set();
 
   @Watch("info.orgId", { deep: true })
   getAccountOptins(val: any) {
@@ -885,11 +889,12 @@ export default class RefundApplyEdit extends Vue {
     const res = await post_bankAccount_getByOrgId__orgId({
       orgId: val,
     });
+    this.payerAccountOptions = res;
     if (res.length === 1) {
       this.info.accountNo = res[0].accountNo;
       this.info.accountId = res[0].id;
+      this.accountNoChange(res[0].accountNo);
     }
-    this.payerAccountOptions = res;
   }
 
   accountNoChange(data: any) {
@@ -933,8 +938,11 @@ export default class RefundApplyEdit extends Vue {
             uncollectedAmount = 0;
           data.forEach((i: any) => {
             receivableAmount += i.receivableAmount;
-            actualAmount += i.actualAmount;
             uncollectedAmount += i.uncollectedAmount;
+            if (!this.checkSet.has(i.dealNo)) {
+              actualAmount += i.actualAmount;
+              this.checkSet.add(i.dealNo);
+            }
           });
           sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
           实收: ${this.$math.tofixed(actualAmount, 2)} 

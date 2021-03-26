@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-09 16:17:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-17 16:42:16
+ * @LastEditTime: 2021-03-26 10:55:00
 -->
 <template>
   <div class="upload">
@@ -163,7 +163,7 @@ export default class IhUpload extends Vue {
   accept!: string;
   @Prop({
     type: String,
-    default: "150px",
+    default: "100px",
   })
   size!: string;
   @Prop({

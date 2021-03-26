@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-24 15:18:23
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-26 11:33:10
 -->
 <template>
   <IhPage label-width="120px">
@@ -436,7 +436,7 @@ export default class PayoffList extends Vue {
   // 导出
   async exportMsg() {
     if (!this.resPageInfo.list.length) {
-      this.$message.warning("请发起支付申请");
+      this.$message.warning("至少勾选一条付款申请");
       return;
     } else {
       const token: any = getToken();
