@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-17 19:43:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-01-28 14:17:23
+ * @LastEditTime: 2021-03-26 11:24:20
 -->
 <template>
   <IhPage class="text-left">
@@ -119,13 +119,14 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 :limit="row.fileList.length"
                 :upload-show="!!row.fileList.length"
                 size="100px"
                 :removePermi="false"
+                :editPermi="false"
               ></IhUpload>
             </template>
           </el-table-column>
@@ -192,12 +193,7 @@ export default class ReceiptInfo extends Vue {
       let resArr: any = Array.from(new Set(arr));
       this.file = resArr.map((v: any) => ({
         type: v,
-        fileList: this.info.attachments
-          .filter((item: any) => item.type === v)
-          .map((val: any) => ({
-            fileId: val.fileId,
-            name: val.fileName,
-          })),
+        fileList: this.info.attachments.filter((item: any) => item.type === v),
       }));
     }
   }

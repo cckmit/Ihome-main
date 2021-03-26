@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-15 15:30:33
+ * @LastEditTime: 2021-03-26 11:18:20
 -->
 <template>
   <el-dialog
@@ -166,7 +166,7 @@
           >
             <IhUpload
               size="100px"
-              :file-list="fileList"
+              v-model="fileList"
               @newFileList="handleFile"
             ></IhUpload>
           </el-form-item>
@@ -273,8 +273,9 @@ export default class Handadel extends Vue {
     this.form.attachments = list.map((i: any) => {
       let index = i.name.lastIndexOf(".");
       return {
-        fileId: i.fileId,
-        fileName: i.name,
+        // fileId: i.fileId,
+        // fileName: i.name,
+        ...i,
         type: i.name.substring(index + 1, i.name.length),
       };
     });

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-16 10:49:04
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-26 11:31:01
 -->
 <template>
   <IhPage>
@@ -592,11 +592,12 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 size="100px"
                 :removePermi="false"
+                :editPermi="false"
                 :upload-show="!!row.fileList.length"
                 :limit="row.fileList.length"
               ></IhUpload>
@@ -847,12 +848,7 @@ export default class RefundToExamineToExamine extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};
