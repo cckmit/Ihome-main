@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-16 14:57:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:36:56
+ * @LastEditTime: 2021-03-26 16:21:23
 -->
 <template>
   <el-dialog
@@ -62,6 +62,7 @@
             :file-type="row.code"
             size="100px"
             :removePermi="false"
+            :editPermi="false"
             :upload-show="!!row.fileList.length"
             :limit="row.fileList.length"
           ></IhUpload>

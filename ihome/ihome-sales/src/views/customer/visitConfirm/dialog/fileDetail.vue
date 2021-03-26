@@ -3,8 +3,8 @@
  * @version: 
  * @Author: yag
  * @Date: 2021年2月9日10:24:09
- * @LastEditors: yag
- * @LastEditTime: 2021年2月9日17:38:32
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-26 16:09:31
 -->
 <template>
   <el-dialog
@@ -18,18 +18,29 @@
     class="text-left"
   >
     <div class="padding-left-20">
-      <el-table style="width: 100%" :data="fileListType">
-        <el-table-column prop="type" width="180" label="类型" align="center">
+      <el-table
+        style="width: 100%"
+        :data="fileListType"
+      >
+        <el-table-column
+          prop="type"
+          width="180"
+          label="类型"
+          align="center"
+        >
           <template v-slot="{ row }">
             <div>
-              <span style="color: red" v-if="row.subType">*</span>{{ row.name }}
+              <span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{ row.name }}
             </div>
           </template>
         </el-table-column>
         <el-table-column label="附件">
           <template v-slot="{ row }">
             <IhUpload
-              :file-list.sync="row.fileList"
+              v-model="row.fileList"
               :file-size="10"
               :file-type="row.code"
               size="100px"
@@ -41,9 +52,11 @@
     </div>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
-      <el-button type="primary" @click="submit()" :loading="loading"
-        >确 认</el-button
-      >
+      <el-button
+        type="primary"
+        @click="submit()"
+        :loading="loading"
+      >确 认</el-button>
     </template>
   </el-dialog>
 </template>
@@ -92,12 +105,7 @@ export default class FileDetail extends Vue {
     let submitList: any = this.fileListType.map((v: any) => {
       return {
         ...v,
-        fileList: arr
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: arr.filter((j: any) => j.type === v.code),
       };
     });
     let isSubmit = true;
@@ -111,7 +119,7 @@ export default class FileDetail extends Vue {
     if (isSubmit) {
       this.form.attachments = arr.map((v: any) => ({
         fileId: v.fileId,
-        fileName: v.name,
+        fileName: v.fileName,
         type: v.type,
       }));
     } else {
@@ -139,12 +147,7 @@ export default class FileDetail extends Vue {
     this.fileListType = list.map((v: any) => {
       return {
         ...v,
-        fileList: data
-          .filter((j: any) => j.type === v.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === v.code),
       };
     });
     let obj: any = {};

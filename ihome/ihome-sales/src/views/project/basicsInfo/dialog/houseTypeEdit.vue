@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:16:19
+ * @LastEditTime: 2021-03-26 16:04:00
 -->
 <template>
   <el-dialog
@@ -28,9 +28,9 @@
         <el-col :span="16">
           <el-form-item label="户型图：">
             <IhUpload
-              :file-list="form.fileList"
+              v-model="form.fileList"
               accept="image/*"
-              size="100px"
+              upload-accept="image"
               :limit="1"
               @newFileList="newFileList"
             ></IhUpload>
@@ -174,7 +174,6 @@ import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 export default class HouseTypeEdit extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-
   form: any = {
     houseName: null,
     space: null,
@@ -242,21 +241,19 @@ export default class HouseTypeEdit extends Vue {
     }
   }
   async created() {
-    this.form = { ...this.data };
+    this.form = { ...this.data, fileList: [] };
     if (Object.keys(this.data).length && this.data.picAddr) {
       this.form.fileList = [
         {
           fileId: this.data.picAddr,
-          name: `${this.data.houseName}.jpg`,
+          fileName: `${this.data.houseName}.jpg`,
         },
       ];
-    } else {
-      this.form.fileList = [];
     }
   }
   newFileList(data: any) {
     if (data.length) {
-      this.$set(this.form.fileList, 0, data[0]);
+      this.form.fileList = data;
     } else {
       this.form.fileList = [];
     }

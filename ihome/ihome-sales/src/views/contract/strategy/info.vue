@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 14:41:06
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 08:46:21
+ * @LastEditTime: 2021-03-26 16:19:28
 -->
 <template>
   <IhPage class="text-left strategy-info">
@@ -111,7 +111,8 @@
             <el-form-item label="未盖章扫描件">
               <IhUpload
                 :removePermi="false"
-                :file-list="fileList"
+                :editPermi="false"
+                v-model="fileList"
                 size="100px"
                 @newFileList="handleNoSealFile"
               ></IhUpload>
@@ -123,7 +124,8 @@
             <el-form-item label="盖章版归档">
               <IhUpload
                 :removePermi="false"
-                :file-list="fileList2"
+                :editPermi="false"
+                v-model="fileList2"
                 size="100px"
                 class="update"
                 @newFileList="handleSealFile"
@@ -168,7 +170,7 @@ export default class StrategyDetail extends Vue {
     this.noSealFile = val.map((v: any) => {
       return {
         type: "NoSeal",
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         url: v.fileId,
       };
     });
@@ -177,7 +179,7 @@ export default class StrategyDetail extends Vue {
     this.sealFile = val.map((v: any) => {
       return {
         type: "Seal",
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         url: v.fileId,
       };
     });
@@ -193,13 +195,13 @@ export default class StrategyDetail extends Vue {
         switch (item.type) {
           case "NoSeal":
             this.fileList.push({
-              name: item.attachmentSuffix,
+              fileName: item.attachmentSuffix,
               fileId: item.url,
             });
             break;
           case "Seal":
             this.fileList2.push({
-              name: item.attachmentSuffix,
+              fileName: item.attachmentSuffix,
               fileId: item.url,
             });
             break;

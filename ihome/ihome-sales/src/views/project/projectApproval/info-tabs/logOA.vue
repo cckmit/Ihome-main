@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:29:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-19 10:08:10
+ * @LastEditTime: 2021-03-26 16:17:16
 -->
 <template>
   <div>
@@ -109,46 +109,6 @@
         </el-table-column>
       </el-table>
     </div>
-
-    <!-- <br />
-    <p class="ih-info-title">OA附言信息</p>
-    <div class="padding-left-20">
-      <el-table
-        class="ih-table"
-        :data="info.oafyVOS"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="sponsor"
-          label="OA附言发起人"
-        >
-        </el-table-column>
-        <el-table-column
-          label="OA附言内容"
-          prop="oaContent"
-        >
-        </el-table-column>
-        <el-table-column
-          label="OA附言时间"
-          prop="oaTime"
-        >
-        </el-table-column>
-        <el-table-column
-          label="OA附言附件"
-          align="center"
-        >
-          <template v-slot="{ row }">
-            <IhUpload
-              size="100px"
-              :fileList="row.fileList"
-              :limit="row.fileList.length"
-              :upload-show="!!row.fileList.length"
-              :removePermi="false"
-            />
-          </template>
-        </el-table-column>
-      </el-table>
-    </div> -->
   </div>
 </template>
 <script lang="ts">

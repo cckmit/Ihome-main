@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-20 15:20:33
+ * @LastEditTime: 2021-03-26 16:13:58
 -->
 <template>
   <el-dialog
@@ -191,7 +191,7 @@
             required
           >
             <IhUpload
-              :file-list="partyFileList"
+              v-model="partyFileList"
               size="100px"
               @newFileList="partyNewFileList"
             ></IhUpload>
@@ -205,7 +205,7 @@
             required
           >
             <IhUpload
-              :file-list="stampFileList"
+              v-model="stampFileList"
               size="100px"
               @newFileList="stampNewFileList"
             ></IhUpload>
@@ -320,7 +320,7 @@ export default class PartyAAdd extends Vue {
     this.partyList = [];
     data.forEach((v: any) => {
       this.partyList.push({
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         fileNo: v.response[0].fileId,
         type: "ContractAnnex",
       });
@@ -331,7 +331,7 @@ export default class PartyAAdd extends Vue {
     this.stampList = [];
     data.forEach((v: any) => {
       this.stampList.push({
-        attachmentSuffix: v.name,
+        attachmentSuffix: v.fileName,
         fileNo: v.response[0].fileId,
         type: "ArchiveAnnex",
       });

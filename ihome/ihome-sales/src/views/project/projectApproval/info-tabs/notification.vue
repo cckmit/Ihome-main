@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 11:27:40
+ * @LastEditTime: 2021-03-26 16:17:53
 -->
 <template>
   <div>
@@ -217,10 +217,11 @@
                 class="file-item"
               >
                 <IhUpload
-                  :file-list.sync="fileList"
+                  v-model="fileList"
                   size="100px"
                   :limit="fileList.length"
                   :removePermi="false"
+                  :editPermi="false"
                   :upload-show="!!fileList.length"
                 ></IhUpload>
               </el-form-item>
@@ -302,7 +303,7 @@ export default class Notification extends Vue {
       this.info = { ...res };
       if (res.attachTermVOS.length) {
         this.fileList = res.attachTermVOS.map((v: any) => ({
-          name: v.fileName,
+          fileName: v.fileName,
           fileId: v.fileId,
         }));
       }

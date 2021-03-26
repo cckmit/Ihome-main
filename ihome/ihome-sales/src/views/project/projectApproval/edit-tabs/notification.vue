@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 11:27:32
+ * @LastEditTime: 2021-03-26 16:15:05
 -->
 <template>
   <div>
@@ -296,7 +296,7 @@
                 class="file-item"
               >
                 <IhUpload
-                  :file-list="fileList"
+                  v-model="fileList"
                   size="100px"
                   @newFileList="newFileList"
                 ></IhUpload>
@@ -590,12 +590,12 @@ export default class Notification extends Vue {
         });
         break;
       case "partyARefundDays":
-        if (data == 0 || data <0){
-            this.$notify({
-              title: '提示',
-              message: '退款天数必须大于0',
-              duration: 0
-            });
+        if (data == 0 || data < 0) {
+          this.$notify({
+            title: "提示",
+            message: "退款天数必须大于0",
+            duration: 0,
+          });
         }
         await post_preferential_updateRetuenDays({
           partyARefundDays: data,
@@ -683,7 +683,7 @@ export default class Notification extends Vue {
   newFileList(data: any) {
     let arr = data.map((v: any) => ({
       fileId: v.fileId,
-      fileName: v.name,
+      fileName: v.fileName,
     }));
     arr.forEach((v: any, i: number) => {
       this.$set(this.uploadList, i, arr[i]);
