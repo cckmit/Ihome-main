@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-16 15:15:35
+ * @LastEditTime: 2021-03-26 16:24:45
 -->
 <template>
   <ih-page>
@@ -52,14 +52,11 @@
                 <el-form-item label="纸质版附件">
                   <IhUpload
                     @newFileList="getNewFile"
-                    :isCrop="false"
-                    :isMove="false"
-                    :removePermi="true"
                     size="100px"
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    :file-list.sync="fileList"
+                    v-model="fileList"
                     file-type="suppAnnexList"
                   ></IhUpload>
                 </el-form-item>
@@ -106,14 +103,11 @@
             <el-form-item v-if="form.finishProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
                 @newFileList="getNewFile"
-                :isCrop="false"
-                :isMove="false"
-                :removePermi="true"
                 size="100px"
                 :limit="10"
                 accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                 :file-size="10"
-                :file-list.sync="fileList"
+                v-model="fileList"
                 file-type="finishAnnexList"
               ></IhUpload>
             </el-form-item>
@@ -220,14 +214,11 @@
                 <el-form-item label="纸质版附件">
                   <IhUpload
                     @newFileList="getNewFile"
-                    :isCrop="false"
-                    :isMove="false"
-                    :removePermi="true"
                     size="100px"
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    :file-list.sync="fileList"
+                    v-model="fileList"
                     file-type="offerAnnexList"
                   ></IhUpload>
                 </el-form-item>
@@ -236,14 +227,11 @@
                 <el-form-item label="认购书附件" :prop="form.offerMode === 'Manual' ? 'offerAnnexList' : 'empty'">
                   <IhUpload
                     @newFileList="getNewFile"
-                    :isCrop="false"
-                    :isMove="false"
-                    :removePermi="true"
                     size="100px"
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    :file-list.sync="fileList"
+                    v-model="fileList"
                     file-type="Subscription"
                   ></IhUpload>
                 </el-form-item>
@@ -302,14 +290,11 @@
             <el-form-item v-if="form.refundProtocolType === 'PaperTemplate'" label="纸质版附件">
               <IhUpload
                 @newFileList="getNewFile"
-                :isCrop="false"
-                :isMove="false"
-                :removePermi="true"
                 size="100px"
                 :limit="10"
                 accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                 :file-size="10"
-                :file-list.sync="fileList"
+                v-model="fileList"
                 file-type="refundAnnexList"
               ></IhUpload>
             </el-form-item>
