@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 13:20:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-23 17:23:18
+ * @LastEditTime: 2021-03-26 16:24:20
 -->
 <template>
   <ih-page class="text-left">
@@ -596,12 +596,11 @@
               <el-table-column prop="fileName" label="附件" min-width="300">
                 <template slot-scope="scope">
                   <IhUpload
-                    :isCrop="false"
-                    :isMove="false"
                     :removePermi="false"
                     size="100px"
+                    :editPermi="false"
                     :limit="scope.row.fileList.length"
-                    :file-list.sync="scope.row.fileList"
+                    v-model="scope.row.fileList"
                     :file-type="scope.row.code"
                     :upload-show="!!scope.row.fileList.length"
                   ></IhUpload>
