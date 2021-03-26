@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 16:13:58
+ * @LastEditTime: 2021-03-26 16:36:51
 -->
 <template>
   <el-dialog
@@ -146,18 +146,8 @@
               v-model="form.handlerId"
               clearable
               value-key="id"
+              :search-name="searchName"
             >
-              <!-- 自定义模板使用 v-slot返回来的data：当前每条的数据；index：每一条数据的下标 -->
-              <template v-slot="{ data }">
-                <span style="float: left">{{ data.name }}</span>
-                <span style="
-                  margin-left: 20px;
-                  float: right;
-                  color: #8492a6;
-                  font-size: 13px;">
-                  {{ data.account }}
-                </span>
-              </template>
             </IhSelectPageUser>
           </el-form-item>
         </el-col>
@@ -259,6 +249,7 @@ export default class PartyAAdd extends Vue {
     confirmerContact: null,
     timeList: [],
   };
+  searchName: any = "";
   partyBOptions: any = [];
   branchOption: any = [];
   partyList: any = [];
@@ -397,6 +388,8 @@ export default class PartyAAdd extends Vue {
 
   async getPartyB() {
     this.partyBOptions = await post_company_getAll({ name: "" });
+    this.form.handlerId = (this.$root as any).userInfo.id;
+    this.searchName = (this.$root as any).userInfo.name;
   }
 
   created() {
