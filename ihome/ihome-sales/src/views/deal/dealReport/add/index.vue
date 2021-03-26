@@ -311,7 +311,7 @@
             // 附件增加fileId
             if (item.annexList && item.annexList.length) {
               item.annexList.forEach((list: any) => {
-                list.canDelete = true;
+                list.exAuto = true; // 不能修改
                 list.fileId = list.fileNo; // 统一id
                 list.fileName = list.attachmentSuffix; // 统一名字
                 list.name = list.attachmentSuffix; // 统一名字

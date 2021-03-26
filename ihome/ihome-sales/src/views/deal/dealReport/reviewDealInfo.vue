@@ -500,9 +500,10 @@
                 <IhUpload
                   :removePermi="false"
                   size="100px"
+                  :editPermi="false"
                   :limit="scope.row.fileList.length"
                   :file-size="10"
-                  :file-list.sync="scope.row.fileList"
+                  v-model="scope.row.fileList"
                   :file-type="scope.row.code"
                   :upload-show="!!scope.row.fileList.length"
                 ></IhUpload>
@@ -747,7 +748,7 @@
                 vo.fileList.push(
                   {
                     ...item,
-                    name: item.fileName,
+                    // name: item.fileName,
                     exAuto: true // 是否可以删除
                   }
                 );

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-26 09:25:34
  * @LastEditors: lsj
- * @LastEditTime: 2020-10-26 10:05:18
+ * @LastEditTime: 2021-03-26 10:35:22
  */
 
 import { RouteConfig } from 'vue-router'
@@ -93,12 +93,6 @@ const dealRoutes: Array<RouteConfig> = [
         name: 'SuppDeal',
         component: () => import('@/views/deal/dealReport/suppDeal.vue'),
         meta: { title: '成交信息变更', icon: 'form' }
-      },
-      {
-        path: 'previewDealInfo',
-        name: 'PreviewDealInfo',
-        component: () => import('@/views/deal/dealReport/previewDealInfo.vue'),
-        meta: { title: '成交信息预览', icon: 'form' }
       },
       {
         path: 'reviewDealInfo',
