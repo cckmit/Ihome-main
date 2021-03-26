@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-04 10:59:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-13 11:19:35
+ * @LastEditTime: 2021-03-26 10:08:12
 -->
 <template>
   <section>
@@ -95,7 +95,7 @@
             <el-form-item label="纸质版附件">
               <!-- :file-list="form.formList[0].noticeAttachmentList" -->
               <IhUpload
-                :file-list.sync="noticeAttachmentList"
+                v-model="noticeAttachmentList"
                 @newFileList="handleNoticeFile($event, 0)"
                 uploadAccept="image"
                 accept="image/*"
@@ -323,7 +323,7 @@
           <el-col :span="24">
             <el-form-item label="纸质版附件">
               <IhUpload
-                :file-list.sync="noticeFile"
+                v-model="noticeFile"
                 @newFileList="handleNoticeFile($event, 1)"
                 uploadAccept="image"
                 accept="image/*"
@@ -337,7 +337,7 @@
           <el-col :span="24">
             <el-form-item label="认购书附件">
               <IhUpload
-                :file-list.sync="subFile"
+                v-model="subFile"
                 @newFileList="handleSubFile($event, 1)"
                 uploadAccept="image"
                 accept="image/*"
@@ -458,14 +458,14 @@ export default class SceneTwo extends Vue {
 
   private handleNoticeFile(list: any, index: number) {
     this.form.formList[index].noticeAttachmentList = list.map((i: any) => ({
-      attachmentSuffix: i.name,
+      attachmentSuffix: i.fileName,
       fileNo: i.fileId,
       type: "NoticeAttachment",
     }));
   }
   private handleSubFile(list: any, index: number) {
     this.form.formList[index].noticeAttachmentList = list.map((i: any) => ({
-      attachmentSuffix: i.name,
+      attachmentSuffix: i.fileName,
       fileNo: i.fileId,
       type: "Subscription",
     }));

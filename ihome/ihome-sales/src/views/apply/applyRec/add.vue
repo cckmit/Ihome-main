@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-24 15:41:34
+ * @LastEditTime: 2021-03-26 10:57:29
 -->
 <template>
   <IhPage class="text-left">
@@ -918,7 +918,7 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 uploadAccept="image"
                 accept="image/*"
@@ -1750,7 +1750,6 @@ export default class ApplyRecAdd extends Vue {
           .filter((j: any) => j.type === i.code)
           .map((h: any) => ({
             ...h,
-            name: h.fileName,
           })),
       };
     });

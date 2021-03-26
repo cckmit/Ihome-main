@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-18 10:15:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 11:03:27
+ * @LastEditTime: 2021-03-26 09:42:20
 -->
 <template>
   <IhPage class="text-left discount-info">
@@ -164,7 +164,7 @@
           <el-col :span="24">
             <el-form-item label="附件">
               <IhUpload
-                :file-list="fileList"
+                v-model="fileList"
                 uploadAccept="image"
                 accept="image/*"
                 class="upload"
@@ -172,6 +172,7 @@
                 :limit="fileList.length"
                 :upload-show="!!fileList.length"
                 :removePermi="false"
+                :editPermi="false"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -180,7 +181,7 @@
           <el-col :span="24">
             <el-form-item label="认购书附件">
               <IhUpload
-                :file-list="subscripList"
+                v-model="subscripList"
                 uploadAccept="image"
                 accept="image/*"
                 class="upload"
@@ -188,6 +189,7 @@
                 :limit="subscripList.length"
                 :upload-show="!!subscripList.length"
                 :removePermi="false"
+                :editPermi="false"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -281,14 +283,12 @@ export default class DiscountAudit extends Vue {
           return i.type === "NoticeAttachment";
         })
         .map((item: any) => ({
-          name: item.attachmentSuffix,
+          fileName: item.attachmentSuffix,
           fileId: item.fileNo,
-          exAuto: 1,
         }));
       this.subscripList = this.resInfo.subscriptionAnnex.map((i: any) => ({
-        name: i.attachmentSuffix,
+        fileName: i.attachmentSuffix,
         fileId: i.fileNo,
-        exAuto: 1,
       }));
       console.log(this.subscripList);
     }

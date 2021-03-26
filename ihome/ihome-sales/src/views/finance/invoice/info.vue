@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-11 17:38:29
+ * @LastEditTime: 2021-03-26 11:21:26
 -->
 <template>
   <IhPage class="text-left">
@@ -121,12 +121,13 @@
       <p class="ih-info-title">附件信息</p>
       <div class="margin-left-20">
         <IhUpload
-          :file-list="fileList"
+          v-model="fileList"
           size="100px"
           :upload-show="!!fileList.length"
           :limit="fileList.length"
           v-if="fileList.length"
           :removePermi="false"
+          :editPermi="false"
           :clickDownloadMsg="clickMsg"
           :clickViewMsg="clickMsg"
         ></IhUpload>
@@ -224,7 +225,7 @@ export default class InvoiceInfo extends Vue {
       this.info = await get_invoice_get__id({ id });
       this.fileList = this.info.attachmentVOs.map((i: any) => ({
         fileId: i.fileId,
-        name: i.fileName,
+        fileName: i.fileName,
       }));
     }
   }

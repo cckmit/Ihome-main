@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 10:04:07
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-13 16:48:19
+ * @LastEditTime: 2021-03-26 10:10:57
 -->
 <template>
   <section>
@@ -69,7 +69,7 @@
         <el-col :span="12">
           <el-form-item label="纸质版附件">
             <IhUpload
-              :file-list.sync="niticeFile"
+              v-model="niticeFile"
               @newFileList="handleNoticeFile($event)"
               uploadAccept="image"
               accept="image/*"
@@ -118,7 +118,7 @@ export default class SceneOne extends Vue {
 
   private handleNoticeFile(list: any) {
     this.form.noticeAttachmentList = list.map((i: any) => ({
-      attachmentSuffix: i.name,
+      attachmentSuffix: i.fileName,
       fileNo: i.fileId,
       type: "NoticeAttachment",
     }));

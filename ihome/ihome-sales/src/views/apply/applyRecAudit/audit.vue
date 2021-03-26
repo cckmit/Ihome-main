@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-19 16:42:21
+ * @LastEditTime: 2021-03-26 11:05:44
 -->
 <template>
   <IhPage class="text-left">
@@ -694,12 +694,13 @@
           <el-table-column label="附件">
             <template v-slot="{ row }">
               <IhUpload
-                :file-list.sync="row.fileList"
+                v-model="row.fileList"
                 :file-size="10"
                 :file-type="row.code"
                 :limit="row.fileList.length"
                 :upload-show="!!row.fileList.length"
                 :removePermi="false"
+                :editPermi="false"
                 size="100px"
               ></IhUpload>
             </template>
@@ -982,12 +983,7 @@ export default class ApplyAudit extends Vue {
     this.fileListType = list.map((i: any) => {
       return {
         ...i,
-        fileList: data
-          .filter((j: any) => j.type === i.code)
-          .map((h: any) => ({
-            ...h,
-            name: h.fileName,
-          })),
+        fileList: data.filter((j: any) => j.type === i.code),
       };
     });
   }

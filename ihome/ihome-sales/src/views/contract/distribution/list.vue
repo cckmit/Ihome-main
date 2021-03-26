@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-24 17:49:59
+ * @LastEditTime: 2021-03-26 10:52:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -485,8 +485,6 @@ export default class DistributionList extends Vue {
     return this.$roleTool.RContractManager();
   }
   private channelChange() {
-    console.log(this.$roleTool.RChannelStaff());
-
     return this.$roleTool.RChannelStaff();
   }
   private exportChange() {

@@ -1178,13 +1178,10 @@
             <template slot-scope="scope">
               <IhUpload
                 @newFileList="getNewFile"
-                :isCrop="false"
-                :isMove="false"
-                :removePermi="true"
                 size="100px"
                 :limit="10"
                 :file-size="10"
-                :file-list.sync="scope.row.defaultFileList"
+                v-model="scope.row.defaultFileList"
                 :file-type="scope.row.code"
               ></IhUpload>
             </template>
@@ -2417,7 +2414,7 @@
             showList.forEach((item: any) => {
               if (item.fileType === vo.code) {
                 item.exAuto = true; // 不能删除
-                item.name = item.fileName; // 名字
+                // item.name = item.fileName; // 名字
                 vo.defaultFileList.push(item);
               }
             })
@@ -2426,7 +2423,7 @@
             list.forEach((item: any) => {
               if (item.fileType === vo.code) {
                 item.exAuto = true; // 不能删除
-                item.name = item.fileName; // 名字
+                // item.name = item.fileName; // 名字
                 vo.defaultFileList.push(item);
               }
             })
@@ -2824,8 +2821,8 @@
               list.defaultFileList.push(
                 {
                   ...item,
-                  name: item.fileName,
-                  canDelete: true, // 是否可以删除
+                  // name: item.fileName,
+                  exAuto: true, // 是否可以删除
                 }
               )
             }
@@ -4012,7 +4009,7 @@
                 tempList.push(
                   {
                     fileId: L.fileId,
-                    fileName: L.name,
+                    fileName: L.fileName,
                     fileType: item.code
                   }
                 );
