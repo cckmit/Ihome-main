@@ -1120,7 +1120,7 @@ export default class RefundApplyEdit extends Vue {
         }
       });
     } else {
-      this.$message.warning("请点击计算结佣统计数据及成本归属明细");
+      this.$message.warning("点击计算退款统计数据并生成退款汇总清单");
     }
   }
 }
