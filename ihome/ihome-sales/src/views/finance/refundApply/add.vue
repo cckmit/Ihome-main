@@ -511,10 +511,7 @@
             <td height="50">原收款金额</td>
             <td>{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>
-              <div>{{info.refundInfo.capitalizedAmount}}</div>
-              <div>{{info.refundInfo.lowercaseAmount}}</div>
-            </td>
+            <td>{{info.refundInfo.amount}}</td>
           </tr>
           <tr>
             <td colspan="6">
