@@ -56,7 +56,7 @@
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    v-model="fileList"
+                    v-model="tempSuppAnnexList"
                     file-type="suppAnnexList"
                   ></IhUpload>
                 </el-form-item>
@@ -107,7 +107,7 @@
                 :limit="10"
                 accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                 :file-size="10"
-                v-model="fileList"
+                v-model="tempFinishAnnexList"
                 file-type="finishAnnexList"
               ></IhUpload>
             </el-form-item>
@@ -218,7 +218,7 @@
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    v-model="fileList"
+                    v-model="tempOfferAnnexList"
                     file-type="offerAnnexList"
                   ></IhUpload>
                 </el-form-item>
@@ -226,12 +226,12 @@
               <el-col class="margin-top-10" :span="24" v-if="form.offerMode === 'Manual'">
                 <el-form-item label="认购书附件" :prop="form.offerMode === 'Manual' ? 'offerAnnexList' : 'empty'">
                   <IhUpload
-                    @newFileList="getNewFile"
+                    @newFileList="getNewFileBySubscription"
                     size="100px"
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    v-model="fileList"
+                    v-model="tempSubscriptionList"
                     file-type="Subscription"
                   ></IhUpload>
                 </el-form-item>
@@ -294,7 +294,7 @@
                 :limit="10"
                 accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                 :file-size="10"
-                v-model="fileList"
+                v-model="tempRefundAnnexList"
                 file-type="refundAnnexList"
               ></IhUpload>
             </el-form-item>
@@ -379,6 +379,11 @@
     fileList: any = [];
     preferentialList: any = []; // 优惠方式下拉选项
     dialogFormVisible: any = false; // 银行网点档案库弹窗
+    tempSuppAnnexList: any = []; // 存放补充协议附件列表
+    tempFinishAnnexList: any = []; // 存放终止协议附件列表
+    tempOfferAnnexList: any = []; // 存放优惠告知书协议附件列表
+    tempSubscriptionList: any = []; // 存放认购书附件列表
+    tempRefundAnnexList: any = []; // 存放退款申请书协议附件列表
     form: any = {
       suppSwitch: false, // 补充协议开关
       suppProtocolType: null, // 补充协议类型
@@ -570,8 +575,8 @@
 
     // 上传附件的值
     getNewFile(list: any, type?: any) {
-      // console.log(list);
-      // console.log(type);
+      console.log(list);
+      console.log(type);
       // 保存上传的文件
       if (type) {
         if (type !== "Subscription") {
@@ -580,7 +585,7 @@
             list.forEach((item: any) => {
               tempList.push(
                 {
-                  attachmentSuffix: item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  attachmentSuffix: item.response && item.response.length ? item.response[0].generateFileType : '', // 附件后缀
                   fileNo: item.fileId, // 附件编号
                   type: 'NoticeAttachment' // 告知书附件
                 }
@@ -588,15 +593,18 @@
             });
             if (type === "offerAnnexList") {
               // 优惠告知书
-              if (this.form["offerAnnexList"] && this.form["offerAnnexList"].length) {
-                this.form["offerAnnexList"] = [...this.form["offerAnnexList"], ...tempList];
-              } else {
-                this.form["offerAnnexList"] = tempList;
-              }
+              this.form["offerAnnexList"] = tempList;
+              // if (this.form["offerAnnexList"] && this.form["offerAnnexList"].length) {
+              //   this.form["offerAnnexList"] = [...this.form["offerAnnexList"], ...tempList];
+              // } else {
+              //   this.form["offerAnnexList"] = tempList;
+              // }
             } else {
               // 其他
               this.form[type] = tempList;
             }
+          } else {
+            this.form[type] = [];
           }
         } else {
           // 认购书附件
@@ -605,20 +613,29 @@
             list.forEach((item: any) => {
               tempList.push(
                 {
-                  attachmentSuffix: item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  attachmentSuffix: item.response && item.response.length ? item.response[0].generateFileType : '', // 附件后缀
                   fileNo: item.fileId, // 附件编号
                   type: 'Subscription' // 告知书附件
                 }
               )
             });
-            if (this.form["offerAnnexList"] && this.form["offerAnnexList"].length) {
-              this.form["offerAnnexList"] = [...this.form["offerAnnexList"], ...tempList];
-            } else {
-              this.form["offerAnnexList"] = tempList;
-            }
+            this.form["offerAnnexList"] = tempList;
+            // if (this.form["offerAnnexList"] && this.form["offerAnnexList"].length) {
+            //   this.form["offerAnnexList"] = [...this.form["offerAnnexList"], ...tempList];
+            // } else {
+            //   this.form["offerAnnexList"] = tempList;
+            // }
+          } else {
+            this.form[type] = [];
           }
         }
       }
+    }
+
+    // 认购书附件的值
+    getNewFileBySubscription(list: any, type?: any) {
+      console.log(list);
+      console.log(type);
     }
 
     // 预览变更
@@ -700,9 +717,27 @@
       }
       // 优惠告知书
       if (this.form.offerSwitch) {
+        // 认购书附件
+        let list: any = [];
+        if (this.form.offerMode === 'Manual') {
+          list = [...this.form.offerAnnexList];
+          if (this.tempSubscriptionList && this.tempSubscriptionList.length) {
+            this.tempSubscriptionList.forEach((item: any) => {
+              list.push(
+                {
+                  attachmentSuffix: item.response && item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  fileNo: item.fileId, // 附件编号
+                  type: 'Subscription' // 告知书附件
+                }
+              )
+            });
+          }
+        } else {
+          list = (this as any).$tool.deepClone(this.form.offerAnnexList || []);
+        }
         tempList.push(
           {
-            annexList: this.form.offerAnnexList,
+            annexList: list,
             explain: this.form.offerRemark, // 优惠方式说明
             notificationType: 'Notification', // 告知书类型
             paymentAmount: this.form.offerMoney, // 优惠金额
