@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 16:43:10
+ * @LastEditTime: 2021-03-29 14:59:40
 -->
 <template>
   <div>
@@ -692,7 +692,6 @@ export default class EditBasicInfo extends Vue {
   ];
   houseFileList: any = [];
   radio = "";
-  houseList: any = [];
   dialogVisible = false;
   checkBoxChangeList: any = [];
   center: any = { lng: 0, lat: 0 };
@@ -704,14 +703,6 @@ export default class EditBasicInfo extends Vue {
   oldSubmitFile: any = {};
   secureSave() {
     const Adopt = this.form.auditEnum === "Adopt";
-    // const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    // const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    // const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    // return (
-    //   (Adopt &&
-    //     (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
-    //   RFrontLineClerk
-    // );
     return Adopt;
   }
   submitChange() {
@@ -816,21 +807,17 @@ export default class EditBasicInfo extends Vue {
       arr.forEach((v: any) => {
         this.checkBoxChangeList.push(JSON.parse(v));
       });
-      this.houseList = this.form.proPics.map((v: any) => ({
-        fileName: v.fileName,
-        fileId: v.fileId,
-        exIndex: v.exIndex,
-        proAttachEnum: "ProPic",
-      }));
       this.houseFileList = this.form.proPics.map((v: any) => ({
         fileName: v.fileName,
         fileId: v.fileId,
         exIndex: v.exIndex,
         proAttachEnum: "ProPic",
       }));
-      this.radio = this.houseFileList.filter(
-        (item: any) => item.exIndex === 1
-      )[0]?.fileId;
+      if (this.houseFileList.length) {
+        this.radio = this.houseFileList.filter(
+          (item: any) => item.exIndex === 1
+        )[0]?.fileId;
+      }
       this.getFileListType(data.attachPics);
       this.oldInfo = { ...this.form };
     } else {
@@ -861,35 +848,19 @@ export default class EditBasicInfo extends Vue {
   }
 
   getRadio(data: any) {
-    if (this.houseList.length) {
-      this.houseList = this.houseList.map((v: any) => {
-        if (data === v.fileId) {
-          return {
-            ...v,
-            exIndex: 1,
-          };
-        } else {
-          return {
-            ...v,
-            exIndex: 0,
-          };
-        }
-      });
-    } else {
-      this.houseFileList = this.houseFileList.map((v: any) => {
-        if (data === v.fileId) {
-          return {
-            ...v,
-            exIndex: 1,
-          };
-        } else {
-          return {
-            ...v,
-            exIndex: 0,
-          };
-        }
-      });
-    }
+    this.houseFileList = this.houseFileList.map((v: any) => {
+      if (data === v.fileId) {
+        return {
+          ...v,
+          exIndex: 1,
+        };
+      } else {
+        return {
+          ...v,
+          exIndex: 0,
+        };
+      }
+    });
   }
 
   checkBoxChange(val: any) {
@@ -906,28 +877,24 @@ export default class EditBasicInfo extends Vue {
 
   // 处理楼房图片
   houseFiles(data: any) {
-    if (!data.length) {
-      this.houseList = [];
+    if (!this.form.proPics.length) {
+      this.houseFileList = data.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.fileName,
+        proAttachEnum: "ProPic",
+        exIndex: 1, // 是否设为主页
+      }));
     } else {
-      if (this.houseFileList.length) {
-        this.houseList = data.map((v: any) => ({
-          fileId: v.fileId,
-          fileName: v.fileName,
-          proAttachEnum: "ProPic",
-          exIndex: v.exIndex ? v.exIndex : 0, // 是否设为主页
-        }));
-      } else {
-        this.houseList = data.map((v: any) => ({
-          fileId: v.fileId,
-          fileName: v.fileName,
-          proAttachEnum: "ProPic",
-          exIndex: 1, // 是否设为主页
-        }));
-        this.radio = this.houseList.filter(
-          (item: any) => item.exIndex === 1
-        )[0]?.fileId;
-      }
+      this.houseFileList = data.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.fileName,
+        proAttachEnum: "ProPic",
+        exIndex: v.exIndex, // 是否设为主页
+      }));
     }
+    this.radio = this.houseFileList.filter(
+      (item: any) => item.exIndex === 1
+    )[0]?.fileId;
   }
 
   viewCycleData(data: any) {
@@ -1007,7 +974,7 @@ export default class EditBasicInfo extends Vue {
         obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
           ...v.msg,
         }));
-        obj.proPics = this.houseList.map((v: any) => ({
+        obj.proPics = this.houseFileList.map((v: any) => ({
           fileId: v.fileId,
           fileName: v.fileName,
           proAttachEnum: "ProPic",
@@ -1066,7 +1033,6 @@ export default class EditBasicInfo extends Vue {
               await post_project_update(obj);
               this.$message.success("保存成功");
               this.$emit("cutOther", true);
-              this.houseList = [];
               this.loadSave = false;
             } catch (error) {
               this.loadSave = false;
@@ -1074,21 +1040,10 @@ export default class EditBasicInfo extends Vue {
           } else if (submittype === "submit") {
             await post_project_update(obj);
             await post_project_auditWait(obj);
-            this.houseList = [];
             this.$message.success("提交成功");
             this.$goto({ path: "/projects/list" });
           }
         }
-        //   obj.proId = this.projectId;
-        //   if (submittype === "save") {
-        //       await post_project_update(obj);
-        //   } else if (submittype === "submit") {
-        //     await post_project_auditWait(obj);
-        //   }
-        // }
-        // this.houseList = [];
-        // this.$message.success("提交成功");
-        // this.$goto({ path: "/projects/list" });
       } else {
         setTimeout(() => {
           let isError: any = document.getElementsByClassName("is-error");

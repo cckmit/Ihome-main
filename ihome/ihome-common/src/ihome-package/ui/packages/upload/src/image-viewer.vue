@@ -74,13 +74,17 @@
             @mousedown="handleMouseDown"
             style="cursor: pointer"
           />
-          <span
-            class="title"
+          <div
+            class="showTitle"
             v-if="i === index"
             :key="i"
-          >{{
-            `${preFileName} ${viewerMsg[i].fileName} ${imgIndex + 1}/${viewerMsg.length}`
-          }}</span>
+          >
+            <div
+              v-if="isPDF"
+              class="pdfClass"
+            >{{`PDF可点击在线预览`}}</div>
+            <div>{{`${preFileName} ${viewerMsg[i].fileName} ${imgIndex + 1}/${viewerMsg.length}`}}</div>
+          </div>
         </template>
       </div>
     </div>
@@ -153,6 +157,7 @@ export default {
         offsetY: 0,
         enableTransition: false,
       },
+      isPDF: false,
     };
   },
   computed: {
@@ -197,7 +202,19 @@ export default {
       handler: function (val) {
         this.reset();
         this.onSwitch && this.onSwitch(val);
+        const file = this.viewerMsg[val];
+        const $index = file.fileName.lastIndexOf(".");
+        const type = file.fileName.substring($index + 1);
+        switch (type) {
+          case "pdf":
+            this.isPDF = true;
+            break;
+          default:
+            this.isPDF = false;
+            break;
+        }
       },
+      immediate: true,
     },
     currentImg() {
       this.$nextTick(() => {
@@ -417,14 +434,19 @@ export default {
   },
 };
 </script>
-<style scoped>
-.title {
+<style scoped lang="scss">
+.showTitle {
   position: fixed;
+  text-align: center;
   bottom: 100px;
   left: 50%;
   transform: translatex(-50%);
   font-size: 28px;
   color: #fff;
+  .pdfClass {
+    margin-bottom: 60px;
+    font-size: 20px;
+  }
 }
 .el-image-viewer__close {
   color: #fff;

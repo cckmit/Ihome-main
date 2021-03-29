@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 17:09:34
+ * @LastEditTime: 2021-03-29 10:35:12
 -->
 <template>
   <div class="upload-container">
@@ -603,7 +603,7 @@ export default class IhUpload extends Vue {
       });
       this.$set(this.fileList, this.editIndex, list[0]);
       this.$emit("newFileList", this.fileList, this.fileType);
-      this.$message.success("附件编辑成功");
+      this.$message.success("编辑成功");
     } catch (err) {
       console.log(err);
     }
