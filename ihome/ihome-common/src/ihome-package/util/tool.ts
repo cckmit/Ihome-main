@@ -33,6 +33,30 @@ export interface ToolInterface {
      * @return {type} 
      */
     todayLongStr(format?: string): string;
+    /**当年第一天字符串
+         * @param {type} 
+         * @return {type} 
+         */
+    startYearStr(): string;
+
+    /**当年最后一天字符串
+     * @param {type} 
+     * @return {type} 
+     */
+    endYearStr(): string;
+
+    /**当月第一天字符串
+    * @param {type} 
+    * @return {type} 
+    */
+    startMonthStr(): string;
+
+    /**当月最后一天字符串
+     * @param {type} 
+     * @return {type} 
+     */
+    endMonthStr(): string;
+
     /**（根路径）获取预览文件路径(fid,width?,height?)
      * @param {type} 
      * @return {type} 
@@ -67,6 +91,8 @@ export interface ToolInterface {
 
 }
 export class Tool implements ToolInterface {
+
+
     /**是否当前登录账号录入的数据
     * @param {*}
     * @return {*}
@@ -202,6 +228,55 @@ export class Tool implements ToolInterface {
         }
 
 
+    }
+
+    /**当年第一天字符串
+     * @param {*}
+     * @return {*}
+     */
+    startYearStr(): string {
+        let today = new Date();
+        let year = today.getFullYear();
+        let result = `${year}-01-01`;
+        return result;
+    }
+    /**当年最后一天字符串
+    * @param {*}
+    * @return {*}
+    */
+    endYearStr(): string {
+        let today = new Date();
+        let year = today.getFullYear();
+        let result = `${year}-12-31`;
+        return result;
+    }
+    /**当月第一天字符串
+    * @param {*}
+    * @return {*}
+    */
+    startMonthStr(): string {
+        let today = new Date();
+        let year = today.getFullYear();
+        let month: any = today.getMonth() + 1;
+        month = month < 10 ? '0' + month : month;
+        let result = `${year}-${month}-01`
+        return result;
+    }
+    /**当月最后一天字符串
+    * @param {*}
+    * @return {*}
+    */
+    endMonthStr(): string {
+        let today = new Date();
+        let year = today.getFullYear();
+        let month: any = today.getMonth() + 1;
+        let lastMonthDay = new Date(year, month, 0);
+        let y: any = lastMonthDay.getFullYear();
+        let m: any = lastMonthDay.getMonth() + 1;
+        m = m < 10 ? '0' + m : m;
+        let d: any = lastMonthDay.getDate() < 10 ? '0' + lastMonthDay.getDate() : lastMonthDay.getDate();
+        let result = `${y}-${m}-${d}`;
+        return result;
     }
     /**判断两个值是否相等,误差
     * @param {type} 

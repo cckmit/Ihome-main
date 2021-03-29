@@ -42,6 +42,13 @@ import { Tool } from '../util/tool'
 import { RoleTool } from '../util/roleTool'
 import VueCropper from 'vue-cropper'
 
+let UmyUi =require("umy-ui")
+// import UmyUi from 'umy-ui'
+import 'umy-ui/lib/theme-chalk/index.css';// 引入样式
+
+Vue.use(UmyUi);
+
+
 Vue.use(VueCropper)
 
 Vue.use(ElementUI);

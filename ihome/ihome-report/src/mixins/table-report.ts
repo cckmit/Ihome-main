@@ -62,7 +62,7 @@ export default class TableReportMixin extends Vue {
     }
     get height() {
         let pageHeight =
-            (document.documentElement.clientHeight || document.body.clientHeight) - 190;
+            (document.documentElement.clientHeight || document.body.clientHeight) - 130;
 
         console.log("pageHeight", pageHeight);
         return pageHeight;
@@ -99,4 +99,32 @@ export default class TableReportMixin extends Vue {
             ],
         }
     }
+    summaryMethod(summaryData: any) {
+        let { columns, data }: any = summaryData;
+        const means: any = []; // 合计
+        columns.forEach((column: any, columnIndex: any) => {
+            if (columnIndex === 0) {
+                means.push("合计");
+            } else {
+                const values = data.map((item: any) => Number(item[column.property]));
+                // 合计
+                if (!values.every((value: any) => isNaN(value))) {
+                    means[columnIndex] = values.reduce((prev: any, curr: any) => {
+                        const value = Number(curr);
+                        if (!isNaN(value)) {
+                            return this.$math.add(prev, curr);
+                        } else {
+                            return prev;
+                        }
+                    }, 0);
+                    means[columnIndex] =
+                        '<span style="color: red">' + means[columnIndex] + "</span>";
+                } else {
+                    means[columnIndex] = "";
+                }
+            }
+        });
+        return [means];
+    }
 }
+

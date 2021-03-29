@@ -28,5 +28,7 @@ declare module "vue/types/vue" {
         $math: MathInterface;
 
     }
+    
 }
 // declare module 'nprogress'
+
