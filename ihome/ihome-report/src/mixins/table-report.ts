@@ -62,7 +62,7 @@ export default class TableReportMixin extends Vue {
     }
     get height() {
         let pageHeight =
-            (document.documentElement.clientHeight || document.body.clientHeight) - 130;
+            (document.documentElement.clientHeight || document.body.clientHeight) - 140;
 
         console.log("pageHeight", pageHeight);
         return pageHeight;

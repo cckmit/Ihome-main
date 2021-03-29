@@ -328,7 +328,7 @@
     components: {BankRecord},
   })
   export default class NoticePage extends Vue {
-    private checkFileList: any = (rule: any, value: any, callback: any) => {
+    checkFileList: any = (rule: any, value: any, callback: any) => {
       if (this.form.offerMode === 'Manual') {
         // 自定义下，认购书必上传
         let flag: any = false;
@@ -351,7 +351,7 @@
         callback();
       }
     };
-    private checkReason: any = (rule: any, value: any, callback: any) => {
+    checkReason: any = (rule: any, value: any, callback: any) => {
       if (!value) {
         return callback(new Error('请选择终止原因'));
       } else {
@@ -641,8 +641,8 @@
     getNewFileBySubscription(list: any, type?: any) {
       console.log(list);
       console.log(type);
+      this.tempSubscriptionList = (this as any).$tool.deepClone(list || []);
       console.log(this.tempSubscriptionList);
-      this.tempSubscriptionList = list || [];
     }
 
     // 预览变更
@@ -661,24 +661,6 @@
     @NoRepeatHttp()
     async submitPreview(valid: any) {
       if (valid) {
-        // 补充成交类型
-        switch (this.pageData.changeTypeByDeal) {
-          case "ChangeBasicInf":
-            // 变更基础信息
-            break
-          case "ChangeAchieveInf":
-            // 变更业绩信息
-            console.log(1);
-            break
-          case "RetreatRoom":
-            // 退房
-            console.log(1);
-            break
-          case "ChangeInternalAchieveInf":
-            // 内部员工业绩变更
-            console.log(1);
-            break
-        }
         this.$emit('next', 'next', {
           ...this.pageData,
           noticeDealList: this.initNoticeData(),
