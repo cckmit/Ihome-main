@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-15 15:29:09
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 11:04:10
+ * @LastEditTime: 2021-03-29 09:38:41
 -->
 <template>
   <IhPage class="text-left">
@@ -627,15 +627,14 @@
               colspan="5"
               width="500px"
             >
-              <div
-                class="text-left padding-left-20"
-                style="min-height: 100px;"
-              >
-                <pre
-                  class="width--100"
-                  style="white-space: pre-wrap;"
-                >{{form.remark || '--'}}</pre>
-              </div>
+              <el-input
+                class="table-input"
+                type="textarea"
+                :rows="5"
+                v-model="form.remark"
+                resize="none"
+                readonly
+              ></el-input>
             </td>
           </tr>
         </table>
