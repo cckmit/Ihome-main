@@ -231,7 +231,7 @@
                     :limit="10"
                     accept=".jpg,.jpeg,.png,.gif,.bmp,.JPG,.JPEG,.PBG,.GIF,.BMP"
                     :file-size="10"
-                    v-model="tempSubscriptionList"
+                    v-model="fileList"
                     file-type="Subscription"
                   ></IhUpload>
                 </el-form-item>
@@ -381,7 +381,7 @@
       '9、退房：终止协议、退款申请书',
       '10、其他：操作人自由选择合同文书',
     ]; // 补充成交类型tips
-    fileList: any = [];
+    fileList: any = []; // 认购书回显值
     preferentialList: any = []; // 优惠方式下拉选项
     dialogFormVisible: any = false; // 银行网点档案库弹窗
     tempSuppAnnexList: any = []; // 存放补充协议附件列表
@@ -641,6 +641,8 @@
     getNewFileBySubscription(list: any, type?: any) {
       console.log(list);
       console.log(type);
+      console.log(this.tempSubscriptionList);
+      this.tempSubscriptionList = list || [];
     }
 
     // 预览变更
@@ -774,31 +776,6 @@
             provinceName: this.form.refundProtocolType === 'PaperTemplate' ? this.form.refundProvinceName : null, // 退款申请书省名字
           }
         )
-      }
-      return tempList;
-    }
-
-    // 获取附件信息
-    getDocumentList(list: any = []) {
-      let tempList: any = [];
-      if (list && list.length > 0) {
-        list.forEach((item: any) => {
-          // console.log(item);
-          if (item.fileList && item.fileList.length) {
-            item.fileList.forEach((L: any) => {
-              if (!L.exAuto) {
-                // 只获取新上传的
-                tempList.push(
-                  {
-                    fileId: L.fileId,
-                    fileName: L.name,
-                    fileType: item.code
-                  }
-                );
-              }
-            });
-          }
-        });
       }
       return tempList;
     }
