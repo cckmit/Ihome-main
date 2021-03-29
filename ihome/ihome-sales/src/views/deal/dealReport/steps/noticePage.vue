@@ -641,7 +641,7 @@
     getNewFileBySubscription(list: any, type?: any) {
       console.log(list);
       console.log(type);
-      this.tempSubscriptionList = list;
+      this.tempSubscriptionList = (this as any).$tool.deepClone(list || []);
       console.log(this.tempSubscriptionList);
     }
 
@@ -661,24 +661,6 @@
     @NoRepeatHttp()
     async submitPreview(valid: any) {
       if (valid) {
-        // 补充成交类型
-        switch (this.pageData.changeTypeByDeal) {
-          case "ChangeBasicInf":
-            // 变更基础信息
-            break
-          case "ChangeAchieveInf":
-            // 变更业绩信息
-            console.log(1);
-            break
-          case "RetreatRoom":
-            // 退房
-            console.log(1);
-            break
-          case "ChangeInternalAchieveInf":
-            // 内部员工业绩变更
-            console.log(1);
-            break
-        }
         this.$emit('next', 'next', {
           ...this.pageData,
           noticeDealList: this.initNoticeData(),
