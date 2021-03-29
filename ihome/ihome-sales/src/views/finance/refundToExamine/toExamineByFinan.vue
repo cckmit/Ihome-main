@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 11:32:53
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-03-29 09:29:34
 -->
 <template>
   <IhPage>
@@ -65,12 +65,12 @@
           <el-col :span="8">
             <el-form-item
               label="付款方账户名称"
-              prop="accountId"
+              prop="companyId"
             >
               <IhSelectPageByPayer
                 clearable
                 placeholder="付款方账户名称"
-                v-model="info.accountId"
+                v-model="info.companyId"
                 :proId="info.orgId"
                 :search-name="info.accountName"
                 @changeOption="getPayerInfo"
@@ -406,7 +406,7 @@
           :loading="computedLoading"
           :disabled="computedDisabled"
           @click="computedMsg"
-        >点击计算结佣统计数据及成本归属明细</el-button>
+        >点击计算退款统计数据并生成退款汇总清单</el-button>
       </div>
       <br />
       <p class="ih-info-title">退款汇总清单</p>
@@ -503,7 +503,10 @@
             <td height="50">原收款金额</td>
             <td>{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>{{info.refundInfo.amount}}</td>
+            <td>
+              <div>{{info.refundInfo.capitalizedAmount}}</div>
+              <div>{{info.refundInfo.lowercaseAmount}}</div>
+            </td>
           </tr>
           <tr>
             <td colspan="6">

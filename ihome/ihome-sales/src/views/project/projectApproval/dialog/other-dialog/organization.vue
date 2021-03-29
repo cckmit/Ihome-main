@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 14:49:18
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 20:11:48
+ * @LastEditTime: 2021-03-29 09:58:20
 -->
 <template>
   <el-dialog
@@ -210,7 +210,7 @@ export default class Organization extends Vue {
     departmentType: null,
     level: 0,
     name: null,
-    orgType: null,
+    orgType: "Group",
     status: null,
   };
   resPageInfo: any = {
@@ -233,7 +233,6 @@ export default class Organization extends Vue {
   }
   async getListMixin() {
     this.queryPageParameters.id = this.data.id;
-    this.queryPageParameters.orgType = "Group";
     this.resPageInfo = await post_org_getListRecursion(
       this.queryPageParameters
     );
@@ -241,12 +240,11 @@ export default class Organization extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      termName: null,
-      proNo: null,
-      proName: null,
-      province: null,
-      city: null,
-      district: null,
+      departmentType: null,
+      level: 0,
+      name: null,
+      orgType: "Group",
+      status: null,
     });
   }
 

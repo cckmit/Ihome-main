@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 16:29:06
+ * @LastEditTime: 2021-03-26 17:09:34
 -->
 <template>
   <div class="upload-container">
@@ -380,6 +380,7 @@ export default class IhUpload extends Vue {
       target.files.length + this.fileList.length > this.limit
     ) {
       this.$message.warning(`已超出文件上传数量限制, 请重新选择!`);
+      (this.$refs as any).upload.value = "";
       return;
     }
     let arr: any = [];
@@ -488,8 +489,10 @@ export default class IhUpload extends Vue {
       this.$emit("input", lists);
       this.$emit("newFileList", lists, this.fileType);
       this.$message.success("上传成功");
+      (this.$refs as any).upload.value = "";
     } catch (err) {
       console.log(err);
+      (this.$refs as any).upload.value = "";
     }
   }
 
@@ -582,24 +585,28 @@ export default class IhUpload extends Vue {
     for (let i = 0; i < files.length; i++) {
       fd.append("files", files[i]);
     }
-    let res: any = await post_file_upload(fd);
-    let list = res.map((v: any, i: number) => {
-      let obj: any = {};
-      obj[this.fileId] = v.fileId;
-      obj[this.fileName] = `${v.originalFileName}.${v.originalFileType}`;
-      obj.url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
-      obj.response = [res[i]];
-      obj.raw = files[i];
-      obj.size = files[i].size;
-      if (this.fileType) {
-        obj.fileType = this.fileType;
-        obj.type = this.fileType;
-      }
-      return obj;
-    });
-    this.$set(this.fileList, this.editIndex, list[0]);
-    this.$emit("newFileList", this.fileList, this.fileType);
-    this.$message.success("附件编辑成功");
+    try {
+      let res: any = await post_file_upload(fd);
+      let list = res.map((v: any, i: number) => {
+        let obj: any = {};
+        obj[this.fileId] = v.fileId;
+        obj[this.fileName] = `${v.originalFileName}.${v.originalFileType}`;
+        obj.url = `/sales-api/sales-document-cover/file/browse/${v.fileId}`;
+        obj.response = [res[i]];
+        obj.raw = files[i];
+        obj.size = files[i].size;
+        if (this.fileType) {
+          obj.fileType = this.fileType;
+          obj.type = this.fileType;
+        }
+        return obj;
+      });
+      this.$set(this.fileList, this.editIndex, list[0]);
+      this.$emit("newFileList", this.fileList, this.fileType);
+      this.$message.success("附件编辑成功");
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 </script>

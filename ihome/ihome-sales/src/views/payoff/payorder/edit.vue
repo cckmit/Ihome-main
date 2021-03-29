@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 16:58:03
+ * @LastEditTime: 2021-03-29 09:39:32
 -->
 <template>
   <IhPage>
@@ -1180,7 +1180,6 @@ export default class PayoffEdit extends Vue {
       this.info.payerName = null;
       this.info.payerAccountBank = null;
       this.info.paymentAccount = null;
-      this.accountOptins = [];
       this.payerAccountOptions = [];
     }
   }
@@ -1191,10 +1190,10 @@ export default class PayoffEdit extends Vue {
       orgType: "Department",
       status: "Valid",
     });
+    this.divisionOptins = res;
     if (res.length === 1) {
       this.info.orgId = res[0].id;
     }
-    this.divisionOptins = res;
   }
 
   belongOrgIdChange(val: any) {
@@ -1214,11 +1213,11 @@ export default class PayoffEdit extends Vue {
     let res = await post_company_getAll({
       orgId,
     });
+    this.accountOptins = res;
     if (res.length === 1) {
       this.info.payerId = res[0].id;
       this.info.payerName = res[0].name;
     }
-    this.accountOptins = res;
   }
 
   companyChange(val: any) {
@@ -1234,10 +1233,11 @@ export default class PayoffEdit extends Vue {
     const res = await post_bankAccount_getByOrgId__orgId({
       orgId: val,
     });
+    this.payerAccountOptions = res;
     if (res.length === 1) {
       this.info.paymentAccount = res[0].accountNo;
+      this.accountNoChange(res[0].accountNo);
     }
-    this.payerAccountOptions = res;
   }
 
   accountNoChange(data: any) {
@@ -1246,7 +1246,7 @@ export default class PayoffEdit extends Vue {
         (v: any) => v.accountNo === data
       );
       this.info.payerAccountBank = item.branchName;
-      this.info.paymentAccount = item.accountNo;
+      // this.info.paymentAccount = item.accountNo;
     } else {
       this.info.payerAccountBank = null;
       this.info.paymentAccount = null;
