@@ -641,8 +641,8 @@
     getNewFileBySubscription(list: any, type?: any) {
       console.log(list);
       console.log(type);
+      this.tempSubscriptionList = list;
       console.log(this.tempSubscriptionList);
-      this.tempSubscriptionList = list || [];
     }
 
     // 预览变更
