@@ -68,9 +68,12 @@
     <el-form-item>
       <IhSelectPageDivision v-model="form.testInput5"></IhSelectPageDivision>
     </el-form-item>
-    <el-form-item label="渠道商">渠道商继承组件用法</el-form-item>
+    <el-form-item label="渠道商">渠道商继承组件用法 (isInit: 控制是否要初始化加载数据 默认是true(加载数据))</el-form-item>
     <el-form-item>
-      <IhSelectPageByChannel v-model="form.testInput6"></IhSelectPageByChannel>
+      <IhSelectPageByChannel
+        :isInit="false"
+        v-model="form.testInput6"
+      ></IhSelectPageByChannel>
     </el-form-item>
     <el-form-item label="项目">项目继承组件用法</el-form-item>
     <el-form-item>
@@ -178,7 +181,7 @@ import {
   IhSelectPageByDeveloper,
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
-  IhSelectPageByBroker
+  IhSelectPageByBroker,
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({

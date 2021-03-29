@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 09:55:23
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-03-29 15:05:33
 -->
 <template>
   <el-select
@@ -21,6 +21,7 @@
     popper-class="ih-select-page"
     class="width--100"
     :loading="searchLoad"
+    :no-data-text="noDataText"
   >
     <!-- 搜索 -->
     <div class="selectInput">
@@ -148,6 +149,7 @@ export default class IhSelectPage extends Vue {
   optionProps?: any;
 
   private filterText = "";
+  noDataText = "无数据";
   // 下拉列表
   optionList: any = [];
   // 分页信息
@@ -167,15 +169,27 @@ export default class IhSelectPage extends Vue {
   // }
   @Watch("filterText")
   filter(val: any) {
-    if (val.length >= 2 && !this.isKeyUp) {
-      if (this.searchOne) {
+    if (this.isInit) {
+      if (val.length >= 2 && !this.isKeyUp) {
+        this.pageInfo.pageNum = 1;
+        if (this.searchOne) {
+          this.getSelectList();
+          this.searchOne = false;
+        } else {
+          debounce(this.getSelectList, 500);
+        }
+      } else if (!val.length) {
+        this.pageInfo.pageNum = 1;
         this.getSelectList();
-        this.searchOne = false;
-      } else {
-        debounce(this.getSelectList, 500);
       }
-    } else if (!val.length && this.isInit) {
-      this.getSelectList();
+    } else {
+      if (val.length >= 2 && !this.isKeyUp) {
+        debounce(this.getSelectList, 500);
+        this.noDataText = "无数据";
+      } else if (!val.length) {
+        this.optionList = [];
+        this.noDataText = "请输入两个关键字进行搜索";
+      }
     }
   }
   @Watch("searchName", { immediate: true })
@@ -184,7 +198,7 @@ export default class IhSelectPage extends Vue {
       this.filterText = val;
       this.searchOne = true;
     } else {
-      this.filterText = '';
+      this.filterText = "";
       this.searchOne = true;
     }
   }
@@ -262,6 +276,8 @@ export default class IhSelectPage extends Vue {
   mounted() {
     if (this.isInit) {
       this.getSelectList();
+    } else {
+      this.noDataText = "请输入两个关键字进行搜索";
     }
   }
 }
