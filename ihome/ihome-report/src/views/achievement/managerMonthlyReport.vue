@@ -152,6 +152,7 @@
           :cell-style="cellStyle"
           :header-cell-style="headerCellStyle"
           :height="height - 62 * 1 + 'px'"
+          mex-height="1300px"
           :show-summary="true"
           :summary-method="summaryMethod"
         >
