@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 11:21:26
+ * @LastEditTime: 2021-03-29 15:48:01
 -->
 <template>
   <IhPage class="text-left">
@@ -69,8 +69,12 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="备注">{{info.invoiceInfo.remark}}</el-form-item>
+          <el-col :span="24">
+            <el-form-item label="备注">
+              <div class="width--100">
+                <pre style="margin:0;white-space:pre-wrap; word-break: break-all;">{{info.invoiceInfo.remark}}</pre>
+              </div>
+            </el-form-item>
           </el-col>
         </el-row>
       </el-form>
