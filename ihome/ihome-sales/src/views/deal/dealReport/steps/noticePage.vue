@@ -328,7 +328,9 @@
     components: {BankRecord},
   })
   export default class NoticePage extends Vue {
-    checkFileList: any = (rule: any, value: any, callback: any) => {
+    private checkFileList (rule: any, value: any, callback: any) {
+      console.log(rule);
+      console.log(value);
       if (this.form.offerMode === 'Manual') {
         // 自定义下，认购书必上传
         let flag: any = false;
@@ -350,8 +352,9 @@
       } else {
         callback();
       }
-    };
-    checkReason: any = (rule: any, value: any, callback: any) => {
+    }
+    private checkReason (rule: any, value: any, callback: any) {
+      console.log(rule);
       if (!value) {
         return callback(new Error('请选择终止原因'));
       } else {
@@ -366,7 +369,7 @@
           callback();
         }
       }
-    };
+    }
     @Prop() private pageData?: any; // 页面数据
     tips: any = [
       '请根据本成交报告单位的实际情况选择相关合同文书：',
