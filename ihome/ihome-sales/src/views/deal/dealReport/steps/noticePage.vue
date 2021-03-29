@@ -328,7 +328,7 @@
     components: {BankRecord},
   })
   export default class NoticePage extends Vue {
-    private checkFileList: any = (rule: any, value: any, callback: any) => {
+    checkFileList: any = (rule: any, value: any, callback: any) => {
       if (this.form.offerMode === 'Manual') {
         // 自定义下，认购书必上传
         let flag: any = false;
@@ -351,7 +351,7 @@
         callback();
       }
     };
-    private checkReason: any = (rule: any, value: any, callback: any) => {
+    checkReason: any = (rule: any, value: any, callback: any) => {
       if (!value) {
         return callback(new Error('请选择终止原因'));
       } else {
