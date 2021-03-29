@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-27 16:33:06
+ * @LastEditTime: 2021-03-29 14:53:22
 -->
 <template>
   <IhPage class="text-left">
@@ -1586,7 +1586,7 @@ export default class ApplyRecAdd extends Vue {
           if (!["Contract"].includes(item) && this.submitFile[item].length) {
             let hasArr: any = this.submitFile[item].map((v: any) => ({
               fileId: v.fileId,
-              fileName: v.name,
+              fileName: v.fileName,
               type: v.type,
             }));
             arr.push(...hasArr);
@@ -1746,11 +1746,7 @@ export default class ApplyRecAdd extends Vue {
       return {
         ...i,
         subType: i.code === "Contract" || this.form.status === "InvoiceApply",
-        fileList: data
-          .filter((j: any) => j.type === i.code)
-          .map((h: any) => ({
-            ...h,
-          })),
+        fileList: data.filter((j: any) => j.type === i.code),
       };
     });
     this.fileListType = this.fileListType.map((v: any) => {
