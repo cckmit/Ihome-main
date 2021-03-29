@@ -26,6 +26,10 @@ if ((<any>window).__POWERED_BY_QIANKUN__) {
   __webpack_public_path__ = (<any>window).__INJECTED_PUBLIC_PATH_BY_QIANKUN__
 }
 
+import 'umy-ui/lib/theme-chalk/index.css';// 引入样式
+let UmyUi =require("umy-ui")
+// import UmyUi from 'umy-ui'
+Vue.use(UmyUi);
 
 import ElementUI from 'element-ui';
 // import 'element-ui/lib/theme-chalk/index.css';
@@ -42,11 +46,7 @@ import { Tool } from '../util/tool'
 import { RoleTool } from '../util/roleTool'
 import VueCropper from 'vue-cropper'
 
-let UmyUi =require("umy-ui")
-// import UmyUi from 'umy-ui'
-import 'umy-ui/lib/theme-chalk/index.css';// 引入样式
 
-Vue.use(UmyUi);
 
 
 Vue.use(VueCropper)
