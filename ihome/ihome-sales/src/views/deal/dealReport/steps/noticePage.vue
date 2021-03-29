@@ -332,10 +332,15 @@
       if (this.form.offerMode === 'Manual') {
         // 自定义下，认购书必上传
         let flag: any = false;
-        if (this.form.offerAnnexList && this.form.offerAnnexList.length) {
-          flag = this.form.offerAnnexList.some((list: any) => {
-            return list.type === 'Subscription';
-          });
+        // if (this.form.offerAnnexList && this.form.offerAnnexList.length) {
+        //   flag = this.form.offerAnnexList.some((list: any) => {
+        //     return list.type === 'Subscription';
+        //   });
+        // }
+        if (this.tempSubscriptionList && this.tempSubscriptionList.length) {
+          flag = true;
+        } else {
+          flag = false;
         }
         if (!flag) {
           return callback(new Error('优惠方式为自定义时，必须上传认购书附件'));
