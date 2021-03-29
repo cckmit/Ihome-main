@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-07 16:30:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 10:57:29
+ * @LastEditTime: 2021-03-27 16:33:06
 -->
 <template>
   <IhPage class="text-left">
@@ -1907,7 +1907,7 @@ export default class ApplyRecAdd extends Vue {
           .filter((j: any) => j.type === v.code)
           .map((h: any) => ({
             ...h,
-            name: h.fileName,
+            fileName: h.fileName,
           })),
       };
     });
@@ -1915,7 +1915,7 @@ export default class ApplyRecAdd extends Vue {
     let msgList: any = [];
     submitList.forEach((v: any) => {
       if (v.subType && !v.fileList.length) {
-        msgList.push(v.name);
+        msgList.push(v.fileName);
         isSubmit = false;
       }
     });
@@ -1924,7 +1924,7 @@ export default class ApplyRecAdd extends Vue {
     if (isSubmit) {
       this.form.fileList = arr.map((v: any) => ({
         fileId: v.fileId,
-        fileName: v.name,
+        fileName: v.fileName,
         type: v.type,
       }));
     } else {
@@ -1996,7 +1996,7 @@ export default class ApplyRecAdd extends Vue {
           .filter((j: any) => j.type === v.code)
           .map((h: any) => ({
             ...h,
-            name: h.fileName,
+            fileName: h.fileName,
           })),
       };
     });
@@ -2004,14 +2004,14 @@ export default class ApplyRecAdd extends Vue {
     let msgList: any = [];
     submitList.forEach((v: any) => {
       if (v.subType && !v.fileList.length) {
-        msgList.push(v.name);
+        msgList.push(v.fileName);
         isSubmit = false;
       }
     });
     if (isSubmit) {
       fileList = arr.map((v: any) => ({
         fileId: v.fileId,
-        fileName: v.name,
+        fileName: v.fileName,
         type: v.type,
       }));
     } else {

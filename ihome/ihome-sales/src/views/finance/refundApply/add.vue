@@ -511,10 +511,7 @@
             <td height="50">原收款金额</td>
             <td>{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>
-              <div>{{info.refundInfo.capitalizedAmount}}</div>
-              <div>{{info.refundInfo.lowercaseAmount}}</div>
-            </td>
+            <td>{{info.refundInfo.amount}}</td>
           </tr>
           <tr>
             <td colspan="6">
@@ -1120,7 +1117,7 @@ export default class RefundApplyEdit extends Vue {
         }
       });
     } else {
-      this.$message.warning("请点击计算结佣统计数据及成本归属明细");
+      this.$message.warning("点击计算退款统计数据并生成退款汇总清单");
     }
   }
 }

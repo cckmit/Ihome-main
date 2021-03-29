@@ -821,7 +821,7 @@ export default class RefundToExamineToExamine extends Vue {
         console.log(error);
       }
     } else {
-      this.$message.warning("请重新点击计算结佣统计数据及成本归属明细");
+      this.$message.warning("点击计算退款统计数据并生成退款汇总清单");
     }
   }
   async routeTo(row: any, where: any) {

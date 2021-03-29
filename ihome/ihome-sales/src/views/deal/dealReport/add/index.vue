@@ -348,7 +348,7 @@
           (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
         );
         this.srcData = imgList.map((v: any) => ({
-          name: v.attachmentSuffix,
+          fileName: v.attachmentSuffix,
           preFileName: "优惠告知书",
         }));
         if (this.srcList.length) {

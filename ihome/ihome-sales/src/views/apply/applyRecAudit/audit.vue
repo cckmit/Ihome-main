@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 11:05:44
+ * @LastEditTime: 2021-03-29 09:37:56
 -->
 <template>
   <IhPage class="text-left">
@@ -662,15 +662,14 @@
           <tr>
             <td>经办部门意见</td>
             <td colspan="5">
-              <div
-                class="text-left padding-left-20"
-                style="min-height: 100px;"
-              >
-                <pre
-                  class="width--100"
-                  style="white-space: pre-wrap;"
-                >{{form.remark || '--'}}</pre>
-              </div>
+              <el-input
+                class="table-input"
+                type="textarea"
+                :rows="5"
+                v-model="form.remark"
+                resize="none"
+                readonly
+              ></el-input>
             </td>
           </tr>
         </table>

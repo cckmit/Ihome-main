@@ -2141,7 +2141,11 @@
           if (vo.code === 'Notice') {
             addList.forEach((list: any) => {
               if (list.annexList && list.annexList.length) {
-                vo.defaultFileList.push(...list.annexList);
+                list.annexList.forEach((L: any) => {
+                  L.fileType = 'Notice';
+                  L.exAuto = true;
+                  vo.defaultFileList.push(L);
+                });
               }
             });
           }

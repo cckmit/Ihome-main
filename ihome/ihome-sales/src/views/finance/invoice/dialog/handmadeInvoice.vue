@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 21:04:03
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 11:18:20
+ * @LastEditTime: 2021-03-29 09:26:12
 -->
 <template>
   <el-dialog
@@ -271,12 +271,12 @@ export default class Handadel extends Vue {
   }
   private handleFile(list: any) {
     this.form.attachments = list.map((i: any) => {
-      let index = i.name.lastIndexOf(".");
+      let index = i.fileName.lastIndexOf(".");
       return {
         // fileId: i.fileId,
         // fileName: i.name,
         ...i,
-        type: i.name.substring(index + 1, i.name.length),
+        type: i.fileName.substring(index + 1, i.fileName.length),
       };
     });
   }
