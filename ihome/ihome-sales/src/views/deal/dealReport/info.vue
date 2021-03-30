@@ -54,7 +54,7 @@
                   <div class="ratio" v-else>{{item.ratio ? item.ratio : 0}}%</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
-                    (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                    (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
               </template>
@@ -106,7 +106,7 @@
                   <div class="ratio" v-else>{{item.ratio ? item.ratio : 0}}%</div>
                   <div class="name">
                     <span>{{item.manager ? item.manager : '---'}}</span>
-                    (<span>{{$root.dictAllName(item.type, 'ManagerType')}}</span>)
+                    (<span>{{item.managerPosition}}</span>)
                   </div>
                 </div>
               </template>
