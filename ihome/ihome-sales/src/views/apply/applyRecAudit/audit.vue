@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-29 09:37:56
+ * @LastEditTime: 2021-03-30 15:28:03
 -->
 <template>
   <IhPage class="text-left">
@@ -1113,14 +1113,23 @@ export default class ApplyAudit extends Vue {
       this.$message.warning("审批意见不能为空");
       return;
     }
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       await this.$confirm("是否确认终止?", "提示");
       await post_applyRec_stop({ applyId: this.form.id, remark: this.remark });
       this.$message.success("终止成功");
+      loading.close();
       this.$goto({
         path: "/applyRecAudit/list",
       });
     } catch (error) {
+      loading.close();
       console.log(error);
     }
   }
@@ -1157,6 +1166,13 @@ export default class ApplyAudit extends Vue {
         opBefore: this.form.status,
       };
     }
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       if (this.form.status === "InvoiceClerk" && isReject === 0) {
         this.$confirm("是否现在开具发票", "提示")
@@ -1180,11 +1196,13 @@ export default class ApplyAudit extends Vue {
       } else {
         await post_applyRec_audit(params);
         this.$message.success(`${isReject ? "驳回" : "通过"}成功`);
+        loading.close();
         this.$goto({
           path: "/applyRecAudit/list",
         });
       }
     } catch (error) {
+      loading.close();
       console.log(error);
     }
   }
@@ -1243,5 +1261,13 @@ export default class ApplyAudit extends Vue {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
+  }
 }
 </style>
