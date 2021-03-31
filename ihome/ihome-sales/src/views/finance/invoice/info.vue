@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-08 19:55:43
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-29 15:48:01
+ * @LastEditTime: 2021-03-30 17:54:18
 -->
 <template>
   <IhPage class="text-left">
@@ -97,16 +97,28 @@
             prop="amount"
             label="金额（含税）"
             width="110"
-          > </el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.amount || '-'}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="noTax"
             label="确认主营（不含税）"
             width="155"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.noTax || '-'}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="tax"
             label="税额"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.tax || '-'}}
+            </template>
+          </el-table-column>
           <el-table-column
             prop="invoiceType"
             label="发票类别"
@@ -119,7 +131,11 @@
             prop="serialNo"
             label="航天开票流水号"
             min-width="265"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.serialNo || '-'}}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <p class="ih-info-title">附件信息</p>

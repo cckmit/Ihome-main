@@ -1,81 +1,5 @@
 <template>
   <IhPage label-width="100px">
-    <!-- <template v-slot:form>
-      <el-form ref="form" label-width="100px">
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="组织">
-              <IhSelectOrgTree v-model="t1" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="合同状态">
-              <el-select
-                v-model="t2"
-                multiple
-                collapse-tags
-                style="margin-left: 20px"
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('CityLevel')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="日期类型" style="text-align: left">
-              <el-select
-                style="width: 30%"
-                v-model="t3"
-                clearable
-                placeholder="日期类型"
-                @clear="dateTypeClear()"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('PayDateType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-
-              <el-date-picker
-                style="width: 70%"
-                v-model="queryPageParameters.expiresTime"
-                type="daterange"
-                align="left"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="pickerOptions"
-                value-format="yyyy-MM-dd"
-                :disabled="queryPageParameters.dateType"
-                @change="expiresTimeChange"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="4" style="width:300px;">
-            <el-button type="primary" @click="search()">查询</el-button>
-
-            <el-button type="success" @click="exportExcel()">导出</el-button>
-            <el-popover
-              placement="right"
-              width="400"
-              trigger="click"
-              style="margin-left: 10px"
-            >
-              <div style="height: 800px">搜索条件</div>
-              <el-button slot="reference">高级搜索</el-button>
-            </el-popover>
-          </el-col>
-        </el-row>
-      </el-form>
-    </template> -->
     <template v-slot:form>
       <el-form ref="form" label-width="100px" class="report-form-container">
         <div class="report-form-left" style="text-align: left">
@@ -142,15 +66,13 @@
 
     <template v-slot:table>
       <br />
-      <div class="ih-table-report" v-loading="!tablerender">
+      <div class="ih-table-report">
         <u-table
           use-virtual
-          v-if="tablerender"
+          v-loading="!tablerender"
           class="ih-table"
           :data="list"
           :empty-text="emptyText"
-          :cell-style="cellStyle"
-          :header-cell-style="headerCellStyle"
           :height="height - 62 * 1 + 'px'"
           mex-height="1300px"
           :show-summary="true"
