@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:22:47
+ * @LastEditTime: 2021-03-31 11:53:22
 -->
 <template>
   <IhPage>
@@ -467,7 +467,10 @@
             <td height="50">原收款金额</td>
             <td>{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>{{info.refundInfo.amount}}</td>
+            <td>
+              <div>{{info.refundInfo.capitalizedAmount}}</div>
+              <div>{{info.refundInfo.lowercaseAmount}}</div>
+            </td>
           </tr>
           <tr>
             <td colspan="6">
@@ -659,6 +662,8 @@ export default class RefundApplyInfo extends Vue {
   uploadDialogVisible = false;
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
+  checkSet: any = new Set();
+  checkSetNotice: any = new Set();
 
   async routeTo(row: any, where: any) {
     let router: any = null;
@@ -729,34 +734,45 @@ export default class RefundApplyInfo extends Vue {
         sums[index] = "合计";
         return;
       }
-      const values = data.map((item: any) => Number(item[column.property]));
-      if (!values.every((value: any) => isNaN(value))) {
-        sums[index] = values.reduce((prev: any, curr: any) => {
-          const value = Number(curr);
-          if (!isNaN(value)) {
-            return this.$math.add(prev, curr);
-          } else {
-            return prev;
+      if (index === 3) {
+        let amount = 0;
+        data.forEach((i: any) => {
+          if (!this.checkSetNotice.has(i.dealNo)) {
+            amount += i.noticeAmount;
+            this.checkSetNotice.add(i.dealNo);
           }
-        }, 0);
-        sums[index] = `${sums[index]}`;
-      } else {
-        if (index === 8) {
-          let receivableAmount = 0,
-            actualAmount = 0,
-            uncollectedAmount = 0;
-          data.forEach((i: any) => {
-            receivableAmount += i.receivableAmount;
+        });
+        sums[index] = amount;
+      } else if (index === 4) {
+        let amount = 0;
+        data.forEach((i: any) => {
+          amount += i.amount;
+        });
+        sums[index] = amount;
+      } else if (index === 8) {
+        let receivableAmount = 0,
+          actualAmount = 0,
+          uncollectedAmount = 0;
+        data.forEach((i: any) => {
+          receivableAmount += i.receivableAmount;
+          uncollectedAmount += i.uncollectedAmount;
+          if (!this.checkSet.has(i.dealNo)) {
             actualAmount += i.actualAmount;
-            uncollectedAmount += i.uncollectedAmount;
-          });
-          sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
+            this.checkSet.add(i.dealNo);
+          }
+        });
+        sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
           实收: ${this.$math.tofixed(actualAmount, 2)} 
           未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
           `;
-        } else {
-          sums[index] = "-";
-        }
+      } else if (index === 10) {
+        let amount = 0;
+        data.forEach((i: any) => {
+          amount += i.commission;
+        });
+        sums[index] = amount;
+      } else {
+        sums[index] = "-";
       }
     });
     return sums;
