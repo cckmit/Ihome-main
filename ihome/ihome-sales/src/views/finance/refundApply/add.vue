@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-31 11:52:58
+ * @LastEditTime: 2021-03-31 12:01:42
 -->
 <template>
   <IhPage>
@@ -96,7 +96,7 @@
                 clearable
                 placeholder="请选择付款方账户账号"
                 class="width--100"
-                @change="accountNoChange"
+                @change="accountNoChange($event, 'clear')"
               >
                 <el-option
                   v-for="item in payerAccountOptions"
@@ -889,13 +889,15 @@ export default class RefundApplyEdit extends Vue {
     if (res.length === 1) {
       this.info.accountNo = res[0].accountNo;
       this.info.accountId = res[0].id;
-      this.accountNoChange(res[0].accountNo);
+      this.accountNoChange(res[0].accountNo, "");
     }
   }
 
-  accountNoChange(data: any) {
-    this.computedDisabled = false;
-    this.isAgainComputed = false;
+  accountNoChange(data: any, type: any) {
+    if (type) {
+      this.isAgainComputed = false;
+      this.computedDisabled = false;
+    }
     if (data) {
       const item = this.payerAccountOptions.find(
         (v: any) => v.accountNo === data
