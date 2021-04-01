@@ -92,7 +92,7 @@
           :show-summary="true"
           :summary-method="summaryMethod">
           <u-table-column type="index" label=" " width="50" fixed> </u-table-column>
-          <u-table-column prop="name" label="组织" width="150" fixed></u-table-column>
+          <u-table-column prop="orgName" label="组织" width="150" fixed></u-table-column>
           <u-table-column label="市场化业务">
             <u-table-column prop="rent" label="租赁">
               <u-table-column prop="rentHouseSets" label="成交套数" width="100">

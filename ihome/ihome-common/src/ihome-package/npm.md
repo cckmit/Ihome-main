@@ -26,3 +26,5 @@ http://nexus.polyic.cn/#browse/browse:npm-local:ihome-common
 
 # 注意事项
 版本号不能重复，每次+1，在README.md写好版本日志
+
+npm install --registry="http://nexus.polyic.cn/repository/npm-local"  ihome-common

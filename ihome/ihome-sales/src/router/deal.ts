@@ -101,6 +101,29 @@ const dealRoutes: Array<RouteConfig> = [
         meta: { title: '成交信息审核', icon: 'form' }
       }
     ]
-  }
+  },
+    // 实数成交列表
+    {
+      path: '/realDeal',
+      meta: { title: '实数成交列表', icon: 'form' },
+      redirect: '/realDeal/list',
+      component: Layout,
+      children: [
+        {
+          path: 'list',
+          name: 'RealDealList',
+          component: () => import('@/views/deal/realDeal/list.vue'),
+          meta: { title: '实数成交列表', icon: 'form', keepAlive: true }
+        },
+       
+        {
+          path: 'info',
+          name: 'RealDealInfo',
+          component: () => import('@/views/deal/realDeal/info.vue'),
+          meta: { title: '实数详情', icon: 'form' }
+        },
+        
+      ]
+    }
 ];
 export { dealRoutes }
