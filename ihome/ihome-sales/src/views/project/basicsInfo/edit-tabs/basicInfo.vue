@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 11:32:20
+ * @LastEditTime: 2021-04-01 14:45:05
 -->
 <template>
   <div>
@@ -530,35 +530,13 @@
         </div>
       </el-row>
     </el-form>
-    <div
-      class="margin-top-20"
-      v-if="$route.name === 'projectChildAdd'"
-    >
+    <div class="margin-top-20">
       <el-button
         type="primary"
         @click="submit('save')"
       >保存</el-button>
       <el-button
         type="success"
-        @click="submit('submit')"
-      >提交</el-button>
-      <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
-    </div>
-    <div
-      class="margin-top-20"
-      v-if="$route.name === 'projectChildEdit'"
-    >
-      <el-button
-        type="primary"
-        :class="{'ih-data-disabled': !secureSave()}"
-        v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
-        :loading="loadSave"
-        @click="submit('save')"
-      >保存</el-button>
-      <el-button
-        type="success"
-        :class="{'ih-data-disabled': !submitChange()}"
-        v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
         @click="submit('submit')"
       >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
@@ -706,15 +684,6 @@ export default class EditBasicInfo extends Vue {
   isShow = true;
   oldInfo: any = {};
   oldSubmitFile: any = {};
-  secureSave() {
-    const Adopt = this.form.auditEnum === "Adopt";
-    return Adopt;
-  }
-  submitChange() {
-    const Draft = this.form.auditEnum === "Draft";
-    const Reject = this.form.auditEnum === "Reject";
-    return Draft || Reject;
-  }
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })
   isShowList(v: any) {

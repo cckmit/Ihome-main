@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-12 10:49:28
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-01 14:54:06
 -->
 <template>
   <div>
@@ -15,13 +15,11 @@
           size="small"
           type="success"
           @click="addSystemParty"
-          v-has="'B.SALES.PROJECT.TERMLIST.CXTZXQHT'"
         >从系统中选取合同</el-button>
         <el-button
           size="small"
           type="success"
           @click="addParty"
-          v-has="'B.SALES.PROJECT.TERMLIST.XZLRHT'"
         >新增录入合同</el-button>
       </div>
     </div>
@@ -77,7 +75,6 @@
               size="small"
               type="danger"
               @click="delPartyA(row)"
-              v-has="'B.SALES.PROJECT.TERMLIST.QXGL'"
             >取消关联</el-button>
           </template>
         </el-table-column>
@@ -92,7 +89,6 @@
             size="small"
             type="success"
             @click="editParty"
-            v-has="'B.SALES.PROJECT.TERMLIST.XGDZGSXX'"
           >修改
           </el-button>
         </div>
@@ -140,7 +136,6 @@
               >
               </el-input>
               <i
-                v-has="'B.SALES.PROJECT.TERMLIST.KHCJYJQRXG'"
                 class="el-icon-edit-outline tubiao"
                 @click="customerDialog"
               ></i>
@@ -162,7 +157,6 @@
               >
               </el-input>
               <i
-                v-has="'B.SALES.PROJECT.TERMLIST.WYZRXG'"
                 class="el-icon-edit-outline tubiao"
                 @click="responsibiltityDialog"
               ></i>

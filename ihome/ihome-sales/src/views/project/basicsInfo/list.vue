@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 10:59:48
+ * @LastEditTime: 2021-04-01 15:04:58
 -->
 <template>
   <IhPage label-width="110px">
@@ -228,8 +228,8 @@
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !editChange(row)}"
-                  @click.native.prevent="routerTo(row, 'edit')"
-                  v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
+                  @click.native.prevent="routerTo(row, 'yeguanEdit')"
+                  v-has="'B.SALES.PROJECT.BASICLIST.YGUPDATE'"
                 >业管修改</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !delChange(row)}"
@@ -370,6 +370,7 @@ export default class ProjectList extends Vue {
         } else {
           where = "childEdit";
         }
+        window.sessionStorage.setItem("editType", "edit");
         break;
       case "audit":
         if (row.exMinyuan) {
@@ -381,6 +382,18 @@ export default class ProjectList extends Vue {
         } else {
           where = "childAudit";
         }
+        break;
+      case "yeguanEdit":
+        if (row.exMinyuan) {
+          if (!row.parentId) {
+            where = "parentEdit";
+          } else {
+            where = "childEdit";
+          }
+        } else {
+          where = "childEdit";
+        }
+        window.sessionStorage.setItem("editType", "yeguanEdit");
         break;
     }
     this.$router.push({

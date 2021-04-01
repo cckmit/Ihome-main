@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 11:59:50
+ * @LastEditTime: 2021-04-01 14:17:43
 -->
 <template>
   <ih-page>
@@ -163,16 +163,21 @@ export default class ProjectChildEdit extends Vue {
   }
 
   async getInfo() {
+    let editType = window.sessionStorage.getItem("editType");
     if (this.projectId) {
       const data = await get_project_get__proId({
         proId: this.projectId,
       });
-      if (["Conduct", "Adopt"].includes(data.auditEnum)) {
-        this.componetName = "InfoBasicInfo";
-        this.isShow = false;
-      } else {
+      if (editType === "yeguanEdit") {
         this.componetName = "EditBasicInfo";
-        this.isShow = true;
+      } else {
+        if (["Conduct", "Adopt"].includes(data.auditEnum)) {
+          this.componetName = "InfoBasicInfo";
+          this.isShow = false;
+        } else {
+          this.componetName = "EditBasicInfo";
+          this.isShow = true;
+        }
       }
       this.infoData = data;
     } else {

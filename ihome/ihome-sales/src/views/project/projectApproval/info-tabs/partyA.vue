@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-12 10:49:47
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-01 14:55:22
 -->
 <template>
   <div>
@@ -110,7 +110,6 @@
               </el-input>
               <i
                 v-if="contractApprovalChange"
-                v-has="'B.SALES.PROJECT.TERMLIST.KHCJYJQRXG'"
                 class="el-icon-edit-outline tubiao"
                 @click="customerDialog"
               ></i>
@@ -133,7 +132,6 @@
               </el-input>
               <i
                 v-if="contractApprovalChange"
-                v-has="'B.SALES.PROJECT.TERMLIST.WYZRXG'"
                 class="el-icon-edit-outline tubiao"
                 @click="responsibiltityDialog"
               ></i>

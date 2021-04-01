@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 18:39:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 11:11:47
+ * @LastEditTime: 2021-04-01 14:47:21
 -->
 <template>
   <el-dialog
@@ -87,7 +87,6 @@
                   this.$route.name
                 )
                && !isMingyuan"
-              v-has="'B.SALES.PROJECT.BASICLIST.XZFH'"
             >添加房号</el-button>
           </el-form-item>
         </el-col>
@@ -142,12 +141,10 @@
           <el-link
             type="primary"
             @click="edit(row)"
-            v-has="'B.SALES.PROJECT.BASICLIST.BJFH'"
           >编辑</el-link>
           <el-link
             style="margin-left: 20px"
             type="primary"
-            v-has="'B.SALES.PROJECT.BASICLIST.SCFH'"
             @click="remove(row)"
           >移除</el-link>
         </template>

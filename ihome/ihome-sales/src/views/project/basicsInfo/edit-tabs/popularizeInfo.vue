@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 17:11:07
+ * @LastEditTime: 2021-04-01 14:49:24
 -->
 <template>
   <div>
@@ -147,7 +147,6 @@
       <el-button
         type="primary"
         @click="save"
-        v-has="'B.SALES.PROJECT.BASICLIST.TGXXBC'"
       >保存</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
     </div>
@@ -183,18 +182,6 @@ export default class EditPopularizeInfo extends Vue {
     transportation: null,
     workArea: null,
   };
-
-  saveChange() {
-    const status = window.sessionStorage.getItem("projectStatus");
-    const Adopt = status === "Adopt";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (
-      RFrontLineClerk ||
-      (Adopt && (RHeadBusinessManagement || RBusinessManagement))
-    );
-  }
 
   private get proId() {
     return this.$route.query.id;
