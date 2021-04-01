@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 16:17:53
+ * @LastEditTime: 2021-04-01 14:55:09
 -->
 <template>
   <div>
@@ -76,7 +76,6 @@
               </el-input>
               <i
                 v-if="contractApprovalChange"
-                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTKHBJ'"
                 class="el-icon-edit-outline tubiao"
                 @click="editDialog('customerConfirm')"
               ></i>
@@ -99,7 +98,6 @@
               </el-input>
               <i
                 v-if="contractApprovalChange"
-                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTWYZR'"
                 class="el-icon-edit-outline tubiao"
                 @click="editDialog('responsibiltity')"
               ></i>
@@ -122,7 +120,6 @@
               </el-input>
               <i
                 v-if="contractApprovalChange"
-                v-has="'B.SALES.PROJECT.TERMLIST.ZJFXHTQTSM'"
                 class="el-icon-edit-outline tubiao"
                 @click="editDialog('otherRemark')"
               ></i>

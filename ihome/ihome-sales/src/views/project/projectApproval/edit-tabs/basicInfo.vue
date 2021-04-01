@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 16:36:39
+ * @LastEditTime: 2021-04-01 14:51:42
 -->
 <template>
   <div class="project-approval-box">
@@ -748,20 +748,17 @@
         v-if="['Draft', 'TermReject'].includes(info.auditEnum)"
         type="success"
         :loading="finishLoading"
-        v-has="'B.SALES.PROJECT.TERMLIST.TJLXSH'"
         @click="submit('ProjectApproval')"
       >提交审核</el-button>
       <el-button
         v-if="$route.name === 'projectApprovalEdit'"
         type="primary"
         @click="submit('save')"
-        v-has="'B.SALES.PROJECT.TERMLIST.JCXXBC'"
         :loading="finishLoadSave"
       >保存</el-button>
       <el-button
         v-if="['TermAdopt', 'ConstractReject', 'ConstractWait'].includes(info.auditEnum)"
         type="success"
-        v-has="'B.SALES.PROJECT.TERMLIST.TJHTSH'"
         :loading="finishLoadHT"
         @click="submitContract()"
       >提交合同审核</el-button>

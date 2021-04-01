@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:18:49
+ * @LastEditTime: 2021-04-01 14:54:50
 -->
 <template>
   <div>
@@ -503,7 +503,6 @@
       <el-button
         v-if="contractApprovalChange"
         type="success"
-        v-has="'B.SALES.PROJECT.TERMLIST.TJHTSH'"
         :loading="finishLoadHT"
         @click="submitContract()"
       >提交审核</el-button>
@@ -511,7 +510,6 @@
         v-if="contractApprovalChange"
         type="primary"
         @click="submit()"
-        v-has="'B.SALES.PROJECT.TERMLIST.JCXXBC'"
         :loading="finishLoadSave"
       >保存</el-button>
       <el-button @click="viewApprovalDialogVisible = true">预览OA立项表单</el-button>

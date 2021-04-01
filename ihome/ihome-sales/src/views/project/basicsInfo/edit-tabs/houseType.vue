@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-06 10:15:44
+ * @LastEditTime: 2021-04-01 14:45:54
 -->
 <template>
   <div>
@@ -13,7 +13,6 @@
       v-if="!isMingyuan"
     >
       <el-button
-        v-has="'B.SALES.PROJECT.BASICLIST.LPHXKJDRFH'"
         type="success"
         v-if="$route.name !== 'projectChildAdd'"
         @click="fastImport"
@@ -59,28 +58,24 @@
           v-if="!isMingyuan"
           size="small"
           type="success"
-          v-has="'B.SALES.PROJECT.BASICLIST.LPHXBJ'"
           @click="edit(item, '')"
         >编辑</el-button>
         <el-button
           v-else
           size="small"
           type="success"
-          v-has="'B.SALES.PROJECT.BASICLIST.LPHXBJ'"
           @click="edit(item, 'mingyuan')"
         >编辑</el-button>
         <el-button
           v-if="!isMingyuan"
           size="small"
           type="danger"
-          v-has="'B.SALES.PROJECT.BASICLIST.LPHXSC'"
           @click="remove(item)"
         >删除</el-button>
       </div>
       <div
         v-if="!isMingyuan"
         class="plus"
-        v-has="'B.SALES.PROJECT.BASICLIST.LPHXXZ'"
         @click="add()"
       >
         <i class="el-icon-plus"></i>

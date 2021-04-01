@@ -664,6 +664,48 @@
           this.$set(item, 'showFileList', tempList);
           list.push(item);
         });
+        // 告知书补发页面的上传附件也需要显示在优惠告知书类型的附件信息中
+        this.pageData.uploadDocumentList.forEach((item: any) => {
+          if (item.code === 'Notice') {
+            if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
+              this.pageData.noticeDealList.forEach((dealList: any) => {
+                if (dealList.annexList && dealList.annexList.length) {
+                  dealList.annexList.forEach((list: any) => {
+                    if (list.type !== "Subscription") {
+                      // 不放认购书附件
+                      item.showFileList.push(
+                        {
+                          fileName: list.attachmentSuffix,
+                          fileId: list.fileNo,
+                        }
+                      )
+                    }
+                  });
+                }
+              })
+            }
+          }
+          if (item.code === 'SubscribeBook') {
+            // 认购书
+            if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
+              this.pageData.noticeDealList.forEach((dealList: any) => {
+                if (dealList.annexList && dealList.annexList.length) {
+                  dealList.annexList.forEach((list: any) => {
+                    if (list.type === "Subscription") {
+                      // 放认购书附件
+                      item.showFileList.push(
+                        {
+                          fileName: list.attachmentSuffix,
+                          fileId: list.fileNo,
+                        }
+                      )
+                    }
+                  });
+                }
+              })
+            }
+          }
+        });
       }
       return list;
     }
