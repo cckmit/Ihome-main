@@ -671,12 +671,35 @@
               this.pageData.noticeDealList.forEach((dealList: any) => {
                 if (dealList.annexList && dealList.annexList.length) {
                   dealList.annexList.forEach((list: any) => {
-                    item.showFileList.push(
-                      {
-                        fileName: list.attachmentSuffix,
-                        fileId: list.fileNo,
-                      }
-                    )
+                    if (list.type !== "Subscription") {
+                      // 不放认购书附件
+                      item.showFileList.push(
+                        {
+                          fileName: list.attachmentSuffix,
+                          fileId: list.fileNo,
+                        }
+                      )
+                    }
+                  });
+                }
+              })
+            }
+          }
+          if (item.code === 'SubscribeBook') {
+            // 认购书
+            if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
+              this.pageData.noticeDealList.forEach((dealList: any) => {
+                if (dealList.annexList && dealList.annexList.length) {
+                  dealList.annexList.forEach((list: any) => {
+                    if (list.type === "Subscription") {
+                      // 放认购书附件
+                      item.showFileList.push(
+                        {
+                          fileName: list.attachmentSuffix,
+                          fileId: list.fileNo,
+                        }
+                      )
+                    }
                   });
                 }
               })
