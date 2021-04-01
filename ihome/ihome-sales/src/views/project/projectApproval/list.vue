@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:56:29
+ * @LastEditTime: 2021-04-01 17:50:10
 -->
 <template>
   <IhPage label-width="100px">
@@ -259,6 +259,16 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.ZFZQ'"
                 >作废周期</el-dropdown-item>
                 <el-dropdown-item
+                  :class="{'ih-data-disabled': !setStartChange(row)}"
+                  @click.native.prevent="setStart(row, 'start')"
+                  v-has="'B.SALES.PROJECT.TERMLIST.SZQDHSLZT'"
+                >设置启动函申领状态</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': !setNoStartChange(row)}"
+                  @click.native.prevent="setStart(row, 'noStart')"
+                  v-has="'B.SALES.PROJECT.TERMLIST.SZFQDHSLZT'"
+                >设置非启动函申领状态</el-dropdown-item>
+                <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :class="{'ih-data-disabled': !delChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
@@ -287,6 +297,13 @@
         @finish="(data) => addFinish(data)"
       />
     </ih-dialog>
+    <ih-dialog :show="setDialogVisible">
+      <SetContractStatus
+        :data="setData"
+        @cancel="() => (setDialogVisible = false)"
+        @finish="(data) => setFinish(data)"
+      />
+    </ih-dialog>
   </IhPage>
 </template>
 <script lang="ts">
@@ -299,10 +316,11 @@ import {
   post_term_stop__termId,
 } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
-import Add from "./dialog/basicInfo-dialog/add.vue";
+import Add from "./dialog/list-dialog/add.vue";
+import SetContractStatus from "./dialog/list-dialog/setContractStatus.vue";
 
 @Component({
-  components: { Add },
+  components: { Add, SetContractStatus },
   mixins: [PaginationMixin],
 })
 export default class ProjectApproval extends Vue {
@@ -324,6 +342,8 @@ export default class ProjectApproval extends Vue {
     list: [],
   };
   dialogVisible = false;
+  setDialogVisible: any = false;
+  setData: any = {};
 
   // 立项呈批权限控制
   projectApprovalChange(row: any) {
@@ -350,6 +370,25 @@ export default class ProjectApproval extends Vue {
     const Draft = row.auditEnum === "Draft";
     const TermReject = row.auditEnum === "TermReject";
     return Draft || TermReject;
+  }
+
+  // 设置启动函申领状态
+  setStartChange(row: any) {
+    const Start = row.state === "Start";
+    const TermAdopt = row.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
+    const ConstractConduct = row.auditEnum === "ConstractConduct"; // 合同审核中
+    const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    return (
+      Start &&
+      (TermAdopt || ConstractWait || ConstractConduct || ConstractReject)
+    );
+  }
+
+  // 设置非启动函申领状态
+  setNoStartChange(row: any) {
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
+    return ConstractAdopt;
   }
 
   get emptyText() {
@@ -407,9 +446,9 @@ export default class ProjectApproval extends Vue {
         id: row.termId,
       },
     });
-    if (where === "apply") {
-      window.sessionStorage.setItem("groupId", row.startDivisionId);
-    }
+    // if (where === "apply") {
+    //   window.sessionStorage.setItem("groupId", row.startDivisionId);
+    // }
   }
 
   async remove(row: any) {
@@ -452,6 +491,16 @@ export default class ProjectApproval extends Vue {
         id: item.toString(),
       },
     });
+  }
+
+  setStart(data: any, type: any) {
+    console.log(data, type);
+    this.setDialogVisible = true;
+  }
+
+  setFinish(data: any) {
+    console.log(data);
+    this.setDialogVisible = false;
   }
 }
 </script>
