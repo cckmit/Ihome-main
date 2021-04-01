@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 10:52:24
+ * @LastEditTime: 2021-04-01 14:19:35
 -->
 <template>
   <IhPage label-width="100px">
@@ -16,10 +16,19 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="标题">
+            <el-form-item label="合同标题">
               <el-input
                 v-model="queryPageParameters.title"
-                placeholder="标题"
+                placeholder="请输入标题"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="合同类型">
+              <el-input
+                v-model="queryPageParameters.title"
+                placeholder="请选择合同类型 "
                 clearable
               ></el-input>
             </el-form-item>
@@ -28,20 +37,9 @@
             <el-form-item label="甲方公司">
               <IhSelectPageByCompany
                 v-model="queryPageParameters.partyACompanyId"
-                placeholder="甲方公司"
                 clearable
                 class="width--100"
               ></IhSelectPageByCompany>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="乙方公司">
-              <IhSelectPageByChannel
-                v-model="queryPageParameters.channelCompanyId"
-                clearable
-                placeholder="请选择乙方公司"
-                class="width--100"
-              ></IhSelectPageByChannel>
             </el-form-item>
           </el-col>
         </el-row>
@@ -49,6 +47,16 @@
           <div v-show="searchOpen">
             <el-row>
               <el-col :span="8">
+                <el-form-item label="乙方公司">
+                  <IhSelectPageByChannel
+                    v-model="queryPageParameters.channelCompanyId"
+                    clearable
+                    placeholder="请选择乙方公司"
+                    class="width--100"
+                  ></IhSelectPageByChannel>
+                </el-form-item>
+              </el-col>
+              <!-- <el-col :span="8">
                 <el-form-item label="项目地址">
                   <el-input
                     v-model="queryPageParameters.projectAddress"
@@ -56,7 +64,7 @@
                     clearable
                   ></el-input>
                 </el-form-item>
-              </el-col>
+              </el-col> -->
               <el-col :span="8">
                 <el-form-item label="合作时间">
                   <el-date-picker
@@ -198,11 +206,11 @@
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
         >审核</el-button>
-        <el-button
+        <!-- <el-button
           type="success"
           @click="distribute(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
-        >派发</el-button>
+        >派发</el-button> -->
         <el-button
           type="danger"
           @click="handleDis(selectionData)"
@@ -217,10 +225,13 @@
         >撤回</el-button>
         <el-button
           type="success"
+          @click="applyVisible = true"
+        >申领合同</el-button>
+        <el-button
+          type="success"
           @click="handleExport()"
           v-has="'B.SALES.CONTRACT.DISTLIST.EXPORTLIST'"
-        >导出列表
-        </el-button>
+        >导出列表</el-button>
         <!-- <el-dropdown
           class="margin-left-10"
           trigger="click"
@@ -264,6 +275,7 @@
           prop="title"
           min-width="235"
         ></el-table-column>
+        <el-table-column label="合同类型"></el-table-column>
         <el-table-column
           label="甲方公司"
           prop="partyACompanyName"
@@ -275,11 +287,6 @@
           min-width="150"
         ></el-table-column>
         <el-table-column
-          label="项目地址"
-          prop="projectAddress"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
           label="合作时间"
           prop="time"
           width="195"
@@ -289,12 +296,12 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="关联项目"
+          label="项目"
           prop="projectName"
           width="150"
         ></el-table-column>
         <el-table-column
-          label="关联周期"
+          label="周期"
           prop="cycleName"
           width="150"
         ></el-table-column>
@@ -359,12 +366,12 @@
                   @click.native.prevent="review([{ ...row }])"
                   :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
-                >审核</el-dropdown-item>
-                <el-dropdown-item
+                >审核通过</el-dropdown-item>
+                <!-- <el-dropdown-item
                   @click.native.prevent="distribute([{ ...row }])"
                   :class="{ 'ih-data-disabled': row.distributionState !== 'NotDistributed' }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
-                >派发</el-dropdown-item>
+                >派发</el-dropdown-item> -->
                 <el-dropdown-item
                   @click.native.prevent="handleDis([{ ...row }])"
                   :class="{
@@ -372,7 +379,7 @@
                     'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
-                >驳回</el-dropdown-item>
+                >审核驳回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="handleWith([{ ...row }])"
                   :class="{
@@ -420,12 +427,16 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </template>
+    <IhDialog :show="applyVisible">
+      <ApplyContract @cancel="() => (applyVisible = false)" />
+    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
+import ApplyContract from "./dialog/applyContract.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import {
@@ -438,7 +449,7 @@ import {
 } from "@/api/contract/index";
 
 @Component({
-  components: {},
+  components: { ApplyContract },
   mixins: [PaginationMixin],
 })
 export default class DistributionList extends Vue {
@@ -459,14 +470,15 @@ export default class DistributionList extends Vue {
     projectId: null,
     title: null,
   };
-  private timeList = [];
-  private companyLoading = false;
-  private searchOpen = true;
-  private selectionData: any = [];
   resPageInfo: any = {
     total: null,
     list: [],
   };
+  private timeList = [];
+  private companyLoading = false;
+  private searchOpen = true;
+  private selectionData: any = [];
+  private applyVisible = false;
 
   private originalChange(row: any) {
     const isDis = row.distributionState === "Distributed";

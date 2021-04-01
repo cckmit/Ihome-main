@@ -408,33 +408,15 @@
         <el-button>取消</el-button>
       </div>
     </template>
-
-    <IhDialog
-      :show="dialogFormVisible"
-      desc="分销合同模板"
-    >
-      <TemplateDailog
-        :data="cycle"
-        @cancel="() => (dialogFormVisible = false)"
-        @finish="(data) => {
-          dialogFormVisible = false;
-          templateData = [data]
-        }"
-      />
-    </IhDialog>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-
-import TemplateDailog from "./dialog/templateDialog.vue";
 import { post_term_getDropDown } from "@/api/project/index";
 import { get_channel_getAll, get_channel_get__id } from "@/api/channel/index";
 
-@Component({
-  components: { TemplateDailog },
-})
+@Component({})
 export default class DistributionApply extends Vue {
   private dialogFormVisible = false;
   private dropOption: any = [];
