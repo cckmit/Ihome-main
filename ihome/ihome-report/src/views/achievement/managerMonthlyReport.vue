@@ -598,6 +598,7 @@ export default class ManagerMonthlyReport extends Vue {
       if (!this.validTime()) {
         return
       }
+      this.tableRender = false;
       let postData: any = await this.getPostData();
       let list: any = await post_achievementRole_getList(postData);
       console.log(list);
