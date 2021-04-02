@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:45:05
+ * @LastEditTime: 2021-04-02 11:54:27
 -->
 <template>
   <div>
@@ -551,8 +551,9 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
+  get_project_get__proId,
   post_project_add,
   post_project_update,
   post_project_auditWait,
@@ -579,12 +580,6 @@ import {
   },
 })
 export default class EditBasicInfo extends Vue {
-  @Prop({
-    default: () => {
-      return {};
-    },
-  })
-  infoData!: any;
   loadSave = false;
   form: any = {
     auditEnum: null,
@@ -751,22 +746,21 @@ export default class EditBasicInfo extends Vue {
 
   async getInfo() {
     if (this.projectId) {
-      this.form = { ...this.form, ...this.infoData };
+      const data = await get_project_get__proId({
+        proId: this.projectId,
+      });
+      this.form = { ...this.form, ...data };
       window.sessionStorage.setItem(
         "projectExMinyuan",
-        this.infoData.exMinyuan.toString()
+        data.exMinyuan.toString()
       );
       window.sessionStorage.setItem("proName", this.form.proName);
-      this.form.provinceOption = [
-        this.infoData.province,
-        this.infoData.city,
-        this.infoData.district,
-      ];
-      this.contantList = this.infoData.propertyArgs.map((v: any) => ({
+      this.form.provinceOption = [data.province, data.city, data.district];
+      this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
-      this.form.jingwei = this.infoData.lat + "," + this.infoData.lng;
+      this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
@@ -793,7 +787,7 @@ export default class EditBasicInfo extends Vue {
           (item: any) => item.exIndex === 1
         )[0]?.fileId;
       }
-      this.getFileListType(this.infoData.attachPics);
+      this.getFileListType(data.attachPics);
       this.oldInfo = { ...this.form };
     } else {
       this.getFileListType([]);

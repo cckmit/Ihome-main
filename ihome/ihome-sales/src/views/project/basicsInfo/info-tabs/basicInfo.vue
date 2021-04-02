@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 11:54:59
+ * @LastEditTime: 2021-04-02 11:54:09
 -->
 <template>
   <div>
@@ -413,8 +413,12 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch, Prop } from "vue-property-decorator";
-import { post_project_audit, post_project_reject } from "@/api/project/index";
+import { Component, Vue, Watch } from "vue-property-decorator";
+import {
+  get_project_get__proId,
+  post_project_audit,
+  post_project_reject,
+} from "@/api/project/index";
 import BaiduMap from "vue-baidu-map/components/map/Map.vue";
 import BmView from "vue-baidu-map/components/map/MapView.vue";
 import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
@@ -423,12 +427,6 @@ import BmLocalSearch from "vue-baidu-map/components/search/LocalSearch.vue";
   components: { BaiduMap, BmView, BmLocalSearch },
 })
 export default class InfoBasicInfo extends Vue {
-  @Prop({
-    default: () => {
-      return {};
-    },
-  })
-  infoData!: any;
   form: any = {
     proNo: null,
     proName: null,
@@ -531,12 +529,15 @@ export default class InfoBasicInfo extends Vue {
 
   async getInfo() {
     if (this.projectId) {
-      this.form = { ...this.form, ...this.infoData };
-      this.contantList = this.infoData.propertyArgs.map((v: any) => ({
+      const data = await get_project_get__proId({
+        proId: this.projectId,
+      });
+      this.form = { ...this.form, ...data };
+      this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
-      this.form.jingwei = this.infoData.lat + "," + this.infoData.lng;
+      this.form.jingwei = data.lat + "," + data.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
@@ -561,7 +562,7 @@ export default class InfoBasicInfo extends Vue {
       this.radio = this.houseFileList.filter(
         (item: any) => item.exIndex === 1
       )[0]?.fileId;
-      this.getFileListType(this.infoData.attachPics);
+      this.getFileListType(data.attachPics);
       window.sessionStorage.setItem("proName", this.form.proName);
     }
   }
