@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 11:54:27
+ * @LastEditTime: 2021-04-02 16:05:12
 -->
 <template>
   <div>
@@ -536,6 +536,7 @@
         @click="submit('save')"
       >保存</el-button>
       <el-button
+        v-if="isShowSubmit"
         type="success"
         @click="submit('submit')"
       >提交</el-button>
@@ -679,6 +680,7 @@ export default class EditBasicInfo extends Vue {
   isShow = true;
   oldInfo: any = {};
   oldSubmitFile: any = {};
+  isShowSubmit: any = true;
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })
   isShowList(v: any) {
@@ -755,6 +757,8 @@ export default class EditBasicInfo extends Vue {
         data.exMinyuan.toString()
       );
       window.sessionStorage.setItem("proName", this.form.proName);
+      this.isShowSubmit =
+        window.sessionStorage.getItem("editType") === "edit" ? true : false;
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
