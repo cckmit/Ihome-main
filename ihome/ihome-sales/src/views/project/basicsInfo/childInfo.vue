@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-02 15:19:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-19 16:26:39
+ * @LastEditTime: 2021-04-01 12:25:04
 -->
 <template>
   <ih-page>
@@ -13,8 +13,8 @@
         <el-tabs
           class="tabClass"
           type="border-card"
-          v-model="tabActive"
-          @tab-click="tabClick(tabActive)"
+          v-model="componetName"
+          @tab-click="tabClick(componetName)"
         >
           <el-tab-pane
             label="基础信息"
@@ -24,6 +24,7 @@
               :typeStr="typeStr"
               v-if="componetName === 'BasicInfo'"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
+              :info-data="infoData"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -75,15 +76,16 @@ import HouseType from "./info-tabs/houseType.vue";
 import PopularizeInfo from "./info-tabs/popularizeInfo.vue";
 import RoomNum from "./info-tabs/roomNum.vue";
 import ReportedRules from "./info-tabs/reportedRules.vue";
+import { get_project_get__proId } from "@/api/project/index";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({
   components: { BasicInfo, HouseType, PopularizeInfo, RoomNum, ReportedRules },
 })
 export default class ProjectChildInfo extends Vue {
-  tabActive: any = "BasicInfo";
   typeStr = "";
-  componetName: any = "BasicInfo";
+  componetName: any = "";
+  infoData: any = {};
 
   private beforeRouteEnter(to: any, from: any, next: any) {
     next((vm: any) => {
@@ -93,6 +95,24 @@ export default class ProjectChildInfo extends Vue {
 
   tabClick(val: any) {
     this.componetName = val;
+  }
+
+  private get projectId() {
+    return this.$route.query.id;
+  }
+
+  created() {
+    this.getInfo();
+  }
+
+  async getInfo() {
+    if (this.projectId) {
+      const data = await get_project_get__proId({
+        proId: this.projectId,
+      });
+      this.infoData = data;
+      this.componetName = "BasicInfo";
+    }
   }
 
   get maxHeight() {

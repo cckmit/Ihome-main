@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-10 10:43:46
+ * @LastEditTime: 2021-04-01 14:56:29
 -->
 <template>
   <IhPage label-width="100px">
@@ -242,7 +242,6 @@
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !(row.auditEnum === 'ConstractAdopt' && row.state === 'Start')}"
                   @click.native.prevent="routeTo(row, 'apply')"
-                  v-has="'B.SALES.PROJECT.TERMLIST.APPLYDISTRIBUT'"
                 >申领分销协议</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !(row.auditEnum === 'ConstractAdopt' && row.state === 'Start')}"

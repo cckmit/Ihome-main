@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 09:29:34
+ * @LastEditTime: 2021-04-01 18:47:10
 -->
 <template>
   <IhPage>
@@ -768,6 +768,7 @@ export default class RefundToExamineToExamine extends Vue {
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
   isAgainComputed = true;
+  checkSetNotice: any = new Set();
 
   private get returnId() {
     return this.$route.query.id;
@@ -891,19 +892,15 @@ export default class RefundToExamineToExamine extends Vue {
         }, 0);
         sums[index] = `${sums[index]}`;
       } else {
-        if (index === 8) {
-          let receivableAmount = 0,
-            actualAmount = 0,
-            uncollectedAmount = 0;
+        if (index === 3) {
+          let amount = 0;
           data.forEach((i: any) => {
-            receivableAmount += i.receivableAmount;
-            actualAmount += i.actualAmount;
-            uncollectedAmount += i.uncollectedAmount;
+            if (!this.checkSetNotice.has(i.dealNo)) {
+              amount += i.noticeAmount;
+              this.checkSetNotice.add(i.dealNo);
+            }
           });
-          sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
-          实收: ${this.$math.tofixed(actualAmount, 2)} 
-          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
-          `;
+          sums[index] = amount;
         } else {
           sums[index] = "-";
         }
@@ -991,6 +988,7 @@ export default class RefundToExamineToExamine extends Vue {
     this.computedDisabled = false;
     this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
+    this.checkSetNotice = new Set();
   }
   async delContacts(index: number) {
     this.info.refundItems.splice(index, 1);
@@ -998,6 +996,7 @@ export default class RefundToExamineToExamine extends Vue {
     this.computedDisabled = false;
     this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
+    this.checkSetNotice = new Set();
   }
   addContacts() {
     this.addFefundDialogVisible = true;
@@ -1022,8 +1021,12 @@ export default class RefundToExamineToExamine extends Vue {
       refundAmount: v.amount,
       refundApplyNo: v.refundNo,
     }));
+    let set = new Set();
     this.info.refundItems.forEach((v: any) => {
-      noticeSum += v.noticeAmount;
+      if (!set.has(v.dealNo)) {
+        noticeSum += v.noticeAmount;
+        set.add(v.dealNo);
+      }
       amountSum += v.amount;
     });
     obj.amount = amountSum;

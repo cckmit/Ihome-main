@@ -31,13 +31,13 @@ const routes: Array<RouteConfig> = [
   
   {
     path: '/achievement',
-    meta: { title: '业绩报表', icon: 'form' },
+    meta: { title: '报表管理', icon: 'form' },
     redirect: '/achievement/managerMonthlyReport',
     component: Layout,
     children: [
       {
         path: 'managerMonthlyReport',
-        name: 'managerMonthlyReport',
+        name: 'ManagerMonthlyReport',
         component: () => import('../views/achievement/managerMonthlyReport.vue'),
         meta: { title: '管理者月报', icon: 'form', keepAlive: true }
       },

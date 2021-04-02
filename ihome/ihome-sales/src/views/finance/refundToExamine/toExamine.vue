@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 09:05:46
+ * @LastEditTime: 2021-04-01 18:43:59
 -->
 <template>
   <IhPage>
@@ -691,6 +691,7 @@ export default class RefundToExamineToExamine extends Vue {
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
   remark: any = null;
+  checkSetNotice: any = new Set();
 
   private get returnId() {
     return this.$route.query.id;
@@ -795,19 +796,15 @@ export default class RefundToExamineToExamine extends Vue {
         }, 0);
         sums[index] = `${sums[index]}`;
       } else {
-        if (index === 8) {
-          let receivableAmount = 0,
-            actualAmount = 0,
-            uncollectedAmount = 0;
+        if (index === 3) {
+          let amount = 0;
           data.forEach((i: any) => {
-            receivableAmount += i.receivableAmount;
-            actualAmount += i.actualAmount;
-            uncollectedAmount += i.uncollectedAmount;
+            if (!this.checkSetNotice.has(i.dealNo)) {
+              amount += i.noticeAmount;
+              this.checkSetNotice.add(i.dealNo);
+            }
           });
-          sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
-          实收: ${this.$math.tofixed(actualAmount, 2)} 
-          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
-          `;
+          sums[index] = amount;
         } else {
           sums[index] = "-";
         }

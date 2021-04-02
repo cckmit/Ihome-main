@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:29:34
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-31 15:01:56
+ * @LastEditTime: 2021-04-01 18:38:52
 -->
 <template>
   <IhPage>
@@ -682,7 +682,6 @@ export default class RefundApplyEdit extends Vue {
   computedLoading: any = false;
   showUploadIndex: any = 0;
   isAgainComputed: any = true;
-  checkSet: any = new Set();
   checkSetNotice: any = new Set();
 
   @Watch("info.orgId", { deep: true })
@@ -933,22 +932,6 @@ export default class RefundApplyEdit extends Vue {
           amount += i.amount;
         });
         sums[index] = amount;
-      } else if (index === 8) {
-        let receivableAmount = 0,
-          actualAmount = 0,
-          uncollectedAmount = 0;
-        data.forEach((i: any) => {
-          receivableAmount += i.receivableAmount;
-          uncollectedAmount += i.uncollectedAmount;
-          if (!this.checkSet.has(i.dealNo)) {
-            actualAmount += i.actualAmount;
-            this.checkSet.add(i.dealNo);
-          }
-        });
-        sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
-          实收: ${this.$math.tofixed(actualAmount, 2)} 
-          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
-          `;
       } else if (index === 10) {
         let amount = 0;
         data.forEach((i: any) => {
@@ -1039,7 +1022,6 @@ export default class RefundApplyEdit extends Vue {
     this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
     this.checkSetNotice = new Set();
-    this.checkSet = new Set();
   }
 
   addFefundFinish(data: any) {
@@ -1049,7 +1031,6 @@ export default class RefundApplyEdit extends Vue {
     this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
     this.checkSetNotice = new Set();
-    this.checkSet = new Set();
   }
 
   submit(val: any) {

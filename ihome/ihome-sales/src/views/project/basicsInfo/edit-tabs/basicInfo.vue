@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 14:59:40
+ * @LastEditTime: 2021-04-01 14:45:05
 -->
 <template>
   <div>
@@ -530,35 +530,13 @@
         </div>
       </el-row>
     </el-form>
-    <div
-      class="margin-top-20"
-      v-if="$route.name === 'projectChildAdd'"
-    >
+    <div class="margin-top-20">
       <el-button
         type="primary"
         @click="submit('save')"
       >保存</el-button>
       <el-button
         type="success"
-        @click="submit('submit')"
-      >提交</el-button>
-      <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
-    </div>
-    <div
-      class="margin-top-20"
-      v-if="$route.name === 'projectChildEdit'"
-    >
-      <el-button
-        type="primary"
-        :class="{'ih-data-disabled': !secureSave()}"
-        v-has="'B.SALES.PROJECT.BASICLIST.ZXMBC'"
-        :loading="loadSave"
-        @click="submit('save')"
-      >保存</el-button>
-      <el-button
-        type="success"
-        :class="{'ih-data-disabled': !submitChange()}"
-        v-has="'B.SALES.PROJECT.BASICLIST.ZXMTJ'"
         @click="submit('submit')"
       >提交</el-button>
       <el-button @click="$goto({ path: '/projects/list' })">关闭</el-button>
@@ -573,9 +551,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue, Watch, Prop } from "vue-property-decorator";
 import {
-  get_project_get__proId,
   post_project_add,
   post_project_update,
   post_project_auditWait,
@@ -602,6 +579,12 @@ import {
   },
 })
 export default class EditBasicInfo extends Vue {
+  @Prop({
+    default: () => {
+      return {};
+    },
+  })
+  infoData!: any;
   loadSave = false;
   form: any = {
     auditEnum: null,
@@ -701,15 +684,6 @@ export default class EditBasicInfo extends Vue {
   isShow = true;
   oldInfo: any = {};
   oldSubmitFile: any = {};
-  secureSave() {
-    const Adopt = this.form.auditEnum === "Adopt";
-    return Adopt;
-  }
-  submitChange() {
-    const Draft = this.form.auditEnum === "Draft";
-    const Reject = this.form.auditEnum === "Reject";
-    return Draft || Reject;
-  }
 
   @Watch("form.exMinyuan", { immediate: true, deep: true })
   isShowList(v: any) {
@@ -771,27 +745,28 @@ export default class EditBasicInfo extends Vue {
     return arr;
   }
 
-  created() {
+  mounted() {
     this.getInfo();
   }
 
   async getInfo() {
     if (this.projectId) {
-      const data = await get_project_get__proId({
-        proId: this.projectId,
-      });
-      this.form = { ...this.form, ...data };
+      this.form = { ...this.form, ...this.infoData };
       window.sessionStorage.setItem(
         "projectExMinyuan",
-        data.exMinyuan.toString()
+        this.infoData.exMinyuan.toString()
       );
       window.sessionStorage.setItem("proName", this.form.proName);
-      this.form.provinceOption = [data.province, data.city, data.district];
-      this.contantList = data.propertyArgs.map((v: any) => ({
+      this.form.provinceOption = [
+        this.infoData.province,
+        this.infoData.city,
+        this.infoData.district,
+      ];
+      this.contantList = this.infoData.propertyArgs.map((v: any) => ({
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
-      this.form.jingwei = data.lat + "," + data.lng;
+      this.form.jingwei = this.infoData.lat + "," + this.infoData.lng;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
@@ -818,7 +793,7 @@ export default class EditBasicInfo extends Vue {
           (item: any) => item.exIndex === 1
         )[0]?.fileId;
       }
-      this.getFileListType(data.attachPics);
+      this.getFileListType(this.infoData.attachPics);
       this.oldInfo = { ...this.form };
     } else {
       this.getFileListType([]);

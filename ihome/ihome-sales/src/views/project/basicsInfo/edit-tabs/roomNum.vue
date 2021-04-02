@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-27 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-01 17:07:47
+ * @LastEditTime: 2021-04-01 14:46:55
 -->
 <template>
   <div>
@@ -73,10 +73,8 @@
               type="success"
               @click="add()"
               v-if="!isMingyuan"
-              v-has="'B.SALES.PROJECT.BASICLIST.XZDZ'"
             >新增栋座</el-button>
             <el-button
-              v-has="'B.SALES.PROJECT.BASICLIST.DZFHKJDRFH'"
               type="success"
               v-if="$route.name !== 'projectChildAdd' && !isMingyuan"
               @click="fastImport"
@@ -147,7 +145,6 @@
           <el-link
             type="primary"
             @click="edit(row)"
-            v-has="'B.SALES.PROJECT.BASICLIST.DZFHBJ'"
             v-if="!isMingyuan"
           >编辑</el-link>
           <el-link

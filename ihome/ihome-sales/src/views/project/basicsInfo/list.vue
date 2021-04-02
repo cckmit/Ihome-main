@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-06 14:31:02
+ * @LastEditTime: 2021-04-01 15:04:58
 -->
 <template>
   <IhPage label-width="110px">
@@ -218,20 +218,24 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !editChange(row)}"
                   @click.native.prevent="routerTo(row, 'edit')"
                   v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
-                >编辑</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': row.auditEnum !== 'Draft'}"
-                  @click.native.prevent="remove(row)"
-                  v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
-                >删除</el-dropdown-item>
+                >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
                   :class="{'ih-data-disabled': !auditChange(row)}"
                   v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
                 >审核</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': !editChange(row)}"
+                  @click.native.prevent="routerTo(row, 'yeguanEdit')"
+                  v-has="'B.SALES.PROJECT.BASICLIST.YGUPDATE'"
+                >业管修改</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': !delChange(row)}"
+                  @click.native.prevent="remove(row)"
+                  v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
+                >删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -293,14 +297,13 @@ export default class ProjectList extends Vue {
 
   editChange(row: any) {
     const Adopt = row.auditEnum === "Adopt";
-    const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
-    const RBusinessManagement = this.$roleTool.RBusinessManagement();
-    const RFrontLineClerk = this.$roleTool.RFrontLineClerk();
-    return (
-      (Adopt &&
-        (RHeadBusinessManagement || RBusinessManagement || RFrontLineClerk)) ||
-      RFrontLineClerk
-    );
+    return Adopt;
+  }
+
+  delChange(row: any) {
+    const Draft = row.auditEnum === "Draft";
+    const Reject = row.auditEnum === "Reject";
+    return Draft || Reject;
   }
 
   auditChange(row: any) {
@@ -367,6 +370,7 @@ export default class ProjectList extends Vue {
         } else {
           where = "childEdit";
         }
+        window.sessionStorage.setItem("editType", "edit");
         break;
       case "audit":
         if (row.exMinyuan) {
@@ -378,6 +382,18 @@ export default class ProjectList extends Vue {
         } else {
           where = "childAudit";
         }
+        break;
+      case "yeguanEdit":
+        if (row.exMinyuan) {
+          if (!row.parentId) {
+            where = "parentEdit";
+          } else {
+            where = "childEdit";
+          }
+        } else {
+          where = "childEdit";
+        }
+        window.sessionStorage.setItem("editType", "yeguanEdit");
         break;
     }
     this.$router.push({
