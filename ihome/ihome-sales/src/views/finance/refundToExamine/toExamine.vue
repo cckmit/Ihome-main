@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 18:43:59
+ * @LastEditTime: 2021-04-02 09:34:09
 -->
 <template>
   <IhPage>
@@ -440,38 +440,53 @@
               height="50"
               width="200"
             >退款申请人</td>
-            <td>{{info.refundInfo.refundItemUser}}</td>
+            <td class="leftClass">{{info.refundInfo.refundItemUser}}</td>
             <td width="200">业务类型</td>
-            <td width="200">{{`新房/产成品`}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{`新房/产成品`}}</td>
           </tr>
           <tr>
             <td
               width="200"
               height="50"
             >收款人（退款人）</td>
-            <td width="200">{{info.refundInfo.refundName}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{info.refundInfo.refundName}}</td>
             <td width="200">收款方开户方及银行账号</td>
-            <td width="200">{{info.refundInfo.refundAccount}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{info.refundInfo.refundAccount}}</td>
           </tr>
           <tr>
             <td height="50">付款方（我司）</td>
-            <td colspan="5">{{info.refundInfo.accountName}}</td>
+            <td
+              colspan="5"
+              class="leftClass"
+            >{{info.refundInfo.accountName}}</td>
           </tr>
           <tr>
             <td height="50">付款方开户行</td>
-            <td>{{info.refundInfo.branchName}}</td>
+            <td class="leftClass">{{info.refundInfo.branchName}}</td>
             <td>付款银行账号</td>
-            <td>{{info.refundInfo.accountNo}}</td>
+            <td class="leftClass">{{info.refundInfo.accountNo}}</td>
           </tr>
           <tr>
             <td height="50">合同成交单位</td>
-            <td colspan="5">{{info.refundInfo.transactionUnit}}</td>
+            <td
+              colspan="5"
+              class="leftClass"
+            >{{info.refundInfo.transactionUnit}}</td>
           </tr>
           <tr>
             <td height="50">原收款金额</td>
-            <td>{{info.refundInfo.contAmount}}</td>
+            <td class="leftClass">{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>
+            <td class="leftClass">
               <div>{{info.refundInfo.capitalizedAmount}}</div>
               <div>{{info.refundInfo.lowercaseAmount}}</div>
             </td>
@@ -902,5 +917,10 @@ export default class RefundToExamineToExamine extends Vue {
   /deep/ .el-input__inner {
     border: none;
   }
+}
+
+.leftClass {
+  padding-left: 10px;
+  text-align: left;
 }
 </style>
