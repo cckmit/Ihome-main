@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-06 16:27:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-31 11:53:22
+ * @LastEditTime: 2021-04-02 09:32:22
 -->
 <template>
   <IhPage>
@@ -436,40 +436,55 @@
               height="50"
               width="200"
             >退款申请人</td>
-            <td>{{info.refundInfo.refundItemUser}}</td>
+            <td class="leftClass">{{info.refundInfo.refundItemUser}}</td>
             <td width="200">业务类型</td>
-            <td width="200">{{`新房/产成品`}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{`新房/产成品`}}</td>
           </tr>
           <tr>
             <td
               width="200"
               height="50"
             >收款人（退款人）</td>
-            <td width="200">{{info.refundInfo.refundName}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{info.refundInfo.refundName}}</td>
             <td width="200">收款方开户方及银行账号</td>
-            <td width="200">{{info.refundInfo.refundAccount}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{info.refundInfo.refundAccount}}</td>
           </tr>
           <tr>
             <td height="50">付款方（我司）</td>
-            <td colspan="5">{{info.refundInfo.accountName}}</td>
+            <td
+              colspan="5"
+              class="leftClass"
+            >{{info.refundInfo.accountName}}</td>
           </tr>
           <tr>
             <td height="50">付款方开户行</td>
-            <td>{{info.refundInfo.branchName}}</td>
+            <td class="leftClass">{{info.refundInfo.branchName}}</td>
             <td>付款银行账号</td>
-            <td>{{info.refundInfo.accountNo}}</td>
+            <td class="leftClass">{{info.refundInfo.accountNo}}</td>
           </tr>
           <tr>
             <td height="50">合同成交单位</td>
-            <td colspan="5">{{info.refundInfo.transactionUnit}}</td>
+            <td
+              colspan="5"
+              class="leftClass"
+            >{{info.refundInfo.transactionUnit}}</td>
           </tr>
           <tr>
             <td height="50">原收款金额</td>
-            <td>{{info.refundInfo.contAmount}}</td>
+            <td class="leftClass">{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
             <td>
-              <div>{{info.refundInfo.capitalizedAmount}}</div>
-              <div>{{info.refundInfo.lowercaseAmount}}</div>
+              <div class="leftClass">{{info.refundInfo.capitalizedAmount}}</div>
+              <div class="leftClass">{{info.refundInfo.lowercaseAmount}}</div>
             </td>
           </tr>
           <tr>
@@ -662,7 +677,6 @@ export default class RefundApplyInfo extends Vue {
   uploadDialogVisible = false;
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
-  checkSet: any = new Set();
   checkSetNotice: any = new Set();
 
   async routeTo(row: any, where: any) {
@@ -749,22 +763,6 @@ export default class RefundApplyInfo extends Vue {
           amount += i.amount;
         });
         sums[index] = amount;
-      } else if (index === 8) {
-        let receivableAmount = 0,
-          actualAmount = 0,
-          uncollectedAmount = 0;
-        data.forEach((i: any) => {
-          receivableAmount += i.receivableAmount;
-          uncollectedAmount += i.uncollectedAmount;
-          if (!this.checkSet.has(i.dealNo)) {
-            actualAmount += i.actualAmount;
-            this.checkSet.add(i.dealNo);
-          }
-        });
-        sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
-          实收: ${this.$math.tofixed(actualAmount, 2)} 
-          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
-          `;
       } else if (index === 10) {
         let amount = 0;
         data.forEach((i: any) => {
@@ -872,5 +870,10 @@ export default class RefundApplyInfo extends Vue {
   /deep/ .el-input__prefix {
     left: 10px;
   }
+}
+
+.leftClass {
+  padding-left: 10px;
+  text-align: left;
 }
 </style>

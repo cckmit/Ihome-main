@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 15:16:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:17:43
+ * @LastEditTime: 2021-04-02 11:51:49
 -->
 <template>
   <ih-page>
@@ -27,7 +27,6 @@
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               @cutOther="querybasicInfo"
               v-if="componetName === 'EditBasicInfo'"
-              :info-data="infoData"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -40,7 +39,6 @@
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
               @cutOther="querybasicInfo"
               v-if="componetName === 'InfoBasicInfo'"
-              :info-data="infoData"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -110,7 +108,6 @@ export default class ProjectChildEdit extends Vue {
   typeStr = "";
   componetName: any = "";
   isCut: any = true;
-  infoData: any = {};
   isShow: any = true;
 
   private beforeRouteEnter(to: any, from: any, next: any) {
@@ -125,7 +122,7 @@ export default class ProjectChildEdit extends Vue {
     this.componetName = val;
   }
   beforeLeave(activeName: any, oldActiveName: any) {
-    if (oldActiveName === "BasicInfo") {
+    if (oldActiveName === "EditBasicInfo") {
       if (!this.isCut || !this.projectId) {
         this.$confirm("请保存后再切换?", "提示", {
           confirmButtonText: "保存",
@@ -179,7 +176,6 @@ export default class ProjectChildEdit extends Vue {
           this.isShow = true;
         }
       }
-      this.infoData = data;
     } else {
       this.componetName = "EditBasicInfo";
     }

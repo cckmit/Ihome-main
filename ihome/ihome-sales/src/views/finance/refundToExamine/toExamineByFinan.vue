@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-02-17 11:27:05
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 09:29:34
+ * @LastEditTime: 2021-04-02 09:35:06
 -->
 <template>
   <IhPage>
@@ -472,38 +472,53 @@
               height="50"
               width="200"
             >退款申请人</td>
-            <td>{{info.refundInfo.refundItemUser}}</td>
+            <td class="leftClass">{{info.refundInfo.refundItemUser}}</td>
             <td width="200">业务类型</td>
-            <td width="200">{{`新房/产成品`}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{`新房/产成品`}}</td>
           </tr>
           <tr>
             <td
               width="200"
               height="50"
             >收款人（退款人）</td>
-            <td width="200">{{info.refundInfo.refundName}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{info.refundInfo.refundName}}</td>
             <td width="200">收款方开户方及银行账号</td>
-            <td width="200">{{info.refundInfo.refundAccount}}</td>
+            <td
+              width="200"
+              class="leftClass"
+            >{{info.refundInfo.refundAccount}}</td>
           </tr>
           <tr>
             <td height="50">付款方（我司）</td>
-            <td colspan="5">{{info.refundInfo.accountName}}</td>
+            <td
+              colspan="5"
+              class="leftClass"
+            >{{info.refundInfo.accountName}}</td>
           </tr>
           <tr>
             <td height="50">付款方开户行</td>
-            <td>{{info.refundInfo.branchName}}</td>
+            <td class="leftClass">{{info.refundInfo.branchName}}</td>
             <td>付款银行账号</td>
-            <td>{{info.refundInfo.accountNo}}</td>
+            <td class="leftClass">{{info.refundInfo.accountNo}}</td>
           </tr>
           <tr>
             <td height="50">合同成交单位</td>
-            <td colspan="5">{{info.refundInfo.transactionUnit}}</td>
+            <td
+              colspan="5"
+              class="leftClass"
+            >{{info.refundInfo.transactionUnit}}</td>
           </tr>
           <tr>
             <td height="50">原收款金额</td>
-            <td>{{info.refundInfo.contAmount}}</td>
+            <td class="leftClass">{{info.refundInfo.contAmount}}</td>
             <td>本次申请退款金额</td>
-            <td>
+            <td class="leftClass">
               <div>{{info.refundInfo.capitalizedAmount}}</div>
               <div>{{info.refundInfo.lowercaseAmount}}</div>
             </td>
@@ -768,6 +783,7 @@ export default class RefundToExamineToExamine extends Vue {
   payerAccountOptions: any = [];
   showUploadIndex: any = 0;
   isAgainComputed = true;
+  checkSetNotice: any = new Set();
 
   private get returnId() {
     return this.$route.query.id;
@@ -891,19 +907,15 @@ export default class RefundToExamineToExamine extends Vue {
         }, 0);
         sums[index] = `${sums[index]}`;
       } else {
-        if (index === 8) {
-          let receivableAmount = 0,
-            actualAmount = 0,
-            uncollectedAmount = 0;
+        if (index === 3) {
+          let amount = 0;
           data.forEach((i: any) => {
-            receivableAmount += i.receivableAmount;
-            actualAmount += i.actualAmount;
-            uncollectedAmount += i.uncollectedAmount;
+            if (!this.checkSetNotice.has(i.dealNo)) {
+              amount += i.noticeAmount;
+              this.checkSetNotice.add(i.dealNo);
+            }
           });
-          sums[index] = `应收: ${this.$math.tofixed(receivableAmount, 2)} \n
-          实收: ${this.$math.tofixed(actualAmount, 2)} 
-          未收: ${this.$math.tofixed(uncollectedAmount, 2)} 
-          `;
+          sums[index] = amount;
         } else {
           sums[index] = "-";
         }
@@ -991,6 +1003,7 @@ export default class RefundToExamineToExamine extends Vue {
     this.computedDisabled = false;
     this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
+    this.checkSetNotice = new Set();
   }
   async delContacts(index: number) {
     this.info.refundItems.splice(index, 1);
@@ -998,6 +1011,7 @@ export default class RefundToExamineToExamine extends Vue {
     this.computedDisabled = false;
     this.isAgainComputed = false;
     this.$message.success("点击计算退款统计数据并生成退款汇总清单");
+    this.checkSetNotice = new Set();
   }
   addContacts() {
     this.addFefundDialogVisible = true;
@@ -1022,8 +1036,12 @@ export default class RefundToExamineToExamine extends Vue {
       refundAmount: v.amount,
       refundApplyNo: v.refundNo,
     }));
+    let set = new Set();
     this.info.refundItems.forEach((v: any) => {
-      noticeSum += v.noticeAmount;
+      if (!set.has(v.dealNo)) {
+        noticeSum += v.noticeAmount;
+        set.add(v.dealNo);
+      }
       amountSum += v.amount;
     });
     obj.amount = amountSum;
@@ -1142,5 +1160,10 @@ export default class RefundToExamineToExamine extends Vue {
   /deep/ .el-input__prefix {
     left: 10px;
   }
+}
+
+.leftClass {
+  padding-left: 10px;
+  text-align: left;
 }
 </style>
