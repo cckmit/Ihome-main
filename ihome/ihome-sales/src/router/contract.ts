@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 10:26:14
+ * @LastEditTime: 2021-04-02 10:07:22
  */
 import { RouteConfig } from 'vue-router'
 
@@ -50,12 +50,6 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '渠道分销协议列表', icon: 'form', keepAlive: true }
       },
       {
-        path: 'apply',
-        name: 'DistributionApply',
-        component: () => import(/* webpackChunkName: "DistributionApply" */ '@/views/contract/distribution/apply.vue'),
-        meta: { title: '渠道分销协议申领', icon: 'form' }
-      },
-      {
         path: 'info',
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
@@ -72,7 +66,37 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'DistributionOriginal',
         component: () => import(/* webpackChunkName: "DistributionOriginal" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '渠道分销协议原件归档', icon: 'form' }
-      }
+      },
+      {
+        path: 'normalDistribution/apply',
+        name: 'NormalDistributionApply',
+        component: () => import(/* webpackChunkName: "NormalDistributionApply" */ '@/views/contract/distribution/normalDistribution/apply.vue'),
+        meta: { title: '标准渠道分销合同申领', icon: 'form' }
+      },
+      {
+        path: 'normalSales/apply',
+        name: 'NormalSalesApply',
+        component: () => import('@/views/contract/distribution/normalSales/apply.vue'),
+        meta: { title: '标准联动销售确认书申领', icon: 'form' }
+      },
+      {
+        path: 'notDistribution/apply',
+        name: 'NotDistributionApply',
+        component: () => import('@/views/contract/distribution/notDistribution/apply.vue'),
+        meta: { title: '非标渠道分销合同申领', icon: 'form' }
+      },
+      {
+        path: 'notSales/apply',
+        name: 'NotSalesApply',
+        component: () => import('@/views/contract/distribution/notSales/apply.vue'),
+        meta: { title: '非标联动销售确认书申领', icon: 'form' }
+      },
+      {
+        path: 'notChannel/apply',
+        name: 'NotChannelApply',
+        component: () => import('@/views/contract/distribution/notChannel/apply.vue'),
+        meta: { title: '非渠道合同申领', icon: 'form' }
+      },
     ]
   },
   {
