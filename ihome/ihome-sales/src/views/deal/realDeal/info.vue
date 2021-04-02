@@ -96,6 +96,9 @@ export default class RealDealInfo extends Vue {
 /deep/ .ih-info-line {
   padding: 0 10px 10px 10px;
 }
+/deep/ .el-card__header{
+  background: #f9f9f9;
+}
 .back-fixed {
   position: fixed;
   bottom: 20px;

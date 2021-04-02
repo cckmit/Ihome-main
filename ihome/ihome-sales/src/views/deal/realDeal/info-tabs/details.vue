@@ -133,6 +133,14 @@
           :key="index"
         >
           <div class="file-item">
+            <div class="floating-layer">
+              <div class="file-pre">
+                <a class="file-pre-btn" href="javascript:;" @click="pre()">
+                  <i class="el-icon-zoom-in"></i>
+                  预览</a
+                >
+              </div>
+            </div>
             <div class="file-item-1">
               <div class="file-item-1-left">优惠告知书</div>
               <div class="file-item-1-right">客户待签署</div>
@@ -140,9 +148,10 @@
             <div class="file-item-1">编号：xxxxxxxxx{{ item }}</div>
             <div class="file-item-1">
               <div class="file-item-1-left special">特殊</div>
-              <div class="file-item-1-right">
+              <div style="height: 16px"></div>
+              <!-- <div class="file-item-1-right">
                 <el-link type="primary">预览</el-link>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
@@ -296,9 +305,13 @@ export default class RealDealDetails extends Vue {
   tableData: any = [];
   tableData2: any = [{}];
   fileList: any = [1, 2, 3, 4, 5, 6, 7, 8];
+  pre() {
+    console.log("pre");
+  }
 }
 </script>
 <style lang="scss" scoped>
+
 .card-header {
   text-align: left;
   font-weight: 600;
@@ -332,6 +345,7 @@ export default class RealDealDetails extends Vue {
   width: 20%;
   box-sizing: border-box;
 }
+
 .file-item {
   padding: 10px;
   border: 1px solid #eee;
@@ -339,6 +353,34 @@ export default class RealDealDetails extends Vue {
   display: inline-block;
   box-sizing: border-box;
   overflow: hidden;
+  position: relative;
+}
+.file-item-border :hover {
+  .floating-layer {
+    display: block;
+  }
+}
+.floating-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: rgba($color: #000000, $alpha: 0.5);
+  left: 0px;
+  top: 0px;
+  z-index: 10;
+  display: none;
+}
+.file-pre {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-pre-btn {
+  color: #fff;
+  text-decoration: none;
 }
 
 .file-item-1 {
