@@ -2,23 +2,27 @@
   <ih-page>
     <el-row class="ih-info-line">
       <el-col :span="12" class="text-left">
-        <h3>成交报告编号：xxxx</h3>
+        <h3>成交报告编号：{{ info.dealCode }}</h3>
       </el-col>
       <el-col :span="12" class="text-right">
-        <h3>【居恒广州广钢案场管理部】</h3>
+        <h3>{{ info.dealOrg }}</h3>
       </el-col>
     </el-row>
     <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">录入人</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.entryPerson
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">业绩分配人</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.alloter
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8" class="text-right">
@@ -33,13 +37,17 @@
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">录入时间</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.createTime
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">业绩分配时间</el-col>
-          <el-col :span="18" class="ih-info-item-right">xxx</el-col>
+          <el-col :span="18" class="ih-info-item-right">{{
+            info.allotDate
+          }}</el-col>
         </el-row>
       </el-col>
       <el-col
@@ -48,9 +56,15 @@
         style="font-weight: 700; font-size: 20px"
       >
         <el-row>
-          <el-col :span="8" class="text-right"> xxx</el-col>
-          <el-col :span="8" class="text-right">xxx </el-col>
-          <el-col :span="8" class="text-right"> xxx</el-col>
+          <el-col :span="8" class="text-right">
+            {{ $root.dictAllName(info.status, "DealStatus") }}</el-col
+          >
+          <el-col :span="8" class="text-right"
+            >{{ $root.dictAllName(info.calculation, "DealCalculateWay") }}
+          </el-col>
+          <el-col :span="8" class="text-right">
+            {{ $root.dictAllName(info.dataSign, "DealDataFlag") }}</el-col
+          >
         </el-row>
       </el-col>
     </el-row>
@@ -80,15 +94,22 @@ import { Component, Vue } from "vue-property-decorator";
 import RealDealDetails from "./info-tabs/details.vue";
 import RealDealFlowingWater from "./info-tabs/flowingWater.vue";
 import RealDealRelation from "./info-tabs/relation.vue";
+import { get_deal_get__id } from "../../../api/deal";
 @Component({
   components: { RealDealDetails, RealDealFlowingWater, RealDealRelation },
 })
 export default class RealDealInfo extends Vue {
   info: any = {};
   tabActive: any = null;
-  created() {
+  async created() {
     console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
+
+    // if (this.$route.query.id) {
+    //   this.info = await get_deal_get__id({ id: this.$route.query.id });
+    // } else {
+    //   this.$message.warning("id不存在");
+    // }
   }
 }
 </script>
@@ -96,7 +117,7 @@ export default class RealDealInfo extends Vue {
 /deep/ .ih-info-line {
   padding: 0 10px 10px 10px;
 }
-/deep/ .el-card__header{
+/deep/ .el-card__header {
   background: #f9f9f9;
 }
 .back-fixed {
