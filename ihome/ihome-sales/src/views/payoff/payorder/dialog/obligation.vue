@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 14:29:44
+ * @LastEditTime: 2021-04-02 16:57:34
 -->
 <template>
   <el-dialog
@@ -278,7 +278,7 @@ export default class Obligation extends Vue {
     {
       label: "成交报告编号",
       prop: "dealCode",
-      minWidth: 150,
+      minWidth: 180,
     },
     {
       label: "周期名称",

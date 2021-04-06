@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 09:34:09
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-06 16:10:45
 -->
 <template>
   <IhPage>
@@ -65,12 +65,12 @@
           <el-col :span="8">
             <el-form-item
               label="付款方账户名称"
-              prop="accountId"
+              prop="companyId"
             >
               <IhSelectPageByPayer
                 disabled
                 placeholder="付款方账户名称"
-                v-model="info.accountId"
+                v-model="info.companyId"
                 :proId="info.orgId"
                 :search-name="info.accountName"
               ></IhSelectPageByPayer>
@@ -799,30 +799,29 @@ export default class RefundToExamineToExamine extends Vue {
         sums[index] = "合计";
         return;
       }
-      const values = data.map((item: any) => Number(item[column.property]));
-      if (!values.every((value: any) => isNaN(value))) {
-        sums[index] = values.reduce((prev: any, curr: any) => {
-          const value = Number(curr);
-          if (!isNaN(value)) {
-            return this.$math.add(prev, curr);
-          } else {
-            return prev;
+      if (index === 3) {
+        let amount = 0;
+        data.forEach((i: any) => {
+          if (!this.checkSetNotice.has(i.dealNo)) {
+            amount += i.noticeAmount;
+            this.checkSetNotice.add(i.dealNo);
           }
-        }, 0);
-        sums[index] = `${sums[index]}`;
+        });
+        sums[index] = amount;
+      } else if (index === 4) {
+        let amount = 0;
+        data.forEach((i: any) => {
+          amount += i.amount;
+        });
+        sums[index] = amount;
+      } else if (index === 10) {
+        let amount = 0;
+        data.forEach((i: any) => {
+          amount += i.commission;
+        });
+        sums[index] = amount;
       } else {
-        if (index === 3) {
-          let amount = 0;
-          data.forEach((i: any) => {
-            if (!this.checkSetNotice.has(i.dealNo)) {
-              amount += i.noticeAmount;
-              this.checkSetNotice.add(i.dealNo);
-            }
-          });
-          sums[index] = amount;
-        } else {
-          sums[index] = "-";
-        }
+        sums[index] = "-";
       }
     });
     return sums;

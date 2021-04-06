@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 15:40:18
+ * @LastEditTime: 2021-04-02 17:11:30
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -56,7 +56,7 @@ const routes: Array<RouteConfig> = [
   {
     path: '/buildingRoom',
     name: 'BuildingRoom',
-    component: () => import('../views/buildingRoom.vue'),
+    component: () => import('../views/buildingRoomDemo.vue'),
     meta: {
       title: '动作房号级联选择Demo'
     }
