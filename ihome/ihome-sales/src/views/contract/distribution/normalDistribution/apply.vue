@@ -231,7 +231,6 @@
             <el-table-column
               label="佣金分类"
               prop="fileCode"
-              min-width="200"
             ></el-table-column>
             <el-table-column
               label="条件"
@@ -245,9 +244,33 @@
           <br />
         </div>
         <el-row>
-          <el-col :span="18">
+          <el-col :span="12">
+            <el-form-item label="归档状态">归档状态</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="审核状态">审核状态</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="合同电子版">
               <el-button type="success">预览电子版</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归档编号">
+              <el-button type="success">归档编号</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="盖章版归档">
+              <IhUpload
+                v-model="fileList"
+                size="100px"
+                class="upload"
+              ></IhUpload>
             </el-form-item>
           </el-col>
         </el-row>
@@ -265,43 +288,13 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_term_getDropDown } from "@/api/project/index";
-import { get_channel_getAll, get_channel_get__id } from "@/api/channel/index";
 
 @Component({})
 export default class DistributionApply extends Vue {
-  private dialogFormVisible = false;
-  private dropOption: any = [];
-  private channelList: any = [];
-  private cycle = "";
-  private channelData: any = null;
-  private handler: any = null;
-  private templateData: any = [];
+  private fileList: any[] = [];
 
-  private handleOpen(): void {
-    if (!this.cycle) {
-      this.$message.warning("请选择周期信息");
-      return;
-    }
-    this.dialogFormVisible = true;
-  }
-  private async getDropDown(): Promise<void> {
-    this.dropOption = await post_term_getDropDown();
-  }
-  private async getChannelAll(): Promise<void> {
-    this.channelList = await get_channel_getAll();
-  }
-  private async getChannelInfo(item: any) {
-    let res = await get_channel_get__id({ id: item.id });
-    console.log(res);
-  }
   private submit() {
-    console.log(this.handler);
-  }
-
-  created() {
-    this.getDropDown();
-    this.getChannelAll();
+    //
   }
 }
 </script>

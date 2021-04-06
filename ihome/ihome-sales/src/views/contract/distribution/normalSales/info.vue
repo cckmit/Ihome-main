@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-02 15:36:13
+ * @LastEditTime: 2021-04-06 18:18:09
 -->
 <template>
   <IhPage class="text-left">
@@ -144,7 +144,6 @@
             <el-table-column
               label="佣金分类"
               prop="fileCode"
-              min-width="200"
             ></el-table-column>
             <el-table-column
               label="条件"
@@ -158,9 +157,33 @@
           <br />
         </div>
         <el-row>
-          <el-col :span="18">
+          <el-col :span="12">
+            <el-form-item label="归档状态">
+              {{$root.dictAllName(form.archiveStatus, 'ArchiveStatus')}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="审核状态">{{$root.dictAllName(form.distributionState, 'DistributionState')}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
             <el-form-item label="合同电子版">
               <el-button type="success">预览电子版</el-button>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="归档编号">归档编号</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="盖章版归档">
+              <IhUpload
+                v-model="fileList"
+                size="100px"
+                class="upload"
+              ></IhUpload>
             </el-form-item>
           </el-col>
         </el-row>
@@ -173,7 +196,10 @@
 import { Component, Vue } from "vue-property-decorator";
 
 @Component({})
-export default class SalesApply extends Vue {}
+export default class SalesApply extends Vue {
+  private form: any = {};
+  private fileList: any[] = [];
+}
 </script>
 
 <style lang="scss" scoped>
