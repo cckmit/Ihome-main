@@ -4,14 +4,14 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-02 15:50:18
+ * @LastEditTime: 2021-04-06 14:52:43
 -->
 <template>
   <IhPage class="text-left">
     <template #info>
       <p class="ih-info-title">非标联动销售确认书(启动函)申领</p>
       <el-form
-        label-width="90px"
+        label-width="100px"
         class="padding-left-20"
       >
         <el-row>
@@ -37,10 +37,7 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="乙方渠道等级"
-              class="formItem"
-            >乙方渠道等级</el-form-item>
+            <el-form-item label="乙方渠道等级">乙方渠道等级</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合作期限">
