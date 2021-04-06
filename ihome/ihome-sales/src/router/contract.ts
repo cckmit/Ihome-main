@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-06 14:29:10
+ * @LastEditTime: 2021-04-06 16:00:53
  */
 import { RouteConfig } from 'vue-router'
 
@@ -78,6 +78,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'NormalDistributionInfo',
         component: () => import(/* webpackChunkName: "NormalDistributionInfo" */ '@/views/contract/distribution/normalDistribution/info.vue'),
         meta: { title: '标准渠道分销合同详情', icon: 'form' }
+      },
+      {
+        path: 'normalDistributionDuplicate',
+        name: 'normalDistributionDuplicate',
+        component: () => import('@/views/contract/distribution/normalDistribution/info.vue'),
+        meta: { title: '标准渠道分销合同盖章版归档', icon: 'form' }
       },
       {
         path: 'normalSalesApply',
