@@ -69,7 +69,7 @@
       </el-table>
     </div>
     <div class="btn-fixed">
-      <el-button>取消</el-button>
+      <el-button @click="handleCancel">取消</el-button>
       <el-button type="primary">保存</el-button>
     </div>
   </IhPage>
@@ -126,6 +126,13 @@ export default class UploadAttachment extends Vue {
       });
     }
     return fileList;
+  }
+
+  // 取消
+  handleCancel() {
+    this.$goto({
+      path: "/dealReport/list",
+    });
   }
 
   // 上传图片/文件
