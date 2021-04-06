@@ -46,6 +46,9 @@
             <el-form-item label="一手代理公司">{{postData.oneAgentTeam}}</el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="一手代理合同">{{postData.oneAgentTeam}}</el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="物业类型">
               {{$root.dictAllName(postData.house.propertyType, 'Property')}}
             </el-form-item>
@@ -67,7 +70,18 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="分销协议编号">
+            <el-form-item label="渠道公司">
+              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].agencyName : ''}}
+              <span style="color: red">[外部公司]</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="经纪人">
+              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].broker : ''}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="渠道分销合同">
               <div class="contNo-wrapper">
                 <div class="no cycle-name-wrapper" :title="postData.contNo">{{postData.contNo}}</div>
                 <div v-if="postData.contNo">
@@ -84,19 +98,6 @@
           <el-col :span="8">
             <el-form-item label="是否垫佣">
               {{$root.dictAllName(postData.isMat, 'PadCommission')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" v-if="postData.recordStr">
-            <el-form-item label="报备信息">{{postData.recordStr}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道公司">
-              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].agencyName : ''}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经纪人">
-              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].broker : ''}}
             </el-form-item>
           </el-col>
           <el-col :span="8">
