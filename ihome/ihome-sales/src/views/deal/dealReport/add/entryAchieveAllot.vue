@@ -114,6 +114,21 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="一手代理合同" :prop="postData.oneAgentTeamId ? 'oneAgentTeamContNo' : 'notEmpty'">
+            <el-select
+              v-model="postData.oneAgentTeamContNo"
+              clearable
+              placeholder="请选择一手代理合同"
+              class="width--100">
+              <el-option
+                v-for="item in firstAgencyCompanyList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="成交阶段" prop="stage">
             <el-select
               v-model="postData.stage"
@@ -201,22 +216,34 @@
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
           <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'agencyName' : 'notEmpty'">
-            <div v-if="baseInfoInDeal.hasRecord">
-              <el-input
-                v-model="postData.agencyName"
-                :disabled="baseInfoInDeal.hasRecord"></el-input>
-            </div>
-            <div v-else>
-              <el-input
-                placeholder="请选择渠道公司"
-                readonly v-model="postData.agencyName" @click.native.prevent="selectAgency('agency', '')">
-                <el-button slot="append" icon="el-icon-search"></el-button>
-              </el-input>
+            <div class="agency-wrapper">
+              <div>
+                <el-select
+                  v-model="postData.agencyType"
+                  clearable
+                  placeholder="请选择公司类型"
+                  @change="changeAgencyType"
+                  class="width--100">
+                  <el-option
+                    v-for="item in $root.dictAllList('AgencyType')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </div>
+              <div class="right">
+                <el-input
+                  placeholder="请选择渠道公司"
+                  readonly v-model="postData.agencyName" @click.native.prevent="selectAgency('agency', '')">
+                  <el-button slot="append" icon="el-icon-search"></el-button>
+                </el-input>
+              </div>
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' ? 'brokerName' : 'notEmpty'">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.agencyType === 'External'">
+          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' && postData.agencyType === 'External' ? 'brokerName' : 'notEmpty'">
             <div v-if="baseInfoInDeal.hasRecord">
               <el-input v-model="postData.brokerName" :disabled="baseInfoInDeal.hasRecord"></el-input>
             </div>
@@ -230,12 +257,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="分销协议编号" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
+          <el-form-item label="渠道分销合同" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
                 @change="changeContNo"
-                placeholder="请选择分销协议编号"
+                placeholder="请选择渠道分销合同"
                 class="width--100">
                 <el-option
                   v-for="(item, index) in contNoList"
@@ -262,11 +289,6 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
-          <el-form-item label="报备信息" :prop="postData.contType === 'DistriDeal' ? 'recordStr' : 'notEmpty'">
-            <el-input v-model="postData.recordStr" disabled></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1172,6 +1194,7 @@
       contType: null,
       refineModel: null, // 细分业务模式
       channelId: null,
+      agencyType: null, // 渠道公司类型：内部/外部
       agencyId: null, // 渠道公司Id
       agencyName: null, // 渠道公司
       channelLevel: null, // 渠道等级Id
@@ -1179,6 +1202,7 @@
       brokerName: null, // 渠道经纪人
       oneAgentTeamId: null, // 一手代理团队Id
       oneAgentTeamName: null, // 一手代理团队name
+      oneAgentTeamContNo: null, // 一手代理合同
       isMarketProject: null,
       dealOrgId: null, // 成交组织id
       dealOrgName: null, // 成交组织name
@@ -1245,6 +1269,9 @@
       ],
       oneAgentTeamId: [
         {required: true, message: "一手代理团队必选", trigger: "change"},
+      ],
+      oneAgentTeamContNo: [
+        {required: true, message: "一手代理合同必选", trigger: "change"},
       ],
       isMarketProject: [
         {required: true, message: "是否市场化项目必选", trigger: "change"},
@@ -1979,6 +2006,7 @@
         }
       } else {
         this.postData.oneAgentTeamName = null;
+        this.postData.oneAgentTeamId = null;
       }
       // 如果有对外拆佣信息，要同步拆佣对象为一手代理公司的收款方
       if (this.postData.commissionInfoList && this.postData.commissionInfoList.length) {
@@ -1989,6 +2017,8 @@
           }
         })
       }
+      // 清空一手代理合同
+      this.postData.oneAgentTeamContNo = null;
     }
 
     // 初始化平台费用
@@ -2251,6 +2281,11 @@
     * scope: Object, 对外拆佣中当前选中的数据
     * */
     selectAgency(type: any = '', scope: any) {
+      // 选择渠道公司
+      if (type === 'agency' && !this.postData.agencyType) {
+        this.$message.warning('请先选择公司类型');
+        return;
+      }
       this.currentSelectAgencyType = type;
       this.currentSelectAgencyIndex = scope.$index;
       let data: any = {
@@ -2641,27 +2676,41 @@
       this.postData.documentVO = (this as any).$tool.deepClone(fileList);
     }
 
+    // 修改公司类型
+    changeAgencyType() {
+      // 初始化渠道公司
+      this.postData.agencyId = null;
+      this.postData.agencyName = null;
+      // 初始化经纪人
+      this.postData.brokerId = null;
+      this.postData.brokerName = null;
+      // 初始化收派套餐
+      this.initReceive();
+    }
+
     // 修改合同类型
     changeContType(value: any) {
-      if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
-        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        this.postData.contType = this.tempContType ? this.tempContType : null;
-        this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-          confirmButtonText: '确定'
-        });
-        return;
-      } else {
-        // 不是分销成交
-        // 初始化收派套餐
-        this.initReceive();
-        // 选择房号后构建表格数据
-        // this.getDocumentList(value);
-        // 判断是否可以手动添加优惠告知书
-        // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
-        // 记录临时值
-        this.tempContType = value;
-      }
-      console.log(this.tempContType);
+      // if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
+      //   // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+      //   this.postData.contType = this.tempContType ? this.tempContType : null;
+      //   this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+      //     confirmButtonText: '确定'
+      //   });
+      //   return;
+      // } else {
+      //   // 不是分销成交
+      //   // 初始化收派套餐
+      //   this.initReceive();
+      //   // 选择房号后构建表格数据
+      //   // this.getDocumentList(value);
+      //   // 判断是否可以手动添加优惠告知书
+      //   // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
+      //   // 记录临时值
+      //   this.tempContType = value;
+      // }
+      // console.log(this.tempContType);
+      console.log(value);
+      this.initReceive();
     }
 
     // 选择合同类型后构建表格数据
@@ -3945,6 +3994,16 @@
     box-sizing: border-box;
     height: 40px;
     line-height: 40px;
+  }
+
+  .agency-wrapper {
+    width: 100%;
+    display: flex;
+
+    div {
+      flex: 1;
+      text-align: center;
+    }
   }
 
   .contNo-wrapper {
