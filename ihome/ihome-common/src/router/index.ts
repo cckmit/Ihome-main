@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-22 11:10:43
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-18 16:37:00
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-02 17:11:30
  */
 import Vue from 'vue'
 import VueRouter, { RouteConfig } from 'vue-router'
@@ -51,6 +51,14 @@ const routes: Array<RouteConfig> = [
     component: () => import('../views/cascaderDemo.vue'),
     meta: {
       title: '省市区级联选择Demo'
+    }
+  },
+  {
+    path: '/buildingRoom',
+    name: 'BuildingRoom',
+    component: () => import('../views/buildingRoomDemo.vue'),
+    meta: {
+      title: '动作房号级联选择Demo'
     }
   },
   {
