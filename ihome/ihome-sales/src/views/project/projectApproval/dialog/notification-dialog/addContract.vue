@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-20 10:06:15
+ * @LastEditTime: 2021-04-06 16:27:42
 -->
 <template>
   <el-dialog
@@ -825,7 +825,6 @@ export default class AddContract extends Vue {
       } else {
         this.isShow = false;
       }
-      // this.isShow = data === "Appoint" || data === "Strategic" ? true : false;
     }
     if (this.isShow) {
       if (

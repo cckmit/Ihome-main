@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 16:21:54
+ * @LastEditTime: 2021-04-06 17:02:07
 -->
 <template>
   <el-dialog
@@ -507,6 +507,7 @@ export default class SetMealDialog extends Vue {
   data: any = [];
   map: any = {};
   selection: any = [];
+  termId: any = null;
 
   cancel() {
     this.$emit("cancel", false);
@@ -579,14 +580,14 @@ export default class SetMealDialog extends Vue {
   }
 
   async created() {
+    this.termId = this.searchdata.id;
     this.getInfo();
   }
 
   async getInfo() {
-    const id = this.$route.query.id;
-    if (id) {
+    if (this.termId) {
       this.data = await post_collectandsend_getAllByStart({
-        termId: id,
+        termId: this.termId,
       });
     }
   }

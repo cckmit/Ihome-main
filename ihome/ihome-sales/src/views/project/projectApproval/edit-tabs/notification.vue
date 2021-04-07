@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:53:17
+ * @LastEditTime: 2021-04-06 18:15:09
 -->
 <template>
   <div>
@@ -302,7 +302,7 @@
       </div>
     </div>
     <ih-dialog :show="dialogVisible">
-      <AddContract
+      <TemplateSelect
         :data="contractData"
         @cancel="() => (dialogVisible = false)"
         @finish="(data) => contractFinish(data)"
@@ -334,7 +334,7 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import AddNotification from "../dialog/notification-dialog/addNotification.vue";
-import AddContract from "../dialog/notification-dialog/addContract.vue";
+import TemplateSelect from "../dialog/notification-dialog/templateSelect.vue";
 import ViewContract from "../dialog/notification-dialog/viewContract.vue";
 import {
   get_distributContract_get__termId,
@@ -352,7 +352,7 @@ import { getToken } from "ihome-common/util/cookies";
   components: {
     PartyADialog,
     AddNotification,
-    AddContract,
+    TemplateSelect,
     ViewContract,
   },
 })
@@ -421,6 +421,15 @@ export default class Notification extends Vue {
         "departmentOrgId",
         this.info.startDivisionId
       );
+      let addObj: any = {};
+      addObj.proId = this.info.proId;
+      addObj.proName = this.info.proName;
+      addObj.proRecord = this.info.proRecord;
+      addObj.padCommissionEnum = this.info.padCommissionEnum;
+      addObj.startDivisionId = this.info.startDivisionId;
+      addObj.termId = this.$route.query.id;
+      console.log(JSON.stringify(addObj));
+      window.sessionStorage.setItem("addContract", JSON.stringify(addObj));
     }
   }
 
