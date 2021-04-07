@@ -10,7 +10,7 @@
 //使用命令   npm run api --modular system
 // system 是模块名称
 
-let modularDefault = 'system';//模块名称
+let modularDefault = 'deal';//模块名称
 let handleSwagger = require('./node_modules/ihome-common/util/api/api-hangle');
 function doneApi(modular) {
     //在这里配置要生成的api

@@ -126,7 +126,7 @@
         <el-table-column
           prop="amount"
           label="退款金额"
-          width="100"
+          width="200"
         ></el-table-column>
 
         <el-table-column prop="" label="退款人信息" width="300">
@@ -157,7 +157,7 @@
         <el-table-column
           prop="refundApplyNO"
           label="关联退款申请单编号"
-          width="160"
+          width="200"
         >
           <template slot-scope="scope">
             <el-link
@@ -170,7 +170,7 @@
             <span v-if="scope.row.refundApplyNO === null"> —— </span>
           </template>
         </el-table-column>
-        <el-table-column width="200" label="成交信息">
+        <el-table-column width="400" label="成交信息">
           <template slot-scope="scope">
             <div v-if="scope.row.dealId !== null">
               <div>客户姓名：{{ scope.row.dealCustomerName }}</div>
@@ -209,7 +209,7 @@
             {{ scope.row.confirmationTime | emptyShow }}
           </template>
         </el-table-column>
-        <el-table-column prop="invoiceNo" label="发票业务单号" width="120">
+        <el-table-column prop="invoiceNo" label="发票业务单号" width="200">
           <template slot-scope="scope">
             <el-link
               v-if="scope.row.invoiceNo !== null"

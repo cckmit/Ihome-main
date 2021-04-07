@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-24 19:52:21
+ * @LastEditTime: 2021-04-07 10:16:59
 -->
 <template>
   <el-dialog
@@ -140,7 +140,7 @@
               <div
                 class="text-ellipsis"
                 :title="row.dealCustomerName"
-              >收款姓名: {{row.dealCustomerName}}
+              >客户姓名: {{row.dealCustomerName}}
               </div>
               <div
                 class="text-ellipsis"

@@ -36,6 +36,7 @@ import {
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
   IhSelectPageByBroker,
+  IhSelectPageByChannelCompany
 } from '../packages/select-page';
 // import { IhSelectPageDivision } from '../packages/select-page';
 import { IhTableCheckBox } from '../packages/table-checkbox'
@@ -73,6 +74,7 @@ export default (Vue: any) => {
   Vue.component("IhSelectPageByBroker", IhSelectPageByBroker);
   Vue.component("IhSelectOrgTreeAll", IhSelectOrgTreeAll);
   Vue.component("IhBuildingRoom", IhBuildingRoom);
+  Vue.component("IhSelectPageByChannelCompany", IhSelectPageByChannelCompany);
 
 
 
