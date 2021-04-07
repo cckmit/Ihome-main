@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 20:16:11
+ * @LastEditTime: 2021-04-07 20:19:26
 -->
 <template>
   <el-dialog
@@ -62,8 +62,14 @@
       </el-row>
     </el-form>
     <div class="margin-left-80">
-      <el-button type="primary">查询</el-button>
-      <el-button type="info">重置</el-button>
+      <el-button
+        type="primary"
+        @click="search()"
+      >查询</el-button>
+      <el-button
+        type="info"
+        @click="reset()"
+      >重置</el-button>
     </div>
     <br />
     <el-table
@@ -161,6 +167,17 @@ export default class ApplyContract extends Vue {
   }
   handleOption(row: any) {
     this.$emit("finish", row);
+  }
+  search() {
+    this.queryPageParameters.pageNum = 1;
+    this.getListMixin();
+  }
+  reset() {
+    Object.assign(this.queryPageParameters, {
+      contractTitle: null,
+      termId: null,
+      contractKind: null,
+    });
   }
   private handleSelectionChange(val: any) {
     this.selection = val;
