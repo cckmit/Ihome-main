@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 15:26:07
+ * @LastEditTime: 2021-04-07 19:25:31
 -->
 <template>
   <IhPage label-width="100px">
@@ -456,7 +456,7 @@ import { getToken } from "ihome-common/util/cookies";
 import {
   post_distribution_list,
   post_distribution_review,
-  post_distribution_distribute,
+  // post_distribution_distribute,
   post_distribution_disallowance,
   post_distribution_withdraw,
   post_distribution_delete,
@@ -781,9 +781,9 @@ export default class DistributionList extends Vue {
         .every((v: any) => v === "NotDistributed");
       if (isPend) {
         try {
-          await post_distribution_distribute({
-            ids: selectionData.map((i: any) => i.id),
-          });
+          // await post_distribution_distribute({
+          //   ids: selectionData.map((i: any) => i.id),
+          // });
           this.$message.success("派发成功");
           this.getListMixin();
         } catch (error) {

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 10:43:44
+ * @LastEditTime: 2021-04-07 19:23:50
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -363,7 +363,7 @@ import {
   get_distribution_detail__id,
   get_distribution_deal_detail__contractNo,
   post_distribution_original_archive,
-  post_distribution_annex,
+  // post_distribution_annex,
   post_distribution_duplicate,
 } from "@/api/contract/index";
 
@@ -384,10 +384,10 @@ export default class DistributionDetail extends Vue {
       return;
     }
     try {
-      await post_distribution_annex({
-        annexCreateListList: this.sealFile,
-        distributionId: this.ruleForm.id,
-      });
+      // await post_distribution_annex({
+      //   annexCreateListList: this.sealFile,
+      //   distributionId: this.ruleForm.id,
+      // });
       await post_distribution_duplicate({ distributionId: this.ruleForm.id });
       this.$message.success("盖章版归档成功");
       this.$goto({
@@ -427,10 +427,10 @@ export default class DistributionDetail extends Vue {
       this.$message.warning("请先上传文件");
       return;
     }
-    await post_distribution_annex({
-      annexCreateListList: this.sealFile,
-      distributionId: this.ruleForm.id,
-    });
+    // await post_distribution_annex({
+    //   annexCreateListList: this.sealFile,
+    //   distributionId: this.ruleForm.id,
+    // });
     this.$message.success("提交盖章版归档附件成功");
     this.sealFile = [];
     setTimeout(() => {
