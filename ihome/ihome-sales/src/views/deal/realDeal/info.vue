@@ -94,7 +94,7 @@ import { Component, Vue } from "vue-property-decorator";
 import RealDealDetails from "./info-tabs/details.vue";
 import RealDealFlowingWater from "./info-tabs/flowingWater.vue";
 import RealDealRelation from "./info-tabs/relation.vue";
-import { get_deal_get__id } from "../../../api/deal";
+// import { get_deal_get__id } from "../../../api/deal";
 @Component({
   components: { RealDealDetails, RealDealFlowingWater, RealDealRelation },
 })
