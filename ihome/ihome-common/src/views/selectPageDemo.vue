@@ -179,7 +179,6 @@
       ></IhSelectPageByChannelCompany>
     </el-form-item>
     <el-form-item label="绑定的值">{{form.agencyId}}</el-form-item>
-
   </el-form>
 </template>
 
