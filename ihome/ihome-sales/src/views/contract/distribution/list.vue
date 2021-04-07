@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-01 14:19:35
+ * @LastEditTime: 2021-04-07 15:26:07
 -->
 <template>
   <IhPage label-width="100px">
@@ -26,11 +26,18 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="合同类型">
-              <el-input
-                v-model="queryPageParameters.title"
+              <el-select
+                v-model="queryPageParameters.contractKind"
                 placeholder="请选择合同类型 "
                 clearable
-              ></el-input>
+              >
+                <el-option
+                  v-for="(i, n) in $root.dictAllList('ContractKind')"
+                  :key="n"
+                  :label="i.name"
+                  :value="i.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -273,9 +280,16 @@
           fixed
           label="标题"
           prop="title"
-          min-width="235"
+          min-width="185"
         ></el-table-column>
-        <el-table-column label="合同类型"></el-table-column>
+        <el-table-column
+          label="合同类型"
+          width="145"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.contractKind, 'ContractKind')}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="甲方公司"
           prop="partyACompanyName"
@@ -298,12 +312,12 @@
         <el-table-column
           label="项目"
           prop="projectName"
-          width="150"
+          min-width="165"
         ></el-table-column>
         <el-table-column
           label="周期"
           prop="cycleName"
-          width="150"
+          min-width="185"
         ></el-table-column>
         <el-table-column
           label="归属组织"
@@ -313,7 +327,7 @@
         <el-table-column
           label="合同编号"
           prop="contractNo"
-          width="285"
+          min-width="255"
         ></el-table-column>
         <el-table-column
           label="审核状态"
@@ -351,7 +365,7 @@
           <template v-slot="{ row }">
             <el-link
               type="primary"
-              @click="handleTo(row, 'info')"
+              @click="handleGoDetail(row)"
             >详情</el-link>
             <el-dropdown
               trigger="click"
@@ -469,6 +483,7 @@ export default class DistributionList extends Vue {
     projectAddress: null,
     projectId: null,
     title: null,
+    contractKind: null,
   };
   resPageInfo: any = {
     total: null,
@@ -546,6 +561,7 @@ export default class DistributionList extends Vue {
       projectAddress: null,
       projectId: null,
       title: null,
+      contractKind: null,
     });
     this.timeList = [];
   }
@@ -789,6 +805,30 @@ export default class DistributionList extends Vue {
         id: row.id,
       },
     });
+  }
+  handleGoDetail(row: any) {
+    switch (row.contractKind) {
+      case "StandKindSaleConfirm":
+        // 标准联动销售确认书
+        this.$router.push(`/distribution/normalSalesInfo?id=${row.id}`);
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        this.$router.push(`/distribution/notSalesInfo?id=${row.id}`);
+        break;
+      case "StandChannel":
+        // 标准渠道分销合同
+        this.$router.push(`/distribution/normalDistributionInfo?id=${row.id}`);
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        this.$router.push(`/distribution/notDistributionInfo?id=${row.id}`);
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        this.$router.push(`/distribution/notChannelInfo?id=${row.id}`);
+        break;
+    }
   }
   public async getListMixin(): Promise<void> {
     this.resPageInfo = await post_distribution_list(this.queryPageParameters);

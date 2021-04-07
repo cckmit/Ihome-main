@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-01 14:37:01
+ * @LastEditTime: 2021-04-07 14:35:35
 -->
 <template>
   <el-dialog
@@ -22,10 +22,11 @@
       <el-row>
         <el-col :span="8">
           <el-form-item label="周期">
-            <el-input
-              v-model="queryPageParameters.provinceName"
+            <IhSelectPageByCycle
+              v-model="queryPageParameters.cycleId"
+              placeholder="请选择周期"
               clearable
-            ></el-input>
+            ></IhSelectPageByCycle>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -39,10 +40,17 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="渠道合同类型">
-            <el-input
+            <el-select
               v-model="queryPageParameters.provinceName"
               clearable
-            ></el-input>
+            >
+              <el-option
+                v-for="(i, n) in $root.dictAllList('ContractKind')"
+                :key="n"
+                :label="i.name"
+                :value="i.code"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
       </el-row>

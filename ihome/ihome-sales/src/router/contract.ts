@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-06 17:49:34
+ * @LastEditTime: 2021-04-06 18:27:56
  */
 import { RouteConfig } from 'vue-router'
 
@@ -102,6 +102,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'NormalSalesInfo',
         component: () => import('@/views/contract/distribution/normalSales/info.vue'),
         meta: { title: '标准联动销售确认书详情', icon: 'form' }
+      },
+      {
+        path: 'normalSalesOriginal',
+        name: 'NormalSalesOriginal',
+        component: () => import('@/views/contract/distribution/normalSales/info.vue'),
+        meta: { title: '标准联动销售确认书原件归档', icon: 'form' }
       },
       {
         path: 'notDistributionApply',

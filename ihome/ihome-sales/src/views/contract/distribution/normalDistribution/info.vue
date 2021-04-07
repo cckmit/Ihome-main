@@ -1,14 +1,14 @@
 <template>
   <IhPage class="text-left">
     <template #info>
-      <p class="ih-info-title">标准渠道分销合同申领</p>
+      <p class="ih-info-title">标准渠道分销合同详情</p>
       <el-form
         label-width="90px"
         class="padding-left-20"
       >
         <el-row>
           <el-col :span="24">
-            <el-form-item label="合同类型">标准渠道分销合同</el-form-item>
+            <el-form-item label="合同类型">{{$root.dictAllName(form.contractKind, 'ContractKind')}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -21,7 +21,7 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="项目名称">项目名称</el-form-item>
+            <el-form-item label="项目名称">{{form.projectName}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -222,7 +222,6 @@
               </template>
             </el-table-column>
             <el-table-column label="佣金分类">
-
               <template v-slot="{ row }">
                 {{$root.dictAllName(row.costTypeEnum, 'FeeType')}}
               </template>
@@ -261,7 +260,10 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同电子版">
-              <el-button type="success">预览电子版</el-button>
+              <el-button
+                type="success"
+                @click="preview()"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -307,11 +309,17 @@ import { get_distribution_detail__id } from "@/api/contract/index";
 export default class DistributionInfo extends Vue {
   private form: any = {};
   private fileList: any[] = [];
+  private electronicFile: any = [];
   private archiveStatus: any = null;
   private archiveNo: any = null;
 
   private submit() {
     //
+  }
+  private preview() {
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${this.electronicFile[0].fileId}`
+    );
   }
   private async getInfo() {
     let id = this.$route.query.id;
@@ -320,11 +328,20 @@ export default class DistributionInfo extends Vue {
       this.form = { ...res };
       this.archiveStatus = res.archiveStatus;
       this.archiveNo = res.archiveNo;
-      this.fileList = res.annexList.map((i: any) => ({
-        fileName: i.attachmentSuffix,
-        fileId: i.fileNo,
-        exAuto: 1,
-      }));
+      this.electronicFile = res.annexList
+        .filter((i: any) => i.type === "ChannelContractElectronicAnnex")
+        .map((i: any) => ({
+          fileName: i.attachmentSuffix,
+          fileId: i.fileNo,
+          exAuto: 1,
+        }));
+      this.fileList = res.annexList
+        .filter((i: any) => i.type === "ArchiveAnnex")
+        .map((i: any) => ({
+          fileName: i.attachmentSuffix,
+          fileId: i.fileNo,
+          exAuto: 1,
+        }));
     }
   }
 
