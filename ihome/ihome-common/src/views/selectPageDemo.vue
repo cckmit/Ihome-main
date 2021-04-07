@@ -159,6 +159,27 @@
       ></IhSelectPageByBroker>
     </el-form-item>
     <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
+    <el-form-item label="渠道公司">需要先渠道公司类型</el-form-item>
+    <el-form-item>
+      <el-select v-model="form.agencyType" placeholder="请选择">
+        <el-option
+          label="内部公司"
+          value="InfieldCompany"
+        ></el-option>
+        <el-option
+          label="外部公司"
+          value="ChannelCompany"
+        ></el-option>
+      </el-select>
+      <IhSelectPageByChannelCompany
+        v-model="form.agencyId"
+        :proId="form.agencyType"
+        @change="changeAgency"
+        clearable
+      ></IhSelectPageByChannelCompany>
+    </el-form-item>
+    <el-form-item label="绑定的值">{{form.agencyId}}</el-form-item>
+
   </el-form>
 </template>
 
@@ -182,6 +203,7 @@ import {
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
   IhSelectPageByBroker,
+  IhSelectPageByChannelCompany
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -200,6 +222,7 @@ import {
     IhSelectPageByPayer,
     IhSelectPageByOrgCompany,
     IhSelectPageByBroker,
+    IhSelectPageByChannelCompany
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -226,6 +249,8 @@ export default class SelectPageDemo extends Vue {
     testInput16: null,
     data: null,
     brokerId: null,
+    agencyType: null,
+    agencyId: null,
   };
   private rules = {};
 
@@ -236,6 +261,10 @@ export default class SelectPageDemo extends Vue {
    */
   handleFun(req: any) {
     return post_company_getAll(req);
+  }
+
+  changeAgency(value: any) {
+    console.log(value);
   }
 }
 </script>
