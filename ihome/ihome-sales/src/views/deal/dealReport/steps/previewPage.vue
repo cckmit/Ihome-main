@@ -662,23 +662,24 @@
             tempList = item.defaultFileList;
           }
           this.$set(item, 'showFileList', tempList);
-          list.push(item);
+          // list.push(item);
         });
+        list = this.$tool.deepClone(this.pageData.uploadDocumentList);
         console.log('getUploadFileList：', list);
         if (list && list.length) {
           // 告知书补发页面的上传附件也需要显示在优惠告知书类型的附件信息中
-          list.forEach((item: any) => {
-            if (item.code === 'Notice') {
+          list.forEach((L: any) => {
+            if (L.code === 'Notice') {
               if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
                 this.pageData.noticeDealList.forEach((dealList: any) => {
                   if (dealList.notificationType === "Notification" && dealList.annexList && dealList.annexList.length) {
-                    dealList.annexList.forEach((list: any) => {
-                      if (list.type !== "Subscription") {
+                    dealList.annexList.forEach((DL: any) => {
+                      if (DL.type !== "Subscription") {
                         // 不放认购书附件
-                        item.showFileList.push(
+                        L.showFileList.push(
                           {
-                            fileName: list.attachmentSuffix,
-                            fileId: list.fileNo,
+                            fileName: DL.attachmentSuffix,
+                            fileId: DL.fileNo,
                           }
                         )
                       }
@@ -687,18 +688,18 @@
                 })
               }
             }
-            if (item.code === 'SubscribeBook') {
+            if (L.code === 'SubscribeBook') {
               // 认购书
               if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
                 this.pageData.noticeDealList.forEach((dealList: any) => {
                   if (dealList.notificationType === "Notification" && dealList.annexList && dealList.annexList.length) {
-                    dealList.annexList.forEach((list: any) => {
-                      if (list.type === "Subscription") {
+                    dealList.annexList.forEach((DL: any) => {
+                      if (DL.type === "Subscription") {
                         // 放认购书附件
-                        item.showFileList.push(
+                        L.showFileList.push(
                           {
-                            fileName: list.attachmentSuffix,
-                            fileId: list.fileNo,
+                            fileName: DL.attachmentSuffix,
+                            fileId: DL.fileNo,
                           }
                         )
                       }
@@ -816,6 +817,8 @@
       // console.log(type);
       if (!type) return;
       let postData: any = this.pageData.currentPostData;
+      // 获取补发告知书页面附件信息
+      postData.documentVO = this.getDocumentVo(postData.documentVO);
       try {
         this.btnLoading = true;
         // 补充成交类型
@@ -887,6 +890,40 @@
         console.log(error);
         this.btnLoading = false;
       }
+    }
+
+    // 获取附件信息
+    getDocumentVo(orgList: any = []) {
+      let tempList: any = [...orgList];
+      if (this.pageData && this.pageData.noticeDealList && this.pageData.noticeDealList.length) {
+        this.pageData.noticeDealList.forEach((dealList: any) => {
+          if (dealList.notificationType === "Notification" && dealList.annexList && dealList.annexList.length) {
+            dealList.annexList.forEach((DL: any) => {
+              // 认购书附件
+              if (DL.type === "Subscription") {
+                tempList.push(
+                  {
+                    fileId: DL.fileId,
+                    fileName: DL.fileName,
+                    fileType: 'SubscribeBook' // 认购书
+                  }
+                )
+              } else {
+                // 优惠告知书
+                tempList.push(
+                  {
+                    fileId: DL.fileId,
+                    fileName: DL.fileName,
+                    fileType: 'Notice' // 优惠告知书
+                  }
+                )
+              }
+            });
+          }
+        });
+      }
+      console.log('getDocumentVo：', tempList);
+      return tempList;
     }
 
     // 返回
