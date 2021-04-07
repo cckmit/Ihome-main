@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 18:35:50
+ * @LastEditTime: 2021-04-07 10:36:22
 -->
 <template>
   <IhPage>
@@ -468,7 +468,7 @@
           </el-table-column>
           <el-table-column
             label="本次实际付款金额"
-            width="220"
+            width="250"
           >
             <template v-slot="{ row }">
               <div>实际付款金额: {{practicalChange(row)}}</div>
@@ -504,7 +504,7 @@
             width="150"
           >
             <template v-slot="{ row }">
-              {{ratioChange(row)}}
+              {{ratioChange(row)+'%'}}
             </template>
           </el-table-column>
           <el-table-column
@@ -1882,6 +1882,14 @@ export default class PayoffEdit extends Vue {
         if (index === 2) {
           let total = this.$math.tofixed(sums[index], 2);
           sums[index] = `-${total}`;
+        }
+        if (index === 3) {
+          let total = this.$math.tofixed(sums[index], 2);
+          if (!total) {
+            sums[index] = `-${total}`;
+          } else {
+            sums[index] = total;
+          }
         }
         if (index === 5) {
           sums[index] = "--";
