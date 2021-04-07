@@ -1090,7 +1090,6 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
     get_deal_get__id, // 编辑功能
-    post_pageData_dealCheckNotice, // 判断是否应该存在优惠告知书，返回true则允许添加，返回false则不允许，返回业务逻辑则直接抛出异常
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_initChannelComm, // 初始化对外拆佣表格数据
     post_pageData_initAchieve, // 初始化平台费用表格数据
@@ -1099,7 +1098,6 @@
     post_pageData_recalculateAchieve, // 重新计算平台费用部分
     post_pageData_recalculateAchieveComm, // 总包分销一致时，重新计算平台费用的拆佣金额及拆用比例
     post_pageData_calculateReceiveAmount, // 重算收派金额
-    post_pageData_convertCustomers // 通过优惠告知书查询客户
   } from "@/api/deal";
   import {
     get_org_get__id, // 通过组织id获取组织name
@@ -2703,8 +2701,6 @@
       //   this.initReceive();
       //   // 选择房号后构建表格数据
       //   // this.getDocumentList(value);
-      //   // 判断是否可以手动添加优惠告知书
-      //   // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus);
       //   // 记录临时值
       //   this.tempContType = value;
       // }
@@ -2748,24 +2744,6 @@
           });
         });
       }
-    }
-
-    // 判断是否可以手动添加优惠告知书
-    canAddNoticeItem(charge: any = '', termStageEnum: any = '', contType: any = '', Status: any = '', isVoidService: any = null) {
-      let postData: any = {
-        charge: charge, // 启动模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
-        termStageEnum: termStageEnum, // 项目周期阶段
-        contType: contType, // 合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)
-        dealNoticeStatus: Status, // 优惠告知书情况(NoneNotice-没有优惠告知书、OneNotice-一份优惠告知书、MultipleNotice-多份优惠告知书)
-        isVoidService: isVoidService, // 是否免受服务费
-      }
-      post_pageData_dealCheckNotice(postData).then((res: any) => {
-        console.log(res);
-        this.canAddNoticeFlag = res;
-      }).catch((err: any) => {
-        console.log(err);
-        this.canAddNoticeFlag = false;
-      });
     }
 
     // 改变物业类型
@@ -2834,15 +2812,11 @@
       if (!item) return;
       this.postData.isMat = null;
       this.packageIdsList = [];
-      // let isVoidFlag: any = false;
       this.postData.contNo = item.contractNo;
       // 是否垫佣
       this.postData.isMat = item.advancementSituation;
       // 分销模式下获取分销协议返回的收派套餐id
       this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
-      // isVoidFlag = item.voidService;
-      // 判断是否可以手动添加优惠告知书
-      // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 是否垫佣是根据对应的分销协议来判断
@@ -2864,8 +2838,6 @@
       }
       // 初始化收派套餐
       this.initReceive();
-      // 判断是否可以手动添加优惠告知书
-      // this.canAddNoticeItem(this.baseInfoByTerm.chargeEnum, this.baseInfoByTerm.termStageEnum, this.postData.contType, this.baseInfoInDeal.dealNoticeStatus, isVoidFlag);
     }
 
     // 改变签约、认购价格后，初始化收派套餐问题
@@ -3076,14 +3048,6 @@
           }
         });
       }
-    }
-
-    // 客户信息由优惠告知书带出 ---- 2021-01-16 待定
-    async getCustomByNotice(list: any = []) {
-      if (!list.length) return;
-      // 等待后端提供接口
-      const customList: any = await post_pageData_convertCustomers(list);
-      console.log(customList);
     }
 
     // 删除优惠告知书
