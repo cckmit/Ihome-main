@@ -2858,7 +2858,7 @@
     // 改变一手代理合同
     changeFirstContNo(value: any = '') {
       this.firstAgencyIdsList = [];
-      this.initReceive();
+      this.initAllReceiveList();
       this.showContAnnexList('firstAgency', []);
       if (!value) return;
       if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
