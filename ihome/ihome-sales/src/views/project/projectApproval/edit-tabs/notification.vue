@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-06 18:15:09
+ * @LastEditTime: 2021-04-08 11:21:13
 -->
 <template>
   <div>
@@ -305,7 +305,6 @@
       <TemplateSelect
         :data="contractData"
         @cancel="() => (dialogVisible = false)"
-        @finish="(data) => contractFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="editDialogVisible">
@@ -421,14 +420,15 @@ export default class Notification extends Vue {
         "departmentOrgId",
         this.info.startDivisionId
       );
-      let addObj: any = {};
-      addObj.proId = this.info.proId;
-      addObj.proName = this.info.proName;
-      addObj.proRecord = this.info.proRecord;
-      addObj.padCommissionEnum = this.info.padCommissionEnum;
-      addObj.startDivisionId = this.info.startDivisionId;
-      addObj.termId = this.$route.query.id;
-      console.log(JSON.stringify(addObj));
+      let addObj: any = {
+        proId: this.info.proId,
+        proName: this.info.proName,
+        proRecord: this.info.proRecord,
+        padCommissionEnum: this.info.padCommissionEnum,
+        preferentialPartyAId: this.info.preferentialPartyAId,
+        termId: this.$route.query.id,
+        agencyContrictId: "",
+      };
       window.sessionStorage.setItem("addContract", JSON.stringify(addObj));
     }
   }
@@ -465,29 +465,17 @@ export default class Notification extends Vue {
   }
 
   addTemplate() {
-    this.contractData.agencyContrictId = "";
-    this.contractData.id = this.info.preferentialPartyAId;
     this.dialogVisible = true;
   }
 
   editTemplate(data: any) {
-    this.contractData.agencyContrictId = data.agencyContrictId;
     this.dialogVisible = true;
+    console.log(data);
   }
 
   viewTemplate(data: any) {
     this.viewData.agencyContrictId = data.agencyContrictId;
     this.viewDialogVisible = true;
-  }
-
-  contractFinish() {
-    if (this.contractData.agencyContrictId) {
-      this.$message.success("修改成功");
-    } else {
-      this.$message.success("新增成功");
-    }
-    this.dialogVisible = false;
-    this.getInfo();
   }
 
   // 中介分销合同启用

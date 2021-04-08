@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 11:33:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-06 14:43:56
+ * @LastEditTime: 2021-04-08 11:19:00
 -->
 <template>
   <el-dialog
@@ -79,12 +79,11 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 @Component({
   components: {},
 })
 export default class TemplateSelect extends Vue {
-  @Prop({ default: null }) data: any;
   dialogVisible = true;
   firstShow: any = true;
   secondShow: any = false;

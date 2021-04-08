@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-06 17:02:07
+ * @LastEditTime: 2021-04-08 11:56:04
 -->
 <template>
   <el-dialog
@@ -608,6 +608,7 @@ export default class SetMealDialog extends Vue {
     obj.packageId = row.packageId;
     obj.padCommissionEnum = this.searchdata.padCommissionEnum;
     obj.channelEnum = this.searchdata.channelEnum;
+    obj.contractKind = this.searchdata.contractKind;
     const res = await post_distributContract_getItemByCondition(obj);
     if (res) {
       this.info = (this.$tool as any).deepClone(res);

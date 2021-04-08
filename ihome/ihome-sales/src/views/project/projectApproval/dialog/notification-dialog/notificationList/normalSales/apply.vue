@@ -4,10 +4,9 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-07 08:47:03
+ * @LastEditTime: 2021-04-08 11:58:31
 -->
 <template>
-  <!-- 标准联动销售确认书(启动函) -->
   <ih-page class="text-left">
     <template #info>
       <el-form
@@ -30,10 +29,11 @@
         </div>
         <div class="padding-top-10 padding-bottom-10">
           <span class="font-weight">二、合作期限：</span> 自
-          <span style="color: red">*</span>
           <el-form-item
             prop='timeList'
-            style="display: inline-block; margin-left: -110px"
+            label=" "
+            class="inline-block"
+            label-width="20px"
           >
             <el-date-picker
               v-model="info.timeList"
@@ -41,6 +41,7 @@
               range-separator="至"
               start-placeholder="开始日期"
               end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
             >
             </el-date-picker>
           </el-form-item>
@@ -78,20 +79,44 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col
-            style="margin-left: 10px"
-            :span='10'
-            v-if="isShow"
-          >
-            <IhSelectPageByChannel
-              v-model="info.designatedAgencyId"
-              clearable
-              placeholder="渠道商名称"
-              :params="searchConditon"
-              :search-name="info.designatedAgency"
-              @changeOption="getChannelInfo"
-            ></IhSelectPageByChannel>
-          </el-col>
+          <div v-if="isShow">
+            <el-col
+              :span='6'
+              class="width-200"
+            >
+              <el-form-item
+                prop="companyKind"
+                label-width="20px"
+              >
+                <el-select
+                  v-model="info.companyKind"
+                  clearable
+                  placeholder="请选择公司种类"
+                  class="width--100"
+                  @change="companyKindChange"
+                >
+                  <el-option
+                    v-for="item in companyKindOption"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span='6'>
+              <el-form-item label-width="10px">
+                <IhSelectPageByChannel
+                  v-model="info.designatedAgencyId"
+                  clearable
+                  placeholder="渠道商名称"
+                  :params="searchConditon"
+                  :search-name="info.designatedAgency"
+                  @changeOption="getChannelInfo"
+                ></IhSelectPageByChannel>
+              </el-form-item>
+            </el-col>
+          </div>
         </el-row>
         <el-row>
           <el-col :span="12">
@@ -201,21 +226,34 @@
         <div>(3) 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的，或发生投诉、诉讼导致甲方需退回
           <u><i class="font-weight">开发商或委托方代理费/客户服务费</i> </u>，
           在甲方提供客户退房、投诉等依据后，乙方应在
-          <el-input
-            v-model="info.agencyFeeReturnTime"
-            placeholder="退回期限"
-            class="width-100"
-            v-digits="0"
-            clearable
-          />
+          <el-form-item
+            prop="agencyFeeReturnTime"
+            class="inline-block"
+            label=" "
+            label-width="20px"
+          >
+            <el-input
+              v-model="info.agencyFeeReturnTime"
+              placeholder="退回期限"
+              class="width-100"
+              v-digits="0"
+            />
+          </el-form-item>
           个工作日内退回已支付的代理费，甲方亦有权在未结算的代理费中直接抵扣。
           如乙方在收到甲方退回代理费的通知后未按约退回应退的款项，则乙方按应付未付总金额
-          <el-input
-            v-model="info.agencyFeeReturnRate"
-            placeholder="违约金比例"
-            class="width-120"
-            clearable
-          />
+          <el-form-item
+            prop="agencyFeeReturnRate"
+            class="inline-block"
+            label=" "
+            label-width="20px"
+          >
+            <el-input
+              v-model="info.agencyFeeReturnRate"
+              placeholder="违约金比例"
+              class="width-120"
+              clearable
+            />
+          </el-form-item>
           /日的违约金支付给甲方，并承担甲方为主张权利而发生的律师费和差旅费等。
         </div>
         <div class="font-weight">六、其他：</div>
@@ -225,20 +263,27 @@
         <br />
         <br />
         <div class="under">
-          <div>{{partyCompany}}</div>
+          <div>{{info.partyCompany}}</div>
           <div>日期：年 &nbsp;&nbsp;&nbsp;&nbsp;月 &nbsp;&nbsp;&nbsp;&nbsp;日</div>
         </div>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同电子版">
-              <el-button type="primary">预览电子版</el-button>
+              <el-button
+                type="primary"
+                @click="viewElectronic"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
       <div class="text-center">
-        <el-button type="success">提交</el-button>
-        <el-button>取消</el-button>
+        <el-button
+          type="success"
+          @click="finish()"
+          :loading="finishLoading"
+        >提交</el-button>
+        <el-button @click="cancel">取消</el-button>
       </div>
     </template>
     <ih-dialog :show="setmealDialogVisible">
@@ -256,9 +301,15 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
+  post_distributContract_addStandKindSaleConfirm,
+  get_distributContract_getDistri__agencyContrictId,
 } from "@/api/project/index";
+import { get_company_get__id, post_dict_getAllByType } from "@/api/system";
+import { Form as ElForm } from "element-ui";
+import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import SetMealDialog from "../../setMealDialog.vue";
-import { get_company_get__id } from "@/api/system";
+import axios from "axios";
+import { getToken } from "ihome-common/util/cookies";
 @Component({
   components: { SetMealDialog },
 })
@@ -286,16 +337,18 @@ export default class NormalSalesApply extends Vue {
       "乙方具备上述条件后X个工作日内，甲方向乙方结算首期代理费。甲方在开发商收到乙方客户的银行按揭剩余回款后，甲方30个工作日内向乙方结算尾期代理费 (可根据实际情况更改条件)。",
     agencyFeeReturnTime: null,
     agencyFeeReturnRate: null,
+    partyCompany: "西藏保利爱家房地产经纪有限公司XX分公司",
+    partyCompanyId: null,
+    partyaAddr: null,
+    companyKind: null,
   };
-
   isShow: any = false;
   padCommissionEnumOptions: any = [];
   searchConditon: any = {};
   queryObj: any = {};
   setmealDialogVisible: any = false;
   setMealDialogData: any = {};
-  partyCompany: any = null;
-
+  finishLoading: any = false;
   rules: any = {
     timeList: [
       {
@@ -318,20 +371,41 @@ export default class NormalSalesApply extends Vue {
         trigger: "change",
       },
     ],
+    agencyFeeReturnTime: [
+      {
+        required: true,
+        message: "请填写退回期限",
+        trigger: "change",
+      },
+    ],
+    agencyFeeReturnRate: [
+      {
+        required: true,
+        message: "请填写违约金比例",
+        trigger: "change",
+      },
+    ],
   };
+  private companyKindOption: any = [];
 
   @Watch("info.channelEnum", { immediate: true })
-  getIsShow(val: any) {
+  async getIsShow(val: any) {
     if (val === "Appoint" || val === "Strategic") {
       this.isShow = true;
-      this.searchConditon = {
-        cycleCity: window.sessionStorage.getItem("shengshiqu"),
-        departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
-        // channelEnum: this.info.channelEnum,
-      };
+      this.companyKindOption = await post_dict_getAllByType({
+        tag: "Channel",
+        type: "CompanyKind",
+        valid: "Valid",
+      });
     } else {
       this.isShow = false;
+      this.info.companyKind = null;
+      this.companyKindOption = [];
     }
+  }
+
+  get agencyContrictId() {
+    return this.$route.query.id;
   }
 
   created() {
@@ -339,13 +413,22 @@ export default class NormalSalesApply extends Vue {
   }
 
   async getInfo() {
-    const res: any = sessionStorage.getItem("addContract");
-    Object.assign(this.info, JSON.parse(res));
-    if (this.info.startDivisionId) {
-      const item = await get_company_get__id({
-        id: this.info.startDivisionId,
+    if (this.agencyContrictId) {
+      const res = await get_distributContract_getDistri__agencyContrictId({
+        agencyContrictId: this.agencyContrictId,
       });
-      this.partyCompany = item?.name;
+      this.info = { ...res };
+    } else {
+      const res: any = sessionStorage.getItem("addContract");
+      Object.assign(this.info, JSON.parse(res));
+      if (this.info.preferentialPartyAId) {
+        const item = await get_company_get__id({
+          id: this.info.preferentialPartyAId,
+        });
+        this.info.partyCompany = item?.name;
+        this.info.partyCompanyId = item?.id;
+        this.info.partyaAddr = item?.address;
+      }
     }
     if (this.info?.padCommissionEnum) {
       if (this.info?.padCommissionEnum !== "Veto") {
@@ -388,6 +471,26 @@ export default class NormalSalesApply extends Vue {
     this.queryUnderData(this.info.designatedAgency, "business");
   }
 
+  companyKindChange(val: any) {
+    if (val) {
+      switch (val) {
+        case "ChannelCompany":
+          this.searchConditon = {
+            cycleCity: window.sessionStorage.getItem("shengshiqu"),
+            departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+            // channelEnum: this.info.channelEnum,
+          };
+          break;
+        case "InfieldCompany":
+          this.searchConditon = {};
+          break;
+      }
+    } else {
+      this.info.designatedAgencyId = null;
+      this.info.designatedAgency = null;
+    }
+  }
+
   // 根据渠道类型,垫佣周期,中介公司获取下表数据
   queryUnderData(data: any, type: any) {
     this.queryObj = {
@@ -396,6 +499,7 @@ export default class NormalSalesApply extends Vue {
       channelEnum: this.info.channelEnum,
       designatedAgency: null,
       designatedAgencyId: null,
+      contractKind: "StandKindSaleConfirm",
     };
     if (type === "channel") {
       if (data === "Appoint" || data === "Strategic") {
@@ -412,6 +516,7 @@ export default class NormalSalesApply extends Vue {
       ) {
         this.queryObj.designatedAgency = this.info.designatedAgency;
         this.queryObj.designatedAgencyId = this.info.designatedAgencyId;
+        this.queryObj.companyKind = this.info.companyKind;
         this.queryCondition();
       }
     } else {
@@ -419,6 +524,7 @@ export default class NormalSalesApply extends Vue {
       if (this.info.padCommissionEnum && this.info.channelEnum) {
         this.queryObj.designatedAgency = null;
         this.queryObj.designatedAgencyId = null;
+        this.queryObj.companyKind = null;
         this.queryCondition();
       }
     }
@@ -435,12 +541,12 @@ export default class NormalSalesApply extends Vue {
     this.setMealDialogData.channelEnum = this.info.channelEnum;
     this.setMealDialogData.padCommissionEnum = this.info.padCommissionEnum;
     this.setMealDialogData.id = this.info.termId;
+    this.setMealDialogData.contractKind = "StandKindSaleConfirm";
     this.setmealDialogVisible = true;
   }
 
   async del(index: number) {
     try {
-      await this.$confirm("是否确定删除?", "提示");
       this.info.contractMxVOList.splice(index, 1);
       this.$message({
         type: "success",
@@ -463,9 +569,11 @@ export default class NormalSalesApply extends Vue {
       this.queryObj.termId = this.info.termId;
       this.queryObj.channelEnum = this.info.channelEnum;
       this.queryObj.padCommissionEnum = this.info.padCommissionEnum;
+      this.queryObj.contractKind = "StandKindSaleConfirm";
       if (this.isShow) {
         this.queryObj.designatedAgencyId = this.info.designatedAgencyId;
         this.queryObj.designatedAgency = this.info.designatedAgency;
+        this.queryObj.companyKind = this.info.companyKind;
       }
       const item = await post_distributContract_getCheckCollectByCondition(
         this.queryObj
@@ -476,6 +584,75 @@ export default class NormalSalesApply extends Vue {
     } else {
       this.$message.warning("请勾选详细收派标准信息");
     }
+  }
+
+  // 预览电子版
+  viewElectronic() {
+    if (this.agencyContrictId) {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${this.info.fileId}`
+      );
+    } else {
+      const token: any = getToken();
+      axios({
+        method: "POST",
+        url: `/sales-api/project/distributContract/getPreView`,
+        xsrfHeaderName: "Authorization",
+        responseType: "blob",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "bearer " + token,
+        },
+        data: {
+          ...this.info,
+          contractStartTime: this.info.timeList[0],
+          contractEndTime: this.info.timeList[1],
+        },
+      }).then((res: any) => {
+        const arr = new Blob([res.data], { type: "application/pdf" });
+        const href = window.URL.createObjectURL(arr);
+        window.open(href);
+      });
+    }
+  }
+
+  finish() {
+    (this.$refs["form"] as ElForm).validate(this.submit);
+  }
+
+  @NoRepeatHttp()
+  async submit(v: any) {
+    if (v) {
+      let obj: any = {};
+      obj = { ...this.info };
+      let flag = this.info.timeList && this.info.timeList.length;
+      obj.contractStartTime = flag ? this.info.timeList[0] : null;
+      obj.contractEndTime = flag ? this.info.timeList[1] : null;
+      delete obj.timeList;
+      console.log(obj);
+      try {
+        this.finishLoading = true;
+        await post_distributContract_addStandKindSaleConfirm(obj);
+        this.$message.success("模板添加成功");
+        this.finishLoading = false;
+        this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+      } catch (err) {
+        this.finishLoading = false;
+        console.log(err);
+      }
+    } else {
+      setTimeout(() => {
+        let isError: any = document.getElementsByClassName("is-error");
+        if (isError != null) {
+          isError[0].querySelector("input").focus();
+        }
+      }, 100);
+      return false;
+    }
+  }
+
+  cancel() {
+    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
   }
 }
 </script>
@@ -495,5 +672,10 @@ export default class NormalSalesApply extends Vue {
 
 .under {
   text-align: right;
+}
+
+.inline-block {
+  display: inline-block;
+  margin-bottom: 10px;
 }
 </style>
