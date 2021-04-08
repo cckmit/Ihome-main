@@ -226,7 +226,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'companyKind' : 'notEmpty'">
+          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'agencyId' : 'notEmpty'">
             <div class="agency-wrapper">
               <div class="left">
                 <el-select
@@ -257,16 +257,18 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'">
-          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany' ? 'brokerName' : 'notEmpty'">
-            <el-input
-              placeholder="请选择经纪人"
-              readonly v-model="postData.brokerName" @click.native.prevent="selectBroker">
-              <el-button slot="append" icon="el-icon-search"></el-button>
-            </el-input>
+          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany' ? 'brokerId' : 'notEmpty'">
+            <IhSelectPageByChannelBroker
+              v-model="postData.brokerId"
+              @changeOption="(data) => {postData.brokerName = data.name}"
+              :searchName="postData.brokerName"
+              :proId="postData.agencyId"
+              clearable
+            ></IhSelectPageByChannelBroker>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道分销合同">
+          <el-form-item label="渠道分销合同" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -951,14 +953,14 @@
       recordStr: [
         {required: true, message: "报备信息不能为空", trigger: "change"},
       ],
-      agencyName: [
-        {required: true, message: "渠道公司不能为空", trigger: "change"},
+      agencyId: [
+        {required: true, message: "渠道公司必选", trigger: "change"},
       ],
-      brokerName: [
-        {required: true, message: "渠道经纪人不能为空", trigger: "change"},
+      brokerId: [
+        {required: true, message: "经纪人必选", trigger: "change"},
       ],
       contNo: [
-        {required: true, message: "分销协议必选", trigger: "change"},
+        {required: true, message: "渠道分销合同必选", trigger: "change"},
       ],
       subscribePrice: [
         {required: true, message: "认购价格不能为空", trigger: "change"},

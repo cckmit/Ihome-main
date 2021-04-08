@@ -248,7 +248,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'companyKind' : 'notEmpty'">
+          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'agencyId' : 'notEmpty'">
             <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
               <el-input disabled v-model="postData.agencyName"></el-input>
             </div>
@@ -284,21 +284,23 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'">
-          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany' ? 'brokerName' : 'notEmpty'">
+          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany' ? 'brokerId' : 'notEmpty'">
             <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
               <el-input disabled v-model="postData.brokerName"></el-input>
             </div>
             <div v-else>
-              <el-input
-                placeholder="请选择经纪人"
-                readonly v-model="postData.brokerName" @click.native.prevent="selectBroker">
-                <el-button slot="append" icon="el-icon-search"></el-button>
-              </el-input>
+              <IhSelectPageByChannelBroker
+                v-model="postData.brokerId"
+                @changeOption="(data) => {postData.brokerName = data.name}"
+                :searchName="postData.brokerName"
+                :proId="postData.agencyId"
+                clearable
+              ></IhSelectPageByChannelBroker>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道分销合同" prop="contNo">
+          <el-form-item label="渠道分销合同" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -1550,6 +1552,15 @@
       ],
       signDate: [
         {required: true, message: "签约日期不能为空", trigger: "change"},
+      ],
+      agencyId: [
+        {required: true, message: "渠道公司必选", trigger: "change"},
+      ],
+      brokerId: [
+        {required: true, message: "经纪人必选", trigger: "change"},
+      ],
+      contNo: [
+        {required: true, message: "渠道分销合同必选", trigger: "change"},
       ],
       notEmpty: []
     };
