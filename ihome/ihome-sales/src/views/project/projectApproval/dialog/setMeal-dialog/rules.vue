@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 19:58:24
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-12 14:31:50
+ * @LastEditTime: 2021-04-08 14:54:07
 -->
 <template>
   <el-dialog
@@ -21,6 +21,7 @@
     <el-form
       ref="form"
       label-width="0"
+      onkeydown="if(event.keyCode==13){return false;}"
     >
       <template v-for="(item, i) in form">
         <el-row :key="i">

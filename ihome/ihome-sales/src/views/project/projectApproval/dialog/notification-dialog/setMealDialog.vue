@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-30 16:21:54
+ * @LastEditTime: 2021-04-08 15:04:40
 -->
 <template>
   <el-dialog
@@ -156,7 +156,11 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</span>
+                    <div>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</div>
+                    <div
+                      class="text-ellipsis"
+                      :title="row.consumerName"
+                    >{{row.consumerName}}</div>
                   </template>
                 </el-table-column>
                 <el-table-column
@@ -334,7 +338,11 @@
                   align="center"
                 >
                   <template v-slot="{ row }">
-                    <span>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</span>
+                    <div>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</div>
+                    <div
+                      class="text-ellipsis"
+                      :title="row.consumerName"
+                    >{{row.consumerName}}</div>
                   </template>
                 </el-table-column>
                 <el-table-column

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 11:27:32
+ * @LastEditTime: 2021-04-08 15:09:30
 -->
 <template>
   <div>
@@ -46,9 +46,14 @@
           prop="channelEnum"
           label="渠道类型"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelEnum, "ChannelCustomer")
-          }}</template>
+          <template v-slot="{ row }">
+            <div>{{$root.dictAllName(row.channelEnum, "ChannelCustomer")}}</div>
+            <div
+              v-if="row.channelEnum === 'Appoint' || row.channelEnum === 'Strategic'"
+              class="text-ellipsis"
+              :title="row.designatedAgency"
+            >{{row.designatedAgency}}</div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="state"
@@ -590,12 +595,12 @@ export default class Notification extends Vue {
         });
         break;
       case "partyARefundDays":
-        if (data == 0 || data <0){
-            this.$notify({
-              title: '提示',
-              message: '退款天数必须大于0',
-              duration: 0
-            });
+        if (data == 0 || data < 0) {
+          this.$notify({
+            title: "提示",
+            message: "退款天数必须大于0",
+            duration: 0,
+          });
         }
         await post_preferential_updateRetuenDays({
           partyARefundDays: data,
@@ -730,6 +735,13 @@ export default class Notification extends Vue {
   color: #909399;
   font-size: 14px;
   padding: 5px 20px 10px 20px;
+}
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .file {

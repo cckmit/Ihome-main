@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-3-19 3:14:09 ├F10: PM┤
+//2021-4-8 2:27:06 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -231,7 +231,7 @@ return await request.post< number,number> (basePath+'/customerReportRule/busniss
 export async function post_customerReportRule_delWXBB__wxId (d?: any) {
 return await request.post< number,number> (basePath+'/customerReportRule/delWXBB/{wxId}', d)
 }
-/**查询立项报备规则*/
+/**查询项目报备规则*/
 export async function get_customerReportRule_get__proId (d?: any) {
 return await request.get<CustomerReportRuleVO,CustomerReportRuleVO>(basePath+'/customerReportRule/get/{proId}', { params: d })
 }
@@ -823,6 +823,10 @@ return await request.post< number,number> (basePath+'/settleCondition/updatePlea
 export async function post_term_add (d?: any) {
 return await request.post< TermRespVO,TermRespVO> (basePath+'/term/add', d)
 }
+/**新增*/
+export async function post_term_addTermOtherChannelFees (d?: any) {
+return await request.post< any,any> (basePath+'/term/addTermOtherChannelFees', d)
+}
 /**补充协议-修改周期（新增覆盖周期方式）*/
 export async function get_term_applyTerm__termId (d?: any) {
 return await request.get<number,number>(basePath+'/term/applyTerm/{termId}', { params: d })
@@ -830,6 +834,10 @@ return await request.get<number,number>(basePath+'/term/applyTerm/{termId}', { p
 /**项目周期-审核*/
 export async function post_term_audit (d?: any) {
 return await request.post< number,number> (basePath+'/term/audit', d)
+}
+/**其他渠道费用*/
+export async function post_term_checkOtherChannelFees (d?: any) {
+return await request.post< any,any> (basePath+'/term/checkOtherChannelFees', d)
 }
 /**项目周期提交并且审核*/
 export async function post_term_commitAndAudit (d?: any) {
@@ -938,6 +946,10 @@ return await request.post< any,any> (basePath+'/term/getTermListByProId', d)
 /**查询周期列表【移动端-优惠告知书使用，过滤作废】*/
 export async function post_term_getYdList (d?: any) {
 return await request.post< any,any> (basePath+'/term/getYdList', d)
+}
+/**操作其他渠道费用*/
+export async function post_term_operateOtherChannelFees (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/term/operateOtherChannelFees', d)
 }
 /**启动立项周期*/
 export async function post_term_start__termId (d?: any) {
@@ -1055,7 +1067,7 @@ buildingName: string;
 floor: number;
 /**(必填)楼盘项目ID*/
 proId: number;
-/**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**(必填)物业类型ID*/
 propertyId: number;
@@ -1082,7 +1094,7 @@ deleted: number;
 floor: number;
 /**楼盘项目ID*/
 proId: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**物业类型ID*/
 propertyId: number;
@@ -1124,7 +1136,7 @@ deleted: number;
 floor: number;
 /**楼盘项目ID*/
 proId: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**物业类型ID*/
 propertyId: number;
@@ -1149,7 +1161,7 @@ buildingName: string;
 floor: number;
 /**户型*/
 houseTypes: string[];
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**物业类型ID*/
 propertyId: number;
@@ -1164,7 +1176,7 @@ export interface BuildingPropertyDto {
 buildingId: number;
 /**栋座名称*/
 buildingName: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 }
 /**BuildingQueryVO*/
@@ -1177,7 +1189,7 @@ pageNum: number;
 pageSize: number;
 /**楼盘项目ID*/
 proId: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**装修级别(Rough-毛坯、Simple-简装修、HardBound-精装修)*/
 renovatLevelEnum: string;
@@ -1251,7 +1263,7 @@ buildingName: string;
 floor: number;
 /**(必填)楼盘项目ID*/
 proId: number;
-/**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**(必填)物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**(必填)物业类型ID*/
 propertyId: number;
@@ -1394,7 +1406,7 @@ estimatedTransactionPrice: number;
 marketingRetention: number;
 /**其它渠道费用金额*/
 otherChannelAmount: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**立项周期ID*/
 termId: number;
@@ -1452,6 +1464,8 @@ createTime: string;
 dealCode: string;
 /**周期所属事业部*/
 departmentName: string;
+/**店组ID*/
+groupId: number;
 /**使用的其他渠道费用归属项目*/
 otherProName: string;
 /**使用的其他渠道费用归属周期*/
@@ -1464,6 +1478,8 @@ postCategory: string;
 proName: string;
 /**周期所属店组*/
 shopGroup: string;
+/**启动事业部ID*/
+startDivisionId: number;
 /**成交周期*/
 termName: string;
 }
@@ -1486,9 +1502,9 @@ sce: string;
 export interface CapitalPoolFlowQueryVO {
 /**产生类别(ServiceFeesurplus-服务费盈余、TansactionRefund-成交退款、TransactionChange-成交变更、TransactionSupplement-成交补充、Rollback-回滚、Other-其他)*/
 addcategory: string;
-/**记录时间(yyyy-MM-dd HH:mm:ss)*/
+/**记录时间*/
 createTimeBegin: string;
-/**记录时间(yyyy-MM-dd HH:mm:ss)*/
+/**记录时间*/
 createTimeEnd: string;
 /**(必填)当前页*/
 pageNum: number;
@@ -1507,9 +1523,9 @@ usecategory: string;
 export interface CapitalPoolFlowSumQueryVO {
 /**产生类别(ServiceFeesurplus-服务费盈余、TansactionRefund-成交退款、TransactionChange-成交变更、TransactionSupplement-成交补充、Rollback-回滚、Other-其他)*/
 addcategory: string;
-/**记录时间(yyyy-MM-dd HH:mm:ss)*/
+/**记录时间*/
 createTimeBegin: string;
-/**记录时间(yyyy-MM-dd HH:mm:ss)*/
+/**记录时间*/
 createTimeEnd: string;
 /**项目名称ID*/
 proId: string;
@@ -1561,6 +1577,8 @@ amount: number;
 departmentName: string;
 /**周期所属项目*/
 proName: string;
+/**启动事业部ID*/
+startDivisionId: number;
 /**项目周期ID*/
 termId: string;
 /**项目周期名称*/
@@ -1605,7 +1623,7 @@ termId: number;
 export interface CollectandsendCalcDto {
 /**合同类型  Natural("自然到访"),Distribut("分销成交"),Self("自行成交"),SelfChannel("自渠");(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contractEnum: string;
-/**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**细分业务(All-总包、District-分销)*/
 subdivideEnum: string;
@@ -1680,7 +1698,7 @@ otherChannelPoint: number;
 packageMxId: number;
 /**是否垫佣  Veto("否"),Tree("3个月"),Six("6个月"),Nine("9个月"),MoreTen("10个月以上");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**应收金额*/
 receivableAmout: number;
@@ -1784,7 +1802,7 @@ padCommissionEnum: string;
 partyAInfoList: CompanyIdVo[];
 /**物业类型*/
 propertyDropDowm: PropertyVO[];
-/**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**启动事业部ID*/
 startDivisionId: number;
@@ -1799,9 +1817,13 @@ termStart: string;
 }
 /**CollectandsendQueryMxByIdsVO*/
 export interface CollectandsendQueryMxByIdsVO {
+/**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
+contType: string;
 /**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
-/**packageMxIds*/
+/**周期id*/
+cycleId: number;
+/**分销协议内的收派明细id*/
 packageMxIds: number[];
 /**(必填)当前页*/
 pageNum: number;
@@ -1809,6 +1831,10 @@ pageNum: number;
 pageSize: number;
 /**甲方公司*/
 partyAId: number;
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
+property: string;
+/**细分业务模式(All-总包、District-分销)*/
+subdivide: string;
 }
 /**CollectandsendUpdateVO*/
 export interface CollectandsendUpdateVO {
@@ -1824,7 +1850,7 @@ estimatedTransactionPrice: number;
 packageId: number;
 /**套餐名称*/
 packageName: string;
-/**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型 WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**有效开始时间(yyyy-MM-dd)*/
 startTime: string;
@@ -1843,7 +1869,7 @@ estimatedTransactionPrice: number;
 packageId: number;
 /**套餐名称*/
 packageName: string;
-/**物业类型  WORKSHOP-厂房 APARTMENT-公寓 VILLA-别墅 sSHOPS-商铺 OFFICEO-写字楼 PARKING-车位 OTHER-其他(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型  WORKSHOP-厂房 APARTMENT-公寓 VILLA-别墅 sSHOPS-商铺 OFFICEO-写字楼 PARKING-车位 OTHER-其他(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**有效开始时间(yyyy-MM-dd)*/
 startTime: string;
@@ -2525,7 +2551,7 @@ conditionId: number;
 contrictMxId: number;
 /**佣金类型 ServiceFee("服务费"),AgencyFee("代理费")(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**派发佣金标准*/
 sendContext: string;
@@ -2540,6 +2566,10 @@ agencyContrictId: number;
 channelEnum: string;
 /**合同主标题*/
 contractTitle: string;
+/**指定中介行多选*/
+designatedAgency: string;
+/**中介行ID*/
+designatedAgencyId: number;
 /**派发佣金标准*/
 distributContractMxVOS: DistributContractMxVO[];
 /**文件*/
@@ -3009,7 +3039,7 @@ proId: number;
 propertyAge: string;
 /**物业费*/
 propertyCost: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**装修级别  ROUGH-毛坯、SHIMIZU -清水、SIMPLE-简装修、HARDBOUND-精装修(Rough-毛坯、Simple-简装修、HardBound-精装修)*/
 renovatLevelEnum: string;
@@ -3141,7 +3171,7 @@ proId: number;
 propertyAge: string;
 /**物业费*/
 propertyCost: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**装修级别  ROUGH-毛坯、SHIMIZU -清水、SIMPLE-简装修、HARDBOUND-精装修(Rough-毛坯、Simple-简装修、HardBound-精装修)*/
 renovatLevelEnum: string;
@@ -3221,6 +3251,51 @@ commentList: FlowComment[];
 stateEnum: string;
 /**OA流程ID*/
 summaryId: number;
+}
+/**OldProjectCycle*/
+export interface OldProjectCycle {
+/**undefined*/
+approvalNo: string;
+/**undefined*/
+approveTime: string;
+/**undefined*/
+busibaId: string;
+/**undefined*/
+businessType: string;
+/**undefined*/
+cityId: string;
+/**undefined*/
+compiling: string;
+/**undefined*/
+countyId: string;
+/**undefined*/
+cycleId: number;
+/**undefined*/
+cycleName: string;
+/**undefined*/
+isConsignment: number;
+/**undefined*/
+lave: number;
+/**undefined*/
+matCommission: number;
+/**undefined*/
+myguid: string;
+/**undefined*/
+projectAddress: string;
+/**undefined*/
+projectEndTime: string;
+/**undefined*/
+projectId: number;
+/**undefined*/
+projectName: string;
+/**undefined*/
+projectStartTime: string;
+/**undefined*/
+provinceId: string;
+/**undefined*/
+recordName: string;
+/**undefined*/
+stage: string;
 }
 /**OtherVo*/
 export interface OtherVo {
@@ -3626,6 +3701,8 @@ developerIds: number;
 developerName: string;
 /**是否市场化*/
 exMarket: number;
+/**是否父项目*/
+exParent: number;
 /**突破标准线期数*/
 overStandardCount: number;
 /**往期业绩金额*/
@@ -3871,7 +3948,7 @@ orderType: string;
 pageNum: number;
 /**(必填)每页条数*/
 pageSize: number;
-/**类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 property: string;
 /**装修(Rough-毛坯、Simple-简装修、HardBound-精装修)*/
 renovatLevel: string;
@@ -3957,7 +4034,7 @@ id: number;
 padCommissionEnum: string;
 /**甲方ID 开发商*/
 partyAId: number;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyType: string;
 /**备案情况(Has-有、No-无)*/
 recordState: string;
@@ -4079,7 +4156,7 @@ propertyAge: string;
 /**物业费*/
 propertyCost: number;
 /**物业类型     Residence("住宅"),WorkShop("厂房"),Apartment("公寓"),Villa("别墅"),Shop("商铺"),Office("写字楼"),
-    Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+    Parking("车位"),Other("其他")(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**ID*/
 propertyId: number;
@@ -4088,11 +4165,11 @@ renovatLevelEnum: string;
 }
 /**PropertyVO*/
 export interface PropertyVO {
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**ID*/
 propertyId: number;
-/**物业类型名称(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型名称(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyName: string;
 }
 /**QueryCompanyNameResponseVO*/
@@ -4950,6 +5027,8 @@ exOtherProChannelUse: number;
 exOver: number;
 /**是否突破标准线*/
 exOverStandard: number;
+/**是否父项目*/
+exParent: number;
 /**是否免收服务费,0否 1是*/
 exVoidService: number;
 /**店组ID*/
@@ -5128,6 +5207,8 @@ exOtherProChannelUse: number;
 exOver: number;
 /**是否突破标准线*/
 exOverStandard: number;
+/**是否父项目*/
+exParent: number;
 /**是否免收服务费,0否 1是*/
 exVoidService: number;
 /**店组ID*/
@@ -5236,6 +5317,8 @@ collectCommissionStandardSketch: string;
 customerReportingRequire: string;
 /**(必填)是否代销*/
 exConsignment: number;
+/**是否直签开发商*/
+exDirectDevelop: number;
 /**(必填)认购书是否体现优惠折扣*/
 exDiscount: number;
 /**(必填)项目房款/车位款加服务费大于备案价(No-否、Yes-是、NotInvolved-不涉及)*/
@@ -5374,7 +5457,7 @@ proId: number;
 proName: string;
 /**楼盘排序(AverageAsc-均价从底到高、AverageDesc-均价从高到低、DistanceDesc-距离从近到远、DistanceAsc-距离从远到近)*/
 proSortEnum: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**装修级别(Rough-毛坯、Simple-简装修、HardBound-精装修)*/
 renovatLevelEnum: string;
