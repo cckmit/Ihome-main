@@ -273,6 +273,7 @@
                   <IhSelectPageByChannelCompany
                     v-model="postData.agencyId"
                     :proId="postData.companyKind"
+                    :orgId="baseInfoByTerm.startDivisionId"
                     :searchName="postData.agencyName"
                     @change="changeCompany"
                     placeholder="请选择渠道公司"
@@ -1673,6 +1674,7 @@
     ]; // 锚点列表
     currentActiveIndex: any = 0; // 当前激活的nav
     baseInfoByTerm: any = {
+      startDivisionId: null, // 启动事业部ID
       exMinyuan: null, // // 是否明源源：1---是，0---否
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id

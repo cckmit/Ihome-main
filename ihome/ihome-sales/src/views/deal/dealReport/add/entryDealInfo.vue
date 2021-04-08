@@ -247,6 +247,7 @@
                 <IhSelectPageByChannelCompany
                   v-model="postData.agencyId"
                   :proId="postData.companyKind"
+                  :orgId="baseInfoByTerm.startDivisionId"
                   :searchName="postData.agencyName"
                   @change="changeCompany"
                   placeholder="请选择渠道公司"
@@ -796,6 +797,7 @@
     firstAgencyIdsList: any = []; // 一手代理合同选择后的ids
     packageIdsList: any = []; // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
     baseInfoByTerm: any = {
+      startDivisionId: null, // 启动事业部ID
       exMinyuan: null, // 是否明源源：1---是，0---否
       proId: null, // 项目id --- 用于查询分销协议列表
       termId: null, // 项目周期id
