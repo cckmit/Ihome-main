@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:30:58
+ * @LastEditTime: 2021-04-08 20:03:22
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -273,13 +273,24 @@ export default class NotSalesApply extends Vue {
   }
 
   async getInfo() {
+    const res: any = sessionStorage.getItem("addContract");
     if (this.agencyContrictId) {
-      const res = await get_distributContract_getDistri__agencyContrictId({
+      const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
       });
-      this.info = { ...res };
+      this.info = {
+        ...data,
+        ...JSON.parse(res),
+        timeList: [],
+      };
+      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+      this.fileList = data.attachTermItemVOS.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.fileName,
+        type: v.type,
+        exAuto: v.exAuto,
+      }));
     } else {
-      const res: any = sessionStorage.getItem("addContract");
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
         const item = await get_company_get__id({

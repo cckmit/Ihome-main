@@ -4,11 +4,11 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:55:09
+ * @LastEditTime: 2021-04-08 20:08:08
 -->
 <template>
   <div>
-    <p class="ih-info-title">中介分销合同模板</p>
+    <p class="ih-info-title">渠道合同模板</p>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
