@@ -6,6 +6,7 @@
  * @LastEditors: lsj
  * @LastEditTime: 2021-03-26 16:24:20
 -->
+
 <template>
   <ih-page class="text-left">
     <div v-if="suppContType === 'ChangeInternalAchieveInf'">
@@ -157,6 +158,21 @@
               <el-form-item label="一手代理公司">{{infoForm.oneAgentTeam}}</el-form-item>
             </el-col>
             <el-col :span="8">
+              <el-form-item label="一手代理合同">
+                <div class="contNo-wrapper">
+                  <div class="no cycle-name-wrapper" :title="infoForm.firstContTitle">{{infoForm.firstContTitle}}</div>
+                  <div v-if="infoForm.firstContNo">
+                    <el-link
+                      class="margin-left-10"
+                      type="primary"
+                      @click.native.prevent="viewContNoDetail(infoForm.firstContNo)"
+                    >查看
+                    </el-link>
+                  </div>
+                </div>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
               <el-form-item label="成交阶段">
                 {{$root.dictAllName(infoForm.stage, 'DealStage')}}
               </el-form-item>
@@ -178,9 +194,20 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="分销协议编号">
+              <el-form-item label="渠道公司">
+                {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
+                <span style="color: red">[{{$root.dictAllName(infoForm.companyKind, 'CompanyKind')}}]</span>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="经纪人" v-if="infoForm.contType === 'DistriDeal' && infoForm.companyKind === 'ChannelCompany'">
+                {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="渠道分销合同">
                 <div class="contNo-wrapper">
-                  <div class="no cycle-name-wrapper" :title="infoForm.contNo">{{infoForm.contNo}}</div>
+                  <div class="no cycle-name-wrapper" :title="infoForm.contNo">{{infoForm.contTitle}}</div>
                   <div v-if="infoForm.contNo">
                     <el-link
                       class="margin-left-10"
@@ -195,19 +222,6 @@
             <el-col :span="8">
               <el-form-item label="是否垫佣">
                 {{infoForm.isMat ? $root.dictAllName(infoForm.isMat, 'PadCommission') : '无数据'}}
-              </el-form-item>
-            </el-col>
-            <el-col :span="8" v-if="infoForm.recordStr">
-              <el-form-item label="报备信息">{{infoForm.recordStr}}</el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="渠道公司">
-                {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="经纪人">
-                {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
               </el-form-item>
             </el-col>
             <el-col :span="8">

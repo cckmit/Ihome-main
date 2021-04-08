@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-02 15:19:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 12:25:04
+ * @LastEditTime: 2021-04-02 11:57:56
 -->
 <template>
   <ih-page>
@@ -24,7 +24,6 @@
               :typeStr="typeStr"
               v-if="componetName === 'BasicInfo'"
               :style="{'max-height': maxHeight, 'overflow-y': 'auto', 'padding-right': '15px'}"
-              :info-data="infoData"
             />
           </el-tab-pane>
           <el-tab-pane
@@ -76,7 +75,6 @@ import HouseType from "./info-tabs/houseType.vue";
 import PopularizeInfo from "./info-tabs/popularizeInfo.vue";
 import RoomNum from "./info-tabs/roomNum.vue";
 import ReportedRules from "./info-tabs/reportedRules.vue";
-import { get_project_get__proId } from "@/api/project/index";
 
 Component.registerHooks(["beforeRouteEnter"]);
 @Component({
@@ -84,8 +82,7 @@ Component.registerHooks(["beforeRouteEnter"]);
 })
 export default class ProjectChildInfo extends Vue {
   typeStr = "";
-  componetName: any = "";
-  infoData: any = {};
+  componetName: any = "BasicInfo";
 
   private beforeRouteEnter(to: any, from: any, next: any) {
     next((vm: any) => {
@@ -99,20 +96,6 @@ export default class ProjectChildInfo extends Vue {
 
   private get projectId() {
     return this.$route.query.id;
-  }
-
-  created() {
-    this.getInfo();
-  }
-
-  async getInfo() {
-    if (this.projectId) {
-      const data = await get_project_get__proId({
-        proId: this.projectId,
-      });
-      this.infoData = data;
-      this.componetName = "BasicInfo";
-    }
   }
 
   get maxHeight() {

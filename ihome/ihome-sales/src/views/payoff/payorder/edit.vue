@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 09:39:32
+ * @LastEditTime: 2021-04-07 10:36:22
 -->
 <template>
   <IhPage>
@@ -468,7 +468,7 @@
           </el-table-column>
           <el-table-column
             label="本次实际付款金额"
-            width="220"
+            width="250"
           >
             <template v-slot="{ row }">
               <div>实际付款金额: {{practicalChange(row)}}</div>
@@ -504,7 +504,7 @@
             width="150"
           >
             <template v-slot="{ row }">
-              {{ratioChange(row)}}
+              {{ratioChange(row)+'%'}}
             </template>
           </el-table-column>
           <el-table-column
@@ -1415,6 +1415,13 @@ export default class PayoffEdit extends Vue {
     const shuier = this.$math.add(1, taxRate);
     const res = this.$math.div(practical, shuier);
     row.noTaxAmount = this.$math.tofixed(res, 2);
+    const index = this.info.payApplyDetailList.findIndex(
+      (v: any) => v.dealCode === row.dealCode
+    );
+    this.info.payApplyDetailList[index].noTaxAmount = this.$math.tofixed(
+      res,
+      2
+    );
     return this.$math.tofixed(res, 2);
   }
 
@@ -1424,6 +1431,10 @@ export default class PayoffEdit extends Vue {
     const noTaxAmount = row.noTaxAmount ? Number(row.noTaxAmount) : 0;
     const res = this.$math.sub(practical, noTaxAmount);
     row.tax = this.$math.tofixed(res, 2);
+    const index = this.info.payApplyDetailList.findIndex(
+      (v: any) => v.dealCode === row.dealCode
+    );
+    this.info.payApplyDetailList[index].tax = this.$math.tofixed(res, 2);
     return this.$math.tofixed(res, 2);
   }
 
@@ -1871,6 +1882,14 @@ export default class PayoffEdit extends Vue {
         if (index === 2) {
           let total = this.$math.tofixed(sums[index], 2);
           sums[index] = `-${total}`;
+        }
+        if (index === 3) {
+          let total = this.$math.tofixed(sums[index], 2);
+          if (!total) {
+            sums[index] = `-${total}`;
+          } else {
+            sums[index] = total;
+          }
         }
         if (index === 5) {
           sums[index] = "--";

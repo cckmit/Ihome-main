@@ -332,6 +332,10 @@
                   @click.native.prevent="handleRecall(scope)"
                 >撤回
                 </el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleUpload(scope)"
+                >补充附件
+                </el-dropdown-item>
                 <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
                   <span
                     v-has="'B.SALES.DEAL.DEALLIST.SUPPLEMENTDEAL'"
@@ -688,6 +692,16 @@
       } catch (error) {
         console.log(error);
       }
+    }
+
+    // 补充附件
+    handleUpload(scope: any) {
+      this.$router.push({
+        path: "/dealReport/uploadAttachment",
+        query: {
+          id: scope.row.id
+        }
+      });
     }
 
     // 审核

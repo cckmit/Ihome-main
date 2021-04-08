@@ -99,6 +99,12 @@ const dealRoutes: Array<RouteConfig> = [
         name: 'ReviewDealInfo',
         component: () => import('@/views/deal/dealReport/reviewDealInfo.vue'),
         meta: { title: '成交信息审核', icon: 'form' }
+      },
+      {
+        path: 'uploadAttachment',
+        name: 'UploadAttachment',
+        component: () => import('@/views/deal/dealReport/uploadAttachment.vue'),
+        meta: { title: '成交补充附件', icon: 'form' }
       }
     ]
   },

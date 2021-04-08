@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-11-30 16:21:18
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-03 18:16:57
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-02 09:40:52
 -->
 <template>
   <el-dialog
@@ -51,13 +51,20 @@
             ></el-input>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item label="联行号">
             <el-input
               v-model="queryPageParameters.branchNo"
               placeholder="联行号"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="所属银行">
+            <el-input
+              v-model="queryPageParameters.bankName"
+              placeholder="所属银行"
               clearable
             ></el-input>
           </el-form-item>
@@ -150,6 +157,7 @@ export default class BankRecord extends Vue {
     cityName: null,
     branchNo: null,
     branchName: null,
+    bankName: null,
   };
   public resPageInfo: any = {
     total: null,
@@ -176,6 +184,7 @@ export default class BankRecord extends Vue {
       cityName: null,
       branchNo: null,
       branchName: null,
+      bankName: null,
     });
   }
   private handleSelectionChange(val: any) {

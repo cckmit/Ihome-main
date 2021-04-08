@@ -128,6 +128,28 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="一手代理合同" :prop="postData.oneAgentTeamId ? 'firstContNo' : 'notEmpty'">
+            <div class="contNo-wrapper">
+              <el-select
+                v-model="postData.firstContNo"
+                :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
+                clearable
+                @change="changeFirstContNo"
+                placeholder="请选择一手代理合同"
+                class="width--100">
+                <el-option
+                  v-for="(item, index) in firstAgencyCompanyContList"
+                  :key="index"
+                  :label="item.contractTitle"
+                  :value="item.contractNo"></el-option>
+              </el-select>
+              <div class="link-wrapper" >
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo)">详情</el-link>
+              </div>
+            </div>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="成交阶段" prop="stage">
             <div class="div-disabled">签约</div>
           </el-form-item>
@@ -226,60 +248,68 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道公司" prop="agencyName">
+          <el-form-item label="渠道公司" :prop="postData.contType === 'DistriDeal' ? 'companyKind' : 'notEmpty'">
             <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
               <el-input disabled v-model="postData.agencyName"></el-input>
             </div>
             <div v-else>
-              <div v-if="baseInfoInDeal.hasRecord">
-                <el-input
-                  v-model="postData.agencyName"
-                  :disabled="baseInfoInDeal.hasRecord"></el-input>
-              </div>
-              <div v-else>
-                <el-input
-                  placeholder="请选择渠道公司"
-                  readonly v-model="postData.agencyName" @click.native.prevent="selectAgency('agency', '')">
-                  <el-button slot="append" icon="el-icon-search"></el-button>
-                </el-input>
+              <div class="agency-wrapper">
+                <div>
+                  <el-select
+                    v-model="postData.companyKind"
+                    clearable
+                    placeholder="请选择公司类型"
+                    @change="changeAgencyType"
+                    class="width--100">
+                    <el-option
+                      v-for="item in $root.dictAllList('AgencyType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </div>
+                <div class="right">
+                  <IhSelectPageByChannelCompany
+                    v-model="postData.agencyId"
+                    :proId="postData.companyKind"
+                    :searchName="postData.agencyName"
+                    @change="changeCompany"
+                    placeholder="请选择渠道公司"
+                    clearable
+                  ></IhSelectPageByChannelCompany>
+                </div>
               </div>
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="经纪人">
+        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'">
+          <el-form-item label="经纪人" :prop="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany' ? 'brokerName' : 'notEmpty'">
             <div v-if="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)">
               <el-input disabled v-model="postData.brokerName"></el-input>
             </div>
             <div v-else>
-              <div v-if="baseInfoInDeal.hasRecord">
-                <el-input
-                  v-model="postData.brokerName"
-                  :disabled="baseInfoInDeal.hasRecord"></el-input>
-              </div>
-              <div v-else>
-                <el-input
-                  placeholder="请选择经纪人"
-                  readonly v-model="postData.brokerName" @click.native.prevent="selectBroker">
-                  <el-button slot="append" icon="el-icon-search"></el-button>
-                </el-input>
-              </div>
+              <el-input
+                placeholder="请选择经纪人"
+                readonly v-model="postData.brokerName" @click.native.prevent="selectBroker">
+                <el-button slot="append" icon="el-icon-search"></el-button>
+              </el-input>
             </div>
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="分销协议编号" prop="contNo">
+          <el-form-item label="渠道分销合同" prop="contNo">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
                 @change="changeContNo"
                 :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
-                placeholder="请选择分销协议编号"
+                placeholder="请选择渠道分销合同"
                 class="width--100">
                 <el-option
                   v-for="(item, index) in contNoList"
                   :key="index"
-                  :label="item.contractNo" :value="item.contractNo"></el-option>
+                  :label="item.contractTitle" :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" v-if="!!postData.contNo">
                 <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo)">详情</el-link>
@@ -301,11 +331,6 @@
                 :value="item.code"
               ></el-option>
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8" v-if="postData.contType === 'DistriDeal' && postData.recordStr">
-          <el-form-item label="报备信息">
-            <el-input disabled v-model="postData.recordStr"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1179,8 +1204,9 @@
               <IhUpload
                 @newFileList="getNewFile"
                 size="100px"
-                :limit="10"
+                :limit="scope.row.code === 'ContractInfo' ? scope.row.defaultFileList.length : 100"
                 :file-size="10"
+                :editPermi="false"
                 v-model="scope.row.defaultFileList"
                 :file-type="scope.row.code"
               ></IhUpload>
@@ -1312,12 +1338,16 @@
     post_suppDeal_previewUpdateRetreatRoom, // 预览修改退房
     post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
   } from "@/api/deal";
-  import {get_org_get__id} from "@/api/system"; // 获取组织name
+  import {
+    get_org_get__id,
+    post_dict_getAllByType
+  } from "@/api/system"; // 获取组织name
   import {
     get_term_getProBaseByTermId__termId, // 通过项目周期获取成交基础信息
   } from "@/api/project";
   import {
-    post_notice_customer_information // 通过成交id获取优惠告知书
+    post_notice_customer_information, // 通过成交id获取优惠告知书
+    post_distributionmx_receive_detail
   } from "@/api/contract";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -1371,6 +1401,7 @@
       contType: null,
       refineModel: null,
       channelId: null,
+      companyKind: null, // 渠道公司类型：内部/外部
       channelName: null,
       agencyId: null, // 渠道公司Id
       agencyName: null, // 渠道公司
@@ -1381,11 +1412,14 @@
       reportId: null,
       oneAgentTeamId: null,
       oneAgentTeamName: null,
+      firstContNo: null, // 一手代理合同
+      firstContTitle: null, // 一手代理合同
       isMarketProject: null,
       recordState: null,
       dataSign: null,
       dataSignName: null,
-      contNo: null,
+      contNo: null, // 分销协议编号
+      contTitle: null, // 合同名称
       isMat: null,
       isConsign: null,
       stage: null,
@@ -1460,6 +1494,9 @@
       oneAgentTeamId: [
         {required: true, message: "一手代理团队必选", trigger: "change"},
       ],
+      firstContNo: [
+        {required: true, message: "一手代理合同必选", trigger: "change"},
+      ],
       buildingId: [
         {required: true, message: "栋座必选", trigger: "change"},
       ],
@@ -1518,7 +1555,10 @@
     };
     id: any = null;
     firstAgencyCompanyList: any = []; // 一手代理团队选项
+    firstAgencyCompanyContList: any = []; // 一手代理合同选项
+    companyKindOption: any = []; // 渠道公司类型
     dealStageList: any = []; // 成交阶段选项
+    firstAgencyIdsList: any = []; // 一手代理合同选择后的ids
     packageIdsList: any = []; // 收派套餐ids：分销模式---选择分销协议后获取；非分销协议---请求接口获取
     dialogAddCustomer: any = false;
     dialogAddBroker: any = false;
@@ -1733,6 +1773,16 @@
       if (this.id && this.changeType && this.btnType) {
         await this.initPageInfo();
       }
+      await this.getCompanyTypeList();
+    }
+
+    // 获取公司类型
+    async getCompanyTypeList() {
+      this.companyKindOption = await post_dict_getAllByType({
+        tag:"Channel",
+        type:"CompanyKind",
+        valid:"Valid",
+      });
     }
 
     // 跳转到指定索引的元素
@@ -1817,6 +1867,30 @@
           await this.getContNoList(res.agencyList[0].agencyId, res.cycleId, res.house.propertyType, res.contNo);
         }
         await this.initAgency(res.agencyList, true);
+      }
+      // 获取一手代理合同的值
+      this.firstAgencyCompanyContList = await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
+      // 获取对应的一手代理合同的ids
+      this.firstAgencyIdsList = [];
+      if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
+        this.firstAgencyCompanyContList.forEach((list: any) => {
+          if (list.contractNo === res.firstContNo) {
+            this.firstAgencyIdsList = this.getIdsList(list.distributionMxList);
+          }
+        });
+      }
+      // 获取渠道分销合同的值
+      this.packageIdsList = [];
+      if (res.agencyList && res.agencyList.length) {
+        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        // 获取对应的渠道分销合同的ids
+        if (this.contNoList && this.contNoList.length) {
+          this.contNoList.forEach((list: any) => {
+            if (list.contractNo === res.firstContNo) {
+              this.packageIdsList = this.getIdsList(list.distributionMxList);
+            }
+          });
+        }
       }
       this.postData = {
         ...this.postData,
@@ -1956,6 +2030,7 @@
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
+          this.postData.companyKind = data[0].companyKind; // 渠道公司类型
         }
       }
     }
@@ -2065,22 +2140,10 @@
       }
       // 建筑面积
       this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
-      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
-      //   this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
-      // }
       // 户型
       this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
-      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
-      //   this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
-      // }
       this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
-      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
-      //   this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
-      // }
       this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
-      // if (baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
-      //   this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
-      // }
       // 预售合同编号
       this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
       // 签约类型
@@ -2095,18 +2158,12 @@
       this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
       // 认购价格
       this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
-      // if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
-      //   this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
-      // }
       // 认购日期
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
         this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
       }
       // 签约价格
       this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
-      // if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
-      //   this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
-      // }
       // 签约日期
       if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
         this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
@@ -2116,8 +2173,6 @@
         this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
         this.postData.dataSignName = (this as any).$root.dictAllName(baseInfo.myReturnVO.dataSign, 'DealDataFlag');
       }
-      // 客户信息
-      // this.postData.customerList = baseInfo.customerAddVOS && baseInfo.customerAddVOS.length ? baseInfo.customerAddVOS : [];
       // 收派金额 --- 代理费
       if (baseInfo.receiveVOS && baseInfo.receiveVOS.length) {
         let tempList: any = this.initReceiveVOS(baseInfo.receiveVOS);
@@ -2130,9 +2185,6 @@
       // 收派金额中的甲方
       this.commissionCustomerList = [];
       this.commissionCustomerList = this.initCommissionCustomer(baseInfo.receiveVOS);
-      // this.commissionServiceFeeObj = {};
-      // this.commissionServiceFeeObj = this.initCommissionServiceFee(baseInfo.receiveVOS);
-      // console.log('commissionServiceFeeObj', this.commissionServiceFeeObj);
       // 初始化上传附件
       await this.getUploadDocumentList(baseInfo.contType);
     }
@@ -2519,6 +2571,7 @@
         }
       } else {
         this.postData.oneAgentTeamName = null;
+        this.postData.oneAgentTeamId = null;
       }
       // 如果有对外拆佣信息，要同步拆佣对象为一手代理公司的收款方
       if (this.postData.channelCommList && this.postData.channelCommList.length) {
@@ -2529,6 +2582,8 @@
           }
         });
       }
+      // 清空一手代理合同
+      this.postData.firstContNo = null;
     }
 
     // 改变物业类型
@@ -2655,6 +2710,11 @@
     * scope: Object, 对外拆佣中当前选中的数据
     * */
     selectAgency(type: any = '', scope: any) {
+      // 选择渠道公司
+      if (type === 'agency' && !this.postData.agencyType) {
+        this.$message.warning('请先选择公司类型');
+        return;
+      }
       this.currentSelectAgencyType = type;
       this.currentSelectAgencyIndex = scope.$index;
       this.agentCompanyData = {
@@ -2734,6 +2794,7 @@
     changeContNo(value: any) {
       this.postData.isMat = null;
       this.packageIdsList = [];
+      this.showContAnnexList('contNo', []);
       if (!value) return;
       if (this.contNoList && this.contNoList.length > 0) {
         this.contNoList.forEach((item: any) => {
@@ -2741,12 +2802,114 @@
             // 是否垫佣
             this.postData.isMat = item.advancementSituation;
             // 分销模式下获取分销协议返回的收派套餐id
-            this.packageIdsList = item.packageMxIds && item.packageMxIds.length ? item.packageMxIds : [];
+            this.packageIdsList = this.getIdsList(item.distributionMxList);
+            // 回显合同附件信息
+            this.showContAnnexList('contNo', item.annexList);
           }
         })
       }
       // 初始化收派金额
       this.initAllReceiveList();
+    }
+
+    // 获取合同中收派信息的idsList
+    getIdsList(list: any = []) {
+      let idList: any = [];
+      if (list && list.length > 0) {
+        list.forEach((item: any) => {
+          idList.push(item.conditionId);
+        });
+      }
+      return idList;
+    }
+
+    // 改变一手代理公司
+    changeOneAgent(value: any) {
+      this.postData.firstContNo = null;
+      this.firstAgencyCompanyContList = [];
+      // 获取一手代理合同
+      if (value) this.getOneAgentTeamContNo('oneAgent', value);
+    }
+
+    /*
+    * 获取一手代理合同或者渠道分销合同
+    * type: String。oneAgent：一手代理合同；contNo：渠道分销合同
+    * channelCompanyId: String。渠道公司id
+    * cycleId: String。项目周期id
+    * companyKind: String。渠道公司类型 AgencyCompany
+    * */
+    async getOneAgentTeamContNo(type: any = '', channelCompanyId: any = '', cycleId: any = '', companyKind: any = '') {
+      let postData: any = {
+        channelCompanyId: channelCompanyId,
+        channelCompanyKind: companyKind,
+        cycleId: cycleId,
+      }
+      let list: any = await post_distributionmx_receive_detail(postData);
+      console.log(list);
+      if (type === 'contNo') {
+        // 渠道分销合同
+        this.contNoList = list;
+      } else {
+        // 一手代理合同
+        this.firstAgencyCompanyContList = list;
+      }
+    }
+
+    // 改变一手代理合同
+    changeFirstContNo(value: any = '') {
+      this.firstAgencyIdsList = [];
+      this.initReceive();
+      this.showContAnnexList('firstAgency', []);
+      if (!value) return;
+      if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
+        this.firstAgencyCompanyContList.forEach((item: any) => {
+          if (item.contractNo === value) {
+            // 获取一手代理合同返回的收派套餐id
+            this.firstAgencyIdsList = this.getIdsList(item.distributionMxList);
+            // 回显合同附件信息
+            this.showContAnnexList('firstAgency', item.annexList);
+          }
+        });
+      }
+    }
+
+    /*
+    * 回显合同附件信息
+    * type: String。firstAgency：一手代理合同类型的附件；contNo：渠道分销合同类型的附件
+    * annexList: Array。需要回显的附件
+    * */
+    showContAnnexList(type: any = '', annexList: any = []) {
+      if (annexList && annexList.length) {
+        // 添加对应的合同附件
+        if (this.postData && this.postData.documentVO && this.postData.documentVO.length) {
+          this.postData.documentVO.forEach((vo: any) => {
+            if (vo.code === 'ContractInfo') {
+              annexList.forEach((list: any) => {
+                vo.defaultFileList.push(
+                  {
+                    ...list,
+                    fileId: list.fileNo,
+                    fileName: list.attachmentSuffix,
+                    deleteType: type,
+                    exAuto: true, // 是否可以删除
+                  }
+                )
+              });
+            }
+          });
+        }
+      } else {
+        // 删除对应的合同附件
+        if (this.postData && this.postData.documentVO && this.postData.documentVO.length) {
+          this.postData.documentVO.forEach((vo: any) => {
+            if (vo.code === 'ContractInfo') {
+              vo.defaultFileList = vo.defaultFileList.filter((list: any) => {
+                return list.deleteType !== type;
+              });
+            }
+          });
+        }
+      }
     }
 
     // 修改业务模式逻辑
@@ -2770,25 +2933,56 @@
       }
     }
 
+    // 修改公司类型
+    changeAgencyType() {
+      this.initAgencyInfo();
+    }
+
+    // 初始化渠道公司相关信息
+    initAgencyInfo() {
+      // 初始化渠道公司
+      this.postData.agencyId = null;
+      this.postData.agencyName = null;
+      // 初始化经纪人
+      this.postData.brokerId = null;
+      this.postData.brokerName = null;
+      // 初始化渠道分销合同
+      this.postData.contNo = null;
+      this.contNoList = [];
+      // 初始化收派套餐
+      this.initAllReceiveList();
+    }
+
+    // 改变渠道公司
+    changeCompany(value: any) {
+      console.log('changeCompany:', value);
+      this.initAgencyInfo();
+      // 获取渠道分销合同
+      if (value) this.getOneAgentTeamContNo('contNo', value);
+    }
+
     // 修改合同类型
     changeContType(value: any) {
-      if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
-        // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
-        this.postData.contType = this.tempContType ? this.tempContType : null;
-        this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
-          confirmButtonText: '确定'
-        });
-        return;
-      } else {
-        // 不是分销成交
-        // 初始化收派套餐
-        this.initAllReceiveList();
-        // 选择房号后构建表格数据
-        // this.getUploadDocumentList(value);
-        // 记录临时值
-        this.tempContType = value;
-      }
-      console.log(this.tempContType);
+      // if (value === 'DistriDeal' && !this.baseInfoInDeal.hasRecord && this.postData.roomId) {
+      //   // 如果查询不到此房号的已成交报备信息，用户又选择分销成交
+      //   this.postData.contType = this.tempContType ? this.tempContType : null;
+      //   this.$alert('系统查询不到此房号的已成交报备信息，请先维护报备信息！', '提示', {
+      //     confirmButtonText: '确定'
+      //   });
+      //   return;
+      // } else {
+      //   // 不是分销成交
+      //   // 初始化收派套餐
+      //   this.initAllReceiveList();
+      //   // 选择房号后构建表格数据
+      //   // this.getUploadDocumentList(value);
+      //   // 记录临时值
+      //   this.tempContType = value;
+      // }
+      // console.log(this.tempContType);
+      console.log(value);
+      // 初始化收派套餐
+      this.initAllReceiveList();
       // 初始化收派金额
       // this.initAllReceiveList();
       // 选择房号后构建表格数据
@@ -2834,7 +3028,7 @@
     // 预览分销协议
     previewContNo(contractNo: any) {
       if (!contractNo) {
-        this.$message.warning('请先选择需要预览的分销协议');
+        this.$message.warning('请先选择需要预览的合同');
       } else {
         // 预览
         let router = this.$router.resolve({
@@ -3287,15 +3481,24 @@
     // 选择收派套餐
     selectPackage(scope: any) {
       // console.log('选择收派套餐', scope);
+      // 价格排除0
+      if (['', null, undefined].includes(this.postData.signPrice) && ['', null, undefined].includes(this.postData.subscribePrice)) {
+        this.$message.warning('认购价格、签约价格不能都为空！');
+        return;
+      }
+      if (!this.packageIdsList.length && !this.firstAgencyIdsList.length) {
+        this.$message.warning('一手代理合同、渠道分销合同不能都为空！');
+        return;
+      }
       this.currentReceiveIndex = scope.$index;
       let params: any = {
-        termId: this.baseInfoByTerm.termId, // 项目周期id
+        cycleId: this.baseInfoByTerm.termId, // 项目周期id
         contType: this.postData.contType, // 合同类型
-        hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
-        contNo: this.postData.contNo, // 分销协议编号
-        distributionIds: this.packageIdsList, // 分销成交 --- 选择分销协议后的ids
-        feeType: scope.row.type, // 费用类型
-        partyACustomerId: scope.row.partyACustomer, // 甲方或客户
+        // hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
+        // contNo: this.postData.contNo, // 分销协议编号
+        packageMxIds: [...this.packageIdsList, ...this.firstAgencyIdsList], // 分销成交 --- 选择分销协议后的ids
+        costTypeEnum: scope.row.type, // 费用类型
+        partyAId: scope.row.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
         subdivide: this.postData.refineModel, // 细分业务模式
       };
@@ -3314,10 +3517,6 @@
         detail: dataObj,
         signPrice: this.postData.signPrice ? this.postData.signPrice : null,
         subscribePrice: this.postData.subscribePrice ? this.postData.subscribePrice : null
-      }
-      if (['', null, undefined].includes(postData.signPrice) && ['', null, undefined].includes(postData.subscribePrice)) {
-        this.$message.warning('认购价格、签约价格不能都为空！');
-        return;
       }
       let info: any = await post_pageData_calculateReceiveAmount(postData);
       // console.log(info);
@@ -3784,7 +3983,8 @@
             agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
             broker: this.postData.brokerName,
-            channelLevel: this.postData.channelLevel
+            companyKind: this.postData.companyKind,
+            // channelLevel: this.postData.channelLevel
           }
         )
       } else {
@@ -3833,7 +4033,8 @@
             agencyName: this.postData.agencyName,
             brokerId: this.postData.brokerId,
             broker: this.postData.brokerName,
-            channelLevel: this.postData.channelLevel
+            companyKind: this.postData.companyKind,
+            // channelLevel: this.postData.channelLevel
           }
         )
       } else {
@@ -3918,7 +4119,8 @@
               agencyName: this.postData.agencyName,
               brokerId: this.postData.brokerId,
               broker: this.postData.brokerName,
-              channelLevel: this.postData.channelLevel,
+              companyKind: this.postData.companyKind,
+              // channelLevel: this.postData.channelLevel,
               dealId: this.id
             }
           )
@@ -3929,7 +4131,8 @@
               agencyName: this.postData.agencyName,
               brokerId: this.postData.brokerId,
               broker: this.postData.brokerName,
-              channelLevel: this.postData.channelLevel
+              companyKind: this.postData.companyKind,
+              // channelLevel: this.postData.channelLevel
             }
           )
         }
@@ -4210,6 +4413,16 @@
     box-sizing: border-box;
     height: 40px;
     line-height: 40px;
+  }
+
+  .agency-wrapper {
+    width: 100%;
+    display: flex;
+
+    div {
+      flex: 1;
+      text-align: center;
+    }
   }
 
   .btn {

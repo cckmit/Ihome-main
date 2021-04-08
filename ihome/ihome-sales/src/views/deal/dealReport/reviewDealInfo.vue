@@ -46,6 +46,21 @@
             <el-form-item label="一手代理公司">{{postData.oneAgentTeam}}</el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="一手代理合同">
+              <div class="contNo-wrapper">
+                <div class="no cycle-name-wrapper" :title="postData.firstContTitle">{{postData.firstContTitle}}</div>
+                <div v-if="postData.firstContNo">
+                  <el-link
+                    class="margin-left-10"
+                    type="primary"
+                    @click.native.prevent="viewContNoDetail(postData.firstContNo)"
+                  >查看
+                  </el-link>
+                </div>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="物业类型">
               {{$root.dictAllName(postData.house.propertyType, 'Property')}}
             </el-form-item>
@@ -67,9 +82,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="分销协议编号">
+            <el-form-item label="渠道公司">
+              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].agencyName : ''}}
+              <span style="color: red">[{{$root.dictAllName(postData.companyKind, 'CompanyKind')}}]</span>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="经纪人" v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'">
+              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].broker : ''}}
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="渠道分销合同">
               <div class="contNo-wrapper">
-                <div class="no cycle-name-wrapper" :title="postData.contNo">{{postData.contNo}}</div>
+                <div class="no cycle-name-wrapper" :title="postData.contNo">{{postData.contTitle}}</div>
                 <div v-if="postData.contNo">
                   <el-link
                     class="margin-left-10"
@@ -84,19 +110,6 @@
           <el-col :span="8">
             <el-form-item label="是否垫佣">
               {{$root.dictAllName(postData.isMat, 'PadCommission')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8" v-if="postData.recordStr">
-            <el-form-item label="报备信息">{{postData.recordStr}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道公司">
-              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].agencyName : ''}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经纪人">
-              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].broker : ''}}
             </el-form-item>
           </el-col>
           <el-col :span="8">

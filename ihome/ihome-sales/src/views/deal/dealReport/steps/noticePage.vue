@@ -593,7 +593,7 @@
             list.forEach((item: any) => {
               tempList.push(
                 {
-                  attachmentSuffix: item.response && item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  attachmentSuffix: item.fileName, // 附件后缀
                   fileNo: item.fileId, // 附件编号
                   type: 'NoticeAttachment' // 告知书附件
                 }
@@ -621,7 +621,7 @@
             list.forEach((item: any) => {
               tempList.push(
                 {
-                  attachmentSuffix: item.response && item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  attachmentSuffix: item.fileName, // 附件后缀
                   fileNo: item.fileId, // 附件编号
                   type: 'Subscription' // 告知书附件
                 }
@@ -717,7 +717,7 @@
             this.tempSubscriptionList.forEach((item: any) => {
               list.push(
                 {
-                  attachmentSuffix: item.response && item.response.length ? item.response[0].generateFileType : '', // 附件后缀
+                  attachmentSuffix: item.fileName, // 附件后缀
                   fileNo: item.fileId, // 附件编号
                   type: 'Subscription' // 告知书附件
                 }
