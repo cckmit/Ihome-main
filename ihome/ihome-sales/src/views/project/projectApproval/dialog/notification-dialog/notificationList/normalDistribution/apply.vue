@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 11:57:53
+ * @LastEditTime: 2021-04-08 20:59:22
 -->
 <template>
   <ih-page class="text-left">
@@ -483,13 +483,20 @@
           </div>
         </div>
         <br />
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="合同电子版">
-              <el-button
-                type="primary"
-                @click="viewElectronic"
-              >预览电子版</el-button>
+        <el-row v-if="agencyContrictId">
+          <el-col :span="24">
+            <el-form-item
+              label="合同电子版"
+              required
+            >
+              <IhUpload
+                v-model="fileList"
+                size="100px"
+                :upload-show="!!fileList.length"
+                :limit="fileList.length"
+                :editPermi="false"
+                :removePermi="false"
+              ></IhUpload>
             </el-form-item>
           </el-col>
         </el-row>
@@ -520,6 +527,7 @@ import {
   post_distributContract_getCheckCollectByCondition,
   post_distributContract_addStandChannel,
   get_distributContract_getDistri__agencyContrictId,
+  post_distributContract_updateStandChannel,
 } from "@/api/project/index";
 import { get_company_get__id, post_dict_getAllByType } from "@/api/system";
 import { Form as ElForm } from "element-ui";
@@ -580,6 +588,7 @@ export default class NormalSalesApply extends Vue {
   setMealDialogData: any = {};
   finishLoading: any = false;
   unContractDisabled: any = true;
+  fileList: any = [];
   rules: any = {
     contractTitle: [
       {
@@ -708,13 +717,20 @@ export default class NormalSalesApply extends Vue {
   }
 
   async getInfo() {
+    const res: any = sessionStorage.getItem("addContract");
     if (this.agencyContrictId) {
-      const res = await get_distributContract_getDistri__agencyContrictId({
+      const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
       });
-      this.info = { ...res };
+      this.info = { ...data, ...JSON.parse(res), timeList: [] };
+      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+      this.fileList = data.attachTermItemVOS.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.fileName,
+        type: v.type,
+        exAuto: v.exAuto,
+      }));
     } else {
-      const res: any = sessionStorage.getItem("addContract");
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
         const item = await get_company_get__id({
@@ -938,15 +954,27 @@ export default class NormalSalesApply extends Vue {
       delete obj.timeList;
       delete obj.preferentialPartyAId;
       console.log(obj);
-      try {
-        this.finishLoading = true;
-        await post_distributContract_addStandChannel(obj);
-        this.$message.success("模板添加成功");
-        this.finishLoading = false;
-        this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
-      } catch (err) {
-        this.finishLoading = false;
-        console.log(err);
+      if (!this.agencyContrictId) {
+        try {
+          this.finishLoading = true;
+          await post_distributContract_addStandChannel(obj);
+          this.$message.success("模板添加成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
+      } else {
+        try {
+          await post_distributContract_updateStandChannel(obj);
+          this.$message.success("模板编辑成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
       }
     } else {
       setTimeout(() => {

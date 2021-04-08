@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 20:03:22
+ * @LastEditTime: 2021-04-08 20:27:04
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -169,6 +169,7 @@
                 v-model="fileList"
                 size="100px"
                 @newFileList="newFileList"
+                accept=".pdf, .doc, .docx, .docm"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -196,7 +197,8 @@
 import { Component, Vue, Watch } from "vue-property-decorator";
 import { get_company_get__id } from "@/api/system";
 import {
-  post_distributContract_addNoStandKindSaleConfirm,
+  post_distributContract_addNoChannel,
+  post_distributContract_updateNoChannel,
   get_distributContract_getDistri__agencyContrictId,
   post_distributContract_getCheckCollectByCondition,
 } from "@/api/project";
@@ -260,6 +262,7 @@ export default class NotSalesApply extends Vue {
     if (val === "Yes") {
       this.isShow = true;
     } else {
+      this.info.contractMxVOList = [];
       this.isShow = false;
     }
   }
@@ -380,15 +383,28 @@ export default class NotSalesApply extends Vue {
         this.$message.warning("请上传合同电子版附件");
         return false;
       }
-      try {
-        this.finishLoading = true;
-        await post_distributContract_addNoStandKindSaleConfirm(obj);
-        this.$message.success("模板添加成功");
-        this.finishLoading = false;
-        this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
-      } catch (err) {
-        this.finishLoading = false;
-        console.log(err);
+      if (!this.agencyContrictId) {
+        try {
+          this.finishLoading = true;
+          await post_distributContract_addNoChannel(obj);
+          this.$message.success("模板添加成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
+      } else {
+        try {
+          this.finishLoading = true;
+          await post_distributContract_updateNoChannel(obj);
+          this.$message.success("模板编辑成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
       }
     } else {
       setTimeout(() => {
