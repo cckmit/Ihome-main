@@ -3,7 +3,7 @@
     <template #info>
       <p class="ih-info-title">标准渠道分销合同详情</p>
       <el-form
-        label-width="90px"
+        label-width="95px"
         class="padding-left-20"
       >
         <el-row>
@@ -239,7 +239,10 @@
         </div>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="归档状态">
+            <el-form-item
+              label="归档状态"
+              :required="$route.name === 'NormalDistributionDuplicate'"
+            >
               <template v-if="$route.name === 'NormalDistributionDuplicate'">
                 <el-select v-model="archiveStatus">
                   <el-option
@@ -277,25 +280,30 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="盖章版归档">
+            <el-form-item
+              label="盖章版归档"
+              :required="$route.name === 'NormalDistributionDuplicate'"
+            >
               <IhUpload
                 v-model="fileList"
                 size="100px"
+                :limit="$route.name === 'NormalDistributionDuplicate' ? 99 : fileList.length"
                 class="upload"
               ></IhUpload>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
+      <!-- 盖章版归档 -->
       <div
         class="text-center"
         v-if="$route.name === 'NormalDistributionDuplicate'"
       >
         <el-button
           type="primary"
-          @click="submit()"
+          @click="submitDulicate()"
         >提交</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
       </div>
     </template>
   </IhPage>
@@ -303,7 +311,10 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_distribution_detail__id } from "@/api/contract/index";
+import {
+  get_distribution_detail__id,
+  post_distribution_duplicate,
+} from "@/api/contract/index";
 
 @Component({})
 export default class DistributionInfo extends Vue {
@@ -313,8 +324,28 @@ export default class DistributionInfo extends Vue {
   private archiveStatus: any = null;
   private archiveNo: any = null;
 
-  private submit() {
-    //
+  private async submitDulicate() {
+    if (!this.fileList.length || !this.archiveStatus) {
+      this.$message.warning("附件或归档状态不能为空");
+      return;
+    }
+    try {
+      await post_distribution_duplicate({
+        annexList: this.fileList.map((i: any) => ({
+          attachmentSuffix: i.fileName,
+          fileNo: i.fileId,
+          type: "ArchiveAnnex",
+        })),
+        archiveStatus: this.archiveStatus,
+        distributionId: this.$route.query.id,
+      });
+      this.$message.success("归档成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
   private preview() {
     window.open(

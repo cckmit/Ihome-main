@@ -1,10 +1,10 @@
 <!--
- * @Description: 非标渠道分销合同申领
+ * @Description: 非标渠道分销合同详情
  * @version: 
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 18:47:06
+ * @LastEditTime: 2021-04-08 10:45:38
 -->
 <template>
   <IhPage class="text-left">
@@ -108,8 +108,11 @@
         </div>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="归档状态">
-              <!-- <template v-if="$route.name === 'NormalDistributionDuplicate'">
+            <el-form-item
+              label="归档状态"
+              :required="$route.name === 'NotDistributionDuplicate'"
+            >
+              <template v-if="$route.name === 'NotDistributionDuplicate'">
                 <el-select v-model="archiveStatus">
                   <el-option
                     v-for="(item, i) in $root.dictAllList('ArchiveStatus')"
@@ -118,8 +121,8 @@
                     :value="item.code"
                   ></el-option>
                 </el-select>
-              </template> -->
-              <template>{{$root.dictAllName(form.archiveStatus, 'ArchiveStatus')}}</template>
+              </template>
+              <template v-else>{{$root.dictAllName(form.archiveStatus, 'ArchiveStatus')}}</template>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -148,37 +151,78 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="盖章版归档">
+            <el-form-item
+              label="盖章版归档"
+              :required="$route.name === 'NotDistributionDuplicate'"
+            >
               <IhUpload
                 v-model="fileList"
-                :limit="fileList.length"
                 size="100px"
+                :limit="$route.name === 'NotDistributionDuplicate' ? 99 : fileList.length"
                 class="upload"
               ></IhUpload>
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
+      <!-- 盖章版归档 -->
+      <div
+        class="text-center"
+        v-if="$route.name === 'NotDistributionDuplicate'"
+      >
+        <el-button
+          type="primary"
+          @click="submitDulicate()"
+        >提交</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_distribution_detail__id } from "@/api/contract/index";
+import {
+  get_distribution_detail__id,
+  post_distribution_duplicate,
+} from "@/api/contract/index";
 
 @Component({})
 export default class NotChannelInfo extends Vue {
   private form: any = {};
   private fileList: any[] = [];
   private electronicFile: any = [];
+  private archiveStatus: any = null;
 
+  private async submitDulicate() {
+    if (!this.fileList.length || !this.archiveStatus) {
+      this.$message.warning("附件或归档状态不能为空");
+      return;
+    }
+    try {
+      await post_distribution_duplicate({
+        annexList: this.fileList.map((i: any) => ({
+          attachmentSuffix: i.fileName,
+          fileNo: i.fileId,
+          type: "ArchiveAnnex",
+        })),
+        archiveStatus: this.archiveStatus,
+        distributionId: this.$route.query.id,
+      });
+      this.$message.success("归档成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) {
       let res = await get_distribution_detail__id({ id: id });
       this.form = { ...res };
-      // this.archiveStatus = res.archiveStatus;
+      this.archiveStatus = res.archiveStatus;
       // this.archiveNo = res.archiveNo;
       this.electronicFile = res.annexList
         .filter((i: any) => i.type === "ChannelContractElectronicAnnex")

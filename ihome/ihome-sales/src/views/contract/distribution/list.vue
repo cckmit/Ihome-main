@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 19:25:31
+ * @LastEditTime: 2021-04-08 11:10:06
 -->
 <template>
   <IhPage label-width="100px">
@@ -403,8 +403,8 @@
                   v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'duplicate')"
-                  :class="{ 'ih-data-disabled': !duplicateChange(row) }"
+                  @click.native.prevent="handleGoDuplicate(row)"
+                  :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
                   v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
                 >盖章版归档</el-dropdown-item>
                 <el-dropdown-item
@@ -497,15 +497,10 @@ export default class DistributionList extends Vue {
 
   private originalChange(row: any) {
     const isDis = row.distributionState === "Distributed";
-    // const ROffice = this.$roleTool.ROffice();
-    // return isDis && ROffice;
     return isDis;
   }
   private duplicateChange(row: any) {
     const isDis = row.distributionState === "Distributed";
-    // const isStatus = row.archiveStatus === "ScansAreNotArchived";
-    // const RPlatformClerk = this.$roleTool.RPlatformClerk();
-    // return isDis && RPlatformClerk;
     return isDis;
   }
   private contractChange() {
@@ -806,6 +801,38 @@ export default class DistributionList extends Vue {
       },
     });
   }
+  /**
+   * @description: 跳转不同的盖章版归档
+   * @param {*} row
+   */
+  handleGoDuplicate(row: any) {
+    switch (row.contractKind) {
+      case "StandChannel":
+        // 标准渠道分销合同
+        this.$router.push(
+          `/distribution/normalDistributionDuplicate?id=${row.id}`
+        );
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        this.$router.push(
+          `/distribution/notDistributionDuplicate?id=${row.id}`
+        );
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        this.$router.push(`/distribution/notSalesDuplicate?id=${row.id}`);
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        this.$router.push(`/distribution/notChannelDuplicate?id=${row.id}`);
+        break;
+    }
+  }
+  /**
+   * @description: 跳转不同的详情
+   * @param {*} row
+   */
   handleGoDetail(row: any) {
     switch (row.contractKind) {
       case "StandKindSaleConfirm":
