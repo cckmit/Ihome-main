@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 15:19:22
+ * @LastEditTime: 2021-04-08 16:12:48
 -->
 <template>
   <el-dialog
@@ -146,7 +146,10 @@
     ></IhImgViews>
     <template #footer>
       <el-button @click="cancel()">取消</el-button>
-      <el-button type="primary">下一步</el-button>
+      <el-button
+        type="primary"
+        @click="finish()"
+      >下一步</el-button>
     </template>
   </el-dialog>
 </template>
@@ -179,9 +182,6 @@ export default class ApplyContract extends Vue {
   cancel() {
     this.$emit("cancel", false);
   }
-  handleOption(row: any) {
-    this.$emit("finish", row);
-  }
   search() {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
@@ -192,6 +192,22 @@ export default class ApplyContract extends Vue {
       termId: null,
       contractKind: null,
     });
+  }
+  finish() {
+    const data = this.selection[0];
+    if (this.selection.length) {
+      switch (data.contractKind) {
+        case "StandChannel":
+          // 标准渠道分销合同
+          this.$router.push(
+            `/distribution/normalDistributionApply?id=${data.agencyContrictId}`
+          );
+          break;
+      }
+      this.cancel();
+    } else {
+      this.$message.warning("请先选择一条数据");
+    }
   }
   preview(row: any) {
     this.srcList = row.attachItemVOS.map(
