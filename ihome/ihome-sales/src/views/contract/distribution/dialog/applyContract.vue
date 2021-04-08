@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 20:19:26
+ * @LastEditTime: 2021-04-08 15:19:22
 -->
 <template>
   <el-dialog
@@ -73,12 +73,12 @@
     </div>
     <br />
     <el-table
-      class="ih-table"
+      class="ih-table width--100"
       ref="table"
       :data="resPageInfo.list"
       @selection-change="handleSelectionChange"
       @select="handleSelect"
-      max-height="45vh"
+      max-height="320"
     >
       <el-table-column
         fixed
@@ -94,7 +94,6 @@
       <el-table-column
         label="合同主标题"
         prop="contractTitle"
-        min-width="150"
       ></el-table-column>
       <el-table-column
         label="甲方公司"
@@ -107,17 +106,23 @@
       </el-table-column>
       <el-table-column label="渠道类型">
         <template v-slot="{ row }">
-          {{$root.dictAllName(row.channelEnum, 'Channel')}}
+          {{$root.dictAllName(row.channelEnum, 'ChannelCustomer')}}
         </template>
       </el-table-column>
       <el-table-column
         label="操作"
         fixed="right"
-        width="80"
+        width="100"
       >
-        <template v-slot="{ }">
-          <el-link type="primary">查看</el-link>
-          <el-link type="success">预览</el-link>
+        <template v-slot="{ row }">
+          <el-link
+            type="primary"
+            class="margin-right-10"
+          >查看</el-link>
+          <el-link
+            type="success"
+            @click="preview(row)"
+          >预览</el-link>
         </template>
       </el-table-column>
     </el-table>
@@ -133,6 +138,12 @@
         :total="resPageInfo.total"
       ></el-pagination>
     </div>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
     <template #footer>
       <el-button @click="cancel()">取消</el-button>
       <el-button type="primary">下一步</el-button>
@@ -161,6 +172,9 @@ export default class ApplyContract extends Vue {
   };
   private dialogVisible = true;
   private selection: any[] = [];
+  private isShowImg = false;
+  private srcList: any = [];
+  private srcData: any = [];
 
   cancel() {
     this.$emit("cancel", false);
@@ -178,6 +192,19 @@ export default class ApplyContract extends Vue {
       termId: null,
       contractKind: null,
     });
+  }
+  preview(row: any) {
+    this.srcList = row.attachItemVOS.map(
+      (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileId}`
+    );
+    this.srcData = row.attachItemVOS.map((v: any) => ({
+      fileName: v.fileName,
+      preFileName: (this.$root as any).dictAllName(
+        row.contractKind,
+        "ContractKind"
+      ),
+    }));
+    this.isShowImg = true;
   }
   private handleSelectionChange(val: any) {
     this.selection = val;

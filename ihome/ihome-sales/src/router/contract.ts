@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 11:04:54
+ * @LastEditTime: 2021-04-08 11:20:23
  */
 import { RouteConfig } from 'vue-router'
 
@@ -128,6 +128,12 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '非标渠道分销合同盖章版归档', icon: 'form' }
       },
       {
+        path: 'notDistributionOriginal',
+        name: 'NotDistributionOriginal',
+        component: () => import('@/views/contract/distribution/notDistribution/info.vue'),
+        meta: { title: '非标渠道分销合同原件归档', icon: 'form' }
+      },
+      {
         path: 'notSalesApply',
         name: 'NotSalesApply',
         component: () => import('@/views/contract/distribution/notSales/apply.vue'),
@@ -146,6 +152,12 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '非标联动销售确认书盖章版归档', icon: 'form' }
       },
       {
+        path: 'notSalesOriginal',
+        name: 'NotSalesOriginal',
+        component: () => import('@/views/contract/distribution/notSales/info.vue'),
+        meta: { title: '非标联动销售确认书原件归档', icon: 'form' }
+      },
+      {
         path: 'notChannelApply',
         name: 'NotChannelApply',
         component: () => import('@/views/contract/distribution/notChannel/apply.vue'),
@@ -162,6 +174,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'NotChannelDuplicate',
         component: () => import('@/views/contract/distribution/notChannel/info.vue'),
         meta: { title: '非渠道合同盖章版归档', icon: 'form' }
+      },
+      {
+        path: 'notChannelOriginal',
+        name: 'NotChannelOriginal',
+        component: () => import('@/views/contract/distribution/notChannel/info.vue'),
+        meta: { title: '非渠道合同原件归档', icon: 'form' }
       },
     ]
   },

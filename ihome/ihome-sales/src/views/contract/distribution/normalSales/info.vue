@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 19:16:21
+ * @LastEditTime: 2021-04-08 11:41:53
 -->
 <template>
   <IhPage class="text-left">
@@ -175,7 +175,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="归档编号">{{form.archiveNo}}</el-form-item>
+            <el-form-item
+              label="归档编号"
+              :required="$route.name === 'NormalSalesOriginal'"
+            >
+              <template v-if="$route.name === 'NormalSalesOriginal'">
+                <el-input v-model="archiveNo"></el-input>
+              </template>
+              <template v-else>{{form.archiveNo}}</template>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -190,27 +198,56 @@
           </el-col>
         </el-row>
       </el-form>
+      <!-- 原件归档 -->
+      <div
+        class="text-center"
+        v-if="$route.name === 'NormalSalesOriginal'"
+      >
+        <el-button
+          type="primary"
+          @click="submitOriginal()"
+        >提交</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_distribution_detail__id } from "@/api/contract/index";
+import {
+  get_distribution_detail__id,
+  post_distribution_original_archive,
+} from "@/api/contract/index";
 
 @Component({})
 export default class SalesApply extends Vue {
   private form: any = {};
   private fileList: any[] = [];
   private electronicFile: any = [];
+  private archiveNo: any = null;
 
+  private async submitOriginal() {
+    if (!this.archiveNo) {
+      this.$message.warning("归档编号不能为空");
+      return;
+    }
+    await post_distribution_original_archive({
+      distributionId: this.form.id,
+      archiveNo: this.archiveNo,
+    });
+    this.$message.success("原件归档成功");
+    this.$goto({
+      path: "/distribution/list",
+    });
+  }
   private async getInfo() {
     let id = this.$route.query.id;
     if (id) {
       let res = await get_distribution_detail__id({ id: id });
       this.form = { ...res };
       // this.archiveStatus = res.archiveStatus;
-      // this.archiveNo = res.archiveNo;
+      this.archiveNo = res.archiveNo;
       this.electronicFile = res.annexList
         .filter((i: any) => i.type === "ChannelContractElectronicAnnex")
         .map((i: any) => ({
