@@ -10,41 +10,33 @@
   <IhPage>
     <div class="upload-header">
       <div class="title-wrapper">
-        <div class="deal-code">成交报告编号：CJ-JHGZ000000000036</div>
-        <div class="deal-cycle">【飓风手动阀打发打发】</div>
+        <div class="deal-code">成交报告编号：{{infoFrom.dealCode}}</div>
+        <div class="deal-cycle">【{{infoFrom.dealOrg}}】</div>
       </div>
       <div class="form-wrapper">
         <div class="text-left">
           <el-form @submit.native.prevent label-width="90px">
-            <el-form-item label="录入人">
-              郑燕青
-            </el-form-item>
-            <el-form-item label="录入时间">
-              2021-03-09 14:54:29
-            </el-form-item>
+            <el-form-item label="录入人">{{infoFrom.entryPerson}}</el-form-item>
+            <el-form-item label="录入时间">{{infoFrom.entryDate}}</el-form-item>
           </el-form>
         </div>
         <div class="text-left">
           <el-form @submit.native.prevent label-width="100px">
-            <el-form-item label="业绩分配人">
-              郑燕青
-            </el-form-item>
-            <el-form-item label="业绩分配时间">
-              2021-03-09 14:54:29
-            </el-form-item>
+            <el-form-item label="业绩分配人">{{infoFrom.alloter}}</el-form-item>
+            <el-form-item label="业绩分配时间">{{infoFrom.allotDate}}</el-form-item>
           </el-form>
         </div>
         <div class="text-right">
           <div>状态</div>
-          <div class="text-size">已审核</div>
+          <div class="text-size">{{$root.dictAllName(infoForm.status, 'DealStatus')}}</div>
         </div>
         <div class="text-right">
           <div>计算方式</div>
-          <div class="text-size">自动</div>
+          <div class="text-size">{{$root.dictAllName(infoForm.calculation, 'DealCalculateWay')}}</div>
         </div>
         <div class="text-right">
           <div>数据标志</div>
-          <div class="text-size">明源数据</div>
+          <div class="text-size">{{$root.dictAllName(infoForm.dataSign, 'DealDataFlag')}}</div>
         </div>
       </div>
     </div>
@@ -59,8 +51,9 @@
             <IhUpload
               @newFileList="getNewFile"
               size="100px"
-              :limit="100"
+              :limit="scope.row.code === 'ContractInfo' ? scope.row.defaultFileList.length : 100"
               :file-size="10"
+              :editPermi="false"
               v-model="scope.row.defaultFileList"
               :file-type="scope.row.code"
             ></IhUpload>
@@ -70,13 +63,16 @@
     </div>
     <div class="btn-fixed">
       <el-button @click="handleCancel">取消</el-button>
-      <el-button type="primary">保存</el-button>
+      <el-button type="primary" @click="handleSubmit">保存</el-button>
     </div>
   </IhPage>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import {get_deal_get__id} from "@/api/deal";
+import {
+  get_deal_get__id,
+  post_deal_addDocs
+} from "@/api/deal";
 
 @Component({
   components: {},
@@ -84,6 +80,7 @@ import {get_deal_get__id} from "@/api/deal";
 export default class UploadAttachment extends Vue {
   uploadList: any = [];
   dealId: any = null;
+  infoFrom: any = {}
 
   async created() {
     console.log(123);
@@ -130,6 +127,43 @@ export default class UploadAttachment extends Vue {
 
   // 取消
   handleCancel() {
+    this.$goto({
+      path: "/dealReport/list",
+    });
+  }
+
+  // 提交
+  async handleSubmit() {
+    console.log(this.uploadList);
+    let tempList: any = [];
+    if (this.uploadList && this.uploadList.length) {
+      this.uploadList.forEach((list: any) => {
+        if (list.fileList && list.fileList.length) {
+          list.fileList.forEach((item: any) => {
+            if (!item.exAuto) {
+              tempList.push(
+                {
+                  fileId: item.fileId,
+                  fileName: item.fileName,
+                  fileType: list.code
+                }
+              )
+            }
+          });
+        }
+      });
+    }
+    if (!tempList.length) {
+      this.$message.warning('没有新增附件，无需提交');
+      return;
+    }
+    let postData = {
+      dealId: this.dealId,
+      documentAddVOS: tempList
+    }
+    let info = await post_deal_addDocs(postData);
+    console.log(info);
+    this.$message.success("修改成功");
     this.$goto({
       path: "/dealReport/list",
     });
