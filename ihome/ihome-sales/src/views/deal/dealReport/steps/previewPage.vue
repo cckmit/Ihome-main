@@ -903,8 +903,8 @@
               if (DL.type === "Subscription") {
                 tempList.push(
                   {
-                    fileId: DL.fileId,
-                    fileName: DL.fileName,
+                    fileId: DL.fileNo,
+                    fileName: DL.attachmentSuffix,
                     fileType: 'SubscribeBook' // 认购书
                   }
                 )
@@ -912,8 +912,8 @@
                 // 优惠告知书
                 tempList.push(
                   {
-                    fileId: DL.fileId,
-                    fileName: DL.fileName,
+                    fileId: DL.fileNo,
+                    fileName: DL.attachmentSuffix,
                     fileType: 'Notice' // 优惠告知书
                   }
                 )
