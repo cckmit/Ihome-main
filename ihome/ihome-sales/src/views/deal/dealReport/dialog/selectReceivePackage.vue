@@ -97,12 +97,8 @@
   import {Component, Vue, Prop} from "vue-property-decorator";
   import PaginationMixin from "@/mixins/pagination";
   import {
-    // post_collectandsend_getCollectadnsendMxByIds,
-    post_term_getCollectPackageByDeal
-  } from "@/api/project"; // 根据可选IDS获取收派套餐
-  import {
-    post_pageData_initSelectablePackage
-  } from "@/api/deal"; // 获取收派套餐
+    post_collectandsend_getCollectadnsendConditionMxByIds
+  } from "@/api/project";
 
   @Component({
     mixins: [PaginationMixin]
@@ -124,16 +120,8 @@
     async created() {
       console.log('data', this.data);
       // 判断套餐类型
-      this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.feeType, 'FeeType')}收派套餐标准`;
+      this.dialogTitle = `选择${(this as any).$root.dictAllName(this.data.costTypeEnum, 'FeeType')}收派套餐标准`;
       await this.getListMixin();
-      // if (this.data.hasRecord) {
-      //   // 分销模式
-      //   this.queryPageParameters.packageMxIds = this.data.idList;
-      //   await this.getListMixin();
-      // } else {
-      //   // 非分销模式
-      //   await this.getPackageIds(this.data.postObj);
-      // }
     }
 
     private handleSelectionChange(val: any) {
@@ -151,30 +139,18 @@
       (this.$refs.table as any).clearSelection();
     }
 
-    async getPackageIds(postData: any = {}) {
-      const list: any = await post_term_getCollectPackageByDeal(postData);
-      // console.log(list);
-      let idsList: any = [];
-      if (list && list.length) {
-        list.forEach((item: any) => {
-          idsList.push(item.packageMxId);
-        })
-      }
-      this.queryPageParameters.packageMxIds = idsList;
-      await this.getListMixin();
-    }
-
     async getListMixin() {
       let self = this;
       self.queryPageParameters = {
         ...self.queryPageParameters,
         ...self.data
       }
-      let infoList: any = await post_pageData_initSelectablePackage(self.queryPageParameters);
+      let infoList: any = await post_collectandsend_getCollectadnsendConditionMxByIds(self.queryPageParameters);
+      console.log(infoList);
       if (infoList && infoList.list && infoList.list.length) {
         infoList.list.forEach((item: any) => {
           // 类型
-          item.typeName = (self as any).$root.dictAllName(self.data.feeType, 'FeeType');
+          item.typeName = (self as any).$root.dictAllName(self.data.costTypeEnum, 'FeeType');
         })
       }
       self.resPageInfo = infoList;

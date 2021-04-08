@@ -47,7 +47,14 @@
             <el-form-item label="一手代理公司">{{infoForm.oneAgentTeam}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="一手代理合同">{{infoForm.oneAgentTeam}}</el-form-item>
+            <el-form-item label="一手代理合同">
+              <div class="contNo-wrapper">
+                <div class="contNo">{{infoForm.firstContTitle}}</div>
+                <div v-if="infoForm.firstContNo">
+                  <el-link type="primary" @click.native.prevent="previewContNo(infoForm.firstContNo)">详情</el-link>
+                </div>
+              </div>
+            </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="成交阶段">
@@ -73,10 +80,10 @@
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
             <el-form-item label="渠道公司">
               {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
-              <span style="color: red">[外部公司]</span>
+              <span style="color: red">[{{$root.dictAllName(infoForm.companyKind, 'CompanyKind')}}]</span>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
+          <el-col :span="8" v-if="infoForm.contType === 'DistriDeal' && infoForm.companyKind === 'ChannelCompany'">
             <el-form-item label="经纪人">
               {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
             </el-form-item>
@@ -84,9 +91,9 @@
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
             <el-form-item label="渠道分销合同">
               <div class="contNo-wrapper">
-                <div class="contNo">{{infoForm.contNo}}</div>
+                <div class="contNo">{{infoForm.contTitle}}</div>
                 <div v-if="infoForm.contNo">
-                  <el-link type="primary">详情</el-link>
+                  <el-link type="primary" @click.native.prevent="previewContNo(infoForm.contNo)">详情</el-link>
                 </div>
               </div>
             </el-form-item>
@@ -813,6 +820,22 @@
       }
     }
 
+    // 预览分销协议
+    previewContNo(contractNo: any) {
+      if (!contractNo) {
+        this.$message.warning('请先选择需要预览的合同');
+      } else {
+        // 预览
+        let router = this.$router.resolve({
+          path: `/distribution/info`,
+          query: {
+            contractNo: contractNo
+          },
+        });
+        window.open(router.href, "_blank");
+      }
+    }
+
     // 保存/提交功能
     async handleSubmit(type: any = '') {
       // console.log(type);
@@ -904,8 +927,8 @@
               if (DL.type === "Subscription") {
                 tempList.push(
                   {
-                    fileId: DL.fileId,
-                    fileName: DL.fileName,
+                    fileId: DL.fileNo,
+                    fileName: DL.attachmentSuffix,
                     fileType: 'SubscribeBook' // 认购书
                   }
                 )
@@ -913,8 +936,8 @@
                 // 优惠告知书
                 tempList.push(
                   {
-                    fileId: DL.fileId,
-                    fileName: DL.fileName,
+                    fileId: DL.fileNo,
+                    fileName: DL.attachmentSuffix,
                     fileType: 'Notice' // 优惠告知书
                   }
                 )
