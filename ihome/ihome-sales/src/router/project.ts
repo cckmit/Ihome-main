@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-06 14:21:36
+ * @LastEditTime: 2021-04-08 17:30:14
  */
 import { RouteConfig } from 'vue-router'
 
@@ -208,13 +208,13 @@ const projectRoutes: Array<RouteConfig> = [
         path: 'normalSalesInfo',
         name: 'normalSalesInfo',
         component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalSales/info.vue'),
-        meta: { title: '标准联动销售确认书(启动函)详情', icon: 'form' }
+        meta: { title: '标准联动销售确认书详情', icon: 'form' }
       },
       {
         path: 'notSalesInfo',
         name: 'notSalesInfo',
         component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notSales/info.vue'),
-        meta: { title: '非标联动销售确认书(启动函)详情', icon: 'form' }
+        meta: { title: '非标联动销售确认书详情', icon: 'form' }
       },
       {
         path: 'normalDistributionInfo',

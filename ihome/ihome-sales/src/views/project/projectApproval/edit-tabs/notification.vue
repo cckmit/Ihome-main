@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 11:21:13
+ * @LastEditTime: 2021-04-08 19:28:37
 -->
 <template>
   <div>
@@ -427,7 +427,7 @@ export default class Notification extends Vue {
         padCommissionEnum: this.info.padCommissionEnum,
         preferentialPartyAId: this.info.preferentialPartyAId,
         termId: this.$route.query.id,
-        agencyContrictId: "",
+        chargeEnum: this.info.chargeEnum,
       };
       window.sessionStorage.setItem("addContract", JSON.stringify(addObj));
     }
@@ -469,13 +469,93 @@ export default class Notification extends Vue {
   }
 
   editTemplate(data: any) {
-    this.dialogVisible = true;
-    console.log(data);
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/normalSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/notSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/normalDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/notDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/notChannelApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
   }
 
   viewTemplate(data: any) {
-    this.viewData.agencyContrictId = data.agencyContrictId;
-    this.viewDialogVisible = true;
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/normalSalesInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/notSalesInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/normalDistributionInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/notDistributionInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/notChannelInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
   }
 
   // 中介分销合同启用

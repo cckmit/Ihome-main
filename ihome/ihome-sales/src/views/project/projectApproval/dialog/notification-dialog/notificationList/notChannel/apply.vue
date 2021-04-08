@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 11:58:47
+ * @LastEditTime: 2021-04-08 19:30:58
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -296,7 +296,7 @@ export default class NotSalesApply extends Vue {
     this.info.attachTermItemVOS = data.map((v: any) => ({
       fileId: v.fileId,
       fileName: v.fileName,
-      type: "LinkProSale",
+      type: "IntermediaryDistribut",
     }));
   }
 

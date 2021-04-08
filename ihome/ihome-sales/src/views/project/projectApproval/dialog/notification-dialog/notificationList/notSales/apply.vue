@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:40:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-07 17:56:43
+ * @LastEditTime: 2021-04-08 19:00:47
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -74,6 +74,7 @@
                 v-model="fileList"
                 size="100px"
                 @newFileList="newFileList"
+                accept=".pdf, .doc, .docx, .docm"
               ></IhUpload>
             </el-form-item>
           </el-col>
@@ -84,8 +85,8 @@
           type="success"
           @click="finish()"
           :loading="finishLoading"
-        >提交</el-button>
-        <el-button @click="cancel">取消</el-button>
+        >提 交</el-button>
+        <el-button @click="cancel">取 消</el-button>
       </div>
     </template>
   </ih-page>
@@ -94,8 +95,9 @@
 import { Component, Vue } from "vue-property-decorator";
 import { get_company_get__id } from "@/api/system";
 import {
-  post_distributContract_addNoChannel,
+  post_distributContract_addNoStandKindSaleConfirm,
   get_distributContract_getDistri__agencyContrictId,
+  post_distributContract_updateNoStandKindSaleConfirm,
 } from "@/api/project";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
@@ -139,13 +141,20 @@ export default class NotSalesApply extends Vue {
   }
 
   async getInfo() {
+    const res: any = sessionStorage.getItem("addContract");
     if (this.agencyContrictId) {
-      const res = await get_distributContract_getDistri__agencyContrictId({
+      const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
       });
-      this.info = { ...res };
+      this.info = { ...data, ...JSON.parse(res), timeList: [] };
+      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+      this.fileList = data.attachTermItemVOS.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.fileName,
+        type: v.type,
+        exAuto: v.exAuto,
+      }));
     } else {
-      const res: any = sessionStorage.getItem("addContract");
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
         const item = await get_company_get__id({
@@ -186,15 +195,28 @@ export default class NotSalesApply extends Vue {
         this.$message.warning("请上传合同电子版附件");
         return false;
       }
-      try {
-        this.finishLoading = true;
-        await post_distributContract_addNoChannel(obj);
-        this.$message.success("模板添加成功");
-        this.finishLoading = false;
-        this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
-      } catch (err) {
-        this.finishLoading = false;
-        console.log(err);
+      if (!this.agencyContrictId) {
+        try {
+          this.finishLoading = true;
+          await post_distributContract_addNoStandKindSaleConfirm(obj);
+          this.$message.success("模板添加成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
+      } else {
+        try {
+          this.finishLoading = true;
+          await post_distributContract_updateNoStandKindSaleConfirm(obj);
+          this.$message.success("模板编辑成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
       }
     } else {
       setTimeout(() => {

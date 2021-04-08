@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 11:58:31
+ * @LastEditTime: 2021-04-08 19:06:39
 -->
 <template>
   <ih-page class="text-left">
@@ -261,18 +261,24 @@
         <div>(2)本确认书一式两份，甲乙双方各执一份，具有同等法律效力。</div>
         <div>(3)本确认书未尽事宜，以甲乙双方最终签署的联动分销协议为准。</div>
         <br />
-        <br />
         <div class="under">
           <div>{{info.partyCompany}}</div>
           <div>日期：年 &nbsp;&nbsp;&nbsp;&nbsp;月 &nbsp;&nbsp;&nbsp;&nbsp;日</div>
         </div>
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="合同电子版">
-              <el-button
-                type="primary"
-                @click="viewElectronic"
-              >预览电子版</el-button>
+        <el-row v-if="agencyContrictId">
+          <el-col :span="24">
+            <el-form-item
+              label="合同电子版"
+              required
+            >
+              <IhUpload
+                v-model="fileList"
+                size="100px"
+                :upload-show="!!fileList.length"
+                :limit="fileList.length"
+                :editPermi="false"
+                :removePermi="false"
+              ></IhUpload>
             </el-form-item>
           </el-col>
         </el-row>
@@ -303,6 +309,7 @@ import {
   post_distributContract_getCheckCollectByCondition,
   post_distributContract_addStandKindSaleConfirm,
   get_distributContract_getDistri__agencyContrictId,
+  post_distributContract_updateStandKindSaleConfirm,
 } from "@/api/project/index";
 import { get_company_get__id, post_dict_getAllByType } from "@/api/system";
 import { Form as ElForm } from "element-ui";
@@ -387,6 +394,7 @@ export default class NormalSalesApply extends Vue {
     ],
   };
   private companyKindOption: any = [];
+  private fileList: any = [];
 
   @Watch("info.channelEnum", { immediate: true })
   async getIsShow(val: any) {
@@ -413,13 +421,24 @@ export default class NormalSalesApply extends Vue {
   }
 
   async getInfo() {
+    const res: any = sessionStorage.getItem("addContract");
     if (this.agencyContrictId) {
-      const res = await get_distributContract_getDistri__agencyContrictId({
+      const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
       });
-      this.info = { ...res };
+      this.info = {
+        ...data,
+        ...JSON.parse(res),
+        timeList: [],
+      };
+      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+      this.fileList = data.attachTermItemVOS.map((v: any) => ({
+        fileId: v.fileId,
+        fileName: v.fileName,
+        type: v.type,
+        exAuto: v.exAuto,
+      }));
     } else {
-      const res: any = sessionStorage.getItem("addContract");
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
         const item = await get_company_get__id({
@@ -630,15 +649,27 @@ export default class NormalSalesApply extends Vue {
       obj.contractEndTime = flag ? this.info.timeList[1] : null;
       delete obj.timeList;
       console.log(obj);
-      try {
-        this.finishLoading = true;
-        await post_distributContract_addStandKindSaleConfirm(obj);
-        this.$message.success("模板添加成功");
-        this.finishLoading = false;
-        this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
-      } catch (err) {
-        this.finishLoading = false;
-        console.log(err);
+      this.finishLoading = true;
+      if (this.agencyContrictId) {
+        try {
+          await post_distributContract_updateStandKindSaleConfirm(obj);
+          this.$message.success("模板编辑成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
+      } else {
+        try {
+          await post_distributContract_addStandKindSaleConfirm(obj);
+          this.$message.success("模板添加成功");
+          this.finishLoading = false;
+          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+        } catch (err) {
+          this.finishLoading = false;
+          console.log(err);
+        }
       }
     } else {
       setTimeout(() => {
