@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 15:01:10
+ * @LastEditTime: 2021-04-08 19:50:34
 -->
 <template>
   <el-dialog
@@ -147,15 +147,12 @@
               <el-table-column
                 prop="transactionEnum"
                 label="渠道类型"
-                width="150"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
                   <div>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</div>
-                  <div
-                    class="text-ellipsis"
-                    :title="row.consumerName"
-                  >{{row.consumerName}}</div>
+                  <div :title="row.consumerName">{{row.consumerName}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -324,15 +321,12 @@
               <el-table-column
                 prop="transactionEnum"
                 label="渠道类型"
-                width="150"
+                width="200"
                 align="center"
               >
                 <template v-slot="{ row }">
                   <div>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</div>
-                  <div
-                    class="text-ellipsis"
-                    :title="row.consumerName"
-                  >{{row.consumerName}}</div>
+                  <div :title="row.consumerName">{{row.consumerName}}</div>
                 </template>
               </el-table-column>
               <el-table-column
