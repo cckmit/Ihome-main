@@ -163,12 +163,20 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { get_deal_getDealSumAmount__id } from "../../../../api/deal/index";
 @Component({
   components: {},
 })
 export default class FlowingWater extends Vue {
   tableData: any = [];
   waterList: any = [1, 2, 3, 4, 5, 6, 7, 8];
+  info: any = {};
+  async created() {
+    this.info = await get_deal_getDealSumAmount__id({
+      id: this.$route.query.id,
+    });
+    console.log(this.info);
+  }
 }
 </script>
 <style lang="scss" scoped>

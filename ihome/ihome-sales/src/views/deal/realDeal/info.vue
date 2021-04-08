@@ -94,7 +94,7 @@ import { Component, Vue } from "vue-property-decorator";
 import RealDealDetails from "./info-tabs/details.vue";
 import RealDealFlowingWater from "./info-tabs/flowingWater.vue";
 import RealDealRelation from "./info-tabs/relation.vue";
-// import { get_deal_get__id } from "../../../api/deal";
+import { get_deal_getSumData__id } from "../../../api/deal";
 @Component({
   components: { RealDealDetails, RealDealFlowingWater, RealDealRelation },
 })
@@ -105,11 +105,11 @@ export default class RealDealInfo extends Vue {
     console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
 
-    // if (this.$route.query.id) {
-    //   this.info = await get_deal_get__id({ id: this.$route.query.id });
-    // } else {
-    //   this.$message.warning("id不存在");
-    // }
+    if (this.$route.query.id) {
+      this.info = await get_deal_getSumData__id({ id: this.$route.query.id });
+    } else {
+      this.$message.warning("id不存在");
+    }
   }
 }
 </script>

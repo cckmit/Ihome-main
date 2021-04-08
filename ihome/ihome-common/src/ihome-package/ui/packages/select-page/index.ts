@@ -20,6 +20,7 @@ import IhSelectPageByDeveloper from './src/select-page-developer.vue'
 import IhSelectPageByPayer from './src/select-page-payer.vue'
 import IhSelectPageByOrgCompany from './src/select-page-orgByCompany.vue'
 import IhSelectPageByBroker from './src/select-page-broker.vue'
+import IhSelectPageByChannelCompany from './src/select-page-channelCompany.vue'
 
 export {
   IhSelectPageByDeveloper,
@@ -35,5 +36,6 @@ export {
   IhSelectPageBase,
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
-  IhSelectPageByBroker
+  IhSelectPageByBroker,
+  IhSelectPageByChannelCompany
 }
