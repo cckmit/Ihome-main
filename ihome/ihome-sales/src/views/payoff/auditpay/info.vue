@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:13:01
+ * @LastEditTime: 2021-04-07 10:31:08
 -->
 <template>
   <IhPage>
@@ -363,7 +363,7 @@
           </el-table-column>
           <el-table-column
             label="本次实际付款金额"
-            width="150"
+            width="250"
           >
             <template v-slot="{ row }">
               <div>实际付款金额: {{row.actualAmount}}</div>
@@ -385,7 +385,11 @@
             label="本次支付比例(%)"
             prop="ratio"
             width="150"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.ratio + '%'}}
+            </template>
+          </el-table-column>
         </el-table>
       </div>
       <br />

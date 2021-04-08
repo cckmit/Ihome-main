@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 16:57:34
+ * @LastEditTime: 2021-04-07 10:45:27
 -->
 <template>
   <el-dialog
@@ -148,19 +148,19 @@
       <template #serReceive>
         <el-table-column
           label="服务费情况"
-          width="150"
+          width="180"
         >
           <template v-slot="{ row }">
             <div>应收: {{row.serReceiveFees}}</div>
             <div>实收: {{row.serActualFees}}</div>
-            <div>未收: {{row.serNoFees}}</div>
+            <div>未收: {{row.serUnpaidFees}}</div>
           </template>
         </el-table-column>
       </template>
       <template #ageReceive>
         <el-table-column
           label="代理费情况"
-          width="150"
+          width="180"
         >
           <template v-slot="{ row }">
             <div>应收: {{row.ageReceiveFees}}</div>
@@ -172,48 +172,48 @@
       <template #excrete>
         <el-table-column
           label="拆佣金额"
-          width="150"
+          width="180"
         >
           <template v-slot="{ row }">
             <div>服务费: {{row.serCommFees}}</div>
             <div>代理费: {{row.ageCommFees}}</div>
-            <div>合计: {{Number(row.serCommFees?row.serCommFees:0) + Number(row.ageCommFees?row.ageCommFees:0)}}</div>
+            <div>合计: {{$math.tofixed($math.add(Number(row.serCommFees), Number(row.ageCommFees)), 2)}}</div>
           </template>
         </el-table-column>
       </template>
       <template #payoff>
         <el-table-column
           label="可结佣金额"
-          width="150"
+          width="180"
         >
           <template v-slot="{ row }">
             <div>服务费: {{row.serCanCommFees}}</div>
             <div>代理费: {{row.ageCanCommFees}}</div>
-            <div>合计: {{Number(row.serCanCommFees?row.serCanCommFees:0) + Number(row.ageCanCommFees?row.ageCanCommFees:0)}}</div>
+            <div>合计: {{$math.tofixed($math.add(Number(row.serCanCommFees), Number(row.ageCanCommFees)), 2)}}</div>
           </template>
         </el-table-column>
       </template>
       <template #payoffed>
         <el-table-column
           label="已结佣金额"
-          width="150"
+          width="180"
         >
           <template v-slot="{ row }">
             <div>服务费: {{row.serSettledCommFees}}</div>
             <div>代理费: {{row.ageSettledCommFees}}</div>
-            <div>合计: {{Number(row.serSettledCommFees?row.serSettledCommFees:0) + Number(row.ageSettledCommFees?row.ageSettledCommFees:0)}}</div>
+            <div>合计: {{$math.tofixed($math.add(Number(row.serSettledCommFees), Number(row.ageSettledCommFees)), 2)}}</div>
           </template>
         </el-table-column>
       </template>
       <template #notpayoff>
         <el-table-column
           label="未结佣金额"
-          width="150"
+          width="180"
         >
           <template v-slot="{ row }">
             <div>服务费: {{row.serUnsetCommFees}}</div>
             <div>代理费: {{row.ageUnsetCommFees}}</div>
-            <div>合计: {{Number(row.serUnsetCommFees?row.serUnsetCommFees:0) + Number(row.ageUnsetCommFees?row.ageUnsetCommFees:0)}}</div>
+            <div>合计: {{$math.tofixed($math.add(Number(row.serUnsetCommFees), Number(row.ageUnsetCommFees)), 2)}}</div>
           </template>
         </el-table-column>
       </template>

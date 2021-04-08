@@ -118,6 +118,7 @@
         :data="resPageInfo.list"
         @selection-change="handleSelectionChange"
         :empty-text="emptyText"
+        style="width:100%;"
       >
         <el-table-column
           fixed
@@ -132,15 +133,15 @@
           fixed
           prop="refundApplyNo"
           label="退款申请单编号"
-          width="180"
+          width="200"
         ></el-table-column>
 
-        <el-table-column prop="projectName" label="事业部" width="250">
+        <el-table-column prop="projectName" label="事业部" width="350">
           <template slot-scope="scope">
             {{ scope.row.departmentName }}
           </template>
         </el-table-column>
-        <el-table-column prop="amount" label="申请退款金额" width="120">
+        <el-table-column prop="amount" label="申请退款金额" width="150">
           <template slot-scope="scope">
             {{ scope.row.amount }}
           </template>
@@ -164,7 +165,7 @@
           width="300"
           label="付款方"
         ></el-table-column>
-        <el-table-column prop="inputUserName" label="制单人" width="100">
+        <el-table-column prop="inputUserName" label="制单人" width="200">
           <template slot-scope="scope">{{ scope.row.inputUserName }}</template>
         </el-table-column>
         <el-table-column prop="createDate" label="制单日期" width="190">

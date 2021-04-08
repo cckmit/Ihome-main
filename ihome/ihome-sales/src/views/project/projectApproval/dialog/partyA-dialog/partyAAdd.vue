@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 16:36:51
+ * @LastEditTime: 2021-04-07 10:48:09
 -->
 <template>
   <el-dialog
@@ -190,10 +190,7 @@
       </el-row>
       <el-row>
         <el-col :span="24">
-          <el-form-item
-            label="盖章版归档"
-            required
-          >
+          <el-form-item label="盖章版归档">
             <IhUpload
               v-model="stampFileList"
               size="100px"
