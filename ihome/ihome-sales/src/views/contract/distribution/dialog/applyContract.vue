@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 16:12:48
+ * @LastEditTime: 2021-04-09 19:20:29
 -->
 <template>
   <el-dialog
@@ -201,6 +201,30 @@ export default class ApplyContract extends Vue {
           // 标准渠道分销合同
           this.$router.push(
             `/distribution/normalDistributionApply?id=${data.agencyContrictId}`
+          );
+          break;
+        case "StandKindSaleConfirm":
+          // 标准联动销售确认书
+          this.$router.push(
+            `/distribution/normalSalesApply?id=${data.agencyContrictId}`
+          );
+          break;
+        case "NoStandChannel":
+          // 非标准渠道分销合同
+          this.$router.push(
+            `/distribution/notDistributionApply?id=${data.agencyContrictId}`
+          );
+          break;
+        case "NoStandKindSaleConfirm":
+          // 非标准联动销售确认书
+          this.$router.push(
+            `/distribution/notSalesApply?id=${data.agencyContrictId}`
+          );
+          break;
+        case "NoChannel":
+          // 非渠道类合同
+          this.$router.push(
+            `/distribution/notChannelApply?id=${data.agencyContrictId}`
           );
           break;
       }

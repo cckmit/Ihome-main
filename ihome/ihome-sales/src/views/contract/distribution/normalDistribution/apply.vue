@@ -3,12 +3,15 @@
     <template #info>
       <p class="ih-info-title">标准渠道分销合同申领</p>
       <el-form
-        label-width="90px"
+        ref="Form"
+        label-width="95px"
         class="padding-left-20"
+        :model="form"
+        :rules="rules"
       >
         <el-row>
           <el-col :span="24">
-            <el-form-item label="合同类型"></el-form-item>
+            <el-form-item label="合同类型">{{$root.dictAllName(form.contractKind, 'ContractKind')}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
@@ -45,10 +48,41 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方公司">
+            <el-form-item
+              label="乙方公司"
+              prop="channelCompanyId"
+            >
               <div style="display: flex;">
-                <el-select class="width-100"></el-select>
-                <el-select style="flex: 1;"></el-select>
+                <el-select
+                  class="width-150 margin-right-10"
+                  v-model="form.channelCompanyKind"
+                  placeholder="请选择公司类型"
+                  @change="changeCompanyKind"
+                >
+                  <el-option
+                    v-for="(i, n) in companyKindOption"
+                    :key="n"
+                    :label="i.name"
+                    :value="i.code"
+                  ></el-option>
+                </el-select>
+                <IhSelectPageByCompany
+                  v-if="form.channelCompanyKind === 'InfieldCompany'"
+                  style="flex: 1;max-width: 250px;"
+                  v-model="form.channelCompanyId"
+                  @changeOption="getCompanyInfo"
+                ></IhSelectPageByCompany>
+                <template v-else-if="form.channelCompanyKind === 'ChannelCompany'">
+                  <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
+                  <IhSelectPageByChannel
+                    v-else
+                    placeholder="请选择渠道公司"
+                    style="flex: 1;max-width: 250px;"
+                    v-model="form.channelCompanyId"
+                    @changeOption="getChannelInfo"
+                    :params="searchParams"
+                  ></IhSelectPageByChannel>
+                </template>
               </div>
             </el-form-item>
           </el-col>
@@ -56,16 +90,23 @@
             <el-form-item
               label="乙方渠道等级"
               class="formItem"
-            >乙方渠道等级</el-form-item>
+            >
+              <span v-if="form.channelCompanyKind === 'InfieldCompany'">-</span>
+              <span v-else-if="form.channelCompanyKind === 'ChannelCompany'">{{$root.dictAllName(form.channelLevel, 'ChannelLevel')}}</span>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方地址">乙方地址</el-form-item>
+            <el-form-item label="乙方地址">{{form.channelAddress}}</el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="乙方联系人">
-              <el-input></el-input>
+              <el-input
+                v-model="form.channelContact"
+                placeholder="请输入联系人"
+                style="max-width: 250px;"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -75,32 +116,58 @@
               label="乙方联系人电话"
               class="formItem"
             >
-              <el-input></el-input>
+              <el-input
+                v-model="form.channelContactTel"
+                placeholder="请输入联系人电话"
+                style="max-width: 250px;"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方账户名">
-              <el-input></el-input>
+            <el-form-item
+              label="乙方账户名"
+              prop="channelAccountData"
+            >
+              <el-select
+                v-model="form.channelAccountData"
+                value-key="id"
+                @change="changeAccount"
+                style="width: 100%;max-width: 250px;"
+              >
+                <el-option
+                  v-for="(i, n) in accountOption"
+                  :key="n"
+                  :label="i.accountName"
+                  :value="i"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方账号">乙方账号</el-form-item>
+            <el-form-item label="乙方账号">{{form.channelAccount}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方开户行">乙方开户行</el-form-item>
+            <el-form-item label="乙方开户行">{{form.channelAccountBank}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
           <el-col :span="12">
             <el-form-item label="合作期限">
-              2020-09-01 -- 2020-09-30
+              {{form.contractStartTime}} -- {{form.contractEndTime}}
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="合同跟进人">
-
+            <el-form-item
+              label="合同跟进人"
+              prop="handlerId"
+            >
+              <IhSelectPageUser
+                style="max-width: 250px;"
+                v-model="form.handlerId"
+                :search-name="handlerName"
+              ></IhSelectPageUser>
             </el-form-item>
           </el-col>
         </el-row>
@@ -211,7 +278,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              大型中介/一级平台
+              {{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}
             </el-form-item>
           </el-col>
         </el-row>
@@ -239,11 +306,11 @@
             </el-table-column>
             <el-table-column
               label="条件"
-              prop="sendContext"
+              prop="standardPay"
             ></el-table-column>
             <el-table-column
               label="派发佣金标准"
-              prop="sendStandard"
+              prop="sendContext"
             ></el-table-column>
           </el-table>
           <br />
@@ -261,7 +328,7 @@
           type="primary"
           @click="submit()"
         >提交</el-button>
-        <el-button>取消</el-button>
+        <el-button @click="$router.go(-1)">取消</el-button>
       </div>
     </template>
   </IhPage>
@@ -269,7 +336,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import { Form as ElForm } from "element-ui";
 import { get_distributContract_getDistri__agencyContrictId } from "@/api/project/index";
+import { get_bankAccount_get__companyId } from "@/api/finance/index";
+import { post_distribution_create } from "@/api/contract/index";
+import {
+  get_channel_get__id,
+  post_channelGrade_getOne,
+} from "@/api/channel/index";
 
 @Component({})
 export default class DistributionApply extends Vue {
@@ -282,13 +356,13 @@ export default class DistributionApply extends Vue {
     agencyFeeReturnTime: null,
     agencyId: null,
     annexList: [],
-    archiveStatus: null,
+    archiveStatus: "ScansAreNotArchived",
     channelAccount: null,
     channelAccountBank: null,
     channelAccountName: null,
     channelAddress: null,
     channelCompanyId: null,
-    channelCompanyKind: null,
+    channelCompanyKind: "ChannelCompany",
     channelContact: null,
     channelContactTel: null,
     channelEnum: null,
@@ -317,10 +391,132 @@ export default class DistributionApply extends Vue {
     partyaTel: null,
     supplementary: null,
     unContractLiability: null,
+    channelAccountData: null,
   };
+  private startDivisionId: any = null; //启动事业部ID
+  private cityCode: any = null; //城市code
+  private rules: any = {
+    handlerId: [
+      {
+        required: true,
+        message: "请选择合同跟进人",
+        trigger: "change",
+      },
+    ],
+    channelCompanyId: [
+      {
+        required: true,
+        message: "请选择乙方公司",
+        trigger: "change",
+      },
+    ],
+    channelAccountData: [
+      {
+        required: true,
+        message: "请选择乙方账号名",
+        trigger: "change",
+      },
+    ],
+  };
+  private handlerName: string = (this.$root as any).userInfo.name;
+  private companyKindOption: any[] = [];
+  private accountOption: any[] = [];
+  private searchParams: any = {};
 
-  private submit() {
-    //
+  private changeCompanyKind() {
+    Object.assign(this.form, {
+      channelAccount: null,
+      channelAccountBank: null,
+      channelAccountName: null,
+      channelAddress: null,
+      channelCompanyId: null,
+    });
+    this.form.channelAccountData = null;
+  }
+  private changeAccount(account: any) {
+    Object.assign(this.form, {
+      channelAccount: account.accountNo,
+      channelAccountBank: account.branchName,
+      channelAccountName: account.accountName,
+    });
+  }
+  private async getCompanyInfo(data: any) {
+    try {
+      const res = await get_bankAccount_get__companyId({ companyId: data.id });
+      this.accountOption = res;
+      this.form.channelAddress = data.address;
+      let account = res.find((i: any) => i.defaultFlag);
+      if (account) {
+        this.form.channelAccountData = { id: account.id };
+        Object.assign(this.form, {
+          channelAccount: account.accountNo,
+          channelAccountBank: account.branchName,
+          channelAccountName: account.accountName,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async getChannelInfo(data: any) {
+    try {
+      const res = await get_channel_get__id({ id: data.id });
+      this.accountOption = res.channelBanks.map((i: any) => ({
+        accountName: i.accountName,
+        accountNo: i.branchNo,
+        branchName: i.branchName,
+        id: i.id,
+      }));
+      this.form.channelAddress = res.address;
+      let account = res.channelBanks.find((i: any) => i.accountType === "Base");
+      if (account) {
+        this.form.channelAccountData = { id: account.id };
+        Object.assign(this.form, {
+          channelAccount: account.branchNo,
+          channelAccountBank: account.branchName,
+          channelAccountName: account.accountName,
+        });
+      }
+      // 获取渠道等级
+      const channelData = await post_channelGrade_getOne({
+        pageNum: 1,
+        pageSize: 10,
+        channelId: res.id,
+        departmentOrgId: this.startDivisionId,
+        city: this.cityCode,
+      });
+      if (channelData) {
+        this.form.channelLevel = channelData.channelGrade;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async submit() {
+    (this.$refs["Form"] as ElForm).validate(async (valid: any) => {
+      if (valid) {
+        let loading = this.$loading({
+          lock: true,
+          text: "请耐心等待...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.6)",
+          customClass: "ih-loading-spinner",
+        });
+        try {
+          await post_distribution_create(this.form);
+          loading.close();
+          this.$message.success("申领成功");
+          this.$goto({
+            path: "/distribution/list",
+          });
+        } catch (error) {
+          console.log(error);
+          loading.close();
+        }
+      } else {
+        return false;
+      }
+    });
   }
   private async getInfo() {
     const agencyContrictId = this.$route.query.id;
@@ -335,24 +531,25 @@ export default class DistributionApply extends Vue {
           agencyFeeRemark: res.agencyFeeRemark,
           agencyFeeReturnRate: res.agencyFeeReturnRate,
           agencyFeeReturnTime: res.agencyFeeReturnTime,
-          // agencyId
+          agencyId: res.agencyContrictId,
           // annexList
           // archiveStatus
           // channelAccount:
           // channelAccountBank:
           // channelAccountName: "",
           // channelAddress: "",
-          // channelCompanyId: 0,
+          channelCompanyId: res.designatedAgencyId,
+          channelCompanyName: res.designatedAgency,
           // channelCompanyKind: "",
           // channelContact: "",
           // channelContactTel: "",
-          // channelEnum: "",
+          channelEnum: res.channelEnum,
           // channelLevel: "",
           // commissionKind: "",
           // companyKind: "",
           consumerComplete: res.consumerComplete,
           contractEndTime: res.contractEndTime,
-          // contractKind: res.contractKind,
+          contractKind: res.contractKind,
           contractStartTime: res.contractStartTime,
           contractSubtitle: res.contractSubtitle,
           contractTitle: res.contractTitle,
@@ -364,7 +561,7 @@ export default class DistributionApply extends Vue {
           // distributionState: "",
           // exInvolvedCommiss: "",
           handlerId: (this.$root as any).userInfo.id,
-          // organizationId: 0,
+          organizationId: res.groupId,
           padCommissionEnum: res.padCommissionEnum,
           partyCompany: res.partyCompany,
           partyCompanyId: res.partyCompanyId,
@@ -373,7 +570,18 @@ export default class DistributionApply extends Vue {
           partyaTel: res.partyaTel,
           supplementary: res.supplementary,
           unContractLiability: res.unContractLiability,
+          projectName: res.proName,
         });
+        this.startDivisionId = res.startDivisionId;
+        this.cityCode = res.city;
+        this.searchParams = {
+          cycleCity: res.city,
+          channelEnum: res.channelEnum,
+          departmentOrgId: res.startDivisionId,
+        };
+        if (["Appoint", "Strategic"].includes(res.channelEnum)) {
+          this.getChannelInfo({ id: res.designatedAgencyId });
+        }
       } catch (error) {
         console.log(error);
       }
@@ -382,6 +590,9 @@ export default class DistributionApply extends Vue {
 
   created() {
     this.getInfo();
+    this.companyKindOption = (this.$root as any)
+      .dictAllList("CompanyKind")
+      .filter((i: any) => i.tag === "Channel");
   }
 }
 </script>
@@ -390,6 +601,14 @@ export default class DistributionApply extends Vue {
 .formItem {
   /deep/ .el-form-item__label {
     line-height: 20px;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>
