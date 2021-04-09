@@ -9,7 +9,7 @@
           <el-table-column prop="dealCode" label="成交报告编号" width="200">
             <template slot-scope="scope">
               <el-link type="primary" @click="gotoNew(scope.row)">
-                {{ scope.row.suppContType }}</el-link
+                {{ scope.row.dealCode }}</el-link
               >
             </template>
           </el-table-column>
