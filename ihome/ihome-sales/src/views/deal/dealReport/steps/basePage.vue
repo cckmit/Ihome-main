@@ -1875,9 +1875,17 @@
       this.contTypeList = await this.getContTypeList(res.modelCode); // 根据业务模式获取合同类型
       this.postData.refineModel = await this.getRefineModel(res.modelCode); // 赋值细分业务模式
       this.refineModelList = await this.getRefineModelList(res.modelCode); // 获取细分业务模式下拉项
+      // 获取渠道分销合同的值
+      this.packageIdsList = [];
       if (res.agencyList && res.agencyList.length) {
-        if (res.agencyList[0].agencyId) {
-          await this.getContNoList(res.agencyList[0].agencyId, res.cycleId, res.house.propertyType, res.contNo);
+        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        // 获取对应的渠道分销合同的ids
+        if (this.contNoList && this.contNoList.length) {
+          this.contNoList.forEach((list: any) => {
+            if (list.contractNo === res.firstContNo) {
+              this.packageIdsList = this.getIdsList(list.distributionMxList);
+            }
+          });
         }
         await this.initAgency(res.agencyList, true);
       }
@@ -1891,19 +1899,6 @@
             this.firstAgencyIdsList = this.getIdsList(list.distributionMxList);
           }
         });
-      }
-      // 获取渠道分销合同的值
-      this.packageIdsList = [];
-      if (res.agencyList && res.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
-        // 获取对应的渠道分销合同的ids
-        if (this.contNoList && this.contNoList.length) {
-          this.contNoList.forEach((list: any) => {
-            if (list.contractNo === res.firstContNo) {
-              this.packageIdsList = this.getIdsList(list.distributionMxList);
-            }
-          });
-        }
       }
       this.postData = {
         ...this.postData,
