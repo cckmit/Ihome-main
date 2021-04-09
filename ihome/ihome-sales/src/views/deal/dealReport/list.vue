@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-22 15:29:13
+ * @LastEditTime: 2021-04-09 14:19:20
 -->
 <template>
   <ih-page label-width="100px">
@@ -340,6 +340,12 @@
                 >撤回
                 </el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'VERIFY')}"
+                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
+                  @click.native.prevent="handleReview(scope)"
+                >审核
+                </el-dropdown-item>
+                <el-dropdown-item
                   v-if="scope.row.status !== 'Draft'"
                   @click.native.prevent="handleUpload(scope)"
                 >补充附件
@@ -367,12 +373,6 @@
                     </el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
-                <el-dropdown-item
-                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'VERIFY')}"
-                  v-has="'B.SALES.DEAL.DEALLIST.VERIFY'"
-                  @click.native.prevent="handleReview(scope)"
-                >审核
-                </el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
