@@ -207,7 +207,7 @@
         <el-button
           :class="{ 'ih-data-disabled': !hasDealAddAuth('ADD')}"
           v-has="'B.SALES.DEAL.DEALLIST.ADD'"
-          type="success" @click="handleAdd('add')">添加</el-button>
+          type="success" @click="handleAdd('add')">新增成交</el-button>
         <el-button
           :class="{ 'ih-data-disabled': !hasDealAddAuth('ACHIEVEDECLARE')}"
           v-has="'B.SALES.DEAL.DEALLIST.ACHIEVEDECLARE'"
@@ -664,7 +664,7 @@
       this.buildingRoomId = [];
     }
 
-    // 新增
+    // 新增成交
     async handleAdd(type: any) {
       this.$router.push({
         path: "/dealReport/add",
