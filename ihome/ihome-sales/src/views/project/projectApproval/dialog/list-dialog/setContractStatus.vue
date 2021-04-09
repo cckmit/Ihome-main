@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-01 16:51:36
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 17:10:35
+ * @LastEditTime: 2021-04-09 19:40:26
 -->
 <template>
   <el-dialog
@@ -155,7 +155,6 @@ export default class SetContractStatusDialog extends Vue {
     const res = await post_distributContract_getLinkDistractList__termId({
       termId: this.data.id,
     });
-    console.log(res, "状态");
     this.tableData = res;
   }
 
@@ -163,7 +162,6 @@ export default class SetContractStatusDialog extends Vue {
     const res = await post_distributContract_getChannelDistractList__termId({
       termId: this.data.id,
     });
-    console.log(res, "非状态");
     this.tableData = res;
   }
 
@@ -186,7 +184,6 @@ export default class SetContractStatusDialog extends Vue {
     }
     num++;
     obj = this.setTableData(row, num);
-    console.log(num, obj);
     const index = this.tableData.findIndex(
       (v: any) => v.agencyContrictId === row.agencyContrictId
     );
@@ -216,7 +213,7 @@ export default class SetContractStatusDialog extends Vue {
       let arr: any = [];
       arr = this.selection.map((v: any) => ({
         agencyContrictId: v.agencyContrictId,
-        exClaimL: v.exClaim,
+        exClaim: v.exClaim,
         claimPower: v.claimPower,
       }));
       if (this.data.type === "start") {

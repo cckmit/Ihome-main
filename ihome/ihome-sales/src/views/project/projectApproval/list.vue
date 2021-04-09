@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 16:58:33
+ * @LastEditTime: 2021-04-09 19:59:19
 -->
 <template>
   <IhPage label-width="100px">
@@ -446,9 +446,6 @@ export default class ProjectApproval extends Vue {
         id: row.termId,
       },
     });
-    // if (where === "apply") {
-    //   window.sessionStorage.setItem("groupId", row.startDivisionId);
-    // }
   }
 
   async remove(row: any) {
