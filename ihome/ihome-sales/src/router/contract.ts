@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 10:26:14
+ * @LastEditTime: 2021-04-08 11:20:23
  */
 import { RouteConfig } from 'vue-router'
 
@@ -50,12 +50,6 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '渠道分销协议列表', icon: 'form', keepAlive: true }
       },
       {
-        path: 'apply',
-        name: 'DistributionApply',
-        component: () => import(/* webpackChunkName: "DistributionApply" */ '@/views/contract/distribution/apply.vue'),
-        meta: { title: '渠道分销协议申领', icon: 'form' }
-      },
-      {
         path: 'info',
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
@@ -72,7 +66,121 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'DistributionOriginal',
         component: () => import(/* webpackChunkName: "DistributionOriginal" */ '@/views/contract/distribution/info.vue'),
         meta: { title: '渠道分销协议原件归档', icon: 'form' }
-      }
+      },
+      {
+        path: 'normalDistributionApply',
+        name: 'NormalDistributionApply',
+        component: () => import(/* webpackChunkName: "NormalDistributionApply" */ '@/views/contract/distribution/normalDistribution/apply.vue'),
+        meta: { title: '标准渠道分销合同申领', icon: 'form' }
+      },
+      {
+        path: 'normalDistributionInfo',
+        name: 'NormalDistributionInfo',
+        component: () => import(/* webpackChunkName: "NormalDistributionInfo" */ '@/views/contract/distribution/normalDistribution/info.vue'),
+        meta: { title: '标准渠道分销合同详情', icon: 'form' }
+      },
+      {
+        path: 'normalDistributionDuplicate',
+        name: 'NormalDistributionDuplicate',
+        component: () => import('@/views/contract/distribution/normalDistribution/info.vue'),
+        meta: { title: '标准渠道分销合同盖章版归档', icon: 'form' }
+      },
+      {
+        path: 'normalDistributionOriginal',
+        name: 'NormalDistributionOriginal',
+        component: () => import('@/views/contract/distribution/normalDistribution/info.vue'),
+        meta: { title: '标准渠道分销合同原件归档', icon: 'form' }
+      },
+      {
+        path: 'normalSalesApply',
+        name: 'NormalSalesApply',
+        component: () => import('@/views/contract/distribution/normalSales/apply.vue'),
+        meta: { title: '标准联动销售确认书申领', icon: 'form' }
+      },
+      {
+        path: 'normalSalesInfo',
+        name: 'NormalSalesInfo',
+        component: () => import('@/views/contract/distribution/normalSales/info.vue'),
+        meta: { title: '标准联动销售确认书详情', icon: 'form' }
+      },
+      {
+        path: 'normalSalesOriginal',
+        name: 'NormalSalesOriginal',
+        component: () => import('@/views/contract/distribution/normalSales/info.vue'),
+        meta: { title: '标准联动销售确认书原件归档', icon: 'form' }
+      },
+      {
+        path: 'notDistributionApply',
+        name: 'NotDistributionApply',
+        component: () => import('@/views/contract/distribution/notDistribution/apply.vue'),
+        meta: { title: '非标渠道分销合同申领', icon: 'form' }
+      },
+      {
+        path: 'notDistributionInfo',
+        name: 'NotDistributionInfo',
+        component: () => import('@/views/contract/distribution/notDistribution/info.vue'),
+        meta: { title: '非标渠道分销合同详情', icon: 'form' }
+      },
+      {
+        path: 'notDistributionDuplicate',
+        name: 'NotDistributionDuplicate',
+        component: () => import('@/views/contract/distribution/notDistribution/info.vue'),
+        meta: { title: '非标渠道分销合同盖章版归档', icon: 'form' }
+      },
+      {
+        path: 'notDistributionOriginal',
+        name: 'NotDistributionOriginal',
+        component: () => import('@/views/contract/distribution/notDistribution/info.vue'),
+        meta: { title: '非标渠道分销合同原件归档', icon: 'form' }
+      },
+      {
+        path: 'notSalesApply',
+        name: 'NotSalesApply',
+        component: () => import('@/views/contract/distribution/notSales/apply.vue'),
+        meta: { title: '非标联动销售确认书申领', icon: 'form' }
+      },
+      {
+        path: 'notSalesInfo',
+        name: 'NotSalesInfo',
+        component: () => import('@/views/contract/distribution/notSales/info.vue'),
+        meta: { title: '非标联动销售确认书详情', icon: 'form' }
+      },
+      {
+        path: 'notSalesDuplicate',
+        name: 'NotSalesDuplicate',
+        component: () => import('@/views/contract/distribution/notSales/info.vue'),
+        meta: { title: '非标联动销售确认书盖章版归档', icon: 'form' }
+      },
+      {
+        path: 'notSalesOriginal',
+        name: 'NotSalesOriginal',
+        component: () => import('@/views/contract/distribution/notSales/info.vue'),
+        meta: { title: '非标联动销售确认书原件归档', icon: 'form' }
+      },
+      {
+        path: 'notChannelApply',
+        name: 'NotChannelApply',
+        component: () => import('@/views/contract/distribution/notChannel/apply.vue'),
+        meta: { title: '非渠道合同申领', icon: 'form' }
+      },
+      {
+        path: 'notChannelInfo',
+        name: 'NotChannelInfo',
+        component: () => import('@/views/contract/distribution/notChannel/info.vue'),
+        meta: { title: '非渠道合同详情', icon: 'form' }
+      },
+      {
+        path: 'notChannelDuplicate',
+        name: 'NotChannelDuplicate',
+        component: () => import('@/views/contract/distribution/notChannel/info.vue'),
+        meta: { title: '非渠道合同盖章版归档', icon: 'form' }
+      },
+      {
+        path: 'notChannelOriginal',
+        name: 'NotChannelOriginal',
+        component: () => import('@/views/contract/distribution/notChannel/info.vue'),
+        meta: { title: '非渠道合同原件归档', icon: 'form' }
+      },
     ]
   },
   {
