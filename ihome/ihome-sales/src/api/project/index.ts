@@ -895,6 +895,10 @@ return await request.post< number,number> (basePath+'/settleCondition/updatePlea
 export async function post_term_add (d?: any) {
 return await request.post< TermRespVO,TermRespVO> (basePath+'/term/add', d)
 }
+/**新增*/
+export async function post_term_addTermOtherChannelFees (d?: any) {
+return await request.post< any,any> (basePath+'/term/addTermOtherChannelFees', d)
+}
 /**补充协议-修改周期（新增覆盖周期方式）*/
 export async function get_term_applyTerm__termId (d?: any) {
 return await request.get<number,number>(basePath+'/term/applyTerm/{termId}', { params: d })
@@ -902,6 +906,10 @@ return await request.get<number,number>(basePath+'/term/applyTerm/{termId}', { p
 /**项目周期-审核*/
 export async function post_term_audit (d?: any) {
 return await request.post< number,number> (basePath+'/term/audit', d)
+}
+/**其他渠道费用*/
+export async function post_term_checkOtherChannelFees (d?: any) {
+return await request.post< any,any> (basePath+'/term/checkOtherChannelFees', d)
 }
 /**项目周期提交并且审核*/
 export async function post_term_commitAndAudit (d?: any) {
@@ -2733,6 +2741,10 @@ claimPower: string;
 contractKind: string;
 /**合同主标题*/
 contractTitle: string;
+/**指定中介行多选*/
+designatedAgency: string;
+/**中介行ID*/
+designatedAgencyId: number;
 /**派发佣金标准*/
 distributContractMxVOS: DistributContractMxVO[];
 /**是否可申领(Yes-是、No-否)*/
@@ -3529,6 +3541,51 @@ commentList: FlowComment[];
 stateEnum: string;
 /**OA流程ID*/
 summaryId: number;
+}
+/**OldProjectCycle*/
+export interface OldProjectCycle {
+/**undefined*/
+approvalNo: string;
+/**undefined*/
+approveTime: string;
+/**undefined*/
+busibaId: string;
+/**undefined*/
+businessType: string;
+/**undefined*/
+cityId: string;
+/**undefined*/
+compiling: string;
+/**undefined*/
+countyId: string;
+/**undefined*/
+cycleId: number;
+/**undefined*/
+cycleName: string;
+/**undefined*/
+isConsignment: number;
+/**undefined*/
+lave: number;
+/**undefined*/
+matCommission: number;
+/**undefined*/
+myguid: string;
+/**undefined*/
+projectAddress: string;
+/**undefined*/
+projectEndTime: string;
+/**undefined*/
+projectId: number;
+/**undefined*/
+projectName: string;
+/**undefined*/
+projectStartTime: string;
+/**undefined*/
+provinceId: string;
+/**undefined*/
+recordName: string;
+/**undefined*/
+stage: string;
 }
 /**OtherVo*/
 export interface OtherVo {

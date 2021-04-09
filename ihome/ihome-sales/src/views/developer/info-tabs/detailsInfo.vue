@@ -4,14 +4,14 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:15:58
+ * @LastEditTime: 2021-04-08 14:39:32
 -->
 <template>
   <div class="text-left">
     <p class="ih-info-title">基础信息</p>
     <el-form
       ref="form"
-      label-width="120px"
+      label-width="130px"
     >
       <el-row>
         <el-col :span="8">
@@ -116,10 +116,18 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            label="录入人"
+            label="电话"
             align="left"
           >
-            <span>{{ resPageInfo.inputUserName }}</span>
+            <span>{{ resPageInfo.phone }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="保利系统内开发商"
+            align="left"
+          >
+            <span>{{ resPageInfo.isPolyDeveloper ? '是' : '否' }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -130,6 +138,14 @@
             <span>{{
               $root.dictAllName(resPageInfo.status, "CompanyStatus")
             }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="录入人"
+            align="left"
+          >
+            <span>{{ resPageInfo.inputUserName }}</span>
           </el-form-item>
         </el-col>
       </el-row>
