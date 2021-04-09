@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-11 08:48:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-23 17:28:18
+ * @LastEditTime: 2021-04-09 10:23:02
 -->
 <template>
   <ih-page class="text-left">
@@ -933,8 +933,8 @@
       // console.log('通过');
       this.failBtn = false;
       // 判断成交报告的状态
-      if (['BranchBusinessManageUnreview', 'NotSigned'].includes(this.postData.status) && !this.postData.suppContType) {
-        // 最后一个节点且不是补充成交的情况审核通过时，需要选择业绩确认时间
+      if (this.postData.status === 'BranchBusinessManageUnreview') {
+        // 最后一个节点审核通过时，需要选择业绩确认时间
         this.dialogSelectDate = true;
       } else {
         this.selectData = null;
