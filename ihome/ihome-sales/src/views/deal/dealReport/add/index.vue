@@ -372,33 +372,10 @@
 
     // 选择收派套餐
     selectPackage(data: any = {}) {
-      if (!data.feeType) return;
-      if (data.hasRecord) {
-        // 分销模式
-        if (!data.contNo) {
-          this.$message.warning('请先选择分销协议编号！');
-          return;
-        }
-      } else {
-        // 非分销模式
-        // 合同类型contType + 物业类型propertyType + 细分业务类型refineModel + 立项周期cycleId，这几个条件必须满足
-        let tips: any = [];
-        if (!data.termId) {
-          tips.push('项目周期');
-        }
-        if (!data.subdivide) {
-          tips.push('细分业务模式');
-        }
-        if (!data.property) {
-          tips.push('物业类型');
-        }
-        if (!data.contType) {
-          tips.push('合同类型');
-        }
-        if (tips.length) {
-          this.$message.warning(`请先选择${tips.join('，')}`);
-          return;
-        }
+      // if (!data.costTypeEnum) return;
+      if (!data.packageMxIds.length) {
+        this.$message.warning('一手代理合同、渠道分销合同不能都为空！');
+        return;
       }
       this.receivePackageData = data;
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
@@ -581,7 +558,7 @@
     // 预览分销协议
     previewContNo(contractNo: any) {
       if (!contractNo) {
-        this.$message.warning('请先选择需要预览的分销协议');
+        this.$message.warning('请先选择需要预览的合同');
       } else {
         // 预览
         let router = this.$router.resolve({

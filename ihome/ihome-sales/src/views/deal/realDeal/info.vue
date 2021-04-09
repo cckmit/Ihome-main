@@ -99,14 +99,17 @@ import { get_deal_getSumData__id } from "../../../api/deal";
   components: { RealDealDetails, RealDealFlowingWater, RealDealRelation },
 })
 export default class RealDealInfo extends Vue {
-  info: any = {};
+  info: any = {
+    dealCode: null,
+  };
   tabActive: any = null;
   async created() {
     console.log(this.$route.query.id, this.$route.query.tab);
     this.tabActive = this.$route.query.tab || "1";
 
     if (this.$route.query.id) {
-      this.info = await get_deal_getSumData__id({ id: this.$route.query.id });
+      let info = await get_deal_getSumData__id({ id: this.$route.query.id });
+      this.info = { ...info };
     } else {
       this.$message.warning("id不存在");
     }

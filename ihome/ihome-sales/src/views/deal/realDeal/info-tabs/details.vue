@@ -129,14 +129,14 @@
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理合同</div>
-          <div class="line-item-bottom">{{infoForm.firstContNo}}</div>
+          <div class="line-item-bottom">{{ infoForm.firstContNo }}</div>
         </el-col>
       </el-row>
       <el-row class="ih-info-line">
         <el-col :span="8" class="line-item">
           <div class="line-item-top">
             <span>渠道公司</span>
-            <span class="red">[外部公司]</span>
+            <span class="red" v-if="companyKind">[{{ companyKind }}]</span>
           </div>
           <div class="line-item-bottom">
             {{
@@ -169,7 +169,7 @@
               </span>
             </span>
           </div>
-          <div class="line-item-bottom">xxxx</div>
+          <div class="line-item-bottom">{{ infoForm.contTitle }}</div>
         </el-col>
       </el-row>
       <p class="line"></p>
@@ -183,25 +183,39 @@
       <div class="file-list">
         <div
           class="file-item-border"
-          v-for="(item, index) in fileList"
+          v-for="(item, index) in infoForm.offerNoticeList"
           :key="index"
         >
           <div class="file-item">
             <div class="floating-layer">
               <div class="file-pre">
-                <a class="file-pre-btn" href="javascript:;" @click="pre()">
+                <a class="file-pre-btn" href="javascript:;" @click="pre(item)">
                   <i class="el-icon-zoom-in"></i>
                   预览</a
                 >
               </div>
             </div>
             <div class="file-item-1">
-              <div class="file-item-1-left">优惠告知书</div>
-              <div class="file-item-1-right">客户待签署</div>
+              <div class="file-item-1-left">
+                 {{
+                    $root.dictAllName(item.notificationType, "NotificationType")
+                  }}
+              </div>
+              <!-- <div class="file-item-1-right">客户待签署</div> -->
+              <div class="file-item-1-right">
+                <span :class="item.notificationStatus">
+                  {{
+                    $root.dictAllName(
+                      item.notificationStatus,
+                      "NotificationStatus"
+                    )
+                  }}
+                </span>
+              </div>
             </div>
-            <div class="file-item-1">编号：xxxxxxxxx{{ item }}</div>
+            <div class="file-item-1">编号：{{ item.noticeNo }}</div>
             <div class="file-item-1">
-              <div class="file-item-1-left special">特殊</div>
+              <!-- <div class="file-item-1-left special">特殊</div> -->
               <div style="height: 16px"></div>
               <!-- <div class="file-item-1-right">
                 <el-link type="primary">预览</el-link>
@@ -272,7 +286,10 @@
           show-summary
           sum-text="合计"
         >
-          <el-table-column prop="typeName" label="类型" width="200">
+          <el-table-column prop="type" label="类型" width="200">
+            <template slot-scope="scope">
+              <div>{{ $root.dictAllName(scope.row.type, "FeeType") }}</div>
+            </template>
           </el-table-column>
           <el-table-column
             prop="partyACustomerName"
@@ -575,11 +592,19 @@
         </el-row>
       </div>
     </el-card>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { get_deal_get__id } from "../../../../api/deal";
+import { post_notice_customer_information } from "../../../../api/contract";
+// import { get_invoice_getInvoiceInfo__businessCode } from "../../../../api/finance";
 @Component({
   components: {},
 })
@@ -605,8 +630,32 @@ export default class RealDealDetails extends Vue {
   tableData: any = [];
   tableData2: any = [{}];
   fileList: any = [1, 2, 3, 4, 5, 6, 7, 8];
-  pre() {
+  srcList: any = [];
+  srcData: any = [];
+  companyKind: any = null;
+  private isShowImg = false;
+
+  pre(item: any) {
     console.log("pre");
+    if (item.templateType === "ElectronicTemplate") {
+      window.open(
+        `/sales-api/sales-document-cover/file/browse/${item.templateId}`
+      );
+    } else {
+      let imgList = item.noticeAttachmentList;
+      this.srcList = imgList.map(
+        (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
+      );
+      this.srcData = imgList.map((v: any) => ({
+        fileName: v.attachmentSuffix,
+        preFileName: "优惠告知书",
+      }));
+      if (this.srcList.length) {
+        this.isShowImg = true;
+      } else {
+        this.$message.warning("暂无图片");
+      }
+    }
   }
   async created() {
     if (this.$route.query.id) {
@@ -615,7 +664,46 @@ export default class RealDealDetails extends Vue {
         ...this.infoForm,
         ...info,
       };
+      if (this.infoForm.agencyList && this.infoForm.agencyList.length > 0) {
+        let companyKind = this.infoForm.agencyList[0].companyKind;
+        this.companyKind = (this as any).$root.dictAllName(
+          companyKind,
+          "CompanyKind"
+        );
+      }
+
+      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
     }
+  }
+  // 根据成交id获取优惠告知书列表
+  async getInformation(id: any = "", parentId: any = "", cycleId: any = "") {
+    if (!id || !parentId || !cycleId) return;
+    if (id !== parentId) {
+      const idList: any = await post_notice_customer_information({
+        dealId: id,
+        cycleId: cycleId,
+      });
+      const parentIdList: any = await post_notice_customer_information({
+        dealId: parentId,
+        cycleId: cycleId,
+      });
+      // console.log('优惠告知书列表', list);
+      this.$nextTick(() => {
+        this.infoForm.offerNoticeList = [...idList, ...parentIdList];
+      });
+    } else {
+      const list: any = await post_notice_customer_information({
+        dealId: id,
+        cycleId: cycleId,
+      });
+      // console.log('优惠告知书列表', list);
+      if (list && list.length > 0) {
+        this.infoForm.offerNoticeList = list;
+      } else {
+        this.infoForm.offerNoticeList = [];
+      }
+    }
+    console.log(this.infoForm.offerNoticeList);
   }
 }
 </script>
@@ -650,7 +738,7 @@ export default class RealDealDetails extends Vue {
 .file-item-border {
   padding: 8px;
   display: inline-block;
-  width: 20%;
+  width: 25%;
   box-sizing: border-box;
 }
 
@@ -715,5 +803,13 @@ export default class RealDealDetails extends Vue {
   left: -41px;
   bottom: -13px;
   font-size: 12px;
+}
+.Invalidation{
+}
+.WaitBeSigned{
+  color: #F56C6C;
+}
+.BecomeEffective{
+  color: #19BE6B;
 }
 </style>

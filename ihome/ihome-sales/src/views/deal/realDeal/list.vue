@@ -246,11 +246,96 @@
         :empty-text="emptyText"
         :data="resPageInfo.list"
       >
+        <el-table-column type="expand">
+          <template slot-scope="scope">
+            <div>
+              <div class="expand-content">
+                项目周期：{{ scope.row.termName }}
+              </div>
+              <div class="expand-content">
+                渠道公司：{{ scope.row.channelName }}
+              </div>
+              <div class="expand-content">
+                经纪人：{{ scope.row.brokerName }}
+              </div>
+              <br />
+              <div class="expand-content">
+                栋座房号：{{ scope.row.buildingName }} {{ scope.row.roomNo }}
+              </div>
+              <div class="expand-content">
+                客户姓名：{{ scope.row.customerName }}
+              </div>
+              <div class="expand-content">
+                客户电话：{{ scope.row.customerPhone }}
+              </div>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="dealCode"
           label="成交报告编号"
           min-width="190"
         ></el-table-column>
+
+        <el-table-column prop="contType" label="合同类型" min-width="190">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.contType, "ContType") }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="receiveAmount"
+          label="应收金额"
+          min-width="190"
+        ></el-table-column>
+
+        <el-table-column
+          prop="actualAmount"
+          label="已收金额"
+          min-width="190"
+        ></el-table-column>
+        <el-table-column
+          prop="paidCommAmount"
+          label="已付金额"
+          min-width="190"
+        ></el-table-column>
+
+        <el-table-column prop="status" label="状态" min-width="190">
+          <template slot-scope="scope">
+            {{ $root.dictAllName(scope.row.status, "DealStatus") }}
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="dealOrg"
+          label="组织信息"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="entryPerson"
+          label="录入人"
+          min-width="80"
+        ></el-table-column>
+        <el-table-column
+          prop="createTime"
+          label="录入日期"
+          min-width="180"
+        ></el-table-column>
+        <el-table-column
+          prop="subscribeDate"
+          label="认购日期"
+          min-width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="signDate"
+          label="签约日期"
+          min-width="120"
+        ></el-table-column>
+        <el-table-column
+          prop="achieveConfirmTime"
+          min-width="120"
+          label="业绩确认日期"
+        ></el-table-column>
+
+        <!-- 
         <el-table-column prop="contType" label="房产信息" min-width="260">
           <template slot-scope="scope">
             <div>
@@ -324,7 +409,7 @@
             <div>业绩：{{ scope.row.allotDate }}</div>
             <div>审批：{{ scope.row.approveTime }}</div>
           </template>
-        </el-table-column>
+        </el-table-column> -->
         <el-table-column fixed="right" label="操作" width="130">
           <template slot-scope="scope">
             <el-link
@@ -592,7 +677,7 @@ export default class RealDealList extends Vue {
       });
       return;
     }
-    // this.queryPageParameters.isMainDealOnly = true;
+    this.queryPageParameters.isMainDealOnly = true;
     this.resPageInfo = await post_deal_getList(this.queryPageParameters);
   }
 
@@ -663,5 +748,10 @@ export default class RealDealList extends Vue {
       width: 100% !important;
     }
   }
+}
+.expand-content {
+  display: inline-block;
+  width: 400px;
+  line-height: 25px;
 }
 </style>

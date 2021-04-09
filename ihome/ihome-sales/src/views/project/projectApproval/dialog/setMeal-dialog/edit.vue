@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-02 09:55:29
+ * @LastEditTime: 2021-04-08 14:58:45
 -->
 <template>
   <el-dialog
@@ -292,6 +292,7 @@
                       v-model="row.consumerId"
                       clearable
                       placeholder="请选择"
+                      :search-name="row.consumerName"
                       :params="searchConditon"
                       @changeOption="getChannelInfo(row.consumerId, i, $index)"
                     ></IhSelectPageByChannel>
@@ -675,6 +676,7 @@
                       clearable
                       placeholder="请选择"
                       :params="searchConditon"
+                      :search-name="row.consumerName"
                       @changeOption="getChannelInfo(row.consumerId, i, $index)"
                     ></IhSelectPageByChannel>
                   </div>

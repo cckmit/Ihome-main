@@ -159,12 +159,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="录入人">
+            <el-form-item label="电话">
               <el-input
                 clearable
-                disabled
-                v-model="resPageInfo.inputUserName"
-                placeholder="录入人"
+                v-model="resPageInfo.phone"
+                placeholder="电话"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -188,6 +187,16 @@
                   :value="0"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="录入人">
+              <el-input
+                clearable
+                disabled
+                v-model="resPageInfo.inputUserName"
+                placeholder="录入人"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>

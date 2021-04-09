@@ -159,7 +159,7 @@
       ></IhSelectPageByBroker>
     </el-form-item>
     <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
-    <el-form-item label="渠道公司">需要先渠道公司类型</el-form-item>
+    <el-form-item label="渠道公司">需要先选择渠道公司类型</el-form-item>
     <el-form-item>
       <el-select v-model="form.agencyType" placeholder="请选择">
         <el-option
@@ -179,6 +179,16 @@
       ></IhSelectPageByChannelCompany>
     </el-form-item>
     <el-form-item label="绑定的值">{{form.agencyId}}</el-form-item>
+    <el-form-item label="经纪人">需要先选择渠道公司</el-form-item>
+    <el-form-item>
+      <IhSelectPageByChannelBroker
+        v-model="form.brokerId"
+        :proId="form.agencyId"
+        @change="changeAgency"
+        clearable
+      ></IhSelectPageByChannelBroker>
+    </el-form-item>
+    <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
   </el-form>
 </template>
 
@@ -202,7 +212,8 @@ import {
   IhSelectPageByPayer,
   IhSelectPageByOrgCompany,
   IhSelectPageByBroker,
-  IhSelectPageByChannelCompany
+  IhSelectPageByChannelCompany,
+  IhSelectPageByChannelBroker
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -221,7 +232,8 @@ import {
     IhSelectPageByPayer,
     IhSelectPageByOrgCompany,
     IhSelectPageByBroker,
-    IhSelectPageByChannelCompany
+    IhSelectPageByChannelCompany,
+    IhSelectPageByChannelBroker
   },
 })
 export default class SelectPageDemo extends Vue {

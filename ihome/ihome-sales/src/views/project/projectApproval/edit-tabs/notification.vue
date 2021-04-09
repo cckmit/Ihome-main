@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:53:17
+ * @LastEditTime: 2021-04-08 19:57:11
 -->
 <template>
   <div>
@@ -36,6 +36,7 @@
         <el-table-column
           prop="padCommissionEnum"
           label="是否垫佣"
+          width="120"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.padCommissionEnum, "PadCommission")
@@ -44,14 +45,20 @@
         <el-table-column
           prop="channelEnum"
           label="渠道类型"
+          width="350"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelEnum, "ChannelCustomer")
-          }}</template>
+          <template v-slot="{ row }">
+            <div>{{$root.dictAllName(row.channelEnum, "ChannelCustomer")}}</div>
+            <div
+              v-if="row.channelEnum === 'Appoint' || row.channelEnum === 'Strategic'"
+              :title="row.designatedAgency"
+            >{{row.designatedAgency}}</div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="state"
           label="状态"
+          width="150"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.state, 'Oper')}}
@@ -701,6 +708,13 @@ export default class Notification extends Vue {
   color: #909399;
   font-size: 14px;
   padding: 5px 20px 10px 20px;
+}
+.text-ellipsis {
+  width: 100%;
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .file {
