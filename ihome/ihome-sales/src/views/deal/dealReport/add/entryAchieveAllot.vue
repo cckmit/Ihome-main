@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-25 10:12:49
+ * @LastEditTime: 2021-04-09 15:54:22
 -->
 <template>
   <ih-page class="text-left">
@@ -2069,6 +2069,9 @@
       }
       // 清空一手代理合同
       this.postData.firstContNo = null;
+      this.firstAgencyCompanyContList = [];
+      // 获取一手代理合同
+      if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
     }
 
     // 初始化平台费用
@@ -2722,7 +2725,7 @@
       console.log('changeCompany:', value);
       this.initAgencyInfo();
       // 获取渠道分销合同
-      if (value) this.getOneAgentTeamContNo('contNo', value);
+      if (value) this.getOneAgentTeamContNo('contNo', value, this.postData.cycleId, this.postData.companyKind);
     }
 
     // 修改合同类型
@@ -2889,14 +2892,6 @@
         });
       }
       return idList;
-    }
-
-    // 改变一手代理公司
-    changeOneAgent(value: any) {
-      this.postData.firstContNo = null;
-      this.firstAgencyCompanyContList = [];
-      // 获取一手代理合同
-      if (value) this.getOneAgentTeamContNo('oneAgent', value);
     }
 
     /*
