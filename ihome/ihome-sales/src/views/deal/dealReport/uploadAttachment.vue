@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-04-01 19:12:01
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-02 10:02:11
+ * @LastEditTime: 2021-04-09 11:57:33
 -->
 <template>
   <IhPage>
@@ -28,15 +28,15 @@
         </div>
         <div class="text-right">
           <div>状态</div>
-          <div class="text-size">{{$root.dictAllName(infoForm.status, 'DealStatus')}}</div>
+          <div class="text-size">{{$root.dictAllName(infoFrom.status, 'DealStatus')}}</div>
         </div>
         <div class="text-right">
           <div>计算方式</div>
-          <div class="text-size">{{$root.dictAllName(infoForm.calculation, 'DealCalculateWay')}}</div>
+          <div class="text-size">{{$root.dictAllName(infoFrom.calculation, 'DealCalculateWay')}}</div>
         </div>
         <div class="text-right">
           <div>数据标志</div>
-          <div class="text-size">{{$root.dictAllName(infoForm.dataSign, 'DealDataFlag')}}</div>
+          <div class="text-size">{{$root.dictAllName(infoFrom.dataSign, 'DealDataFlag')}}</div>
         </div>
       </div>
     </div>
@@ -51,10 +51,10 @@
             <IhUpload
               @newFileList="getNewFile"
               size="100px"
-              :limit="scope.row.code === 'ContractInfo' ? scope.row.defaultFileList.length : 100"
+              :limit="scope.row.code === 'ContractInfo' ? scope.row.fileList.length : 100"
               :file-size="10"
               :editPermi="false"
-              v-model="scope.row.defaultFileList"
+              v-model="scope.row.fileList"
               :file-type="scope.row.code"
             ></IhUpload>
           </template>
@@ -92,15 +92,13 @@ export default class UploadAttachment extends Vue {
 
   // 初始化数据
   async init() {
-    let info: any = await get_deal_get__id({id: this.dealId});
-    console.log(info);
+    this.infoFrom = await get_deal_get__id({id: this.dealId});
     // 初始化附件
-    this.uploadList = this.initDocumentList(info.documentList);
+    this.uploadList = this.initDocumentList(this.infoFrom.documentList);
   }
 
   // 构建附件信息
   initDocumentList(list: any = []) {
-    if (list.length === 0) return  [];
     let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
     // 附件类型增加key
     if (fileList.length > 0) {
@@ -247,7 +245,7 @@ export default class UploadAttachment extends Vue {
   right: 0px;
   bottom: 0px;
   box-sizing: border-box;
-  padding: 20px 20px;
+  padding: 20px 33px;
   text-align: right;
   background-color: #fff;
 }
