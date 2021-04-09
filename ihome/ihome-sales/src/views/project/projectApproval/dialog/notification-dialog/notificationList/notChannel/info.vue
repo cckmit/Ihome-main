@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 20:31:33
+ * @LastEditTime: 2021-04-09 14:41:49
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -230,7 +230,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
-    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+    this.$router.go(-1);
   }
 }
 </script>

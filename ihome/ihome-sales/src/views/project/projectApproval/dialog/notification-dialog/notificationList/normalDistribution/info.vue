@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 20:55:38
+ * @LastEditTime: 2021-04-09 14:43:23
 -->
 <template>
   <ih-page class="text-left">
@@ -152,7 +152,6 @@
                 disabled
                 placeholder="请选择渠道类型"
                 class="width--100"
-                @change="queryUnderData(info.channelEnum, 'channel')"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCustomer')"
@@ -174,7 +173,6 @@
                   disabled
                   placeholder="请选择公司种类"
                   class="width--100"
-                  @change="companyKindChange"
                 >
                   <el-option
                     v-for="item in companyKindOption"
@@ -194,7 +192,6 @@
                 disabled
                 placeholder="渠道商名称"
                 :search-name="info.designatedAgency"
-                @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
             </el-col>
           </div>
@@ -614,7 +611,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
-    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+    this.$router.go(-1);
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 20:59:22
+ * @LastEditTime: 2021-04-09 14:49:21
 -->
 <template>
   <ih-page class="text-left">
@@ -483,6 +483,20 @@
           </div>
         </div>
         <br />
+        <el-row v-if="!agencyContrictId">
+          <el-col :span="12">
+            <el-form-item
+              label="合同电子版"
+              required
+            >
+              <el-button
+                type="primary"
+                class="margin-left-20"
+                @click="viewElectronic"
+              >预览电子版</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row v-if="agencyContrictId">
           <el-col :span="24">
             <el-form-item
@@ -930,6 +944,7 @@ export default class NormalSalesApply extends Vue {
           ...this.info,
           contractStartTime: this.info.timeList[0],
           contractEndTime: this.info.timeList[1],
+          contractKind: "StandChannel",
         },
       }).then((res: any) => {
         const arr = new Blob([res.data], { type: "application/pdf" });
@@ -960,7 +975,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_addStandChannel(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
-          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+          this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
           console.log(err);
@@ -970,7 +985,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_updateStandChannel(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
-          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+          this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
           console.log(err);
@@ -988,7 +1003,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
-    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+    this.$router.go(-1);
   }
 }
 </script>

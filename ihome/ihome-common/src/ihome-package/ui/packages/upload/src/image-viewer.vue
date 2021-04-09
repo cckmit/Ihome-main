@@ -444,7 +444,7 @@ export default {
   font-size: 28px;
   color: #fff;
   .pdfClass {
-    margin-bottom: 60px;
+    margin-bottom: 40px;
     font-size: 20px;
   }
 }

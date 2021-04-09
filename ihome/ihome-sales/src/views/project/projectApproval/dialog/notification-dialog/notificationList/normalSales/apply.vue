@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:06:39
+ * @LastEditTime: 2021-04-09 14:49:32
 -->
 <template>
   <ih-page class="text-left">
@@ -265,6 +265,20 @@
           <div>{{info.partyCompany}}</div>
           <div>日期：年 &nbsp;&nbsp;&nbsp;&nbsp;月 &nbsp;&nbsp;&nbsp;&nbsp;日</div>
         </div>
+        <el-row v-if="!agencyContrictId">
+          <el-col :span="12">
+            <el-form-item
+              label="合同电子版"
+              required
+            >
+              <el-button
+                type="primary"
+                class="margin-left-20"
+                @click="viewElectronic"
+              >预览电子版</el-button>
+            </el-form-item>
+          </el-col>
+        </el-row>
         <el-row v-if="agencyContrictId">
           <el-col :span="24">
             <el-form-item
@@ -607,32 +621,27 @@ export default class NormalSalesApply extends Vue {
 
   // 预览电子版
   viewElectronic() {
-    if (this.agencyContrictId) {
-      window.open(
-        `/sales-api/sales-document-cover/file/browse/${this.info.fileId}`
-      );
-    } else {
-      const token: any = getToken();
-      axios({
-        method: "POST",
-        url: `/sales-api/project/distributContract/getPreView`,
-        xsrfHeaderName: "Authorization",
-        responseType: "blob",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "bearer " + token,
-        },
-        data: {
-          ...this.info,
-          contractStartTime: this.info.timeList[0],
-          contractEndTime: this.info.timeList[1],
-        },
-      }).then((res: any) => {
-        const arr = new Blob([res.data], { type: "application/pdf" });
-        const href = window.URL.createObjectURL(arr);
-        window.open(href);
-      });
-    }
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/project/distributContract/getPreView`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: {
+        ...this.info,
+        contractStartTime: this.info.timeList[0],
+        contractEndTime: this.info.timeList[1],
+        contractKind: "StandKindSaleConfirm",
+      },
+    }).then((res: any) => {
+      const arr = new Blob([res.data], { type: "application/pdf" });
+      const href = window.URL.createObjectURL(arr);
+      window.open(href);
+    });
   }
 
   finish() {
@@ -655,7 +664,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_updateStandKindSaleConfirm(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
-          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+          this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
           console.log(err);
@@ -665,7 +674,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_addStandKindSaleConfirm(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
-          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+          this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
           console.log(err);
@@ -683,7 +692,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
-    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+    this.$router.go(-1);
   }
 }
 </script>

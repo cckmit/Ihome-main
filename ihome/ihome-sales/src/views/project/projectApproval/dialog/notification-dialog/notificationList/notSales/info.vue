@@ -150,7 +150,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
-    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+    this.$router.go(-1);
   }
 }
 </script>

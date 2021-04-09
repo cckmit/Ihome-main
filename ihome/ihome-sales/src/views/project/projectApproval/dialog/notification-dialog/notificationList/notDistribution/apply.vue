@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:08:48
+ * @LastEditTime: 2021-04-09 14:46:39
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -555,7 +555,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_addNoStandChannel(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
-          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+          this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
           console.log(err);
@@ -566,7 +566,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_updateNoStandChannel(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
-          this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+          this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
           console.log(err);
@@ -584,7 +584,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
-    this.$router.push(`/projectApproval/edit?id=${this.info.termId}`);
+    this.$router.go(-1);
   }
 }
 </script>

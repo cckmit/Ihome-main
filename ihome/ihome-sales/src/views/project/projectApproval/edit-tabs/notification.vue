@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 20:08:00
+ * @LastEditTime: 2021-04-09 14:35:04
 -->
 <template>
   <div>
@@ -327,6 +327,12 @@
         @cancel="() => (viewDialogVisible = false)"
       />
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </div>
 </template>
 <script lang="ts">
@@ -384,6 +390,9 @@ export default class Notification extends Vue {
   uploadList: any = [];
   addType = "";
   addNotificationData: any = {};
+  isShowImg = false;
+  srcList: any = [];
+  srcData: any = [];
 
   @Watch("info.attachTermVOS")
   geiFileList(val: any, oldVal: any) {
@@ -434,7 +443,19 @@ export default class Notification extends Vue {
   }
 
   previewTop(row: any) {
-    window.open(`/sales-api/sales-document-cover/file/browse/${row.fileId}`);
+    let imgList = row.attachTerms;
+    this.srcList = imgList.map(
+      (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileId}`
+    );
+    this.srcData = imgList.map((v: any) => ({
+      fileName: v.fileName,
+      fileId: v.fileId,
+    }));
+    if (this.srcList.length) {
+      this.isShowImg = true;
+    } else {
+      this.$message.warning("暂无图片");
+    }
   }
 
   async previewBottom(row: any) {
