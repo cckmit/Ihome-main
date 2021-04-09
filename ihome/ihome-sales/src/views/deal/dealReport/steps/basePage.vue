@@ -118,6 +118,7 @@
               :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择一手代理公司"
               @change="changeSelectAgent"
+              clearable
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
