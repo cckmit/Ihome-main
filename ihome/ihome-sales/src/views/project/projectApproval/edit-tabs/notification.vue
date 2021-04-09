@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:35:04
+ * @LastEditTime: 2021-04-09 15:31:55
 -->
 <template>
   <div>
@@ -24,6 +24,14 @@
         :data="info.distributContractVOS"
         style="width: 100%"
       >
+        <el-table-column
+          prop="contractKind"
+          label="合同主标题"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.contractKind, "ContractKind")
+          }}</template>
+        </el-table-column>
         <el-table-column
           prop="contractTitle"
           label="合同主标题"

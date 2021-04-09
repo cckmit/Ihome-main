@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:15:56
+ * @LastEditTime: 2021-04-09 16:58:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -494,13 +494,15 @@ export default class ProjectApproval extends Vue {
   }
 
   setStart(data: any, type: any) {
-    console.log(data, type);
+    this.setData.type = type;
+    this.setData.id = data.termId;
     this.setDialogVisible = true;
   }
 
-  setFinish(data: any) {
-    console.log(data);
+  setFinish() {
+    this.$message.success("设置成功");
     this.setDialogVisible = false;
+    this.getListMixin();
   }
 }
 </script>
