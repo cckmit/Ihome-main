@@ -262,7 +262,7 @@
                     @change="changeAgencyType"
                     class="width--100">
                     <el-option
-                      v-for="item in $root.dictAllList('AgencyType')"
+                      v-for="item in companyKindOption"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -1778,6 +1778,7 @@
     }
 
     async created() {
+      await this.getCompanyTypeList();
       // 成交报告的id
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
@@ -1787,7 +1788,6 @@
       if (this.id && this.changeType && this.btnType) {
         await this.initPageInfo();
       }
-      await this.getCompanyTypeList();
     }
 
     // 获取公司类型
@@ -2034,12 +2034,12 @@
       if (flag) {
         // 分销成交模式
         if(data && data.length > 0) {
+          this.postData.companyKind = data[0].companyKind; // 渠道公司类型
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
-          this.postData.companyKind = data[0].companyKind; // 渠道公司类型
         }
       }
     }
