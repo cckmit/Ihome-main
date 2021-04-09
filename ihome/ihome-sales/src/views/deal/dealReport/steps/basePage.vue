@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-24 16:15:18
+ * @LastEditTime: 2021-04-09 15:59:30
 -->
 <template>
   <ih-page class="text-left">
@@ -2597,6 +2597,10 @@
       }
       // 清空一手代理合同
       this.postData.firstContNo = null;
+      this.firstAgencyCompanyContList = [];
+      // 获取一手代理合同
+      if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
+
     }
 
     // 改变物业类型
@@ -2836,14 +2840,6 @@
       return idList;
     }
 
-    // 改变一手代理公司
-    changeOneAgent(value: any) {
-      this.postData.firstContNo = null;
-      this.firstAgencyCompanyContList = [];
-      // 获取一手代理合同
-      if (value) this.getOneAgentTeamContNo('oneAgent', value);
-    }
-
     /*
     * 获取一手代理合同或者渠道分销合同
     * type: String。oneAgent：一手代理合同；contNo：渠道分销合同
@@ -2971,7 +2967,7 @@
       console.log('changeCompany:', value);
       this.initAgencyInfo();
       // 获取渠道分销合同
-      if (value) this.getOneAgentTeamContNo('contNo', value);
+      if (value) this.getOneAgentTeamContNo('contNo', value, this.postData.cycleId, this.postData.companyKind);
     }
 
     // 修改合同类型
