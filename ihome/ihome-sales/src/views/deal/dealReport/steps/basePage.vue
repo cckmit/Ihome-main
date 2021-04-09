@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-03-24 16:15:18
+ * @LastEditTime: 2021-04-09 15:59:30
 -->
 <template>
   <ih-page class="text-left">
@@ -118,6 +118,7 @@
               :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
               placeholder="请选择一手代理公司"
               @change="changeSelectAgent"
+              clearable
               class="width--100">
               <el-option
                 v-for="item in firstAgencyCompanyList"
@@ -262,7 +263,7 @@
                     @change="changeAgencyType"
                     class="width--100">
                     <el-option
-                      v-for="item in $root.dictAllList('AgencyType')"
+                      v-for="item in companyKindOption"
                       :key="item.code"
                       :label="item.name"
                       :value="item.code"
@@ -272,6 +273,7 @@
                 <div class="right">
                   <IhSelectPageByChannelCompany
                     v-model="postData.agencyId"
+                    @changeOption="(data) => {postData.agencyName = data.name}"
                     :proId="postData.companyKind"
                     :orgId="baseInfoByTerm.startDivisionId"
                     :searchName="postData.agencyName"
@@ -1777,6 +1779,7 @@
     }
 
     async created() {
+      await this.getCompanyTypeList();
       // 成交报告的id
       this.id = this.$route.query.id;
       this.changeType = this.$route.query.type;
@@ -1786,7 +1789,6 @@
       if (this.id && this.changeType && this.btnType) {
         await this.initPageInfo();
       }
-      await this.getCompanyTypeList();
     }
 
     // 获取公司类型
@@ -1875,9 +1877,17 @@
       this.contTypeList = await this.getContTypeList(res.modelCode); // 根据业务模式获取合同类型
       this.postData.refineModel = await this.getRefineModel(res.modelCode); // 赋值细分业务模式
       this.refineModelList = await this.getRefineModelList(res.modelCode); // 获取细分业务模式下拉项
+      // 获取渠道分销合同的值
+      this.packageIdsList = [];
       if (res.agencyList && res.agencyList.length) {
-        if (res.agencyList[0].agencyId) {
-          await this.getContNoList(res.agencyList[0].agencyId, res.cycleId, res.house.propertyType, res.contNo);
+        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        // 获取对应的渠道分销合同的ids
+        if (this.contNoList && this.contNoList.length) {
+          this.contNoList.forEach((list: any) => {
+            if (list.contractNo === res.firstContNo) {
+              this.packageIdsList = this.getIdsList(list.distributionMxList);
+            }
+          });
         }
         await this.initAgency(res.agencyList, true);
       }
@@ -1891,19 +1901,6 @@
             this.firstAgencyIdsList = this.getIdsList(list.distributionMxList);
           }
         });
-      }
-      // 获取渠道分销合同的值
-      this.packageIdsList = [];
-      if (res.agencyList && res.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
-        // 获取对应的渠道分销合同的ids
-        if (this.contNoList && this.contNoList.length) {
-          this.contNoList.forEach((list: any) => {
-            if (list.contractNo === res.firstContNo) {
-              this.packageIdsList = this.getIdsList(list.distributionMxList);
-            }
-          });
-        }
       }
       this.postData = {
         ...this.postData,
@@ -2038,12 +2035,12 @@
       if (flag) {
         // 分销成交模式
         if(data && data.length > 0) {
+          this.postData.companyKind = data[0].companyKind; // 渠道公司类型
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
-          this.postData.companyKind = data[0].companyKind; // 渠道公司类型
         }
       }
     }
@@ -2597,6 +2594,10 @@
       }
       // 清空一手代理合同
       this.postData.firstContNo = null;
+      this.firstAgencyCompanyContList = [];
+      // 获取一手代理合同
+      if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
+
     }
 
     // 改变物业类型
@@ -2836,14 +2837,6 @@
       return idList;
     }
 
-    // 改变一手代理公司
-    changeOneAgent(value: any) {
-      this.postData.firstContNo = null;
-      this.firstAgencyCompanyContList = [];
-      // 获取一手代理合同
-      if (value) this.getOneAgentTeamContNo('oneAgent', value);
-    }
-
     /*
     * 获取一手代理合同或者渠道分销合同
     * type: String。oneAgent：一手代理合同；contNo：渠道分销合同
@@ -2971,7 +2964,7 @@
       console.log('changeCompany:', value);
       this.initAgencyInfo();
       // 获取渠道分销合同
-      if (value) this.getOneAgentTeamContNo('contNo', value);
+      if (value) this.getOneAgentTeamContNo('contNo', value, this.postData.cycleId, this.postData.companyKind);
     }
 
     // 修改合同类型
