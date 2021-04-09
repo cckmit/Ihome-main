@@ -2955,6 +2955,7 @@
                     fileId: list.fileNo,
                     fileName: list.attachmentSuffix,
                     deleteType: type,
+                    fileType: 'ContractInfo', // 合同信息
                     exAuto: true, // 是否可以删除
                   }
                 )
