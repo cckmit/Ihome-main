@@ -241,6 +241,7 @@
               <div class="right">
                 <IhSelectPageByChannelCompany
                   v-model="postData.agencyId"
+                  @changeOption="(data) => {postData.agencyName = data.name}"
                   :proId="postData.companyKind"
                   :orgId="baseInfoByTerm.startDivisionId"
                   :searchName="postData.agencyName"
