@@ -4,17 +4,25 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 20:12:00
+ * @LastEditTime: 2021-04-09 20:14:08
 -->
 <template>
   <div>
-    <p class="ih-info-title">中介分销合同模板</p>
+    <p class="ih-info-title">渠道合同模板</p>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
         :data="info.distributContractVOS"
         style="width: 100%"
       >
+        <el-table-column
+          prop="contractKind"
+          label="合同主标题"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.contractKind, "ContractKind")
+          }}</template>
+        </el-table-column>
         <el-table-column
           prop="contractTitle"
           label="合同主标题"
@@ -242,12 +250,6 @@
         </el-form>
       </div>
     </div>
-    <ih-dialog :show="viewDialogVisible">
-      <ViewContract
-        :data="viewData"
-        @cancel="() => (viewDialogVisible = false)"
-      />
-    </ih-dialog>
     <ih-dialog :show="editDialogVisible">
       <PartyADialog
         :data="editData"
@@ -259,7 +261,6 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import ViewContract from "../dialog/notification-dialog/viewContract.vue";
 import {
   get_distributContract_get__termId,
   post_distributContract_saveOaRemark,
@@ -269,12 +270,10 @@ import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 @Component({
   components: {
-    ViewContract,
     PartyADialog,
   },
 })
 export default class Notification extends Vue {
-  viewDialogVisible = false;
   info: any = {
     distributContractVOS: [],
     preferentialMxVOS: [],
@@ -286,7 +285,6 @@ export default class Notification extends Vue {
       otherRemark: null,
     },
   };
-  viewData: any = {};
   fileList: any = [];
   editDialogVisible: any = false;
   editData: any = {};
@@ -350,8 +348,48 @@ export default class Notification extends Vue {
   }
 
   viewTemplate(data: any) {
-    this.viewData.agencyContrictId = data.agencyContrictId;
-    this.viewDialogVisible = true;
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/normalSalesInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/notSalesInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/normalDistributionInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/notDistributionInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/notChannelInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
   }
 
   //优惠告知书下载二维码

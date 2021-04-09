@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-21 16:42:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 15:13:09
+ * @LastEditTime: 2021-04-09 14:57:28
 --> 
 <template>
   <div class="cascader">
@@ -33,11 +33,8 @@ import { get_project_getTree__proId } from "@/api/project/index";
   components: {},
 })
 export default class IhBuildingRoom extends Vue {
-  @Prop({
-    type: String,
-    default: "",
-  })
-  proId: any;
+  @Prop()
+  proId!: any;
   @Prop({
     type: String,
     default: "请选择栋座房号",

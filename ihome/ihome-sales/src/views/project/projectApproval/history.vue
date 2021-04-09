@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 15:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-19 15:03:34
+ * @LastEditTime: 2021-04-01 09:35:01
 -->
 <template>
   <ih-page>
@@ -54,7 +54,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            label="中介分销合同/优惠告知书"
+            label="渠道合同/优惠告知书"
             name="Notification"
           >
             <Notification

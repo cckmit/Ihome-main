@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-08 10:37:52
+ * @LastEditTime: 2021-04-08 17:30:14
  */
 import { RouteConfig } from 'vue-router'
 
@@ -173,7 +173,67 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'projectApprovalHistory',
         component: () => import('../views/project/projectApproval/history.vue'),
         meta: { title: '立项周期查看快照', icon: 'form' }
-      }
+      },
+      {
+        path: 'normalSalesApply',
+        name: 'normalSalesApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalSales/apply.vue'),
+        meta: { title: '标准联动销售确认书(启动函)', icon: 'form' }
+      },
+      {
+        path: 'notSalesApply',
+        name: 'notSalesApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notSales/apply.vue'),
+        meta: { title: '非标联动销售确认书(启动函)', icon: 'form' }
+      },
+      {
+        path: 'normalDistributionApply',
+        name: 'normalDistributionApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalDistribution/apply.vue'),
+        meta: { title: '标准渠道分销合同', icon: 'form' }
+      },
+      {
+        path: 'notDistributionApply',
+        name: 'notDistributionApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notDistribution/apply.vue'),
+        meta: { title: '非标渠道分销合同', icon: 'form' }
+      },
+      {
+        path: 'notChannelApply',
+        name: 'notChannelApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notChannel/apply.vue'),
+        meta: { title: '非渠道类合同', icon: 'form' }
+      },
+      {
+        path: 'normalSalesInfo',
+        name: 'normalSalesInfo',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalSales/info.vue'),
+        meta: { title: '标准联动销售确认书详情', icon: 'form' }
+      },
+      {
+        path: 'notSalesInfo',
+        name: 'notSalesInfo',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notSales/info.vue'),
+        meta: { title: '非标联动销售确认书详情', icon: 'form' }
+      },
+      {
+        path: 'normalDistributionInfo',
+        name: 'normalDistributionInfo',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalDistribution/info.vue'),
+        meta: { title: '标准渠道分销合同详情', icon: 'form' }
+      },
+      {
+        path: 'notDistributionInfo',
+        name: 'notDistributionInfo',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notDistribution/info.vue'),
+        meta: { title: '非标渠道分销合同详情', icon: 'form' }
+      },
+      {
+        path: 'notChannelInfo',
+        name: 'notChannelInfo',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notChannel/info.vue'),
+        meta: { title: '非渠道类合同详情', icon: 'form' }
+      },
     ]
   },
 
