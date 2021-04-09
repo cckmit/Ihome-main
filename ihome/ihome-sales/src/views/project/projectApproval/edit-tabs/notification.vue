@@ -4,12 +4,12 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:57:11
+ * @LastEditTime: 2021-04-09 20:13:42
 -->
 <template>
   <div>
     <div class="notification">
-      <p class="ih-info-title">中介分销合同模板</p>
+      <p class="ih-info-title">渠道合同模板</p>
       <div class="notificationButton">
         <el-button
           size="small"
@@ -24,6 +24,14 @@
         :data="info.distributContractVOS"
         style="width: 100%"
       >
+        <el-table-column
+          prop="contractKind"
+          label="合同主标题"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.contractKind, "ContractKind")
+          }}</template>
+        </el-table-column>
         <el-table-column
           prop="contractTitle"
           label="合同主标题"
@@ -309,10 +317,9 @@
       </div>
     </div>
     <ih-dialog :show="dialogVisible">
-      <AddContract
+      <TemplateSelect
         :data="contractData"
         @cancel="() => (dialogVisible = false)"
-        @finish="(data) => contractFinish(data)"
       />
     </ih-dialog>
     <ih-dialog :show="editDialogVisible">
@@ -335,13 +342,19 @@
         @cancel="() => (viewDialogVisible = false)"
       />
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </div>
 </template>
 <script lang="ts">
 import { Component, Vue, Watch } from "vue-property-decorator";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import AddNotification from "../dialog/notification-dialog/addNotification.vue";
-import AddContract from "../dialog/notification-dialog/addContract.vue";
+import TemplateSelect from "../dialog/notification-dialog/templateSelect.vue";
 import ViewContract from "../dialog/notification-dialog/viewContract.vue";
 import {
   get_distributContract_get__termId,
@@ -359,7 +372,7 @@ import { getToken } from "ihome-common/util/cookies";
   components: {
     PartyADialog,
     AddNotification,
-    AddContract,
+    TemplateSelect,
     ViewContract,
   },
 })
@@ -392,6 +405,9 @@ export default class Notification extends Vue {
   uploadList: any = [];
   addType = "";
   addNotificationData: any = {};
+  isShowImg = false;
+  srcList: any = [];
+  srcData: any = [];
 
   @Watch("info.attachTermVOS")
   geiFileList(val: any, oldVal: any) {
@@ -428,11 +444,33 @@ export default class Notification extends Vue {
         "departmentOrgId",
         this.info.startDivisionId
       );
+      let addObj: any = {
+        proId: this.info.proId,
+        proName: this.info.proName,
+        proRecord: this.info.proRecord,
+        padCommissionEnum: this.info.padCommissionEnum,
+        preferentialPartyAId: this.info.preferentialPartyAId,
+        termId: this.$route.query.id,
+        chargeEnum: this.info.chargeEnum,
+      };
+      window.sessionStorage.setItem("addContract", JSON.stringify(addObj));
     }
   }
 
   previewTop(row: any) {
-    window.open(`/sales-api/sales-document-cover/file/browse/${row.fileId}`);
+    let imgList = row.attachTerms;
+    this.srcList = imgList.map(
+      (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileId}`
+    );
+    this.srcData = imgList.map((v: any) => ({
+      fileName: v.fileName,
+      fileId: v.fileId,
+    }));
+    if (this.srcList.length) {
+      this.isShowImg = true;
+    } else {
+      this.$message.warning("暂无图片");
+    }
   }
 
   async previewBottom(row: any) {
@@ -463,29 +501,97 @@ export default class Notification extends Vue {
   }
 
   addTemplate() {
-    this.contractData.agencyContrictId = "";
-    this.contractData.id = this.info.preferentialPartyAId;
     this.dialogVisible = true;
   }
 
   editTemplate(data: any) {
-    this.contractData.agencyContrictId = data.agencyContrictId;
-    this.dialogVisible = true;
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/normalSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/notSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/normalDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/notDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/notChannelApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
   }
 
   viewTemplate(data: any) {
-    this.viewData.agencyContrictId = data.agencyContrictId;
-    this.viewDialogVisible = true;
-  }
-
-  contractFinish() {
-    if (this.contractData.agencyContrictId) {
-      this.$message.success("修改成功");
-    } else {
-      this.$message.success("新增成功");
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/normalSalesInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/notSalesInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/normalDistributionInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/notDistributionInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/notChannelInfo",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
     }
-    this.dialogVisible = false;
-    this.getInfo();
   }
 
   // 中介分销合同启用

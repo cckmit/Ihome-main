@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 18:41:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-17 11:58:15
+ * @LastEditTime: 2021-04-01 17:56:02
 -->
 <template>
   <el-dialog
@@ -111,7 +111,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import BasicInfo from "./basicinfo.vue";
+import BasicInfo from "../list-dialog/basicinfo.vue";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 import { post_term_add } from "@/api/project/index.ts";

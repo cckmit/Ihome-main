@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-7 7:27:36 ├F10: PM┤
+//2021-4-8 4:24:25 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -299,17 +299,9 @@ return await request.get<DistributContractVO,DistributContractVO>(basePath+'/dis
 export async function post_distributContract_getItemByCondition (d?: any) {
 return await request.post< CollectandsendDetailVO,CollectandsendDetailVO> (basePath+'/distributContract/getItemByCondition', d)
 }
-/**获取派发套餐详情【非渠道派发明细】*/
-export async function post_distributContract_getItemByNoChannelDistribut (d?: any) {
-return await request.post< CollectandsendDetailVO,CollectandsendDetailVO> (basePath+'/distributContract/getItemByNoChannelDistribut', d)
-}
 /**设置启动函申领状态*/
 export async function post_distributContract_getLinkDistractList__termId (d?: any) {
 return await request.post< DistributContractByTermVO[],DistributContractByTermVO[]> (basePath+'/distributContract/getLinkDistractList/{termId}', d)
-}
-/**中介分销合检验条件是否符合*/
-export async function post_distributContract_getNoChannelDistributCollect (d?: any) {
-return await request.post< DistributContractMxVO[],DistributContractMxVO[]> (basePath+'/distributContract/getNoChannelDistributCollect', d)
 }
 /**中介分销合同-预览【里面】*/
 export async function post_distributContract_getPreView (d?: any) {
@@ -1114,8 +1106,6 @@ claimPower: string;
 contractKind: string;
 /**合同主标题*/
 contractTitle: string;
-/**是否可申领(Yes-是、No-否)*/
-exClaim: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -2626,6 +2616,8 @@ companyKind: string;
 consumerId: number;
 /**客户名称*/
 consumerName: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+contractKind: string;
 /**派发条件的的集合*/
 packMxIds: number[];
 /**是否垫佣  Veto("否"),Tree("3个月"),Six("6个月"),Nine("9个月"),MoreTen("10个月以上");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
@@ -2643,6 +2635,8 @@ companyKind: string;
 consumerId: number;
 /**客户名称*/
 consumerName: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+contractKind: string;
 /**收派ID*/
 packageId: number;
 /**是否垫佣  Veto("否"),Tree("3个月"),Six("6个月"),Nine("9个月"),MoreTen("10个月以上");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
@@ -2660,6 +2654,8 @@ companyKind: string;
 consumerId: number;
 /**客户名称*/
 consumerName: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+contractKind: string;
 /**是否垫佣  Veto("否"),Tree("3个月"),Six("6个月"),Nine("9个月"),MoreTen("10个月以上");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
 /**立项ID*/
@@ -2779,7 +2775,7 @@ agencyFeeReturnTime: string;
 /**代理费结算条件(ComNoPad-常规不垫佣版、ComPad-常规垫佣版、SpecialDiscount-优惠折扣版)*/
 agencySettleCondtion: string;
 /**附件列表*/
-attachTermItemVOS: AttachTermItemVO[];
+attachTermItemVOS: AttachTerm[];
 /**渠道类型 BigPlatform("大平台"),FirstPlatform("大型中介/一级平台"),MiddlePlatform("中型中介/二级平台"),SmallPlatform("小型中介"),Appoint("指定中介行");(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**客户成交以及确认*/
@@ -2842,7 +2838,7 @@ agencyFeeReturnTime: string;
 /**代理费结算条件(ComNoPad-常规不垫佣版、ComPad-常规垫佣版、SpecialDiscount-优惠折扣版)*/
 agencySettleCondtion: string;
 /**附件列表*/
-attachTermItemVOS: AttachTermItemVO[];
+attachTermItemVOS: AttachTerm[];
 /**渠道类型 BigPlatform("大平台"),FirstPlatform("大型中介/一级平台"),MiddlePlatform("中型中介/二级平台"),SmallPlatform("小型中介"),Appoint("指定中介行");(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**客户成交以及确认*/
@@ -3423,20 +3419,6 @@ roomNo: string;
 space: number;
 /**卫*/
 toilet: number;
-}
-/**NoChannelDistributCollectVo*/
-export interface NoChannelDistributCollectVo {
-/**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
-commissionKind: string;
-/**派发条件的的集合*/
-packMxIds: number[];
-/**周期ID*/
-termId: number;
-}
-/**NoChannelDistributVo*/
-export interface NoChannelDistributVo {
-/**收派ID*/
-packageId: number;
 }
 /**NoChannelVo*/
 export interface NoChannelVo {
@@ -5001,6 +4983,8 @@ proId: number;
 proName: string;
 /**一、项目备案名*/
 proRecord: string;
+/**十、其他约定 补充条款*/
+supplementary: string;
 /**立项周期ID*/
 termId: number;
 /**八、违约责任*/

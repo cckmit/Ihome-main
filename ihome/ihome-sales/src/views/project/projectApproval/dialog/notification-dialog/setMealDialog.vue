@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 14:28:17
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:51:43
+ * @LastEditTime: 2021-04-09 20:12:51
 -->
 <template>
   <el-dialog
@@ -509,6 +509,7 @@ export default class SetMealDialog extends Vue {
   data: any = [];
   map: any = {};
   selection: any = [];
+  termId: any = null;
 
   cancel() {
     this.$emit("cancel", false);
@@ -581,14 +582,14 @@ export default class SetMealDialog extends Vue {
   }
 
   async created() {
+    this.termId = this.searchdata.id;
     this.getInfo();
   }
 
   async getInfo() {
-    const id = this.$route.query.id;
-    if (id) {
+    if (this.termId) {
       this.data = await post_collectandsend_getAllByStart({
-        termId: id,
+        termId: this.termId,
       });
     }
   }
@@ -609,6 +610,7 @@ export default class SetMealDialog extends Vue {
     obj.packageId = row.packageId;
     obj.padCommissionEnum = this.searchdata.padCommissionEnum;
     obj.channelEnum = this.searchdata.channelEnum;
+    obj.contractKind = this.searchdata.contractKind;
     const res = await post_distributContract_getItemByCondition(obj);
     if (res) {
       this.info = (this.$tool as any).deepClone(res);
