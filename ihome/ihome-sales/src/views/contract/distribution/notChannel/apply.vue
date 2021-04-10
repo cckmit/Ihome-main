@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-10 18:04:09
+ * @LastEditTime: 2021-04-10 18:19:09
 -->
 <template>
   <IhPage class="text-left">
@@ -72,6 +72,7 @@
                   v-if="form.channelCompanyKind === 'InfieldCompany'"
                   style="flex: 1;max-width: 250px;"
                   v-model="form.channelCompanyId"
+                  @changeOption="getCompanyInfo"
                 ></IhSelectPageByCompany>
                 <template v-else-if="form.channelCompanyKind === 'ChannelCompany'">
                   <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
@@ -370,12 +371,28 @@ export default class NotChannelApply extends Vue {
     }
   }
   private async getAgencyCompany(data: any) {
-    try {
-      const res = await post_company_getAccountById({ id: data.id });
-      console.log(res);
-    } catch (error) {
-      console.log(error);
-    }
+    if (this.form.commissionKind === "Infield")
+      try {
+        const res = await post_company_getAccountById({ id: data.id });
+        console.log(res, "getAgencyCompany");
+        this.accountOption = res.map((i: any) => ({
+          accountName: i.name,
+          accountNo: i.number,
+          branchName: i.bank,
+          id: i.id,
+        }));
+        let account = res.find((i: any) => i.type === "Basic");
+        if (account) {
+          this.form.channelAccountData = { id: account.id };
+          Object.assign(this.form, {
+            channelAccount: account.number,
+            channelAccountBank: account.bank,
+            channelAccountName: account.name,
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
   }
   private async submit() {
     (this.$refs["Form"] as ElForm).validate(async (valid: any) => {
