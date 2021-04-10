@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 20:13:42
+ * @LastEditTime: 2021-04-10 15:54:28
 -->
 <template>
   <div>
@@ -336,12 +336,6 @@
         @finish="(data) => addFinish(data)"
       />
     </ih-dialog>
-    <ih-dialog :show="viewDialogVisible">
-      <ViewContract
-        :data="viewData"
-        @cancel="() => (viewDialogVisible = false)"
-      />
-    </ih-dialog>
     <IhImgViews
       v-if="isShowImg"
       :url-list="srcList"
@@ -355,7 +349,6 @@ import { Component, Vue, Watch } from "vue-property-decorator";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import AddNotification from "../dialog/notification-dialog/addNotification.vue";
 import TemplateSelect from "../dialog/notification-dialog/templateSelect.vue";
-import ViewContract from "../dialog/notification-dialog/viewContract.vue";
 import {
   get_distributContract_get__termId,
   post_distributContract_saveOaRemark,
@@ -373,14 +366,12 @@ import { getToken } from "ihome-common/util/cookies";
     PartyADialog,
     AddNotification,
     TemplateSelect,
-    ViewContract,
   },
 })
 export default class Notification extends Vue {
   dialogVisible = false;
   editDialogVisible = false;
   addDialogVisible = false;
-  viewDialogVisible = false;
   tableLoading: any = false;
   info: any = {
     distributContractVOS: [],
