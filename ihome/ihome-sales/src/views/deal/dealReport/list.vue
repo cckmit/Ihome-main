@@ -24,6 +24,7 @@
             <el-form-item label="项目周期">
               <IhSelectPageByCycle
                 clearable
+                @change="handleChangeCycle"
                 @changeOption="(data) => {queryPageParameters.proId = data.proId}"
                 v-model="queryPageParameters.projectCycle"
                 placeholder="请选择立项周期"
@@ -570,10 +571,21 @@
       return flag;
     }
 
+    // 改变项目周期
+    handleChangeCycle() {
+      console.log(123)
+      this.queryPageParameters.buildingId = null;
+      this.queryPageParameters.roomNumberId = null;
+      this.buildingRoomId = [];
+    }
+
     // 改变栋座房号
     changeBuildingRoom(value: any) {
       console.log('changeBuildingRoom:', value);
-      if (value && value.length === 2) {
+      if (value && value.length === 1) {
+        this.queryPageParameters.buildingId = value[0];
+        this.queryPageParameters.roomNumberId = null;
+      } else if (value && value.length === 2) {
         this.queryPageParameters.buildingId = value[0];
         this.queryPageParameters.roomNumberId = value[1];
       } else {
