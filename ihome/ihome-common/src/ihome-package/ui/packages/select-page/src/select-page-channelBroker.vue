@@ -4,12 +4,12 @@
  * @Author: lsj
  * @Date: 2021-04-08 16:25:36
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-08 16:44:33
+ * @LastEditTime: 2021-04-10 17:44:28
 -->
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import IhSelectPageBase from "./select-page-base.vue";
-import {post_channelAgent_getDealChannelAgentList} from "@/api/channel";
+import {post_channelAgent_getDealChannelAgentList} from "@/api/channel/index";
 
 @Component({
   extends: IhSelectPageBase,
