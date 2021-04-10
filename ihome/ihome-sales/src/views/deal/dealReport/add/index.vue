@@ -373,10 +373,10 @@
     // 选择收派套餐
     selectPackage(data: any = {}) {
       // if (!data.costTypeEnum) return;
-      if (!data.packageMxIds.length) {
-        this.$message.warning('一手代理合同、渠道分销合同不能都为空！');
-        return;
-      }
+      // if (!data.packageMxIds.length) {
+      //   this.$message.warning('一手代理合同、渠道分销合同不能都为空！');
+      //   return;
+      // }
       this.receivePackageData = data;
       this.dialogAddReceivePackage = !this.dialogAddReceivePackage;
     }

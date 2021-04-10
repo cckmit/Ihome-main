@@ -3493,10 +3493,10 @@
         this.$message.warning('认购价格、签约价格不能都为空！');
         return;
       }
-      if (!this.packageIdsList.length && !this.firstAgencyIdsList.length) {
-        this.$message.warning('一手代理合同、渠道分销合同不能都为空！');
-        return;
-      }
+      // if (!this.packageIdsList.length && !this.firstAgencyIdsList.length) {
+      //   this.$message.warning('一手代理合同、渠道分销合同不能都为空！');
+      //   return;
+      // }
       this.currentReceiveIndex = scope.$index;
       let params: any = {
         cycleId: this.baseInfoByTerm.termId, // 项目周期id
