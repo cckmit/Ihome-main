@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 14:58:45
+ * @LastEditTime: 2021-04-09 18:44:47
 -->
 <template>
   <el-dialog
@@ -819,22 +819,42 @@
                 <template v-slot="{ row }">
                   <div>
                     金额:
-                    <el-input
+                    <!-- <el-input
                       v-model="row.generalAchieveAmount"
                       @input="row.generalAchieveAmount = number2Change(row.generalAchieveAmount)"
                       clearable
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                       style="width: 70%"
+                    /> -->
+                    <el-input
+                      class="inputClass"
+                      v-model="row.generalAchieveAmount"
+                      clearable
+                      :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
+                      style="width: 70%"
+                      type="number"
+                      @blur="inputBlur(row, 'generalAchieveAmount', 2)"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input
+                    <!-- <el-input
                       @input="row.generalAchievePoint = number5Change(row.generalAchievePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.generalAchievePoint"
                       clearable
+                      :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
+                    >
+                      <template slot="append">%</template>
+                    </el-input> -->
+                    <el-input
+                      class="point inputClass"
+                      style="width: 70%"
+                      v-model="row.generalAchievePoint"
+                      clearable
+                      type="number"
+                      @blur="inputBlur(row, 'generalAchievePoint', 5)"
                       :class="{'is-disabled': generalAchieveAmountDisabled(row)}"
                     >
                       <template slot="append">%</template>
@@ -850,21 +870,41 @@
                 <template v-slot="{ row }">
                   <div>
                     金额:
-                    <el-input
+                    <!-- <el-input
                       v-model="row.distributeAchieveAmount"
                       @input="row.distributeAchieveAmount = number2Change(row.distributeAchieveAmount)"
                       clearable
+                      :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
+                      style="width: 70%"
+                    /> -->
+                    <el-input
+                      class="inputClass"
+                      v-model="row.distributeAchieveAmount"
+                      @blur="inputBlur(row, 'distributeAchieveAmount', 2)"
+                      clearable
+                      type="number"
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                       style="width: 70%"
                     />
                   </div>
                   <div class="margin-top-5">
                     点数:
-                    <el-input
+                    <!-- <el-input
                       @input="row.distributeAchievePoint = number5Change(row.distributeAchievePoint)"
                       class="point"
                       style="width: 70%"
                       v-model="row.distributeAchievePoint"
+                      clearable
+                      :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
+                    >
+                      <template slot="append">%</template>
+                    </el-input> -->
+                    <el-input
+                      class="point inputClass"
+                      style="width: 70%"
+                      type="number"
+                      v-model="row.distributeAchievePoint"
+                      @blur="inputBlur(row, 'distributeAchievePoint', 5)"
                       clearable
                       :class="{'is-disabled': distributeAchieveAmountDisabled(row)}"
                     >
@@ -1349,6 +1389,11 @@ export default class SetMealEdit extends Vue {
     sNum = sNum.replace(/\.{2,}/g, "."); //只留第一个小数点，清除多余的
     sNum = sNum.match(/^\d*(\.?\d{0,2})/g)[0];
     return sNum;
+  }
+
+  inputBlur(row: any, type: any, num: number) {
+    let value = Number(row[type]);
+    row[type] = this.$math.tofixed(value, num);
   }
 
   async created() {
@@ -1958,6 +2003,15 @@ export default class SetMealEdit extends Vue {
 .point {
   /deep/ .el-input-group__append {
     padding: 0 3px;
+  }
+}
+.inputClass {
+  /deep/ input::-webkit-outer-spin-button,
+  /deep/ input::-webkit-inner-spin-button {
+    -webkit-appearance: none !important;
+  }
+  /deep/ input[type="number"] {
+    -moz-appearance: textfield !important;
   }
 }
 </style>
