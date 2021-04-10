@@ -51,7 +51,7 @@
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">建筑面积</div>
-          <div class="line-item-bottom">{{ infoForm.house.area }}</div>
+          <div class="line-item-bottom">{{ infoForm.house.area }} m²</div>
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">户型</div>
@@ -125,11 +125,19 @@
       <el-row class="ih-info-line">
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理公司</div>
-          <div class="line-item-bottom">{{ infoForm.oneAgentTeam }}</div>
+          <div class="line-item-bottom">
+            <el-link type="primary" @click="gotoNew(infoForm, 'oneAgentTeam')">
+              {{ infoForm.oneAgentTeam }}</el-link
+            >
+          </div>
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理合同</div>
-          <div class="line-item-bottom">{{ infoForm.firstContNo }}</div>
+          <div class="line-item-bottom">
+            <el-link type="primary" @click="gotoNew(infoForm, 'firstContNo')">
+              {{ infoForm.firstContNo }}</el-link
+            >
+          </div>
         </el-col>
       </el-row>
       <el-row class="ih-info-line">
@@ -139,11 +147,13 @@
             <span class="red" v-if="companyKind">[{{ companyKind }}]</span>
           </div>
           <div class="line-item-bottom">
-            {{
-              infoForm.agencyList && infoForm.agencyList.length
-                ? infoForm.agencyList[0].agencyName
-                : ""
-            }}
+            <el-link type="primary" @click="gotoNew(infoForm, 'agencyName')">
+              {{
+                infoForm.agencyList && infoForm.agencyList.length
+                  ? infoForm.agencyList[0].agencyName
+                  : ""
+              }}</el-link
+            >
           </div>
         </el-col>
         <el-col :span="8" class="line-item">
@@ -169,7 +179,11 @@
               </span>
             </span>
           </div>
-          <div class="line-item-bottom">{{ infoForm.contTitle }}</div>
+          <div class="line-item-bottom">
+            <el-link type="primary" @click="gotoNew(infoForm, 'contTitle')">
+              {{ infoForm.contTitle }}</el-link
+            >
+          </div>
         </el-col>
       </el-row>
       <p class="line"></p>
@@ -197,9 +211,9 @@
             </div>
             <div class="file-item-1">
               <div class="file-item-1-left">
-                 {{
-                    $root.dictAllName(item.notificationType, "NotificationType")
-                  }}
+                {{
+                  $root.dictAllName(item.notificationType, "NotificationType")
+                }}
               </div>
               <!-- <div class="file-item-1-right">客户待签署</div> -->
               <div class="file-item-1-right">
@@ -298,11 +312,14 @@
           >
             <template slot-scope="scope">
               <div>
-                {{
-                  scope.row.type === "ServiceFee"
-                    ? "客户"
-                    : scope.row.partyACustomerName
-                }}
+                <span v-if="scope.row.type === 'ServiceFee'">客户</span>
+                <el-link
+                  v-if="scope.row.type !== 'ServiceFee'"
+                  type="primary"
+                  @click="gotoNew(infoForm, 'partyACustomerName')"
+                >
+                  {{ scope.row.partyACustomerName }}
+                </el-link>
               </div>
             </template>
           </el-table-column>
@@ -705,6 +722,27 @@ export default class RealDealDetails extends Vue {
     }
     console.log(this.infoForm.offerNoticeList);
   }
+  gotoNew(item: any, type: any) {
+    if (type == "oneAgentTeam") {
+      window.open(`/web-sales/firstAgency/info?id=${item.oneAgentTeamId}`);
+    } else if (type == "agencyName") {
+      let agencyId =
+        item.agencyList && item.agencyList.length
+          ? item.agencyList[0].agencyId
+          : "";
+      if (agencyId != "") {
+        window.open(`/web-sales/channelBusiness/info?id=${agencyId}`);
+      }
+    } else if (type == "contTitle") {
+      window.open(`/web-sales/distribution/info?contractNo=${item.contNo}`);
+    } else if (type == "firstContNo") {
+      window.open(
+        `/web-sales/distribution/info?contractNo=${item.firstContNo}`
+      );
+    } else if (type == "partyACustomerName") {
+      window.open(`/web-sales/developers/info?id=${item.id}`);
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -804,12 +842,12 @@ export default class RealDealDetails extends Vue {
   bottom: -13px;
   font-size: 12px;
 }
-.Invalidation{
+.Invalidation {
 }
-.WaitBeSigned{
-  color: #F56C6C;
+.WaitBeSigned {
+  color: #f56c6c;
 }
-.BecomeEffective{
-  color: #19BE6B;
+.BecomeEffective {
+  color: #19be6b;
 }
 </style>

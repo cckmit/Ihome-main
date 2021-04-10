@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 11:41:53
+ * @LastEditTime: 2021-04-10 10:17:34
 -->
 <template>
   <IhPage class="text-left">
@@ -171,7 +171,10 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同电子版">
-              <el-button type="success">预览电子版</el-button>
+              <el-button
+                type="success"
+                @click="preview()"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -240,6 +243,11 @@ export default class SalesApply extends Vue {
     this.$goto({
       path: "/distribution/list",
     });
+  }
+  private preview() {
+    window.open(
+      `/sales-api/sales-document-cover/file/browse/${this.electronicFile[0].fileId}`
+    );
   }
   private async getInfo() {
     let id = this.$route.query.id;

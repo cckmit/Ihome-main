@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-09 19:20:29
+ * @LastEditTime: 2021-04-10 10:27:11
 -->
 <template>
   <el-dialog
@@ -118,6 +118,7 @@
           <el-link
             type="primary"
             class="margin-right-10"
+            @click="handleToDetail(row)"
           >查看</el-link>
           <el-link
             type="success"
@@ -233,12 +234,64 @@ export default class ApplyContract extends Vue {
       this.$message.warning("请先选择一条数据");
     }
   }
+  handleToDetail(row: any) {
+    let router: any;
+    switch (row.contractKind) {
+      case "StandChannel":
+        // 标准渠道分销合同
+        router = this.$router.resolve({
+          path: `/projectApproval/normalDistributionInfo`,
+          query: {
+            id: row.agencyContrictId,
+          },
+        });
+        break;
+      case "StandKindSaleConfirm":
+        // 标准联动销售确认书
+        router = this.$router.resolve({
+          path: `/projectApproval/normalSalesInfo`,
+          query: {
+            id: row.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        router = this.$router.resolve({
+          path: `/projectApproval/notDistributionInfo`,
+          query: {
+            id: row.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        router = this.$router.resolve({
+          path: `/projectApproval/notSalesInfo`,
+          query: {
+            id: row.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        router = this.$router.resolve({
+          path: `/projectApproval/notChannelInfo`,
+          query: {
+            id: row.agencyContrictId,
+          },
+        });
+        break;
+    }
+    window.open(router.href, "_blank");
+  }
   preview(row: any) {
     this.srcList = row.attachItemVOS.map(
       (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileId}`
     );
     this.srcData = row.attachItemVOS.map((v: any) => ({
       fileName: v.fileName,
+      fileId: v.fileId,
       preFileName: (this.$root as any).dictAllName(
         row.contractKind,
         "ContractKind"
