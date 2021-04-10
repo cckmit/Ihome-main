@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:53:41
+ * @LastEditTime: 2021-04-10 15:14:33
 -->
 <template>
   <div>
@@ -397,6 +397,8 @@ export default class Other extends Vue {
   organSelect() {
     this.organDialogVisible = true;
     this.organData.id = this.info.startDivisionId;
+    this.organData.groupId = this.info.groupId;
+    this.organData.groupName = this.info.groupName;
   }
 
   async organFinish(data: any) {
@@ -462,6 +464,7 @@ export default class Other extends Vue {
     this.approvalData.exOver = this.info.exOtherProChannelUse ? 1 : 0;
     this.approvalData.termId = this.termId;
     this.approvalData.proId = this.info.proId;
+    this.approvalData.hasCheckedData = this.info.shareChannelFeeVOS;
   }
 
   async approvalFinish() {

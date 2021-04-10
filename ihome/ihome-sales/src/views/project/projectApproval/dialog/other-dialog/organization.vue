@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 14:49:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 09:58:20
+ * @LastEditTime: 2021-04-10 14:58:36
 -->
 <template>
   <el-dialog
@@ -28,6 +28,7 @@
             <el-input
               v-model="queryPageParameters.name"
               placeholder="名称"
+              clearable
             ></el-input>
           </el-form-item>
         </el-col>
@@ -229,7 +230,17 @@ export default class Organization extends Vue {
   }
 
   async created() {
-    this.getListMixin();
+    this.queryPageParameters.name = this.data.groupName;
+    // this.selection = [
+    //   {
+    //     id: this.data.groupId,
+    //   },
+    // ];
+    await this.getListMixin();
+    const item = this.resPageInfo.list.find(
+      (v: any) => v.id === this.data.groupId
+    );
+    (this.$refs.multipleTable as any).toggleRowSelection(item, true);
   }
   async getListMixin() {
     this.queryPageParameters.id = this.data.id;

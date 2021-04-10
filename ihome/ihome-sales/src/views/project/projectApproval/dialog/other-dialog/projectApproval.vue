@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 19:26:43
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 20:29:21
+ * @LastEditTime: 2021-04-10 15:26:28
 -->
 <template>
   <el-dialog
@@ -33,6 +33,7 @@
             <el-input
               v-model="queryPageParameters.proNo"
               clearable
+              placeholder="盘编"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -41,6 +42,7 @@
             <el-input
               v-model="queryPageParameters.proName"
               clearable
+              placeholder="项目名称"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -51,6 +53,7 @@
             <el-input
               v-model="queryPageParameters.termName"
               clearable
+              placeholder="周期名称"
             ></el-input>
           </el-form-item>
         </el-col>
@@ -67,82 +70,67 @@
       >重置</el-button>
     </div>
     <br />
-    <el-table
+    <IhTableCheckBox
       class="ih-table"
       :data="resPageInfo.list"
       :empty-text="emptyText"
       @selection-change="handleSelectionChange"
+      :hasCheckedData="hasCheckedData"
+      :column="tableColumn"
+      :maxHeight="tableMaxHeight"
+      :pageSize="pageSize"
+      :pageCurrent="pageNum"
+      :pageTotal="resPageInfo.total"
+      @page-change="pageChange"
+      @size-change="sizeChange"
+      row-key="termId"
     >
-      <el-table-column
-        fixed
-        type="selection"
-        width="50"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="termName"
-        label="周期名称"
-        width="250"
-      ></el-table-column>
-      <el-table-column
-        prop="proNo"
-        label="盘编"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="proName"
-        label="项目名称"
-        width="150"
-      ></el-table-column>
-      <el-table-column
-        prop="province"
-        label="省份"
-      >
-        <template v-slot="{ row }">{{
+      <template #province>
+        <el-table-column
+          prop="province"
+          label="省份"
+        >
+          <template v-slot="{ row }">{{
             $root.getAreaName(row.province)
           }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="city"
-        label="城市"
-      >
-        <template v-slot="{ row }">{{
-            $root.getAreaName(row.city)
+        </el-table-column>
+      </template>
+      <template #city>
+        <el-table-column
+          prop="province"
+          label="省份"
+        >
+          <template v-slot="{ row }">{{
+            $root.getAreaName(row.province)
           }}</template>
-      </el-table-column>
-      <el-table-column
-        prop="district"
-        label="行政区"
-      >
-        <template v-slot="{ row }">{{
+        </el-table-column>
+      </template>
+      <template #district>
+        <el-table-column
+          prop="district"
+          label="行政区"
+        >
+          <template v-slot="{ row }">{{
             $root.getAreaName(row.district)
           }}</template>
-      </el-table-column>
-      <el-table-column
-        fixed="right"
-        label="操作"
-        width="120"
-      >
-        <template v-slot="{ row }">
-          <el-link
-            type="primary"
-            @click.native.prevent="routerTo(row, 'info')"
-          >查看详情</el-link>
-        </template>
-      </el-table-column>
-    </el-table>
+        </el-table-column>
+      </template>
+      <template #operate>
+        <el-table-column
+          fixed="right"
+          label="操作"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            <el-link
+              type="primary"
+              @click.native.prevent="routerTo(row, 'info')"
+            >查看详情</el-link>
+          </template>
+        </el-table-column>
+      </template>
+    </IhTableCheckBox>
     <br />
-    <el-pagination
-      class="text-right"
-      style="margin-right: 40px"
-      @size-change="handleSizeChangeMixin"
-      @current-change="handleCurrentChangeMixin"
-      :current-page.sync="queryPageParameters.pageNum"
-      :page-sizes="$root.pageSizes"
-      :page-size="queryPageParameters.pageSize"
-      :layout="$root.paginationLayout"
-      :total="resPageInfo.total"
-    ></el-pagination>
     <span
       slot="footer"
       class="dialog-footer"
@@ -186,21 +174,67 @@ export default class ProjectApproval extends Vue {
     total: 0,
   };
   selection: any = [];
+  private tableMaxHeight: any = 350;
+  private pageSize = 10;
+  private pageNum = 1;
+  private hasCheckedData: any = [];
+  private tableColumn = [
+    {
+      prop: "termName",
+      label: "周期名称",
+      minWidth: 250,
+    },
+    {
+      prop: "proNo",
+      label: "盘编",
+      minWidth: 150,
+    },
+    {
+      prop: "proName",
+      label: "项目名称",
+      minWidth: 150,
+    },
+    {
+      slot: "province",
+    },
+    {
+      slot: "city",
+    },
+    {
+      slot: "district",
+    },
+    {
+      slot: "operate",
+    },
+  ];
 
   get emptyText() {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
   }
 
   async created() {
+    this.hasCheckedData = this.data.hasCheckedData;
+    console.log(this.hasCheckedData);
     this.getListMixin();
   }
   async getListMixin() {
     this.queryPageParameters.exOver = this.data.exOver;
     this.queryPageParameters.proId = this.data.proId;
     this.queryPageParameters.termId = this.data.termId;
-    this.resPageInfo = await post_term_getListAccrossTerm(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_term_getListAccrossTerm({
+      ...this.queryPageParameters,
+      pageNum: this.pageNum,
+      pageSize: this.pageSize,
+    });
+  }
+
+  private pageChange(val: number) {
+    this.pageNum = val;
+    this.getListMixin();
+  }
+  private sizeChange(val: any) {
+    this.pageSize = val;
+    this.getListMixin();
   }
 
   reset() {
