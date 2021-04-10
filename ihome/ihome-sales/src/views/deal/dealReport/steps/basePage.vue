@@ -1875,7 +1875,7 @@
       // 通过项目周期id获取基础信息
       await this.getBaseDealInfo(res.cycleId);
       this.contTypeList = await this.getContTypeList(res.modelCode); // 根据业务模式获取合同类型
-      this.postData.refineModel = await this.getRefineModel(res.modelCode); // 赋值细分业务模式
+      // this.postData.refineModel = await this.getRefineModel(res.modelCode); // 赋值细分业务模式
       this.refineModelList = await this.getRefineModelList(res.modelCode); // 获取细分业务模式下拉项
       // 获取渠道分销合同的值
       this.packageIdsList = [];
