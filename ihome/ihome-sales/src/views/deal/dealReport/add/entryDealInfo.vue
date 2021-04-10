@@ -1175,7 +1175,7 @@
         // 业务模式
         // this.postData.businessType = baseInfo.busEnum;
         this.contTypeList = await this.getContTypeList(this.editBaseInfo.modelCode); // 获取合同类型
-        this.postData.refineModel = (this as any).$parent.getRefineModel(this.editBaseInfo.modelCode); // 赋值细分业务模式
+        // this.postData.refineModel = (this as any).$parent.getRefineModel(this.editBaseInfo.modelCode); // 赋值细分业务模式
         this.refineModelList = await this.getRefineModelList(this.editBaseInfo.modelCode); // 获取细分业务模式下拉项
         // 物业类型
         this.propertyTypeList = [];
