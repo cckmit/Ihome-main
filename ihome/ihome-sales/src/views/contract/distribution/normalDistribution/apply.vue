@@ -318,7 +318,10 @@
         <el-row>
           <el-col :span="12">
             <el-form-item label="合同电子版">
-              <el-button type="success">预览电子版</el-button>
+              <el-button
+                type="success"
+                @click="preview()"
+              >预览电子版</el-button>
             </el-form-item>
           </el-col>
         </el-row>
@@ -340,6 +343,8 @@ import { Form as ElForm } from "element-ui";
 import { get_distributContract_getDistri__agencyContrictId } from "@/api/project/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 import { post_distribution_create } from "@/api/contract/index";
+import { getToken } from "ihome-common/util/cookies";
+import axios from "axios";
 import {
   get_channel_get__id,
   post_channelGrade_getOne,
@@ -491,6 +496,37 @@ export default class DistributionApply extends Vue {
     } catch (error) {
       console.log(error);
     }
+  }
+  private preview() {
+    const token: any = getToken();
+    axios({
+      method: "POST",
+      url: `/sales-api/contract/template/distribution/preview`,
+      xsrfHeaderName: "Authorization",
+      responseType: "blob",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "bearer " + token,
+      },
+      data: {
+        ...this.form,
+        distributionMxList: this.form.distributionMxList.map((i: any) => ({
+          ...i,
+          propertyEnum: (this.$root as any).dictAllName(
+            i.propertyEnum,
+            "Property"
+          ),
+          costTypeEnum: (this.$root as any).dictAllName(
+            i.costTypeEnum,
+            "FeeType"
+          ),
+        })),
+      },
+    }).then((res: any) => {
+      const arr = new Blob([res.data], { type: "application/pdf" });
+      const href = window.URL.createObjectURL(arr);
+      window.open(href);
+    });
   }
   private async submit() {
     (this.$refs["Form"] as ElForm).validate(async (valid: any) => {
