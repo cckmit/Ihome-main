@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-09 20:11:17
+ * @LastEditTime: 2021-04-10 18:04:09
 -->
 <template>
   <IhPage class="text-left">
@@ -84,6 +84,13 @@
                     :params="searchParams"
                   ></IhSelectPageByChannel>
                 </template>
+                <IhSelectPageByAgency
+                  v-else-if="form.channelCompanyKind === 'AgencyCompany'"
+                  placeholder="请选择渠道公司"
+                  style="flex: 1;max-width: 250px;"
+                  v-model="form.channelCompanyId"
+                  @changeOption="getAgencyCompany"
+                ></IhSelectPageByAgency>
               </div>
             </el-form-item>
           </el-col>
@@ -197,7 +204,10 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import { get_distributContract_getDistri__agencyContrictId } from "@/api/project/index";
+import {
+  get_distributContract_getDistri__agencyContrictId,
+  post_company_getAccountById,
+} from "@/api/project/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 import { post_distribution_create } from "@/api/contract/index";
 import {
@@ -355,6 +365,14 @@ export default class NotChannelApply extends Vue {
       if (channelData) {
         this.form.channelLevel = channelData.channelGrade;
       }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async getAgencyCompany(data: any) {
+    try {
+      const res = await post_company_getAccountById({ id: data.id });
+      console.log(res);
     } catch (error) {
       console.log(error);
     }

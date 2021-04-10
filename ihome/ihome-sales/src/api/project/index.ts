@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-10 3:46:03 ├F10: PM┤
+//2021-4-10 5:51:22 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -1430,6 +1430,23 @@ termCalcVo: TermCalcVo;
 /**(必填)周期ID*/
 termId: number;
 }
+/**CalcComplateExcelVO_1*/
+export interface CalcComplateExcelVO_1 {
+/**项目代理费成交情况*/
+agencyCalcComplateModelVOS: CalcComplateModelVO_1[];
+/**项目代理费合计项*/
+agencySum: CalcComplateMxTotalVO_1;
+/**文件ID*/
+fileId: string;
+/**项目服务费成交情况*/
+serviceCalcComplateModelVOS: CalcComplateModelVO_1[];
+/**项目服务费合计项*/
+serviceSum: CalcComplateMxTotalVO_1;
+/**(必填)测算指标[表头]*/
+termCalcVo: TermCalcVo;
+/**(必填)周期ID*/
+termId: number;
+}
 /**CalcComplateModelVO*/
 export interface CalcComplateModelVO {
 /**项目成交明细*/
@@ -1437,8 +1454,52 @@ calcComplateMxVOS: object;
 /**项目成交表头*/
 calcComplateVO: CalcComplateVO;
 }
+/**CalcComplateModelVO_1*/
+export interface CalcComplateModelVO_1 {
+/**项目成交明细*/
+calcComplateMxVOS: object;
+/**项目成交表头*/
+calcComplateVO: CalcComplateVO_1;
+}
 /**CalcComplateMxTotalVO*/
 export interface CalcComplateMxTotalVO {
+/**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
+costTypeEnum: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**分销业绩金额*/
+distributeAchieveAmount: number;
+/**预计成交套数*/
+estimateComplateNum: number;
+/**预计支付渠道佣金总额*/
+estimatePayChannelAmount: number;
+/**预计应收金额*/
+estimateReceiveAmount: number;
+/**总包业绩金额*/
+generalAchieveAmount: number;
+/**其它渠道费用金额*/
+otherChannelAmount: number;
+/**其它外拆*/
+otherDemolition: number;
+/**平台留存率*/
+plateRate: number;
+/**备注*/
+remark: string;
+/**立项周期ID*/
+termId: number;
+/**汇总ID*/
+totalId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**CalcComplateMxTotalVO_1*/
+export interface CalcComplateMxTotalVO_1 {
 /**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1519,8 +1580,90 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**CalcComplateMxVO_1*/
+export interface CalcComplateMxVO_1 {
+/**成交ID*/
+complateId: number;
+/**成交明细ID*/
+complateMxId: number;
+/**成交客户ID*/
+consumerId: number;
+/**客户名称*/
+consumerName: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**分销业绩*/
+distributeAchieveAmount: number;
+/**成交套数*/
+estimateComplateNum: number;
+/**预计支付渠道佣金总额*/
+estimatePayChannelAmount: number;
+/**预计应收金额*/
+estimateReceiveAmount: number;
+/**总包业绩*/
+generalAchieveAmount: number;
+/**其它渠道费用金额*/
+otherChannelAmount: number;
+/**其它外拆*/
+otherDemolition: number;
+/**平台留存率*/
+plateRate: number;
+/**备注*/
+remark: string;
+/**细分业务(All-总包、District-分销)*/
+subdivideEnum: string;
+/**立项周期ID*/
+termId: number;
+/**客户类型(成交方式) NATIONALMARKET-全民营销 NATURAL-自然到访 SELF-自行成交 SELFCHANNEL-自渠 BIG-一级大行 MIDDLE-二级中行 SMALL-三级小行  APPOINT-指定中介行(NationalMarket-全民营销、Natural-自然到访、Self-自行成交、SelfChannel-自渠、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+transactionEnum: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**CalcComplateVO*/
 export interface CalcComplateVO {
+/**成交ID*/
+complateId: number;
+/**成交总套数*/
+complateNum: number;
+/**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
+costTypeEnum: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**预计渠道派发*/
+estimatedChannelSend: number;
+/**垫佣金额预估*/
+estimatedPadCommission: number;
+/**垫佣预估比率*/
+estimatedPadCommissionRate: number;
+/**预计总收款*/
+estimatedTotalReceipt: number;
+/**假定成交价*/
+estimatedTransactionPrice: number;
+/**营销留存*/
+marketingRetention: number;
+/**其它渠道费用金额*/
+otherChannelAmount: number;
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
+propertyEnum: string;
+/**立项周期ID*/
+termId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**CalcComplateVO_1*/
+export interface CalcComplateVO_1 {
 /**成交ID*/
 complateId: number;
 /**成交总套数*/
