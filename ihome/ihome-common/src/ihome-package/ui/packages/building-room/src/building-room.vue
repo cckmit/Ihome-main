@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-21 16:42:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 10:09:19
+ * @LastEditTime: 2021-04-10 10:43:37
 --> 
 <template>
   <div class="cascader">
@@ -46,6 +46,11 @@ export default class IhBuildingRoom extends Vue {
     default: true,
   })
   checkStrictly?: any;
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  isFilter?: any;
   private buildingRoom: any = [];
 
   @Watch("$attrs", { deep: true })
@@ -81,7 +86,7 @@ export default class IhBuildingRoom extends Vue {
       if (v.children && v.children.length) {
         v.children = v.children.map((j: any) => ({
           ...j,
-          exDeal: j.exDeal ? true : false,
+          exDeal: this.isFilter ? (j.exDeal ? true : false) : false,
         }));
       }
     });
