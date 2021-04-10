@@ -121,7 +121,7 @@
   import {post_customer_add} from "@/api/customer";
   import {
     phoneValidator,
-    validIdentityCard
+    // validIdentityCard
   } from "ihome-common/util/base/form-ui";
   import {Form as ElForm} from "element-ui";
   import {NoRepeatHttp} from "ihome-common/util/aop/no-repeat-http";
@@ -217,7 +217,7 @@
           this.postData.cardType = "IDCard"; // 个人默认选中居民身份证
           this.rules.certificateNumber = [
             {required: true, message: "请输入证件编号", trigger: "change"},
-            {validator: validIdentityCard, trigger: "change"}
+            // {validator: validIdentityCard, trigger: "change"}
           ]
         } else if (value === "Company") {
           // 公司
@@ -238,7 +238,7 @@
         // 居民身份证
         this.rules.certificateNumber = [
           {required: true, message: "请输入证件编号", trigger: "change"},
-          {validator: validIdentityCard, trigger: "change"}
+          // {validator: validIdentityCard, trigger: "change"}
         ]
       } else {
         this.rules.certificateNumber = [
