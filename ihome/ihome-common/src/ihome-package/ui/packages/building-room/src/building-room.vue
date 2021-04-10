@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-21 16:42:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 08:55:38
+ * @LastEditTime: 2021-04-10 10:09:19
 --> 
 <template>
   <div class="cascader">
@@ -72,7 +72,20 @@ export default class IhBuildingRoom extends Vue {
     let data = await get_project_getTree__proId({
       proId: this.proId,
     });
-    this.buildingRoom = data;
+    this.buildingRoom = this.enume(data);
+    console.log(this.buildingRoom);
+  }
+
+  enume(arr: any) {
+    arr.forEach((v: any) => {
+      if (v.children && v.children.length) {
+        v.children = v.children.map((j: any) => ({
+          ...j,
+          exDeal: j.exDeal ? true : false,
+        }));
+      }
+    });
+    return arr;
   }
 
   filterMethod(node: any, keyword: any) {
