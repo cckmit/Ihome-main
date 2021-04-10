@@ -4,13 +4,14 @@
  * @Author: zyc
  * @Date: 2020-05-21 16:42:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:57:28
+ * @LastEditTime: 2021-04-10 08:55:38
 --> 
 <template>
   <div class="cascader">
     <el-cascader
       :props="{
         disabled: 'exDeal',
+        checkStrictly: checkStrictly,
       }"
       ref="buildingRoom"
       popper-class="ih-cascader"
@@ -40,6 +41,11 @@ export default class IhBuildingRoom extends Vue {
     default: "请选择栋座房号",
   })
   placeholder: any;
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  checkStrictly?: any;
   private buildingRoom: any = [];
 
   @Watch("$attrs", { deep: true })

@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v2.0.4  2021-04-10 09:00  栋座房号下拉组件可单选栋座
 v2.0.3  2021-04-08 16:44  新增经纪人下拉组件IhSelectPageByChannelBroker
 v2.0.2  2021-04-07 17:30  新增渠道公司下拉组件IhSelectPageByChannelCompany
 v2.0.1  2021-04-02 15:30  新增栋座房号下拉组件IhBuildingRoom
