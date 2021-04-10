@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:54:06
+ * @LastEditTime: 2021-04-10 11:46:43
 -->
 <template>
   <div>
@@ -290,6 +290,8 @@ export default class PartyA extends Vue {
     this.addDialogVisible = true;
     this.partyAddData.startDivisionName = this.info.startDivisionName;
     this.partyAddData.startDivisionId = this.info.startDivisionId;
+    this.partyAddData.companyId = this.info.companyId;
+    this.partyAddData.companyName = this.info.companyName;
   }
 
   async addFinish() {

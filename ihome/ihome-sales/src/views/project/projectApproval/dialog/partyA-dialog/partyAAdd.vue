@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 14:49:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 18:41:47
+ * @LastEditTime: 2021-04-10 11:54:40
 -->
 <template>
   <el-dialog
@@ -58,20 +58,12 @@
             label="乙方"
             prop="partyBId"
           >
-            <el-select
-              v-model="form.partyBId"
-              clearable
+            <el-input
+              v-model="form.partyB"
+              disabled
               placeholder="乙方"
               class="width--100"
-              @change="changePartyB"
-            >
-              <el-option
-                v-for="item in partyBOptions"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              ></el-option>
-            </el-select>
+            ></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -218,7 +210,6 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
-import { post_company_getAll } from "@/api/system/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 import { phoneValidator } from "ihome-common/util/base/form-ui";
 import { post_contract_create } from "@/api/contract/index.ts";
@@ -247,7 +238,6 @@ export default class PartyAAdd extends Vue {
     timeList: [],
   };
   searchName: any = "";
-  partyBOptions: any = [];
   branchOption: any = [];
   partyList: any = [];
   stampList: any = [];
@@ -368,23 +358,21 @@ export default class PartyAAdd extends Vue {
     if (val) {
       if (!this.form.partyBId) {
         (this.$refs.branch as any).blur();
-        this.$message.warning("请先选择乙方信息");
+        this.$message.warning("乙方信息不存在");
       }
     }
   }
-  async changePartyB(val: any) {
-    if (val) {
+  async getPartyB() {
+    this.form.partyBId = this.data.companyId;
+    this.form.partyB = this.data.companyName;
+    if (this.form.partyBId) {
       this.branchOption = await get_bankAccount_get__companyId({
-        companyId: val,
+        companyId: this.form.partyBId,
       });
     } else {
       this.form.receivingAccountId = null;
       this.branchOption = [];
     }
-  }
-
-  async getPartyB() {
-    this.partyBOptions = await post_company_getAll({ name: "" });
     this.form.handlerId = (this.$root as any).userInfo.id;
     this.searchName = (this.$root as any).userInfo.name;
   }

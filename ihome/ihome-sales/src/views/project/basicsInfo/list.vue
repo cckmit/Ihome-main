@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 15:46:08
+ * @LastEditTime: 2021-04-10 11:24:49
 -->
 <template>
   <IhPage label-width="110px">
@@ -81,7 +81,7 @@
               <el-select
                 v-model="queryPageParameters.auditEnum"
                 clearable
-                placeholder="特批入库"
+                placeholder="项目审核状态"
                 class="width--100"
               >
                 <el-option

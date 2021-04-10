@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-05-21 16:42:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 10:43:37
+ * @LastEditTime: 2021-04-10 10:54:19
 --> 
 <template>
   <div class="cascader">
@@ -78,7 +78,6 @@ export default class IhBuildingRoom extends Vue {
       proId: this.proId,
     });
     this.buildingRoom = this.enume(data);
-    console.log(this.buildingRoom);
   }
 
   enume(arr: any) {

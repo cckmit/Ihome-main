@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-02 11:54:09
+ * @LastEditTime: 2021-04-10 11:23:20
 -->
 <template>
   <div>
@@ -57,9 +57,18 @@
             <span class="text-ellipsis">{{ filterExMarket(form.exMinyuan) }}</span>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row v-if="isShow">
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="form.exMinyuan"
+        >
+          <el-form-item label="明源区域公司">
+            <span class="text-ellipsis">{{ form.companyName }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="8"
+          v-if="isShow"
+        >
           <el-form-item
             label="爱家父项目推广名"
             :title="form.parentName"
@@ -67,7 +76,10 @@
             <span class="text-ellipsis">{{ form.parentName }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="isShow"
+        >
           <el-form-item
             label="明源楼盘名"
             :title="form.buildingGuidName"
@@ -75,20 +87,14 @@
             <span class="text-ellipsis">{{ form.buildingGuidName }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col
+          :span="8"
+          v-if="isShow"
+        >
           <el-form-item label="同步明源房号数据">
             <span class="text-ellipsis">{{ filterExMarket(form.exSyncRoom) }}</span>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="明源区域公司">
-            <span class="text-ellipsis">{{ form.companyName }}</span>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item label="省份">
             <span class="text-ellipsis">{{ $root.getAreaName(form.province) }}</span>
@@ -104,8 +110,6 @@
             <span class="text-ellipsis">{{ $root.getAreaName(form.district) }}</span>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="24">
           <el-form-item
             label="项目地址"
@@ -114,8 +118,6 @@
             <span class="text-ellipsis">{{ form.proAddr }}</span>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item
             label="经纬度"

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:46:39
+ * @LastEditTime: 2021-04-10 11:09:24
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -437,40 +437,49 @@ export default class NotSalesApply extends Vue {
 
   // 根据渠道类型,垫佣周期,中介公司获取下表数据
   queryUnderData(data: any, type: any) {
-    this.queryObj = {
-      padCommissionEnum: this.info.padCommissionEnum,
-      termId: this.info.termId,
-      channelEnum: this.info.channelEnum,
-      designatedAgency: null,
-      designatedAgencyId: null,
-      contractKind: "NoStandChannel",
-    };
-    if (type === "channel") {
-      if (data === "Appoint" || data === "Strategic") {
-        this.isShow = true;
-      } else {
-        this.isShow = false;
+    if (data) {
+      this.queryObj = {
+        padCommissionEnum: this.info.padCommissionEnum,
+        termId: this.info.termId,
+        channelEnum: this.info.channelEnum,
+        designatedAgency: null,
+        designatedAgencyId: null,
+        contractKind: "StandChannel",
+      };
+      if (type === "channel") {
+        if (data === "Appoint" || data === "Strategic") {
+          this.isShow = true;
+        } else {
+          this.isShow = false;
+        }
       }
-    }
-    if (this.isShow) {
-      if (
-        this.info.designatedAgency &&
-        this.info.padCommissionEnum &&
-        this.info.channelEnum
-      ) {
-        this.queryObj.designatedAgency = this.info.designatedAgency;
-        this.queryObj.designatedAgencyId = this.info.designatedAgencyId;
-        this.queryObj.companyKind = this.info.companyKind;
-        this.queryCondition();
+      if (this.isShow) {
+        if (
+          this.info.designatedAgency &&
+          this.info.padCommissionEnum &&
+          this.info.channelEnum
+        ) {
+          this.queryObj.designatedAgency = this.info.designatedAgency;
+          this.queryObj.designatedAgencyId = this.info.designatedAgencyId;
+          this.queryObj.companyKind = this.info.companyKind;
+          this.queryCondition();
+        }
+      } else {
+        this.info.designatedAgency = null;
+        this.info.companyKind = null;
+        this.info.designatedAgencyId = null;
+        if (this.info.padCommissionEnum && this.info.channelEnum) {
+          this.queryObj.designatedAgency = null;
+          this.queryObj.designatedAgencyId = null;
+          this.queryObj.companyKind = null;
+          this.queryCondition();
+        }
       }
     } else {
       this.info.designatedAgency = null;
-      if (this.info.padCommissionEnum && this.info.channelEnum) {
-        this.queryObj.designatedAgency = null;
-        this.queryObj.designatedAgencyId = null;
-        this.queryObj.companyKind = null;
-        this.queryCondition();
-      }
+      this.info.companyKind = null;
+      this.info.designatedAgencyId = null;
+      this.info.contractMxVOList = [];
     }
   }
 

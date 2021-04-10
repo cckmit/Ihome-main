@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:48:15
+ * @LastEditTime: 2021-04-10 11:26:15
 -->
 <template>
   <ih-page>
@@ -106,9 +106,10 @@
               ></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
+          <el-col
+            :span="8"
+            v-if="form.exMinyuan"
+          >
             <el-form-item label="明源区域公司">
               <el-input
                 v-model="form.companyName"
@@ -127,8 +128,6 @@
               ></IhCascader>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="24">
             <el-form-item
               label="项目地址"
