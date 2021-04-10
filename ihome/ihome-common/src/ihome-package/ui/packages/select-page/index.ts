@@ -3,8 +3,8 @@
  * @version:
  * @Author: ywl
  * @Date: 2020-10-20 15:03:23
- * @LastEditors: lsj
- * @LastEditTime: 2021-04-08 16:38:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-10 15:39:42
  */
 import IhSelectPageBase from './src/select-page-base.vue'
 import IhSelectPageOrg from './src/select-page-org.vue'
@@ -22,6 +22,7 @@ import IhSelectPageByOrgCompany from './src/select-page-orgByCompany.vue'
 import IhSelectPageByBroker from './src/select-page-broker.vue'
 import IhSelectPageByChannelCompany from './src/select-page-channelCompany.vue'
 import IhSelectPageByChannelBroker from './src/select-page-channelBroker.vue'
+import IhSelectPageByAgency from './src/select-page-agency.vue'
 
 export {
   IhSelectPageByDeveloper,
@@ -39,5 +40,6 @@ export {
   IhSelectPageByOrgCompany,
   IhSelectPageByBroker,
   IhSelectPageByChannelCompany,
-  IhSelectPageByChannelBroker
+  IhSelectPageByChannelBroker,
+  IhSelectPageByAgency,
 }

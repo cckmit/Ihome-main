@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-9 8:22:37 ├F10: PM┤
+//2021-4-10 3:34:33 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -151,39 +151,47 @@ return await request.post< number,number> (basePath+'/collectandsend/stop', d)
 export async function post_collectandsend_update (d?: any) {
 return await request.post< CollectandsendUpdateVO,CollectandsendUpdateVO> (basePath+'/collectandsend/update', d)
 }
-/**保存新增开发商信息*/
+/**保存新增一手代理信息*/
 export async function post_company_add (d?: any) {
 return await request.post< number,number> (basePath+'/company/add', d)
 }
-/**审核开发商*/
+/**审核一手代理*/
 export async function post_company_audit (d?: any) {
 return await request.post< number,number> (basePath+'/company/audit', d)
 }
-/**删除开发商*/
+/**删除一手代理*/
 export async function get_company_delete__id (d?: any) {
 return await request.get<number,number>(basePath+'/company/delete/{id}', { params: d })
 }
-/**开发商详情*/
+/**一手代理详情*/
 export async function get_company_get__id (d?: any) {
 return await request.get<CompanyDetailVO,CompanyDetailVO>(basePath+'/company/get/{id}', { params: d })
 }
-/**开发商列表*/
+/**一手代理银行账户列表根据ID*/
+export async function post_company_getAccountById (d?: any) {
+return await request.post< CompanyBank[],CompanyBank[]> (basePath+'/company/getAccountById', d)
+}
+/**一手代理数据列表【模糊查询分页】*/
+export async function post_company_getFuzzyQuery (d?: any) {
+return await request.post< any,any> (basePath+'/company/getFuzzyQuery', d)
+}
+/**一手代理列表*/
 export async function post_company_getList (d?: any) {
 return await request.post< any,any> (basePath+'/company/getList', d)
 }
-/**开发商名称*/
+/**一手代理名称*/
 export async function get_company_getName__id (d?: any) {
 return await request.get<string,string>(basePath+'/company/getName/{id}', { params: d })
 }
-/**开发商列表(不分页)*/
+/**一手代理列表(不分页)*/
 export async function post_company_listAll (d?: any) {
 return await request.post< CompanyListVO[],CompanyListVO[]> (basePath+'/company/listAll', d)
 }
-/**开发商数据列表*/
+/**一手代理数据列表*/
 export async function post_company_listByIds (d?: any) {
 return await request.post< QueryCompanyNameResponseVO[],QueryCompanyNameResponseVO[]> (basePath+'/company/listByIds', d)
 }
-/**撤回开发商*/
+/**撤回一手代理*/
 export async function post_company_retract (d?: any) {
 return await request.post< number,number> (basePath+'/company/retract', d)
 }
@@ -191,7 +199,7 @@ return await request.post< number,number> (basePath+'/company/retract', d)
 export async function post_company_update (d?: any) {
 return await request.post< number,number> (basePath+'/company/update', d)
 }
-/**修改开发商信息*/
+/**修改一手代理信息*/
 export async function post_company_updateDraft (d?: any) {
 return await request.post< number,number> (basePath+'/company/updateDraft', d)
 }
@@ -1185,7 +1193,7 @@ type: string;
 }
 /**AuditVO*/
 export interface AuditVO {
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
 /**审核结果*/
 pass: boolean;
@@ -2022,6 +2030,31 @@ fileName: string;
 /**类型(Licence-营业执照、BankLicence-开户许可证、Other-其他附件)*/
 type: string;
 }
+/**CompanyBank*/
+export interface CompanyBank {
+/**开户银行*/
+bank: string;
+/**一手商ID*/
+companyId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**ID*/
+id: number;
+/**账户名称*/
+name: string;
+/**账户号码*/
+number: string;
+/**账号类型(Basic-基本存款账户、General-一般存款账户)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**CompanyBankBaseVO*/
 export interface CompanyBankBaseVO {
 /**开户银行*/
@@ -2059,7 +2092,7 @@ inputUser: number;
 legalPerson: string;
 /**法人身份证*/
 legalPersonId: string;
-/**(必填)开发商名称*/
+/**(必填)一手代理名称*/
 name: string;
 /**(必填)省份*/
 province: string;
@@ -2103,7 +2136,7 @@ contactList: CompanyContactBaseVO[];
 county: string;
 /**(必填)统一社会信用代码*/
 creditCode: string;
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
 /**(必填)录入人*/
 inputUser: number;
@@ -2113,7 +2146,7 @@ inputUserName: string;
 legalPerson: string;
 /**法人身份证*/
 legalPersonId: string;
-/**(必填)开发商名称*/
+/**(必填)一手代理名称*/
 name: string;
 /**(必填)省份*/
 province: string;
@@ -2148,7 +2181,7 @@ contactList: CompanyContactBaseVO[];
 county: string;
 /**(必填)统一社会信用代码*/
 creditCode: string;
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
 /**(必填)录入人*/
 inputUser: number;
@@ -2156,7 +2189,7 @@ inputUser: number;
 legalPerson: string;
 /**法人身份证*/
 legalPersonId: string;
-/**(必填)开发商名称*/
+/**(必填)一手代理名称*/
 name: string;
 /**(必填)省份*/
 province: string;
@@ -2193,7 +2226,7 @@ contactList: CompanyContactBaseVO[];
 county: string;
 /**(必填)统一社会信用代码*/
 creditCode: string;
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
 /**(必填)录入人*/
 inputUser: number;
@@ -2201,7 +2234,7 @@ inputUser: number;
 legalPerson: string;
 /**法人身份证*/
 legalPersonId: string;
-/**(必填)开发商名称*/
+/**(必填)一手代理名称*/
 name: string;
 /**(必填)省份*/
 province: string;
@@ -2215,6 +2248,11 @@ shortName: string;
 status: string;
 /**(必填)公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）、CompanyLimitedByShares-股份有限公司、IndividualIndustrial-个体工商户)*/
 type: string;
+}
+/**CompanyIdVO*/
+export interface CompanyIdVO {
+/**一手代理ID*/
+id: number;
 }
 /**CompanyIdVo*/
 export interface CompanyIdVo {
@@ -2231,7 +2269,7 @@ city: string;
 county: string;
 /**统一社会信用代码*/
 creditCode: string;
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
 /**录入人ID*/
 inputUser: number;
@@ -4552,17 +4590,26 @@ propertyName: string;
 }
 /**QueryCompanyNameResponseVO*/
 export interface QueryCompanyNameResponseVO {
-/**开发商名称*/
+/**一手代理名称*/
 companyName: string;
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
-/**开发商简称*/
+/**一手代理简称*/
 shortName: string;
 }
 /**QueryCompanyNameVO*/
 export interface QueryCompanyNameVO {
-/**开发商ID*/
+/**一手代理ID*/
 ids: number[];
+}
+/**QueryFuzzyNameVO*/
+export interface QueryFuzzyNameVO {
+/**一手代理名称*/
+companyName: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
 }
 /**RecommendProjectVo*/
 export interface RecommendProjectVo {
@@ -4586,7 +4633,7 @@ receivingAccountId: number;
 }
 /**RetractVO*/
 export interface RetractVO {
-/**开发商ID*/
+/**一手代理ID*/
 id: number;
 /**撤回原因*/
 reason: string;
@@ -6061,7 +6108,7 @@ value: number;
 }
 /**UpdateInputUserVO*/
 export interface UpdateInputUserVO {
-/**开发商ID*/
+/**一手代理ID*/
 companyId: number[];
 /**(必填)新录入人*/
 inputUser: number;

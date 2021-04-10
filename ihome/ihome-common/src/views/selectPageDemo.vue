@@ -161,7 +161,10 @@
     <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
     <el-form-item label="渠道公司">需要先选择渠道公司类型</el-form-item>
     <el-form-item>
-      <el-select v-model="form.agencyType" placeholder="请选择">
+      <el-select
+        v-model="form.agencyType"
+        placeholder="请选择"
+      >
         <el-option
           label="内部公司"
           value="InfieldCompany"
@@ -189,6 +192,9 @@
       ></IhSelectPageByChannelBroker>
     </el-form-item>
     <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
+    <el-form-item label="一手代理公司">
+      <IhSelectPageByAgency v-model="form.input18"></IhSelectPageByAgency>
+    </el-form-item>
   </el-form>
 </template>
 
@@ -213,7 +219,8 @@ import {
   IhSelectPageByOrgCompany,
   IhSelectPageByBroker,
   IhSelectPageByChannelCompany,
-  IhSelectPageByChannelBroker
+  IhSelectPageByChannelBroker,
+  IhSelectPageByAgency,
 } from "../ihome-package/ui/packages/select-page/index";
 
 @Component({
@@ -233,7 +240,8 @@ import {
     IhSelectPageByOrgCompany,
     IhSelectPageByBroker,
     IhSelectPageByChannelCompany,
-    IhSelectPageByChannelBroker
+    IhSelectPageByChannelBroker,
+    IhSelectPageByAgency,
   },
 })
 export default class SelectPageDemo extends Vue {
@@ -262,6 +270,7 @@ export default class SelectPageDemo extends Vue {
     brokerId: null,
     agencyType: null,
     agencyId: null,
+    input18: null,
   };
   private rules = {};
 
