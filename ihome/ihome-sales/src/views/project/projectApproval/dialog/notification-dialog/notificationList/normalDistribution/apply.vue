@@ -129,6 +129,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
             >
             </el-date-picker>
           </el-form-item>
@@ -705,6 +706,12 @@ export default class NormalSalesApply extends Vue {
     ],
   };
   private companyKindOption: any = [];
+  timeList: any = [];
+  pickerOptions: any = {
+    disabledDate: (time: any) => {
+      return this.dataTimeChange(time);
+    },
+  };
 
   @Watch("info.channelEnum", { immediate: true })
   async getIsShow(val: any) {
@@ -726,12 +733,19 @@ export default class NormalSalesApply extends Vue {
     return this.$route.query.id;
   }
 
+  dataTimeChange(time: any) {
+    let start: any = new Date(this.timeList[0]).getTime() - 24 * 60 * 60 * 1000;
+    let end: any = new Date(this.timeList[1]).getTime();
+    return time.getTime() < start || time.getTime() > end;
+  }
+
   created() {
     this.getInfo();
   }
 
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
+    this.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
     if (this.agencyContrictId) {
       const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
