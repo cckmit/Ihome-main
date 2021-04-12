@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 15:12:21
+ * @LastEditTime: 2021-04-12 16:56:52
 -->
 <template>
   <IhPage class="text-left">
@@ -480,7 +480,7 @@ export default class SalesApply extends Vue {
           // distributionState: "",
           // exInvolvedCommiss: "",
           handlerId: (this.$root as any).userInfo.id,
-          organizationId: res.groupId,
+          // organizationId: res.groupId,
           padCommissionEnum: res.padCommissionEnum,
           partyCompany: res.partyCompany,
           partyCompanyId: res.partyCompanyId,

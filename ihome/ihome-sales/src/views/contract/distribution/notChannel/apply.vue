@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 15:51:53
+ * @LastEditTime: 2021-04-12 16:56:59
 -->
 <template>
   <IhPage class="text-left">
@@ -462,7 +462,7 @@ export default class NotChannelApply extends Vue {
           distributionMxList: res.contractMxVOList,
           exInvolvedCommiss: res.exInvolvedCommiss,
           handlerId: (this.$root as any).userInfo.id,
-          organizationId: res.groupId,
+          // organizationId: res.groupId,
           padCommissionEnum: res.padCommissionEnum,
           partyCompany: res.partyCompany,
           partyCompanyId: res.partyCompanyId,

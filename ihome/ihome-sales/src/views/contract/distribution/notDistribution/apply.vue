@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 15:56:00
+ * @LastEditTime: 2021-04-12 16:56:29
 -->
 <template>
   <IhPage class="text-left">
@@ -420,7 +420,7 @@ export default class NotDistributionApply extends Vue {
           designatedAgencyId: res.designatedAgencyId,
           distributionMxList: res.contractMxVOList,
           handlerId: (this.$root as any).userInfo.id,
-          organizationId: res.groupId,
+          // organizationId: res.groupId,
           padCommissionEnum: res.padCommissionEnum,
           partyCompany: res.partyCompany,
           partyCompanyId: res.partyCompanyId,

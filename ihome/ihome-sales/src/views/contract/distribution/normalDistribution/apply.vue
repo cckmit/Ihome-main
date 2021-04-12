@@ -601,7 +601,7 @@ export default class DistributionApply extends Vue {
           // distributionState: "",
           // exInvolvedCommiss: "",
           handlerId: (this.$root as any).userInfo.id,
-          organizationId: res.groupId,
+          // organizationId: res.groupId,
           padCommissionEnum: res.padCommissionEnum,
           partyCompany: res.partyCompany,
           partyCompanyId: res.partyCompanyId,
