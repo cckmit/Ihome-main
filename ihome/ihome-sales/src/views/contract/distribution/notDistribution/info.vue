@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 11:39:14
+ * @LastEditTime: 2021-04-12 15:56:15
 -->
 <template>
   <IhPage class="text-left">
@@ -23,6 +23,11 @@
           <el-col :span="12">
             <el-form-item label="合同标题">{{form.contractTitle}}</el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="标题备注">{{form.titleOrRemark}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="项目名称">{{form.projectName}}</el-form-item>
           </el-col>

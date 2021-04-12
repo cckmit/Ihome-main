@@ -20,7 +20,10 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
+            <el-form-item label="标题备注">{{form.titleOrRemark}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="项目名称">{{form.projectName}}</el-form-item>
           </el-col>
         </el-row>

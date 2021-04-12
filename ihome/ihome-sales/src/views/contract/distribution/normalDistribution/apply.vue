@@ -23,7 +23,10 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
+            <el-form-item label="标题备注">{{form.titleOrRemark}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="项目名称">{{form.projectName}}</el-form-item>
           </el-col>
         </el-row>
@@ -396,6 +399,7 @@ export default class DistributionApply extends Vue {
     partyaTel: null,
     supplementary: null,
     unContractLiability: null,
+    titleOrRemark: null,
     channelAccountData: null,
   };
   private startDivisionId: any = null; //启动事业部ID
@@ -606,6 +610,7 @@ export default class DistributionApply extends Vue {
           partyaTel: res.partyaTel,
           supplementary: res.supplementary,
           unContractLiability: res.unContractLiability,
+          titleOrRemark: res.titleOrRemark,
           projectName: res.proName,
         });
         this.startDivisionId = res.startDivisionId;

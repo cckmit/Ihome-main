@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-09 18:32:00
+ * @LastEditTime: 2021-04-12 15:49:32
 -->
 <template>
   <IhPage class="text-left">
@@ -27,6 +27,11 @@
             <el-form-item label="合同标题">{{form.contractTitle}}</el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="标题备注">{{form.titleOrRemark}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
             <el-form-item label="项目名称">{{form.projectName}}</el-form-item>
           </el-col>
         </el-row>
@@ -186,6 +191,7 @@ export default class NotSalesApply extends Vue {
     partyaTel: null,
     supplementary: null,
     unContractLiability: null,
+    titleOrRemark: null,
   };
   private startDivisionId: any = null; //启动事业部ID
   private cityCode: any = null; //城市code
@@ -308,6 +314,7 @@ export default class NotSalesApply extends Vue {
           partyaTel: res.partyaTel,
           supplementary: res.supplementary,
           unContractLiability: res.unContractLiability,
+          titleOrRemark: res.titleOrRemark,
           projectName: res.proName,
         });
         this.startDivisionId = res.startDivisionId;
