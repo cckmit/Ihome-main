@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 15:54:28
+ * @LastEditTime: 2021-04-12 11:49:47
 -->
 <template>
   <div>
@@ -443,6 +443,8 @@ export default class Notification extends Vue {
         preferentialPartyAId: this.info.preferentialPartyAId,
         termId: this.$route.query.id,
         chargeEnum: this.info.chargeEnum,
+        termStart: this.info.termStart,
+        termEnd: this.info.termEnd,
       };
       window.sessionStorage.setItem("addContract", JSON.stringify(addObj));
     }

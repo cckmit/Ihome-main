@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:08:34
+ * @LastEditTime: 2021-04-12 14:39:46
 -->
 <template>
   <ih-page class="text-left">
@@ -42,6 +42,7 @@
               start-placeholder="开始日期"
               end-placeholder="结束日期"
               value-format="yyyy-MM-dd"
+              :picker-options="pickerOptions"
             >
             </el-date-picker>
           </el-form-item>
@@ -407,8 +408,14 @@ export default class NormalSalesApply extends Vue {
       },
     ],
   };
-  private companyKindOption: any = [];
-  private fileList: any = [];
+  companyKindOption: any = [];
+  fileList: any = [];
+  timeList: any = [];
+  pickerOptions: any = {
+    disabledDate: (time: any) => {
+      return this.dataTimeChange(time);
+    },
+  };
 
   @Watch("info.channelEnum", { immediate: true })
   async getIsShow(val: any) {
@@ -430,12 +437,19 @@ export default class NormalSalesApply extends Vue {
     return this.$route.query.id;
   }
 
+  dataTimeChange(time: any) {
+    let start: any = new Date(this.timeList[0]).getTime() - 24 * 60 * 60 * 1000;
+    let end: any = new Date(this.timeList[1]).getTime();
+    return time.getTime() < start || time.getTime() > end;
+  }
+
   created() {
     this.getInfo();
   }
 
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
+    this.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
     if (this.agencyContrictId) {
       const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
@@ -454,6 +468,8 @@ export default class NormalSalesApply extends Vue {
       }));
     } else {
       Object.assign(this.info, JSON.parse(res));
+      this.info.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
+      console.log(this.info.timeList);
       if (this.info.preferentialPartyAId) {
         const item = await get_company_get__id({
           id: this.info.preferentialPartyAId,
