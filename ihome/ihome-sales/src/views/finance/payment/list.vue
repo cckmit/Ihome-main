@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 14:13:13
+ * @LastEditTime: 2021-04-12 14:21:13
 -->
 <template>
   <IhPage label-width="100px">
@@ -553,8 +553,6 @@ export default class ReceiptList extends Vue {
     }
   }
   private async syncPay(row: any) {
-    console.log(row);
-
     try {
       await this.$confirm("确认是否对该付款记录进行同步电子回单?", "提示");
       const res = await post_payment_syncElectronicReceipt__id({ id: row.id });
