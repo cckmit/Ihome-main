@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 18:20:05
+ * @LastEditTime: 2021-04-12 14:13:13
 -->
 <template>
   <IhPage label-width="100px">
@@ -394,6 +394,10 @@
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.ACCOUNTCHECK'"
                 >对账</el-dropdown-item>
                 <el-dropdown-item
+                  :class="{'ih-data-disabled': row.status !== 'Paid'}"
+                  @click.native.prevent="syncPay(row)"
+                >同步电子回单</el-dropdown-item>
+                <el-dropdown-item
                   :class="{'ih-data-disabled': row.status !== 'NotPaid' && row.status !== 'NotCheck'}"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.REMOVE'"
@@ -448,6 +452,7 @@ import {
   post_payment_delete__id,
   post_payment_checkPayment__id,
   post_payment_batchRelieveDeal,
+  post_payment_syncElectronicReceipt__id,
 } from "../../../api/finance/index";
 
 @Component({
@@ -543,6 +548,20 @@ export default class ReceiptList extends Vue {
       await post_payment_checkPayment__id({ id: row.id });
       this.getListMixin();
       this.$message.success("对账成功");
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async syncPay(row: any) {
+    console.log(row);
+
+    try {
+      await this.$confirm("确认是否对该付款记录进行同步电子回单?", "提示");
+      const res = await post_payment_syncElectronicReceipt__id({ id: row.id });
+      if (res) {
+        this.getListMixin();
+        this.$message.success("同步成功");
+      }
     } catch (error) {
       console.log(error);
     }
