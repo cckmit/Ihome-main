@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-18 14:23:16
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-12 17:50:45
 -->
 <template>
   <IhPage label-width="80px">
@@ -425,6 +425,13 @@ export default class DiscountList extends Vue {
 
   private handleExport() {
     const token: any = getToken();
+    let notificationStatuses: any, notificationTypes: any;
+    if (this.queryPageParameters.notificationStatuses) {
+      notificationStatuses = [this.queryPageParameters.notificationStatuses];
+    }
+    if (this.queryPageParameters.notificationTypes) {
+      notificationTypes = [this.queryPageParameters.notificationTypes];
+    }
     axios({
       method: "POST",
       url: `/sales-api/contract/export/notice/list`,
@@ -434,7 +441,11 @@ export default class DiscountList extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: { ...this.queryPageParameters },
+      data: {
+        ...this.queryPageParameters,
+        notificationStatuses,
+        notificationTypes,
+      },
     }).then((res: any) => {
       if (res.data.type === "application/json") {
         let reader = new FileReader();
