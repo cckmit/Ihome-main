@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 16:56:29
+ * @LastEditTime: 2021-04-12 17:32:06
 -->
 <template>
   <IhPage class="text-left">
@@ -62,6 +62,7 @@
                   v-if="form.channelCompanyKind === 'InfieldCompany'"
                   style="flex: 1;max-width: 250px;"
                   v-model="form.channelCompanyId"
+                  @changeOption="getCompanyInfo"
                 ></IhSelectPageByCompany>
                 <template v-else-if="form.channelCompanyKind === 'ChannelCompany'">
                   <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
