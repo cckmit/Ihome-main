@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-30 15:28:03
+ * @LastEditTime: 2021-04-13 16:02:01
 -->
 <template>
   <IhPage class="text-left">
@@ -1178,6 +1178,7 @@ export default class ApplyAudit extends Vue {
         this.$confirm("是否现在开具发票", "提示")
           .then(async () => {
             await post_applyRec_audit(params);
+            loading.close();
             this.$router.push({
               path: `/invoice/list`,
               query: {
@@ -1188,6 +1189,7 @@ export default class ApplyAudit extends Vue {
           })
           .catch(async () => {
             await post_applyRec_audit(params);
+            loading.close();
             this.$message.success("通过成功");
             this.$goto({
               path: "/applyRecAudit/list",
