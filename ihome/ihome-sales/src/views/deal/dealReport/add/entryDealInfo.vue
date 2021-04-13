@@ -2468,6 +2468,7 @@
               agencyId: this.postData.agencyId,
               brokerId: this.postData.brokerId,
               // channelLevel: this.postData.channelLevel,
+              companyKind: this.postData.companyKind
             }
           )
         }
