@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:15:27
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 09:35:09
+ * @LastEditTime: 2021-04-13 14:48:12
 -->
 <template>
   <ih-page>
@@ -13,9 +13,9 @@
         <el-tabs
           class="tabClass"
           type="border-card"
-          v-model="tabActive"
+          v-model="componetName"
           stretch
-          @tab-click="tabClick(tabActive)"
+          @tab-click="tabClick(componetName)"
           :before-leave="beforeLeave"
         >
           <el-tab-pane
@@ -122,9 +122,8 @@ Component.registerHooks(["beforeRouteEnter"]);
   },
 })
 export default class ProjectApprovalEdit extends Vue {
-  tabActive: any = "BasicInfo";
   typeStr = "";
-  componetName: any = "BasicInfo";
+  componetName: any = "";
   isCut: any = true;
 
   get maxHeight() {
@@ -139,6 +138,16 @@ export default class ProjectApprovalEdit extends Vue {
     next((vm: any) => {
       vm.typeStr = to.name;
     });
+  }
+
+  created() {
+    this.componetName = window.sessionStorage.getItem("tabStatus")
+      ? window.sessionStorage.getItem("tabStatus")
+      : "BasicInfo";
+  }
+
+  destroyed() {
+    window.sessionStorage.removeItem("tabStatus");
   }
 
   tabClick(val: any) {

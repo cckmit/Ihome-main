@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:06:03
+ * @LastEditTime: 2021-04-13 14:31:49
 -->
 <template>
   <ih-page class="text-left">
@@ -46,7 +46,7 @@
         </div>
         <div>甲方公司：<u>{{info.partyCompany}}</u></div>
         <div>甲方地址：<u>{{info.partyaAddr}}</u></div>
-        <div>甲方地址：
+        <div>甲方联系人：
           <el-form-item
             label-width="12px"
             label=" "
@@ -153,7 +153,7 @@
                 clearable
                 placeholder="请选择渠道类型"
                 class="width--100"
-                @change="queryUnderData(info.channelEnum, 'channel')"
+                @change="channelChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCustomer')"
@@ -173,7 +173,7 @@
                 <el-select
                   v-model="info.companyKind"
                   clearable
-                  placeholder="请选择公司种类"
+                  placeholder="请选择"
                   class="width--100"
                   @change="companyKindChange"
                 >
@@ -190,13 +190,23 @@
               :span='6'
               class="margin-left-10"
             >
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 250px;"
+                clearable
+                v-model="info.designatedAgencyId"
+                @changeOption="getChannelInfo"
+                @clear="queryUnderData('123')"
+              ></IhSelectPageByCompany>
               <IhSelectPageByChannel
+                v-else-if="info.companyKind === 'ChannelCompany'"
                 v-model="info.designatedAgencyId"
                 clearable
                 placeholder="渠道商名称"
                 :params="searchConditon"
                 :search-name="info.designatedAgency"
                 @changeOption="getChannelInfo"
+                @clear="queryUnderData('123')"
               ></IhSelectPageByChannel>
             </el-col>
           </div>
@@ -213,7 +223,7 @@
                 placeholder="请选择垫佣周期"
                 class="width--100"
                 :disabled="padCommissionEnumOptions.length === 1"
-                @change="queryUnderData(info.padCommissionEnum, 'padCommission')"
+                @change="queryUnderData(info.padCommissionEnum)"
               >
                 <el-option
                   v-for="item in padCommissionEnumOptions"
@@ -284,6 +294,8 @@
             label-width="70px"
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -300,6 +312,8 @@
             label-width="12px"
           >
             <el-input
+              class="textareaClass"
+              maxlength="2000"
               show-word-limit
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
@@ -339,6 +353,7 @@
         >
           <el-input
             class="textareaClass"
+            maxlength="2000"
             show-word-limit
             type="textarea"
             :autosize="{ minRows: 4, maxRows: 8 }"
@@ -354,6 +369,8 @@
           >
             <el-input
               show-word-limit
+              class="textareaClass"
+              maxlength="2000"
               type="textarea"
               :autosize="{ minRows: 4, maxRows: 8 }"
               placeholder="请输入客户成交及确认"
@@ -402,7 +419,7 @@
           个工作日退回已支付的代理费，甲方亦有权在未结算的代理费中直接抵扣。
         </div>
         <br />
-        <div>7.5 因乙方违约违规造成的罚款或经济损失，由甲方相关部门核实并从代理费中扣除。</div>
+        <div>7.5 因乙方违约违规的行为导致项目开发商或甲方上游合作方罚款或造成甲方经济损失的，乙方应承担相应责任及损失，且甲方有权直接从未结的代理费中进行扣除，不足部分乙方应另行支付。</div>
         <br />
         <div>7.6 在支付代理费前，甲方及开发商有权对乙方推介客户的真实性、有效性进行核实并对乙方引荐的客户进行抽查回访，
           推荐客户的真实性、有效性以客户反馈的回访结果为准，如回访或复核存在不满足推介要求或属于违法推介等异常情况的（如飞单、洗客等），
@@ -462,14 +479,21 @@
         <div>9.3 未尽事宜，双方另行签订补充协议。本协议正本一式两份，双方各持一份，具有同等效力，经双方加盖公章后生效。双方就本协议及补充条款有任何异议，双方应本着友好协商的原则处理，协商不成，可向项目所在地人民法院起诉。</div>
         <br />
         <div class="font-weight">十、其他约定</div>
-        <el-input
-          show-word-limit
-          type="textarea"
-          :autosize="{ minRows: 4, maxRows: 8 }"
-          placeholder="选填, 条款请从10.1开始编号"
-          v-model="info.supplementary"
+        <el-form-item
+          label=" "
+          label-width="0"
         >
-        </el-input>
+          <el-input
+            show-word-limit
+            type="textarea"
+            class="textareaClass"
+            maxlength="2000"
+            :autosize="{ minRows: 4, maxRows: 8 }"
+            placeholder="选填, 条款请从10.1开始编号"
+            v-model="info.supplementary"
+          >
+          </el-input>
+        </el-form-item>
         <br />
         <br />
         <br />
@@ -536,7 +560,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import {
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
@@ -713,22 +737,6 @@ export default class NormalSalesApply extends Vue {
     },
   };
 
-  @Watch("info.channelEnum", { immediate: true })
-  async getIsShow(val: any) {
-    if (val === "Appoint" || val === "Strategic") {
-      this.isShow = true;
-      this.companyKindOption = await post_dict_getAllByType({
-        tag: "Channel",
-        type: "CompanyKind",
-        valid: "Valid",
-      });
-    } else {
-      this.isShow = false;
-      this.info.companyKind = null;
-      this.companyKindOption = [];
-    }
-  }
-
   get agencyContrictId() {
     return this.$route.query.id;
   }
@@ -758,6 +766,16 @@ export default class NormalSalesApply extends Vue {
         type: v.type,
         exAuto: v.exAuto,
       }));
+      if (data.channelEnum === "Appoint" || data.channelEnum === "Strategic") {
+        this.isShow = true;
+        this.companyKindOption = await post_dict_getAllByType({
+          tag: "Channel",
+          type: "CompanyKind",
+          valid: "Valid",
+        });
+      } else {
+        this.isShow = false;
+      }
     } else {
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
@@ -804,13 +822,30 @@ export default class NormalSalesApply extends Vue {
     }
   }
 
+  async channelChange(val: any) {
+    if (val === "Appoint" || val === "Strategic") {
+      this.isShow = true;
+      this.companyKindOption = await post_dict_getAllByType({
+        tag: "Channel",
+        type: "CompanyKind",
+        valid: "Valid",
+      });
+    } else {
+      this.isShow = false;
+      this.companyKindOption = [];
+    }
+    this.queryUnderData(val);
+  }
+
   getChannelInfo(item: any) {
     this.info.designatedAgency = item.name;
     this.info.designatedAgencyId = item.id;
-    this.queryUnderData(this.info.designatedAgency, "business");
+    this.queryUnderData(this.info.designatedAgencyId);
   }
 
   companyKindChange(val: any) {
+    this.info.designatedAgencyId = null;
+    this.info.designatedAgency = null;
     if (val) {
       switch (val) {
         case "ChannelCompany":
@@ -825,13 +860,13 @@ export default class NormalSalesApply extends Vue {
           break;
       }
     } else {
-      this.info.designatedAgencyId = null;
-      this.info.designatedAgency = null;
+      this.queryUnderData("123");
     }
   }
 
   // 根据渠道类型,垫佣周期,中介公司获取下表数据
-  queryUnderData(data: any, type: any) {
+  queryUnderData(data: any) {
+    this.info.contractMxVOList = [];
     if (data) {
       this.queryObj = {
         padCommissionEnum: this.info.padCommissionEnum,
@@ -841,16 +876,9 @@ export default class NormalSalesApply extends Vue {
         designatedAgencyId: null,
         contractKind: "StandChannel",
       };
-      if (type === "channel") {
-        if (data === "Appoint" || data === "Strategic") {
-          this.isShow = true;
-        } else {
-          this.isShow = false;
-        }
-      }
       if (this.isShow) {
         if (
-          this.info.designatedAgency &&
+          this.info.designatedAgencyId &&
           this.info.padCommissionEnum &&
           this.info.channelEnum
         ) {
@@ -874,7 +902,6 @@ export default class NormalSalesApply extends Vue {
       this.info.designatedAgency = null;
       this.info.companyKind = null;
       this.info.designatedAgencyId = null;
-      this.info.contractMxVOList = [];
     }
   }
 
@@ -999,6 +1026,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_addStandChannel(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -1009,6 +1037,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_updateStandChannel(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -1027,6 +1056,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:00:38
+ * @LastEditTime: 2021-04-13 14:33:19
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -150,6 +150,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:40:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:46:52
+ * @LastEditTime: 2021-04-13 14:33:11
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -201,6 +201,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_addNoStandKindSaleConfirm(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -212,6 +213,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_updateNoStandKindSaleConfirm(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -230,6 +232,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

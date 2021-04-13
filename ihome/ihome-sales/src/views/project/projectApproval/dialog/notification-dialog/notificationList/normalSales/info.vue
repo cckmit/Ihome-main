@@ -389,6 +389,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

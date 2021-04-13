@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:46:28
+ * @LastEditTime: 2021-04-13 14:32:18
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -389,6 +389,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_addNoChannel(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -400,6 +401,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_updateNoChannel(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -418,6 +420,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

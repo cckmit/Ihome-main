@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:09:24
+ * @LastEditTime: 2021-04-13 14:32:38
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -78,7 +78,7 @@
                 clearable
                 placeholder="请选择渠道类型"
                 class="width--100"
-                @change="queryUnderData(info.channelEnum, 'channel')"
+                @change="channelChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCustomer')"
@@ -115,13 +115,23 @@
               :span='6'
               class="margin-left-10"
             >
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 250px;"
+                clearable
+                v-model="info.designatedAgencyId"
+                @changeOption="getChannelInfo"
+                @clear="queryUnderData('123')"
+              ></IhSelectPageByCompany>
               <IhSelectPageByChannel
+                v-else-if="info.companyKind === 'ChannelCompany'"
                 v-model="info.designatedAgencyId"
                 clearable
                 placeholder="渠道商名称"
                 :params="searchConditon"
                 :search-name="info.designatedAgency"
                 @changeOption="getChannelInfo"
+                @clear="queryUnderData('123')"
               ></IhSelectPageByChannel>
             </el-col>
           </div>
@@ -138,7 +148,7 @@
                 placeholder="请选择垫佣周期"
                 class="width--100"
                 :disabled="padCommissionEnumOptions.length === 1"
-                @change="queryUnderData(info.padCommissionEnum, 'padCommission')"
+                @change="queryUnderData(info.padCommissionEnum)"
               >
                 <el-option
                   v-for="item in padCommissionEnumOptions"
@@ -236,7 +246,7 @@
   </ih-page>
 </template>
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import { get_company_get__id, post_dict_getAllByType } from "@/api/system";
 import {
   post_distributContract_addNoStandChannel,
@@ -313,22 +323,6 @@ export default class NotSalesApply extends Vue {
   isShow: any = false;
   queryObj: any = {};
 
-  @Watch("info.channelEnum", { immediate: true })
-  async getIsShow(val: any) {
-    if (val === "Appoint" || val === "Strategic") {
-      this.isShow = true;
-      this.companyKindOption = await post_dict_getAllByType({
-        tag: "Channel",
-        type: "CompanyKind",
-        valid: "Valid",
-      });
-    } else {
-      this.isShow = false;
-      this.info.companyKind = null;
-      this.companyKindOption = [];
-    }
-  }
-
   get agencyContrictId() {
     return this.$route.query.id;
   }
@@ -355,6 +349,16 @@ export default class NotSalesApply extends Vue {
         type: v.type,
         exAuto: v.exAuto,
       }));
+      if (data.channelEnum === "Appoint" || data.channelEnum === "Strategic") {
+        this.isShow = true;
+        this.companyKindOption = await post_dict_getAllByType({
+          tag: "Channel",
+          type: "CompanyKind",
+          valid: "Valid",
+        });
+      } else {
+        this.isShow = false;
+      }
     } else {
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
@@ -409,13 +413,30 @@ export default class NotSalesApply extends Vue {
     }));
   }
 
+  async channelChange(val: any) {
+    if (val === "Appoint" || val === "Strategic") {
+      this.isShow = true;
+      this.companyKindOption = await post_dict_getAllByType({
+        tag: "Channel",
+        type: "CompanyKind",
+        valid: "Valid",
+      });
+    } else {
+      this.isShow = false;
+      this.companyKindOption = [];
+    }
+    this.queryUnderData(val);
+  }
+
   getChannelInfo(item: any) {
     this.info.designatedAgency = item.name;
     this.info.designatedAgencyId = item.id;
-    this.queryUnderData(this.info.designatedAgency, "business");
+    this.queryUnderData(this.info.designatedAgency);
   }
 
   companyKindChange(val: any) {
+    this.info.designatedAgencyId = null;
+    this.info.designatedAgency = null;
     if (val) {
       switch (val) {
         case "ChannelCompany":
@@ -430,13 +451,13 @@ export default class NotSalesApply extends Vue {
           break;
       }
     } else {
-      this.info.designatedAgencyId = null;
-      this.info.designatedAgency = null;
+      this.queryUnderData("123");
     }
   }
 
   // 根据渠道类型,垫佣周期,中介公司获取下表数据
-  queryUnderData(data: any, type: any) {
+  queryUnderData(data: any) {
+    this.info.contractMxVOList = [];
     if (data) {
       this.queryObj = {
         padCommissionEnum: this.info.padCommissionEnum,
@@ -446,16 +467,9 @@ export default class NotSalesApply extends Vue {
         designatedAgencyId: null,
         contractKind: "StandChannel",
       };
-      if (type === "channel") {
-        if (data === "Appoint" || data === "Strategic") {
-          this.isShow = true;
-        } else {
-          this.isShow = false;
-        }
-      }
       if (this.isShow) {
         if (
-          this.info.designatedAgency &&
+          this.info.designatedAgencyId &&
           this.info.padCommissionEnum &&
           this.info.channelEnum
         ) {
@@ -479,7 +493,6 @@ export default class NotSalesApply extends Vue {
       this.info.designatedAgency = null;
       this.info.companyKind = null;
       this.info.designatedAgencyId = null;
-      this.info.contractMxVOList = [];
     }
   }
 
@@ -564,6 +577,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_addNoStandChannel(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -575,6 +589,7 @@ export default class NotSalesApply extends Vue {
           await post_distributContract_updateNoStandChannel(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -593,6 +608,7 @@ export default class NotSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

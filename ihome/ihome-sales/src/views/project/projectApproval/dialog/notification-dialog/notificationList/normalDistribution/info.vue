@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 14:43:23
+ * @LastEditTime: 2021-04-13 14:46:15
 -->
 <template>
   <ih-page class="text-left">
@@ -379,7 +379,7 @@
           个工作日退回已支付的代理费，甲方亦有权在未结算的代理费中直接抵扣。
         </div>
         <br />
-        <div>7.5 因乙方违约违规造成的罚款或经济损失，由甲方相关部门核实并从代理费中扣除。</div>
+        <div>7.5 因乙方违约违规的行为导致项目开发商或甲方上游合作方罚款或造成甲方经济损失的，乙方应承担相应责任及损失，且甲方有权直接从未结的代理费中进行扣除，不足部分乙方应另行支付。</div>
         <br />
         <div>7.6 在支付代理费前，甲方及开发商有权对乙方推介客户的真实性、有效性进行核实并对乙方引荐的客户进行抽查回访，
           推荐客户的真实性、有效性以客户反馈的回访结果为准，如回访或复核存在不满足推介要求或属于违法推介等异常情况的（如飞单、洗客等），
@@ -611,6 +611,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }

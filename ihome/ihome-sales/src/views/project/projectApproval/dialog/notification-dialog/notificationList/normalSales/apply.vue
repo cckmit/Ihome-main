@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-12 14:39:46
+ * @LastEditTime: 2021-04-13 14:31:38
 -->
 <template>
   <ih-page class="text-left">
@@ -22,7 +22,10 @@
         <h2 class="text-center">{{`【${info.proName}】项目一二手联动销售确认书`}}</h2>
         <div>致：___________________</div>
         <br />
-        <div>{{`贵我双方经友好协商，现就我司（下称“甲方”）委托贵司（下称“乙方”）就  ${info.proName}  项目提供渠道服务事宜达成一致如下：`}}</div>
+        <div>贵我双方经友好协商，现就我司（下称“甲方”）委托贵司（下称“乙方”）就
+          <u>{{info.proName}}</u>
+          项目提供渠道服务事宜达成一致如下：
+        </div>
         <div>
           <span class="font-weight"> 一、合作项目：</span>
           <u>{{info.proName}}</u> （备案名称： <u>{{info.proRecord}}</u> ）
@@ -49,13 +52,20 @@
         </div>
         <div class="font-weight">三、代理费计算标准：</div>
         <div>
-          <el-input
-            show-word-limit
-            type="textarea"
-            :autosize="{ minRows: 4, maxRows: 8 }"
-            placeholder="请输入代理费计算标准"
-            v-model="info.agencyFeeRemark"
-          />
+          <el-form-item
+            label=" "
+            label-width="0"
+          >
+            <el-input
+              show-word-limit
+              type="textarea"
+              class="textareaClass"
+              maxlength="2000"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入代理费计算标准"
+              v-model="info.agencyFeeRemark"
+            />
+          </el-form-item>
         </div>
         <br />
         <el-row>
@@ -69,7 +79,7 @@
                 clearable
                 placeholder="请选择渠道类型"
                 class="width--100"
-                @change="queryUnderData(info.channelEnum, 'channel')"
+                @change="channelChange"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCustomer')"
@@ -92,7 +102,7 @@
                 <el-select
                   v-model="info.companyKind"
                   clearable
-                  placeholder="请选择公司种类"
+                  placeholder="请选择"
                   class="width--100"
                   @change="companyKindChange"
                 >
@@ -105,17 +115,28 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span='6'>
-              <el-form-item label-width="10px">
-                <IhSelectPageByChannel
-                  v-model="info.designatedAgencyId"
-                  clearable
-                  placeholder="渠道商名称"
-                  :params="searchConditon"
-                  :search-name="info.designatedAgency"
-                  @changeOption="getChannelInfo"
-                ></IhSelectPageByChannel>
-              </el-form-item>
+            <el-col
+              :span='6'
+              class="margin-left-10"
+            >
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 250px;"
+                clearable
+                v-model="info.designatedAgencyId"
+                @changeOption="getChannelInfo"
+                @clear="queryUnderData('123')"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByChannel
+                v-else-if="info.companyKind === 'ChannelCompany'"
+                v-model="info.designatedAgencyId"
+                clearable
+                placeholder="渠道商名称"
+                :params="searchConditon"
+                :search-name="info.designatedAgency"
+                @changeOption="getChannelInfo"
+                @clear="queryUnderData('123')"
+              ></IhSelectPageByChannel>
             </el-col>
           </div>
         </el-row>
@@ -131,7 +152,7 @@
                 placeholder="请选择垫佣周期"
                 class="width--100"
                 :disabled="padCommissionEnumOptions.length === 1"
-                @change="queryUnderData(info.padCommissionEnum, 'padCommission')"
+                @change="queryUnderData(info.padCommissionEnum)"
               >
                 <el-option
                   v-for="item in padCommissionEnumOptions"
@@ -196,33 +217,54 @@
         <br />
         <div class="font-weight">四、客户确认及成交确认：</div>
         <div>
-          <el-input
-            show-word-limit
-            type="textarea"
-            :autosize="{ minRows: 4, maxRows: 8 }"
-            placeholder="请输入客户确认及成交确认"
-            v-model="info.consumerComplete"
-          />
+          <el-form-item
+            label=" "
+            label-width="0"
+          >
+            <el-input
+              show-word-limit
+              type="textarea"
+              class="textareaClass"
+              maxlength="2000"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入客户确认及成交确认"
+              v-model="info.consumerComplete"
+            />
+          </el-form-item>
         </div>
         <br />
         <div class="font-weight">五、代理费支付方式：</div>
         <div>
           <div>(1)</div>
-          <el-input
-            show-word-limit
-            type="textarea"
-            :autosize="{ minRows: 4, maxRows: 8 }"
-            placeholder="请输入代理费支付方式"
-            v-model="info.agencyCostCondition"
-          />
+          <el-form-item
+            label=" "
+            label-width="0"
+          >
+            <el-input
+              show-word-limit
+              type="textarea"
+              class="textareaClass"
+              maxlength="2000"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入代理费支付方式"
+              v-model="info.agencyCostCondition"
+            />
+          </el-form-item>
           <div>(2)</div>
-          <el-input
-            show-word-limit
-            type="textarea"
-            :autosize="{ minRows: 4, maxRows: 8 }"
-            placeholder="请输入代理费支付方式"
-            v-model="info.agencyCostSettleWay"
-          />
+          <el-form-item
+            label=" "
+            label-width="0"
+          >
+            <el-input
+              show-word-limit
+              type="textarea"
+              class="textareaClass"
+              maxlength="2000"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入代理费支付方式"
+              v-model="info.agencyCostSettleWay"
+            />
+          </el-form-item>
         </div>
         <div>(3) 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的，或发生投诉、诉讼导致甲方需退回
           <u><i class="font-weight">开发商或委托方代理费/客户服务费</i> </u>，
@@ -318,7 +360,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import {
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
@@ -417,22 +459,6 @@ export default class NormalSalesApply extends Vue {
     },
   };
 
-  @Watch("info.channelEnum", { immediate: true })
-  async getIsShow(val: any) {
-    if (val === "Appoint" || val === "Strategic") {
-      this.isShow = true;
-      this.companyKindOption = await post_dict_getAllByType({
-        tag: "Channel",
-        type: "CompanyKind",
-        valid: "Valid",
-      });
-    } else {
-      this.isShow = false;
-      this.info.companyKind = null;
-      this.companyKindOption = [];
-    }
-  }
-
   get agencyContrictId() {
     return this.$route.query.id;
   }
@@ -466,6 +492,16 @@ export default class NormalSalesApply extends Vue {
         type: v.type,
         exAuto: v.exAuto,
       }));
+      if (data.channelEnum === "Appoint" || data.channelEnum === "Strategic") {
+        this.isShow = true;
+        this.companyKindOption = await post_dict_getAllByType({
+          tag: "Channel",
+          type: "CompanyKind",
+          valid: "Valid",
+        });
+      } else {
+        this.isShow = false;
+      }
     } else {
       Object.assign(this.info, JSON.parse(res));
       this.info.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
@@ -514,13 +550,30 @@ export default class NormalSalesApply extends Vue {
     }
   }
 
+  async channelChange(val: any) {
+    if (val === "Appoint" || val === "Strategic") {
+      this.isShow = true;
+      this.companyKindOption = await post_dict_getAllByType({
+        tag: "Channel",
+        type: "CompanyKind",
+        valid: "Valid",
+      });
+    } else {
+      this.isShow = false;
+      this.companyKindOption = [];
+    }
+    this.queryUnderData(val);
+  }
+
   getChannelInfo(item: any) {
     this.info.designatedAgency = item.name;
     this.info.designatedAgencyId = item.id;
-    this.queryUnderData(this.info.designatedAgency, "business");
+    this.queryUnderData(this.info.designatedAgency);
   }
 
   companyKindChange(val: any) {
+    this.info.designatedAgencyId = null;
+    this.info.designatedAgency = null;
     if (val) {
       switch (val) {
         case "ChannelCompany":
@@ -535,13 +588,13 @@ export default class NormalSalesApply extends Vue {
           break;
       }
     } else {
-      this.info.designatedAgencyId = null;
-      this.info.designatedAgency = null;
+      this.queryUnderData("123");
     }
   }
 
   // 根据渠道类型,垫佣周期,中介公司获取下表数据
-  queryUnderData(data: any, type: any) {
+  queryUnderData(data: any) {
+    this.info.contractMxVOList = [];
     if (data) {
       this.queryObj = {
         padCommissionEnum: this.info.padCommissionEnum,
@@ -549,18 +602,11 @@ export default class NormalSalesApply extends Vue {
         channelEnum: this.info.channelEnum,
         designatedAgency: null,
         designatedAgencyId: null,
-        contractKind: "StandChannel",
+        contractKind: "StandKindSaleConfirm",
       };
-      if (type === "channel") {
-        if (data === "Appoint" || data === "Strategic") {
-          this.isShow = true;
-        } else {
-          this.isShow = false;
-        }
-      }
       if (this.isShow) {
         if (
-          this.info.designatedAgency &&
+          this.info.designatedAgencyId &&
           this.info.padCommissionEnum &&
           this.info.channelEnum
         ) {
@@ -584,7 +630,6 @@ export default class NormalSalesApply extends Vue {
       this.info.designatedAgency = null;
       this.info.companyKind = null;
       this.info.designatedAgencyId = null;
-      this.info.contractMxVOList = [];
     }
   }
 
@@ -689,6 +734,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_updateStandKindSaleConfirm(obj);
           this.$message.success("模板编辑成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -699,6 +745,7 @@ export default class NormalSalesApply extends Vue {
           await post_distributContract_addStandKindSaleConfirm(obj);
           this.$message.success("模板添加成功");
           this.finishLoading = false;
+          window.sessionStorage.setItem("tabStatus", "Notification");
           this.$router.go(-1);
         } catch (err) {
           this.finishLoading = false;
@@ -717,6 +764,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   cancel() {
+    window.sessionStorage.setItem("tabStatus", "Notification");
     this.$router.go(-1);
   }
 }
@@ -742,5 +790,13 @@ export default class NormalSalesApply extends Vue {
 .inline-block {
   display: inline-block;
   margin-bottom: 10px;
+}
+
+.textareaClass {
+  /deep/ .el-input__count {
+    background: transparent;
+    bottom: -5px;
+    right: 20px;
+  }
 }
 </style>
