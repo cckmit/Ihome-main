@@ -193,7 +193,11 @@
     </el-form-item>
     <el-form-item label="绑定的值">{{form.brokerId}}</el-form-item>
     <el-form-item label="一手代理公司">
-      <IhSelectPageByAgency v-model="form.input18"></IhSelectPageByAgency>
+      <IhSelectPageByAgency
+        v-model="form.input18"
+        @clear="clearMethod"
+        clearable
+      ></IhSelectPageByAgency>
     </el-form-item>
   </el-form>
 </template>
@@ -281,6 +285,10 @@ export default class SelectPageDemo extends Vue {
    */
   handleFun(req: any) {
     return post_company_getAll(req);
+  }
+
+  clearMethod() {
+    console.log("清空了");
   }
 
   changeAgency(value: any) {

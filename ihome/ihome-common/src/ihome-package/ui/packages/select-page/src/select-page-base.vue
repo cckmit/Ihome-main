@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-29 15:05:33
+ * @LastEditTime: 2021-04-13 11:02:23
 -->
 <template>
   <el-select
@@ -22,6 +22,7 @@
     class="width--100"
     :loading="searchLoad"
     :no-data-text="noDataText"
+    v-on="$listeners"
   >
     <!-- 搜索 -->
     <div class="selectInput">
