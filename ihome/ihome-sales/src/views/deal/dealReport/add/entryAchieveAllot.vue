@@ -1549,6 +1549,12 @@
         await this.initContNoList(params, res.contNo);
       }
       (this as any).$nextTick(async () => {
+        // 初始化按钮显示
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '加载成功';
+
         this.postData.calculation = res?.calculation;
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";

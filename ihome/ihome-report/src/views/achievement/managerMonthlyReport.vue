@@ -75,6 +75,7 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
+        <el-button type="info" @click="handleReset()">重置</el-button>
         <el-button type="success" @click="exportExcel()">导出</el-button>
       </el-row>
     </template>
@@ -553,6 +554,18 @@ export default class ManagerMonthlyReport extends Vue {
     } else {
       this.queryPageParameters.orgTypeEnum = null;
     }
+  }
+  // 重置
+  handleReset() {
+    this.queryPageParameters = {
+      arguTimeType: null,
+      chooseOrgId: null,
+      orgTypeEnum: null,
+      expiresTime: [],
+      status: [],
+      pageNum: 1,
+      pageSize: this.queryPageParameters.pageSize
+    };
   }
   // 导出功能
   async exportExcel() {
