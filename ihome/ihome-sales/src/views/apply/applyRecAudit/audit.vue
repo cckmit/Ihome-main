@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-13 16:02:01
+ * @LastEditTime: 2021-04-13 16:07:01
 -->
 <template>
   <IhPage class="text-left">
@@ -1166,19 +1166,12 @@ export default class ApplyAudit extends Vue {
         opBefore: this.form.status,
       };
     }
-    let loading = this.$loading({
-      lock: true,
-      text: "请耐心等待...",
-      spinner: "el-icon-loading",
-      background: "rgba(0, 0, 0, 0.6)",
-      customClass: "ih-loading-spinner",
-    });
+    let loading: any = null;
     try {
       if (this.form.status === "InvoiceClerk" && isReject === 0) {
         this.$confirm("是否现在开具发票", "提示")
           .then(async () => {
             await post_applyRec_audit(params);
-            loading.close();
             this.$router.push({
               path: `/invoice/list`,
               query: {
@@ -1189,13 +1182,19 @@ export default class ApplyAudit extends Vue {
           })
           .catch(async () => {
             await post_applyRec_audit(params);
-            loading.close();
             this.$message.success("通过成功");
             this.$goto({
               path: "/applyRecAudit/list",
             });
           });
       } else {
+        loading = this.$loading({
+          lock: true,
+          text: "请耐心等待...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.6)",
+          customClass: "ih-loading-spinner",
+        });
         await post_applyRec_audit(params);
         this.$message.success(`${isReject ? "驳回" : "通过"}成功`);
         loading.close();
