@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 15:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 09:35:01
+ * @LastEditTime: 2021-04-13 14:52:23
 -->
 <template>
   <ih-page>
@@ -13,9 +13,9 @@
         <el-tabs
           class="tabClass"
           type="border-card"
-          v-model="tabActive"
+          v-model="componetName"
           stretch
-          @tab-click="tabClick(tabActive)"
+          @tab-click="tabClick(componetName)"
         >
           <el-tab-pane
             label="基础信息"
@@ -109,7 +109,6 @@ Component.registerHooks(["beforeRouteEnter"]);
   },
 })
 export default class ProjectApprovalInfo extends Vue {
-  tabActive: any = "BasicInfo";
   typeStr = "";
   componetName: any = "BasicInfo";
 
@@ -118,6 +117,17 @@ export default class ProjectApprovalInfo extends Vue {
       vm.typeStr = to.name;
     });
   }
+
+  created() {
+    this.componetName = window.sessionStorage.getItem("tabStatus")
+      ? window.sessionStorage.getItem("tabStatus")
+      : "BasicInfo";
+  }
+
+  destroyed() {
+    window.sessionStorage.removeItem("tabStatus");
+  }
+
   tabClick(val: any) {
     this.componetName = val;
   }
