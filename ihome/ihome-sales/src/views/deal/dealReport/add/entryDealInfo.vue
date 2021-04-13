@@ -265,6 +265,12 @@
               @changeOption="(data) => {postData.brokerName = data.name}"
               :searchName="postData.brokerName"
               :proId="postData.agencyId"
+              :props="{
+                lable: 'name',
+                value: 'userId',
+                key: 'id',
+                disabled: 'disabled'
+              }"
               clearable
             ></IhSelectPageByChannelBroker>
           </el-form-item>
