@@ -2762,6 +2762,8 @@
       // console.log(this.tempContType);
       console.log(value);
       this.initReceive();
+      // 选择房号后构建表格数据
+      this.getDocumentList(value);
     }
 
     // 选择合同类型后构建表格数据
