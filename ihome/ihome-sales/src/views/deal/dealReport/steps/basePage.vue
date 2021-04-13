@@ -2957,13 +2957,17 @@
     }
 
     // 初始化渠道公司相关信息
-    initAgencyInfo() {
-      // 初始化渠道公司
-      this.postData.agencyId = null;
-      this.postData.agencyName = null;
+    initAgencyInfo(type: any = '') {
+      if (type !== 'company') {
+        // 初始化渠道公司
+        this.postData.agencyId = null;
+        this.postData.agencyName = null;
+        this.agencySearchName = null;
+      }
       // 初始化经纪人
       this.postData.brokerId = null;
       this.postData.brokerName = null;
+      this.brokerSearchName = null;
       // 初始化渠道分销合同
       this.postData.contNo = null;
       this.contNoList = [];
@@ -2975,7 +2979,7 @@
     changeCompany(value: any) {
       console.log('changeCompany:', value);
       this.agencySearchName = null;
-      this.initAgencyInfo();
+      this.initAgencyInfo('company');
       // 获取渠道分销合同
       if (value) this.getOneAgentTeamContNo('contNo', value, this.postData.cycleId, this.postData.companyKind);
     }
