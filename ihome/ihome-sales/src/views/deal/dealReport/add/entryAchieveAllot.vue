@@ -260,6 +260,12 @@
               @changeOption="(data) => {postData.brokerName = data.name}"
               :searchName="postData.brokerName"
               :proId="postData.agencyId"
+              :props="{
+                lable: 'name',
+                value: 'userId',
+                key: 'id',
+                disabled: 'disabled'
+              }"
               clearable
             ></IhSelectPageByChannelBroker>
           </el-form-item>
@@ -1549,6 +1555,12 @@
         await this.initContNoList(params, res.contNo);
       }
       (this as any).$nextTick(async () => {
+        // 初始化按钮显示
+        this.addFlag = false;
+        this.editFlag = true;
+        this.tipsFlag = false;
+        this.dividerTips = '加载成功';
+
         this.postData.calculation = res?.calculation;
         this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
         this.editDealAchieveData.isSameFlag = res?.scheme?.isSame === "Yes";
@@ -2750,6 +2762,8 @@
       // console.log(this.tempContType);
       console.log(value);
       this.initReceive();
+      // 选择房号后构建表格数据
+      this.getDocumentList(value);
     }
 
     // 选择合同类型后构建表格数据

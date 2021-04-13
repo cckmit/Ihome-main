@@ -265,6 +265,12 @@
               @changeOption="(data) => {postData.brokerName = data.name}"
               :searchName="postData.brokerName"
               :proId="postData.agencyId"
+              :props="{
+                lable: 'name',
+                value: 'userId',
+                key: 'id',
+                disabled: 'disabled'
+              }"
               clearable
             ></IhSelectPageByChannelBroker>
           </el-form-item>
@@ -1835,6 +1841,8 @@
       // console.log(this.tempContType);
       console.log(value);
       this.initReceive();
+      // 选择房号后构建附件表格数据
+      this.getDocumentList(value);
     }
 
     // 修改合同类型后构建附件表格数据

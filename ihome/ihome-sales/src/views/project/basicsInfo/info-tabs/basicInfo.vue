@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:23:20
+ * @LastEditTime: 2021-04-12 17:22:18
 -->
 <template>
   <div>
@@ -44,7 +44,7 @@
             label="开发商名称"
             :title="form.developerName"
           >
-            <span class="text-ellipsis">{{ form.developerName }}</span>
+            <span class="word-break">{{ form.developerName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -115,7 +115,7 @@
             label="项目地址"
             :title="form.proAddr"
           >
-            <span class="text-ellipsis">{{ form.proAddr }}</span>
+            <span class="word-break">{{ form.proAddr }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -131,7 +131,7 @@
             label="详细地址"
             :title="form.searchAddr"
           >
-            <span class="text-ellipsis">{{ form.searchAddr }}</span>
+            <span class="word-break">{{ form.searchAddr }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -651,5 +651,12 @@ export default class InfoBasicInfo extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.word-break {
+  word-break: break-all;
+}
+.line-height {
+  line-height: 20px !important;
 }
 </style>

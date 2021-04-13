@@ -196,7 +196,7 @@
             <el-col :span="8">
               <el-form-item label="渠道公司">
                 {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
-                <span style="color: red">[{{$root.dictAllName(infoForm.companyKind, 'CompanyKind')}}]</span>
+                <span style="color: red">[{{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].companyKind, 'CompanyKind') : '-'}}]</span>
               </el-form-item>
             </el-col>
             <el-col :span="8">
@@ -718,6 +718,7 @@
     private srcList: any = [];
     private srcData: any = [];
     infoForm: any = {
+      contTitle: null,
       charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
       dealCode: null,
       dealOrgName: null, // 成交组织name

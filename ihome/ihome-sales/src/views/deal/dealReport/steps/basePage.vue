@@ -297,6 +297,12 @@
                 @changeOption="(data) => {postData.brokerName = data.name}"
                 :searchName="postData.brokerName"
                 :proId="postData.agencyId"
+                :props="{
+                  lable: 'name',
+                  value: 'userId',
+                  key: 'id',
+                  disabled: 'disabled'
+                }"
                 clearable
               ></IhSelectPageByChannelBroker>
             </div>
@@ -2990,10 +2996,8 @@
       console.log(value);
       // 初始化收派套餐
       this.initAllReceiveList();
-      // 初始化收派金额
-      // this.initAllReceiveList();
       // 选择房号后构建表格数据
-      // this.getUploadDocumentList(value);
+      this.getUploadDocumentList(value);
     }
 
     // 选择房号后构建表格数据
