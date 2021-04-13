@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-12-09 19:24:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 14:21:13
+ * @LastEditTime: 2021-04-13 16:23:33
 -->
 <template>
   <IhPage label-width="100px">
@@ -394,7 +394,7 @@
                   v-has="'B.SALES.FINANCE.PAYMENTLIST.ACCOUNTCHECK'"
                 >对账</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': row.status !== 'Paid'}"
+                  :class="{'ih-data-disabled': row.status !== 'Paid' || row.foundType === 'AgencyFee'}"
                   @click.native.prevent="syncPay(row)"
                 >同步电子回单</el-dropdown-item>
                 <el-dropdown-item

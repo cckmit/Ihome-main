@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-13 16:07:01
+ * @LastEditTime: 2021-04-13 16:13:15
 -->
 <template>
   <IhPage class="text-left">
@@ -1203,7 +1203,7 @@ export default class ApplyAudit extends Vue {
         });
       }
     } catch (error) {
-      loading.close();
+      loading?.close();
       console.log(error);
     }
   }
