@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 18:44:47
+ * @LastEditTime: 2021-04-14 15:48:33
 -->
 <template>
   <el-dialog
@@ -1409,6 +1409,7 @@ export default class SetMealEdit extends Vue {
       this.searchConditon = {
         cycleCity: res.city,
         departmentOrgId: res.startDivisionId,
+        isNotNeedChannelLevelApprove: true,
       };
       if (res.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [
