@@ -2,6 +2,7 @@
 # ihome-common
 ## 日志
 ```
+v2.0.11  2021-04-14 08:50 下拉分页适配element的所有方法  
 v2.0.10  2021-04-13 11:09 下拉分页适配element的所有方法  
 v2.0.9  2021-04-10 17:44  fix
 v2.0.8  2021-04-10 17:44  IhSelectPageByChannelBroker优化

@@ -276,7 +276,7 @@
                     @changeOption="(data) => {postData.agencyName = data.name}"
                     :proId="postData.companyKind"
                     :orgId="baseInfoByTerm.startDivisionId"
-                    :searchName="postData.agencyName"
+                    :searchName="agencySearchName"
                     @change="changeCompany"
                     placeholder="请选择渠道公司"
                     clearable
@@ -295,7 +295,7 @@
               <IhSelectPageByChannelBroker
                 v-model="postData.brokerId"
                 @changeOption="(data) => {postData.brokerName = data.name}"
-                :searchName="postData.brokerName"
+                :searchName="brokerSearchName"
                 :proId="postData.agencyId"
                 :props="{
                   lable: 'name',
@@ -303,6 +303,7 @@
                   key: 'id',
                   disabled: 'disabled'
                 }"
+                @change="changeBroker"
                 clearable
               ></IhSelectPageByChannelBroker>
             </div>
@@ -1395,6 +1396,8 @@
     changeType: any = null; // 补充成交类型
     btnType: any = null; // 新增add还是修改edit --- 初始化接口不一样
     contNoList: any = []; // 分销协议编号列表
+    agencySearchName: any = null; // 渠道公司名字 --- 用于回显
+    brokerSearchName: any = null; // 渠道经纪人名字 --- 用于回显
     postData: any = {
       charge: null, // 收费类型(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)
       refundAmount: null, // 退款金额 --- 用于补充发起优惠告知书页展示
@@ -2044,9 +2047,11 @@
           this.postData.companyKind = data[0].companyKind; // 渠道公司类型
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
           this.postData.agencyName = data[0].agencyName; // 渠道公司
+          this.agencySearchName = data[0].agencyName; // 渠道公司
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人
+          this.brokerSearchName = data[0].brokerName || data[0].broker; // 渠道经纪人
         }
       }
     }
@@ -2114,14 +2119,14 @@
       //   this.$message.warning('同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)');
       // }
       // 分销成交和非分销成交不一样
-      if (baseInfo.contType === 'DistriDeal') {
-        // 分销成交模式
-        // 1. 初始化渠道商/渠道公司
-        this.initAgency(baseInfo.agencyVOs, true);
-      } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
-        // 非分销成交模式 --- 自然来访 / 自渠成交
-        this.initAgency(baseInfo.agencyVOs, false);
-      }
+      // if (baseInfo.contType === 'DistriDeal') {
+      //   // 分销成交模式
+      //   // 1. 初始化渠道商/渠道公司
+      //   this.initAgency(baseInfo.agencyVOs, true);
+      // } else if (['SelfChannelDeal', 'NaturalVisitDeal'].includes(baseInfo.contType)) {
+      //   // 非分销成交模式 --- 自然来访 / 自渠成交
+      //   this.initAgency(baseInfo.agencyVOs, false);
+      // }
       this.postData.reportId = baseInfo.recordId;
       // 栋座
       if (baseInfo.buildingId && !this.postData.buildingId) {
@@ -2952,13 +2957,17 @@
     }
 
     // 初始化渠道公司相关信息
-    initAgencyInfo() {
-      // 初始化渠道公司
-      this.postData.agencyId = null;
-      this.postData.agencyName = null;
+    initAgencyInfo(type: any = '') {
+      if (type !== 'company') {
+        // 初始化渠道公司
+        this.postData.agencyId = null;
+        this.postData.agencyName = null;
+        this.agencySearchName = null;
+      }
       // 初始化经纪人
       this.postData.brokerId = null;
       this.postData.brokerName = null;
+      this.brokerSearchName = null;
       // 初始化渠道分销合同
       this.postData.contNo = null;
       this.contNoList = [];
@@ -2969,9 +2978,15 @@
     // 改变渠道公司
     changeCompany(value: any) {
       console.log('changeCompany:', value);
-      this.initAgencyInfo();
+      this.agencySearchName = null;
+      this.initAgencyInfo('company');
       // 获取渠道分销合同
       if (value) this.getOneAgentTeamContNo('contNo', value, this.postData.cycleId, this.postData.companyKind);
+    }
+
+    // 改变经纪人
+    changeBroker() {
+      this.brokerSearchName = null;
     }
 
     // 修改合同类型

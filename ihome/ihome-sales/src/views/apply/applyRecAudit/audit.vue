@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-01-14 19:09:51
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-30 15:28:03
+ * @LastEditTime: 2021-04-13 16:13:15
 -->
 <template>
   <IhPage class="text-left">
@@ -1166,13 +1166,7 @@ export default class ApplyAudit extends Vue {
         opBefore: this.form.status,
       };
     }
-    let loading = this.$loading({
-      lock: true,
-      text: "请耐心等待...",
-      spinner: "el-icon-loading",
-      background: "rgba(0, 0, 0, 0.6)",
-      customClass: "ih-loading-spinner",
-    });
+    let loading: any = null;
     try {
       if (this.form.status === "InvoiceClerk" && isReject === 0) {
         this.$confirm("是否现在开具发票", "提示")
@@ -1194,6 +1188,13 @@ export default class ApplyAudit extends Vue {
             });
           });
       } else {
+        loading = this.$loading({
+          lock: true,
+          text: "请耐心等待...",
+          spinner: "el-icon-loading",
+          background: "rgba(0, 0, 0, 0.6)",
+          customClass: "ih-loading-spinner",
+        });
         await post_applyRec_audit(params);
         this.$message.success(`${isReject ? "驳回" : "通过"}成功`);
         loading.close();
@@ -1202,7 +1203,7 @@ export default class ApplyAudit extends Vue {
         });
       }
     } catch (error) {
-      loading.close();
+      loading?.close();
       console.log(error);
     }
   }
