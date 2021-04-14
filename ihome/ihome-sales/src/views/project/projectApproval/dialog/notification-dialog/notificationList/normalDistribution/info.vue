@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 14:46:15
+ * @LastEditTime: 2021-04-14 17:50:22
 -->
 <template>
   <ih-page class="text-left">
@@ -39,6 +39,18 @@
               class="title-sub"
               v-model="info.contractSubtitle"
               placeholder="请输入合同副标题"
+              readonly
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="标题备注"
+            label-width="80px"
+            class="margin-right-60"
+          >
+            <el-input
+              class="title-sub"
+              v-model="info.titleOrRemark"
+              placeholder="请输入标题备注"
               readonly
             ></el-input>
           </el-form-item>
@@ -187,10 +199,19 @@
               :span='6'
               class="margin-left-10"
             >
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 300px;"
+                disabled
+                :search-name="info.designatedAgency"
+                v-model="info.designatedAgencyId"
+              ></IhSelectPageByCompany>
               <IhSelectPageByChannel
+                v-else-if="info.companyKind === 'ChannelCompany'"
                 v-model="info.designatedAgencyId"
                 disabled
                 placeholder="渠道商名称"
+                :params="searchConditon"
                 :search-name="info.designatedAgency"
               ></IhSelectPageByChannel>
             </el-col>
@@ -530,6 +551,7 @@ export default class NormalSalesApply extends Vue {
       8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
       8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`,
     supplementary: null,
+    titleOrRemark: null,
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];

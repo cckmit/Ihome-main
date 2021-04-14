@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 14:32:49
+ * @LastEditTime: 2021-04-14 17:51:19
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -37,6 +37,18 @@
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="标题备注">
+              <el-input
+                v-model="info.titleOrRemark"
+                placeholder="请输入标题备注"
+                readonly
+                class="width-350"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="项目名称">
               <span>{{info.proName}}</span>
@@ -113,10 +125,19 @@
               :span='6'
               class="margin-left-10"
             >
-              <IhSelectPageByChannel
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 300px;"
+                disabled
+                :search-name="info.designatedAgency"
                 v-model="info.designatedAgencyId"
-                readonly
+              ></IhSelectPageByCompany>
+              <IhSelectPageByChannel
+                v-else-if="info.companyKind === 'ChannelCompany'"
+                v-model="info.designatedAgencyId"
+                disabled
                 placeholder="渠道商名称"
+                :params="searchConditon"
                 :search-name="info.designatedAgency"
               ></IhSelectPageByChannel>
             </el-col>
@@ -228,6 +249,7 @@ export default class NotSalesApply extends Vue {
     designatedAgency: null,
     padCommissionEnum: null,
     contractMxVOList: [],
+    titleOrRemark: null,
   };
   private fileList: any = [];
   private finishLoading: any = false;
