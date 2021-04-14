@@ -4,11 +4,23 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 20:14:08
+ * @LastEditTime: 2021-04-14 10:56:59
 -->
 <template>
   <div>
-    <p class="ih-info-title">渠道合同模板</p>
+    <div class="notification">
+      <p class="ih-info-title">渠道合同模板</p>
+      <div
+        class="notificationButton"
+        v-if="contractApprovalChange"
+      >
+        <el-button
+          size="small"
+          type="success"
+          @click="addTemplate"
+        >+增加模板</el-button>
+      </div>
+    </div>
     <div class="padding-left-20">
       <el-table
         class="ih-table"
@@ -17,7 +29,8 @@
       >
         <el-table-column
           prop="contractKind"
-          label="合同主标题"
+          label="合同类型"
+          width="200"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.contractKind, "ContractKind")
@@ -28,8 +41,14 @@
           label="合同主标题"
         ></el-table-column>
         <el-table-column
+          prop="titleOrRemark"
+          label="标题备注"
+        >
+        </el-table-column>
+        <el-table-column
           label="甲方公司"
           prop="partyCompany"
+          width="200"
         >
         </el-table-column>
         <el-table-column
@@ -57,7 +76,7 @@
         <el-table-column
           prop="state"
           label="状态"
-          width="150"
+          width="100"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.state, 'Oper')}}
@@ -65,16 +84,52 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="120"
+          width='120'
           fixed="right"
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
               @click="viewTemplate(row)"
-            >查看</el-button>
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  type="success"
+                  v-if="!['StandKindSaleConfirm', 'NoStandKindSaleConfirm'].includes(row.contractKind) && contractApprovalChange"
+                  @click.native.prevent="editTemplate(row)"
+                >编辑</el-dropdown-item>
+                <el-dropdown-item
+                  type="success"
+                  @click.native.prevent="previewTop(row)"
+                >预览</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="!['StandKindSaleConfirm', 'NoStandKindSaleConfirm'].includes(row.contractKind) && contractApprovalChange"
+                  type="success"
+                  @click.native.prevent="copyTop(row)"
+                >复制</el-dropdown-item>
+                <el-dropdown-item
+                  type="success"
+                  v-if="row.state === 'Stop' && !['StandKindSaleConfirm', 'NoStandKindSaleConfirm'].includes(row.contractKind) && contractApprovalChange"
+                  :loading="startLoading"
+                  @click.native.prevent="start(row)"
+                >启用</el-dropdown-item>
+                <el-dropdown-item
+                  type="danger"
+                  :loading="stopLoading"
+                  v-if="row.state === 'Start' && !['StandKindSaleConfirm', 'NoStandKindSaleConfirm'].includes(row.contractKind) && contractApprovalChange"
+                  @click.native.prevent="stop(row)"
+                >禁用</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -250,6 +305,12 @@
         </el-form>
       </div>
     </div>
+    <ih-dialog :show="dialogVisible">
+      <TemplateSelect
+        :data="templateDate"
+        @cancel="() => (dialogVisible = false)"
+      />
+    </ih-dialog>
     <ih-dialog :show="editDialogVisible">
       <PartyADialog
         :data="editData"
@@ -257,6 +318,12 @@
         @finish="(data) => editFinish(data)"
       />
     </ih-dialog>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </div>
 </template>
 <script lang="ts">
@@ -264,13 +331,17 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   get_distributContract_get__termId,
   post_distributContract_saveOaRemark,
+  post_distributContract_start__agencyContrictId,
+  post_distributContract_cancel__agencyContrictId,
 } from "@/api/project/index.ts";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
+import TemplateSelect from "../dialog/notification-dialog/templateSelect.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 @Component({
   components: {
     PartyADialog,
+    TemplateSelect,
   },
 })
 export default class Notification extends Vue {
@@ -289,6 +360,13 @@ export default class Notification extends Vue {
   editDialogVisible: any = false;
   editData: any = {};
   editType: any = "";
+  dialogVisible: any = false;
+  templateDate: any = {};
+  isShowImg = false;
+  srcList: any = [];
+  srcData: any = [];
+  startLoading: any = false;
+  stopLoading: any = false;
 
   created() {
     this.getInfo();
@@ -311,12 +389,47 @@ export default class Notification extends Vue {
         termId: id,
       });
       this.info = { ...res };
+      this.templateDate = {
+        disabled: ["2", "3"],
+      };
+      let addObj: any = {
+        proId: this.info.proId,
+        proName: this.info.proName,
+        proRecord: this.info.proRecord,
+        padCommissionEnum: this.info.padCommissionEnum,
+        preferentialPartyAId: this.info.preferentialPartyAId,
+        termId: this.$route.query.id,
+        chargeEnum: this.info.chargeEnum,
+        termStart: this.info.termStart,
+        termEnd: this.info.termEnd,
+      };
+      window.sessionStorage.setItem("addContract", JSON.stringify(addObj));
       if (res.attachTermVOS.length) {
         this.fileList = res.attachTermVOS.map((v: any) => ({
           fileName: v.fileName,
           fileId: v.fileId,
         }));
       }
+    }
+  }
+
+  addTemplate() {
+    this.dialogVisible = true;
+  }
+
+  previewTop(row: any) {
+    let imgList = row.attachTerms;
+    this.srcList = imgList.map(
+      (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileId}`
+    );
+    this.srcData = imgList.map((v: any) => ({
+      fileName: v.fileName,
+      fileId: v.fileId,
+    }));
+    if (this.srcList.length) {
+      this.isShowImg = true;
+    } else {
+      this.$message.warning("暂无图片");
     }
   }
 
@@ -345,6 +458,96 @@ export default class Notification extends Vue {
       const href = window.URL.createObjectURL(arr);
       window.open(href);
     });
+  }
+
+  editTemplate(data: any) {
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/normalSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/notSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/normalDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/notDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/notChannelApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
+  }
+
+  copyTop(data: any) {
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/copyNormalSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/copyNotSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/copyNormalDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/copyNotDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/copyNotChannelApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
   }
 
   viewTemplate(data: any) {
@@ -389,6 +592,35 @@ export default class Notification extends Vue {
           },
         });
         break;
+    }
+  }
+
+  // 中介分销合同启用
+  async start(data: any) {
+    try {
+      this.startLoading = true;
+      await post_distributContract_start__agencyContrictId({
+        agencyContrictId: data.agencyContrictId,
+      });
+      this.startLoading = false;
+      this.$message.success("启用成功");
+      this.getInfo();
+    } catch (err) {
+      this.startLoading = false;
+    }
+  }
+
+  async stop(data: any) {
+    try {
+      this.stopLoading = true;
+      await post_distributContract_cancel__agencyContrictId({
+        agencyContrictId: data.agencyContrictId,
+      });
+      this.stopLoading = false;
+      this.$message.success("禁用成功");
+      this.getInfo();
+    } catch (err) {
+      this.stopLoading = false;
     }
   }
 
@@ -472,6 +704,14 @@ export default class Notification extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.notification {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+.notificationButton {
+  margin: 5px 0 0 20px;
+}
 .editParty {
   position: relative;
   .tubiao {

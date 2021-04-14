@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 11:33:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 11:19:00
+ * @LastEditTime: 2021-04-13 16:47:55
 -->
 <template>
   <el-dialog
@@ -24,15 +24,18 @@
       <el-button
         type="primary"
         @click="goSecond"
+        :disabled="!data.disabled.includes('1')"
       >联动销售确认书(启动函)</el-button>
       <el-button
         type="primary"
         class="margin-top-10 margin"
         @click="goThird"
+        :disabled="!data.disabled.includes('2')"
       >渠道分销合同</el-button>
       <el-button
         type="primary"
         class="margin-top-10 margin"
+        :disabled="!data.disabled.includes('3')"
         @click="routerTo('notChannelApply')"
       >非渠道类合同</el-button>
       <el-button
@@ -79,11 +82,12 @@
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 @Component({
   components: {},
 })
 export default class TemplateSelect extends Vue {
+  @Prop({ default: null }) data: any;
   dialogVisible = true;
   firstShow: any = true;
   secondShow: any = false;

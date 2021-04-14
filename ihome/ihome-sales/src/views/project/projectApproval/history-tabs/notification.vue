@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 20:13:21
+ * @LastEditTime: 2021-04-14 10:57:09
 -->
 <template>
   <div>
@@ -17,7 +17,8 @@
       >
         <el-table-column
           prop="contractKind"
-          label="合同主标题"
+          label="合同类型"
+          width="200"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.contractKind, "ContractKind")
@@ -28,8 +29,14 @@
           label="合同主标题"
         ></el-table-column>
         <el-table-column
+          prop="titleOrRemark"
+          label="标题备注"
+        >
+        </el-table-column>
+        <el-table-column
           label="甲方公司"
           prop="partyCompany"
+          width="200"
         >
         </el-table-column>
         <el-table-column
@@ -57,7 +64,7 @@
         <el-table-column
           prop="state"
           label="状态"
-          width="150"
+          width="100"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.state, 'Oper')}}
@@ -70,11 +77,14 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
               @click="viewTemplate(row)"
-            >查看</el-button>
+            >查看</el-link>
+            <el-link
+              type="primary"
+              @click="previewTop(row)"
+            >预览</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -235,6 +245,12 @@
         </el-form>
       </div>
     </div>
+    <IhImgViews
+      v-if="isShowImg"
+      :url-list="srcList"
+      :viewer-msg="srcData"
+      :onClose="() => (isShowImg = false)"
+    ></IhImgViews>
   </div>
 </template>
 <script lang="ts">
@@ -259,6 +275,9 @@ export default class Notification extends Vue {
   };
   viewData: any = {};
   fileList: any = [];
+  isShowImg = false;
+  srcList: any = [];
+  srcData: any = [];
 
   created() {
     this.getInfo();
@@ -305,6 +324,22 @@ export default class Notification extends Vue {
       const href = window.URL.createObjectURL(arr);
       window.open(href);
     });
+  }
+
+  previewTop(row: any) {
+    let imgList = row.attachTerms;
+    this.srcList = imgList.map(
+      (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileId}`
+    );
+    this.srcData = imgList.map((v: any) => ({
+      fileName: v.fileName,
+      fileId: v.fileId,
+    }));
+    if (this.srcList.length) {
+      this.isShowImg = true;
+    } else {
+      this.$message.warning("暂无图片");
+    }
   }
 
   viewTemplate(data: any) {

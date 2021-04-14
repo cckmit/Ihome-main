@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 14:32:38
+ * @LastEditTime: 2021-04-14 10:53:28
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -584,16 +584,30 @@ export default class NotSalesApply extends Vue {
           console.log(err);
         }
       } else {
-        try {
-          this.finishLoading = true;
-          await post_distributContract_updateNoStandChannel(obj);
-          this.$message.success("模板编辑成功");
-          this.finishLoading = false;
-          window.sessionStorage.setItem("tabStatus", "Notification");
-          this.$router.go(-1);
-        } catch (err) {
-          this.finishLoading = false;
-          console.log(err);
+        if (this.$route.name === "copyNotDistributionApply") {
+          try {
+            this.finishLoading = true;
+            await post_distributContract_addNoStandChannel(obj);
+            this.$message.success("模板复制成功");
+            this.finishLoading = false;
+            window.sessionStorage.setItem("tabStatus", "Notification");
+            this.$router.go(-1);
+          } catch (err) {
+            this.finishLoading = false;
+            console.log(err);
+          }
+        } else if (this.$route.name === "notDistributionApply") {
+          try {
+            this.finishLoading = true;
+            await post_distributContract_updateNoStandChannel(obj);
+            this.$message.success("模板编辑成功");
+            this.finishLoading = false;
+            window.sessionStorage.setItem("tabStatus", "Notification");
+            this.$router.go(-1);
+          } catch (err) {
+            this.finishLoading = false;
+            console.log(err);
+          }
         }
       }
     } else {

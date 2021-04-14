@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 14:31:49
+ * @LastEditTime: 2021-04-14 10:47:55
 -->
 <template>
   <ih-page class="text-left">
@@ -108,7 +108,7 @@
           <br />
           <div>3.2 乙方权利与义务</div>
           <div class="margin-left-20">
-            <div>3.2.1乙方应当遵守合作项目销售的工作纪律，接受甲方规章制度的约束，保证在操作过程中的规范性、合法性。</div>
+            <div>3.2.1 乙方应当遵守合作项目销售的工作纪律，接受甲方规章制度的约束，保证在操作过程中的规范性、合法性。</div>
             <div>3.2.2 乙方应按照甲方的要求对甲方项目进行宣传推广，不得对客户进行虚假或不实的承诺、宣传。</div>
             <div>3.2.3 乙方负责签约台账和结算明细单的制作，经甲方领导逐级书面审核同意后，收取对应代理费。</div>
           </div>
@@ -495,8 +495,6 @@
           </el-input>
         </el-form-item>
         <br />
-        <br />
-        <br />
         <div class="under">
           <div class="partA">
             <div>甲 方： （盖章）</div>
@@ -742,7 +740,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   dataTimeChange(time: any) {
-    let start: any = new Date(this.timeList[0]).getTime() - 24 * 60 * 60 * 1000;
+    let start: any = new Date(this.timeList[0]).getTime() - 8.64e7;
     let end: any = new Date(this.timeList[1]).getTime();
     return time.getTime() < start || time.getTime() > end;
   }
@@ -1033,15 +1031,29 @@ export default class NormalSalesApply extends Vue {
           console.log(err);
         }
       } else {
-        try {
-          await post_distributContract_updateStandChannel(obj);
-          this.$message.success("模板编辑成功");
-          this.finishLoading = false;
-          window.sessionStorage.setItem("tabStatus", "Notification");
-          this.$router.go(-1);
-        } catch (err) {
-          this.finishLoading = false;
-          console.log(err);
+        if (this.$route.name === "copyNormalDistributionApply") {
+          try {
+            this.finishLoading = true;
+            await post_distributContract_addStandChannel(obj);
+            this.$message.success("模板复制成功");
+            this.finishLoading = false;
+            window.sessionStorage.setItem("tabStatus", "Notification");
+            this.$router.go(-1);
+          } catch (err) {
+            this.finishLoading = false;
+            console.log(err);
+          }
+        } else if (this.$route.name === "normalDistributionApply") {
+          try {
+            await post_distributContract_updateStandChannel(obj);
+            this.$message.success("模板编辑成功");
+            this.finishLoading = false;
+            window.sessionStorage.setItem("tabStatus", "Notification");
+            this.$router.go(-1);
+          } catch (err) {
+            this.finishLoading = false;
+            console.log(err);
+          }
         }
       }
     } else {

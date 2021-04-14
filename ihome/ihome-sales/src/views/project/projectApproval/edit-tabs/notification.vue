@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-12 11:49:47
+ * @LastEditTime: 2021-04-14 10:56:49
 -->
 <template>
   <div>
@@ -26,7 +26,8 @@
       >
         <el-table-column
           prop="contractKind"
-          label="合同主标题"
+          label="合同类型"
+          width="200"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.contractKind, "ContractKind")
@@ -37,8 +38,14 @@
           label="合同主标题"
         ></el-table-column>
         <el-table-column
+          prop="titleOrRemark"
+          label="标题备注"
+        >
+        </el-table-column>
+        <el-table-column
           label="甲方公司"
           prop="partyCompany"
+          width="200"
         >
         </el-table-column>
         <el-table-column
@@ -66,7 +73,7 @@
         <el-table-column
           prop="state"
           label="状态"
-          width="150"
+          width="100"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.state, 'Oper')}}
@@ -74,38 +81,50 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="280"
+          width="120"
           fixed="right"
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
               @click="viewTemplate(row)"
-            >查看</el-button>
-            <el-button
-              size="small"
-              type="success"
-              @click="editTemplate(row)"
-            >编辑</el-button>
-            <el-button
-              size="small"
-              type="success"
-              @click="previewTop(row)"
-            >预览</el-button>
-            <el-button
-              size="small"
-              type="success"
-              v-if="row.state === 'Stop'"
-              @click="start(row)"
-            >启用</el-button>
-            <el-button
-              size="small"
-              type="danger"
-              v-if="row.state === 'Start'"
-              @click="stop(row)"
-            >禁用</el-button>
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  type="success"
+                  @click.native.prevent="editTemplate(row)"
+                >编辑</el-dropdown-item>
+                <el-dropdown-item
+                  type="success"
+                  @click.native.prevent="previewTop(row)"
+                >预览</el-dropdown-item>
+                <el-dropdown-item
+                  type="success"
+                  @click.native.prevent="copyTop(row)"
+                >复制</el-dropdown-item>
+                <el-dropdown-item
+                  type="success"
+                  v-if="row.state === 'Stop'"
+                  :loading="startLoading"
+                  @click.native.prevent="start(row)"
+                >启用</el-dropdown-item>
+                <el-dropdown-item
+                  type="danger"
+                  :loading="stopLoading"
+                  v-if="row.state === 'Start'"
+                  @click.native.prevent="stop(row)"
+                >禁用</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -318,7 +337,7 @@
     </div>
     <ih-dialog :show="dialogVisible">
       <TemplateSelect
-        :data="contractData"
+        :data="templateDate"
         @cancel="() => (dialogVisible = false)"
       />
     </ih-dialog>
@@ -388,7 +407,7 @@ export default class Notification extends Vue {
     },
   };
   editData: any = {};
-  contractData: any = {};
+  templateDate: any = {};
   editType: any = "";
   viewData: any = {};
   budingEditData: any = [];
@@ -399,6 +418,8 @@ export default class Notification extends Vue {
   isShowImg = false;
   srcList: any = [];
   srcData: any = [];
+  startLoading: any = false;
+  stopLoading: any = false;
 
   @Watch("info.attachTermVOS")
   geiFileList(val: any, oldVal: any) {
@@ -427,8 +448,8 @@ export default class Notification extends Vue {
       this.info = await get_distributContract_get__termId({
         termId: id,
       });
-      this.contractData = {
-        padCommissionEnum: this.info.padCommissionEnum,
+      this.templateDate = {
+        disabled: ["1", "2", "3"],
       };
       window.sessionStorage.setItem("shengshiqu", this.info.city);
       window.sessionStorage.setItem(
@@ -542,6 +563,51 @@ export default class Notification extends Vue {
     }
   }
 
+  copyTop(data: any) {
+    switch (data.contractKind) {
+      case "StandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/copyNormalSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        this.$router.push({
+          path: "/projectApproval/copyNotSalesApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "StandChannel":
+        this.$router.push({
+          path: "/projectApproval/copyNormalDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        this.$router.push({
+          path: "/projectApproval/copyNotDistributionApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+      case "NoChannel":
+        this.$router.push({
+          path: "/projectApproval/copyNotChannelApply",
+          query: {
+            id: data.agencyContrictId,
+          },
+        });
+        break;
+    }
+  }
+
   viewTemplate(data: any) {
     switch (data.contractKind) {
       case "StandKindSaleConfirm":
@@ -590,29 +656,29 @@ export default class Notification extends Vue {
   // 中介分销合同启用
   async start(data: any) {
     try {
-      this.tableLoading = true;
+      this.startLoading = true;
       await post_distributContract_start__agencyContrictId({
         agencyContrictId: data.agencyContrictId,
       });
-      this.tableLoading = false;
+      this.startLoading = false;
       this.$message.success("启用成功");
       this.getInfo();
     } catch (err) {
-      this.tableLoading = false;
+      this.startLoading = false;
     }
   }
 
   async stop(data: any) {
     try {
-      this.tableLoading = true;
+      this.stopLoading = true;
       await post_distributContract_cancel__agencyContrictId({
         agencyContrictId: data.agencyContrictId,
       });
-      this.tableLoading = false;
+      this.stopLoading = false;
       this.$message.success("禁用成功");
       this.getInfo();
     } catch (err) {
-      this.tableLoading = false;
+      this.stopLoading = false;
     }
   }
 

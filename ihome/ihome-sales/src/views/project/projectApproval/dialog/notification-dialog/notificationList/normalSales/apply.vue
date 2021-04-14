@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 14:31:38
+ * @LastEditTime: 2021-04-14 10:50:10
 -->
 <template>
   <ih-page class="text-left">
@@ -464,7 +464,7 @@ export default class NormalSalesApply extends Vue {
   }
 
   dataTimeChange(time: any) {
-    let start: any = new Date(this.timeList[0]).getTime() - 24 * 60 * 60 * 1000;
+    let start: any = new Date(this.timeList[0]).getTime() - 8.64e7;
     let end: any = new Date(this.timeList[1]).getTime();
     return time.getTime() < start || time.getTime() > end;
   }
@@ -730,15 +730,28 @@ export default class NormalSalesApply extends Vue {
       console.log(obj);
       this.finishLoading = true;
       if (this.agencyContrictId) {
-        try {
-          await post_distributContract_updateStandKindSaleConfirm(obj);
-          this.$message.success("模板编辑成功");
-          this.finishLoading = false;
-          window.sessionStorage.setItem("tabStatus", "Notification");
-          this.$router.go(-1);
-        } catch (err) {
-          this.finishLoading = false;
-          console.log(err);
+        if (this.$route.name === "copyNormalSalesApply") {
+          try {
+            await post_distributContract_addStandKindSaleConfirm(obj);
+            this.$message.success("模板复制成功");
+            this.finishLoading = false;
+            window.sessionStorage.setItem("tabStatus", "Notification");
+            this.$router.go(-1);
+          } catch (err) {
+            this.finishLoading = false;
+            console.log(err);
+          }
+        } else if (this.$route.name === "normalSalesApply") {
+          try {
+            await post_distributContract_updateStandKindSaleConfirm(obj);
+            this.$message.success("模板编辑成功");
+            this.finishLoading = false;
+            window.sessionStorage.setItem("tabStatus", "Notification");
+            this.$router.go(-1);
+          } catch (err) {
+            this.finishLoading = false;
+            console.log(err);
+          }
         }
       } else {
         try {

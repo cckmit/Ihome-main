@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 17:30:14
+ * @LastEditTime: 2021-04-14 10:38:04
  */
 import { RouteConfig } from 'vue-router'
 
@@ -233,6 +233,36 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'notChannelInfo',
         component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notChannel/info.vue'),
         meta: { title: '非渠道类合同详情', icon: 'form' }
+      },
+      {
+        path: 'copyNormalSalesApply',
+        name: 'copyNormalSalesApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalSales/apply.vue'),
+        meta: { title: '标准联动销售确认书(复制)', icon: 'form' }
+      },
+      {
+        path: 'copyNotSalesApply',
+        name: 'copyNotSalesApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notSales/apply.vue'),
+        meta: { title: '非标联动销售确认书(复制)', icon: 'form' }
+      },
+      {
+        path: 'copyNormalDistributionApply',
+        name: 'copyNormalDistributionApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/normalDistribution/apply.vue'),
+        meta: { title: '标准渠道分销合同(复制)', icon: 'form' }
+      },
+      {
+        path: 'copyNotDistributionApply',
+        name: 'copyNotDistributionApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notDistribution/apply.vue'),
+        meta: { title: '非标渠道分销合同(复制)', icon: 'form' }
+      },
+      {
+        path: 'copyNotChannelApply',
+        name: 'copyNotChannelApply',
+        component: () => import('../views/project/projectApproval/dialog/notification-dialog/notificationList/notChannel/apply.vue'),
+        meta: { title: '非渠道类合同(复制)', icon: 'form' }
       },
     ]
   },
