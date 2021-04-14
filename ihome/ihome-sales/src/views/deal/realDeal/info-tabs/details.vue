@@ -740,7 +740,7 @@ export default class RealDealDetails extends Vue {
         `/web-sales/distribution/info?contractNo=${item.firstContNo}`
       );
     } else if (type == "partyACustomerName") {
-      window.open(`/web-sales/developers/info?id=${item.id}`);
+      window.open(`/web-sales/developers/info?id=${item.partyACustomer}`);
     }
   }
 }
