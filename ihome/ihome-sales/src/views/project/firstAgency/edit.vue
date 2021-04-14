@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 14:59:45
+ * @LastEditTime: 2021-04-14 11:59:22
 -->
 <template>
   <ih-page>
@@ -37,7 +37,6 @@
             >
               <el-input
                 clearable
-                maxlength="18"
                 v-model="resPageInfo.creditCode"
                 placeholder="信用代码"
               ></el-input>
@@ -459,6 +458,8 @@ export default class Edit extends Vue {
     name: [{ required: true, message: "请填写名称", trigger: "change" }],
     creditCode: [
       { required: true, message: "请填写信用代码", trigger: "change" },
+      { min: 15, message: "字符长度不能小于15", trigger: "change" },
+      { max: 20, message: "字符长度不能大于20", trigger: "change" },
     ],
     shortName: [{ required: true, message: "请填写简称", trigger: "change" }],
     type: [{ required: true, message: "请选择类型", trigger: "change" }],

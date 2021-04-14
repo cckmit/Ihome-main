@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 09:03:47
+ * @LastEditTime: 2021-04-14 12:00:28
 -->
 <template>
   <IhPage label-width="100px">
@@ -375,16 +375,22 @@ export default class ProjectApproval extends Vue {
     const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
     const ConstractConduct = row.auditEnum === "ConstractConduct"; // 合同审核中
     const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
     return (
       Start &&
-      (TermAdopt || ConstractWait || ConstractConduct || ConstractReject)
+      (TermAdopt ||
+        ConstractWait ||
+        ConstractConduct ||
+        ConstractReject ||
+        ConstractAdopt)
     );
   }
 
   // 设置非启动函申领状态
   setNoStartChange(row: any) {
+    const Start = row.state === "Start";
     const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
-    return ConstractAdopt;
+    return Start && ConstractAdopt;
   }
 
   get emptyText() {
