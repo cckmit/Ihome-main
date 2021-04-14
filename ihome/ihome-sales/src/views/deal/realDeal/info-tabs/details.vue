@@ -316,7 +316,7 @@
                 <el-link
                   v-if="scope.row.type !== 'ServiceFee'"
                   type="primary"
-                  @click="gotoNew(infoForm, 'partyACustomerName')"
+                  @click="gotoNew(scope.row, 'partyACustomerName')"
                 >
                   {{ scope.row.partyACustomerName }}
                 </el-link>
