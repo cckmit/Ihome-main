@@ -347,6 +347,7 @@
                 >审核
                 </el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'SUPPLEMENTANNEX')}"
                   v-if="scope.row.status !== 'Draft'"
                   @click.native.prevent="handleUpload(scope)"
                 >补充附件
@@ -563,6 +564,17 @@
             }
             if (row.status === 'BranchBusinessManageUnreview' && (this as any).$roleTool.RBusinessManagement()) {
               // 分公司业管待审核、业务监管岗（分公司业管）
+              flag = false;
+            }
+            break;
+          case 'SUPPLEMENTANNEX':
+            // 补充附件按钮权限
+            if (!['Draft', 'Reject'].includes(row.status) && (this as any).$roleTool.RProjectSite()) {
+              // 案场
+              flag = false;
+            }
+            if (!['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(row.status) && (this as any).$roleTool.RFrontLineClerk()) {
+              // 文员
               flag = false;
             }
             break;
