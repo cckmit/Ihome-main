@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 16:56:52
+ * @LastEditTime: 2021-04-14 15:59:48
 -->
 <template>
   <IhPage class="text-left">
@@ -404,6 +404,10 @@ export default class SalesApply extends Vue {
             "FeeType"
           ),
         })),
+        costSettleType: (this.$root as any).dictAllName(
+          this.form.costSettleType,
+          "CostSettleType"
+        ),
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });

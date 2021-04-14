@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 11:20:23
+ * @LastEditTime: 2021-04-14 15:25:58
  */
 import { RouteConfig } from 'vue-router'
 
@@ -46,8 +46,20 @@ const contractRoutes: Array<RouteConfig> = [
       {
         path: 'list',
         name: 'DistributionList',
-        component: () => import( /* webpackChunkName: "DistributionList" */ '@/views/contract/distribution/list.vue'),
-        meta: { title: '渠道分销协议列表', icon: 'form', keepAlive: true }
+        component: () => import('@/views/contract/distribution/list.vue'),
+        meta: { title: '渠道分销协议列表(管理线)', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'listByBusiness',
+        name: 'DistributionListByBusiness',
+        component: () => import('@/views/contract/distribution/list.vue'),
+        meta: { title: '渠道分销协议列表(业务线)', icon: 'form', keepAlive: true }
+      },
+      {
+        path: 'listByBack',
+        name: 'DistributionListByBack',
+        component: () => import('@/views/contract/distribution/list.vue'),
+        meta: { title: '渠道分销协议列表(中后台)', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
