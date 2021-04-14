@@ -525,6 +525,10 @@ export default class DistributionApply extends Vue {
             "FeeType"
           ),
         })),
+        costSettleType: (this.$root as any).dictAllName(
+          this.form.costSettleType,
+          "CostSettleType"
+        ),
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });
