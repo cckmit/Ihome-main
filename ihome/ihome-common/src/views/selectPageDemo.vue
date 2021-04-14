@@ -197,6 +197,7 @@
         v-model="form.input18"
         @clear="clearMethod"
         clearable
+        @change="changeAgency"
       ></IhSelectPageByAgency>
     </el-form-item>
   </el-form>
