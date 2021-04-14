@@ -1101,7 +1101,7 @@
         // 获取对应的渠道分销合同的ids
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list: any) => {
-            if (list.contractNo === res.firstContNo) {
+            if (list.contractNo === res.contNo) {
               this.packageIdsList = this.getIdsList(list.distributionMxList);
             }
           });
