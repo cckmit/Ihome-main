@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:52:05
+ * @LastEditTime: 2021-04-14 17:24:39
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -80,6 +80,18 @@
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="标题备注">
+              <el-input
+                v-model="info.titleOrRemark"
+                placeholder="请输入标题备注"
+                clearable
+                class="width-350"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="项目名称">
               <span>{{info.proName}}</span>
@@ -226,6 +238,7 @@ export default class NotSalesApply extends Vue {
     commissionKind: null,
     exInvolvedCommiss: null,
     contractMxVOList: [],
+    titleOrRemark: null,
   };
   private rules: any = {
     contractTitle: [

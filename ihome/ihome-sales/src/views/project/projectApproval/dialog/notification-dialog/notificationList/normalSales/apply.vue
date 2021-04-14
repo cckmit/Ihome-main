@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:50:10
+ * @LastEditTime: 2021-04-14 17:19:54
 -->
 <template>
   <ih-page class="text-left">
@@ -20,6 +20,19 @@
           <div>编号：_____________________ </div>
         </div>
         <h2 class="text-center">{{`【${info.proName}】项目一二手联动销售确认书`}}</h2>
+        <el-form-item
+          label="标题备注"
+          label-width="80px"
+          class="width-300 text-center"
+          style="margin: 0 auto"
+        >
+          <el-input
+            class="title-sub"
+            v-model="info.titleOrRemark"
+            placeholder="请输入标题备注"
+            clearable
+          ></el-input>
+        </el-form-item>
         <div>致：___________________</div>
         <br />
         <div>贵我双方经友好协商，现就我司（下称“甲方”）委托贵司（下称“乙方”）就
@@ -405,6 +418,7 @@ export default class NormalSalesApply extends Vue {
     partyCompanyId: null,
     partyaAddr: null,
     companyKind: null,
+    titleOrRemark: null,
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];

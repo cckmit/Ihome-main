@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:47:55
+ * @LastEditTime: 2021-04-14 17:47:24
 -->
 <template>
   <ih-page class="text-left">
@@ -40,6 +40,18 @@
               class="title-sub"
               v-model="info.contractSubtitle"
               placeholder="请输入合同副标题"
+              clearable
+            ></el-input>
+          </el-form-item>
+          <el-form-item
+            label="标题备注"
+            label-width="80px"
+            class="margin-right-60"
+          >
+            <el-input
+              class="title-sub"
+              v-model="info.titleOrRemark"
+              placeholder="请输入标题备注"
               clearable
             ></el-input>
           </el-form-item>
@@ -616,6 +628,7 @@ export default class NormalSalesApply extends Vue {
       8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
       8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`,
     supplementary: null,
+    titleOrRemark: null,
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];

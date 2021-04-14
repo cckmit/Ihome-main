@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 14:33:19
+ * @LastEditTime: 2021-04-14 17:41:11
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -37,6 +37,18 @@
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="12">
+            <el-form-item label="标题备注">
+              <el-input
+                v-model="info.titleOrRemark"
+                placeholder="请输入标题备注"
+                clearable
+                class="width-350"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="项目名称">
               <span>{{info.proName}}</span>
@@ -110,6 +122,7 @@ export default class NotSalesApply extends Vue {
     proRecord: null,
     termId: null,
     timeList: [],
+    titleOrRemark: null,
   };
   private fileList: any = [];
   private finishLoading: any = false;
