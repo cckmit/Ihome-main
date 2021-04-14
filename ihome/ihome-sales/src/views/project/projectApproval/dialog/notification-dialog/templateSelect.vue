@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 11:33:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-13 16:47:55
+ * @LastEditTime: 2021-04-14 16:43:48
 -->
 <template>
   <el-dialog
@@ -37,7 +37,7 @@
         class="margin-top-10 margin"
         :disabled="!data.disabled.includes('3')"
         @click="routerTo('notChannelApply')"
-      >非渠道类合同</el-button>
+      >非渠道合同</el-button>
       <el-button
         @click="cancel()"
         class="margin-top-10 margin"
