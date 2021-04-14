@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 15:14:33
+ * @LastEditTime: 2021-04-14 15:26:45
 -->
 <template>
   <div>
@@ -475,7 +475,7 @@ export default class Other extends Vue {
   async forbidden(row: any) {
     await post_other_stop({
       shareId: row.shareId,
-      termId: row.termId,
+      termId: this.termId,
     });
     this.$message({
       type: "success",
@@ -487,7 +487,7 @@ export default class Other extends Vue {
   async start(row: any) {
     await post_other_start({
       shareId: row.shareId,
-      termId: row.termId,
+      termId: this.termId,
     });
     this.$message({
       type: "success",
