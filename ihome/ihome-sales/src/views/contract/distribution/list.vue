@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-08 11:10:06
+ * @LastEditTime: 2021-04-14 17:51:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -210,8 +210,21 @@
         >重置</el-button>
         <el-button
           type="success"
+          v-if="$route.name === 'DistributionList'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
+        >审核</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="review(selectionData)"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.VERIFY'"
+        >审核</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="review(selectionData)"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.VERIFY'"
         >审核</el-button>
         <!-- <el-button
           type="success"
@@ -220,39 +233,82 @@
         >派发</el-button> -->
         <el-button
           type="danger"
+          v-if="$route.name === 'DistributionList'"
           @click="handleDis(selectionData)"
           :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="handleDis(selectionData)"
+          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REJECT'"
+        >驳回</el-button>
+        <el-button
+          type="danger"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="handleDis(selectionData)"
+          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.REJECT'"
+        >驳回</el-button>
+        <el-button
+          type="danger"
+          v-if="$route.name === 'DistributionList'"
           @click="handleWith(selectionData)"
           :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
         <el-button
+          type="danger"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="handleWith(selectionData)"
+          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REVOKE'"
+        >撤回</el-button>
+        <el-button
+          type="danger"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="handleWith(selectionData)"
+          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.REVOKE'"
+        >撤回</el-button>
+        <el-button
           type="success"
+          v-if="$route.name === 'DistributionList'"
           @click="applyVisible = true"
+          v-has="'B.SALES.CONTRACT.DISTLIST.APPLY'"
         >申领合同</el-button>
         <el-button
           type="success"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="applyVisible = true"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.APPLY'"
+        >申领合同</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="applyVisible = true"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.APPLY'"
+        >申领合同</el-button>
+        <el-button
+          type="success"
+          v-if="$route.name === 'DistributionList'"
           @click="handleExport()"
           v-has="'B.SALES.CONTRACT.DISTLIST.EXPORTLIST'"
         >导出列表</el-button>
-        <!-- <el-dropdown
-          class="margin-left-10"
-          trigger="click"
-        >
-          <el-button type="success">
-            导出<i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item
-              @click.native.prevent="handleExport()"
-              v-has="'B.SALES.CONTRACT.DISTLIST.EXPORTLIST'"
-            >导出列表</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown> -->
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.EXPORTLIST'"
+        >导出列表</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.EXPORTLIST'"
+        >导出列表</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
@@ -378,16 +434,26 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="review([{ ...row }])"
+                  v-if="$route.name === 'DistributionList'"
                   :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
                 >审核通过</el-dropdown-item>
-                <!-- <el-dropdown-item
-                  @click.native.prevent="distribute([{ ...row }])"
-                  :class="{ 'ih-data-disabled': row.distributionState !== 'NotDistributed' }"
-                  v-has="'B.SALES.CONTRACT.DISTLIST.DISTRIBUTE'"
-                >派发</el-dropdown-item> -->
+                <el-dropdown-item
+                  @click.native.prevent="review([{ ...row }])"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.VERIFY'"
+                >审核通过</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="review([{ ...row }])"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.VERIFY'"
+                >审核通过</el-dropdown-item>
+
                 <el-dropdown-item
                   @click.native.prevent="handleDis([{ ...row }])"
+                  v-if="$route.name === 'DistributionList'"
                   :class="{
                     'ih-data-disabled': !(channelChange() || contractChange()),
                     'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
@@ -395,7 +461,27 @@
                   v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
                 >审核驳回</el-dropdown-item>
                 <el-dropdown-item
+                  @click.native.prevent="handleDis([{ ...row }])"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  :class="{
+                    'ih-data-disabled': !(channelChange() || contractChange()),
+                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                  }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REJECT'"
+                >审核驳回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleDis([{ ...row }])"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  :class="{
+                    'ih-data-disabled': !(channelChange() || contractChange()),
+                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                  }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.REJECT'"
+                >审核驳回</el-dropdown-item>
+
+                <el-dropdown-item
                   @click.native.prevent="handleWith([{ ...row }])"
+                  v-if="$route.name === 'DistributionList'"
                   :class="{
                     'ih-data-disabled': !(channelChange() || contractChange()),
                     'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
@@ -403,24 +489,98 @@
                   v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
+                  @click.native.prevent="handleWith([{ ...row }])"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  :class="{
+                    'ih-data-disabled': !(channelChange() || contractChange()),
+                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                  }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REVOKE'"
+                >撤回</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleWith([{ ...row }])"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  :class="{
+                    'ih-data-disabled': !(channelChange() || contractChange()),
+                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                  }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.REVOKE'"
+                >撤回</el-dropdown-item>
+
+                <el-dropdown-item
                   @click.native.prevent="handleGoDuplicate(row)"
+                  v-if="$route.name === 'DistributionList'"
                   :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
-                  v-has="'B.SALES.CONTRACT.PARTYALIST.SCANFILE'"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.STAMPFILE'"
                 >盖章版归档</el-dropdown-item>
                 <el-dropdown-item
+                  @click.native.prevent="handleGoDuplicate(row)"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.STAMPFILE'"
+                >盖章版归档</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleGoDuplicate(row)"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.STAMPFILE'"
+                >盖章版归档</el-dropdown-item>
+
+                <el-dropdown-item
                   @click.native.prevent="handleTo(row, 'original')"
+                  v-if="$route.name === 'DistributionList'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
                 <el-dropdown-item
+                  @click.native.prevent="handleTo(row, 'original')"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  :class="{ 'ih-data-disabled': !originalChange(row) }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.ORIGINALFILE'"
+                >原件归档</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleTo(row, 'original')"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  :class="{ 'ih-data-disabled': !originalChange(row) }"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.ORIGINALFILE'"
+                >原件归档</el-dropdown-item>
+
+                <el-dropdown-item
                   @click.native.prevent="handleExportFile(row)"
+                  v-if="$route.name === 'DistributionList'"
                   v-has="'B.SALES.CONTRACT.DISTLIST.EXPRORTATTCH'"
                   :class="{ 'ih-data-disabled': !exportChange()}"
                 >导出附件</el-dropdown-item>
                 <el-dropdown-item
+                  @click.native.prevent="handleExportFile(row)"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.EXPRORTATTCH'"
+                  :class="{ 'ih-data-disabled': !exportChange()}"
+                >导出附件</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="handleExportFile(row)"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.EXPRORTATTCH'"
+                  :class="{ 'ih-data-disabled': !exportChange()}"
+                >导出附件</el-dropdown-item>
+
+                <el-dropdown-item
                   :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
                   @click.native.prevent="remove(row)"
+                  v-if="$route.name === 'DistributionList'"
                   v-has="'B.SALES.CONTRACT.DISTLIST.DELETE'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
+                  @click.native.prevent="remove(row)"
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.DELETE'"
+                >删除</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Drafting' && row.distributionState !== 'Disallowance' }"
+                  @click.native.prevent="remove(row)"
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.DELETE'"
                 >删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
