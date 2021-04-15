@@ -25,7 +25,9 @@
               </span>
             </span>
           </div>
-          <div class="line-item-bottom">{{ infoForm.cycleName }}</div>
+          <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'cycleName')">
+            {{ infoForm.cycleName }}</el-link
+          >
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">细分业务模式</div>
@@ -113,7 +115,7 @@
           <div class="line-item-top">现场销售</div>
           <div class="line-item-bottom">{{ infoForm.sceneSales }}</div>
         </el-col>
-        <el-col :span="8" class="line-item">
+        <el-col :span="24" class="line-item">
           <div class="line-item-top">房款回笼比例</div>
           <div class="line-item-bottom">
             {{ infoForm.returnRatio ? infoForm.returnRatio : 0 }}%
@@ -126,7 +128,7 @@
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理公司</div>
           <div class="line-item-bottom">
-            <el-link type="primary" @click="gotoNew(infoForm, 'oneAgentTeam')">
+            <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'oneAgentTeam')">
               {{ infoForm.oneAgentTeam }}</el-link
             >
           </div>
@@ -134,7 +136,7 @@
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理合同</div>
           <div class="line-item-bottom">
-            <el-link type="primary" @click="gotoNew(infoForm, 'firstContNo')">
+            <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'firstContNo')">
               {{ infoForm.firstContNo }}</el-link
             >
           </div>
@@ -147,7 +149,7 @@
             <span class="red" v-if="companyKind">[{{ companyKind }}]</span>
           </div>
           <div class="line-item-bottom">
-            <el-link type="primary" @click="gotoNew(infoForm, 'agencyName')">
+            <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'agencyName')">
               {{
                 infoForm.agencyList && infoForm.agencyList.length
                   ? infoForm.agencyList[0].agencyName
@@ -180,7 +182,7 @@
             </span>
           </div>
           <div class="line-item-bottom">
-            <el-link type="primary" @click="gotoNew(infoForm, 'contTitle')">
+            <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'contTitle')">
               {{ infoForm.contTitle }}</el-link
             >
           </div>
@@ -229,7 +231,7 @@
             </div>
             <div class="file-item-1">编号：{{ item.noticeNo }}</div>
             <div class="file-item-1">
-              <!-- <div class="file-item-1-left special">特殊</div> -->
+              <div v-if="item.promotionMethod === 'Manual'" class="file-item-1-left special">特殊</div>
               <div style="height: 16px"></div>
               <!-- <div class="file-item-1-right">
                 <el-link type="primary">预览</el-link>
@@ -741,11 +743,17 @@ export default class RealDealDetails extends Vue {
       );
     } else if (type == "partyACustomerName") {
       window.open(`/web-sales/developers/info?id=${item.partyACustomer}`);
+    } else if (type == "cycleName") {
+      window.open(`/web-sales/projectApproval/info?id=${item.cycleId}`);
     }
   }
 }
 </script>
 <style lang="scss" scoped>
+.font-weight-600 {
+  font-weight: 600;
+  font-size: 15px;
+}
 .card-header {
   text-align: left;
   font-weight: 600;

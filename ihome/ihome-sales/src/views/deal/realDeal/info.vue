@@ -5,9 +5,10 @@
         <h3>成交报告编号：{{ info.dealCode }}</h3>
       </el-col>
       <el-col :span="12" class="text-right">
-        <h3>{{ info.dealOrg }}</h3>
+        <h3>【{{ info.dealOrg }}】</h3>
       </el-col>
     </el-row>
+    <!--
     <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
@@ -68,6 +69,7 @@
         </el-row>
       </el-col>
     </el-row>
+    -->
     <div style="margin-bottom: 50px">
       <el-tabs v-model="tabActive">
         <el-tab-pane label="成交详情" name="1">
