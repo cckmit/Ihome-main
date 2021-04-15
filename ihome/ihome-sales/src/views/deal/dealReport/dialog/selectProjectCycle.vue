@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 15:28:12
  * @LastEditors: lsj
- * @LastEditTime: 2020-12-26 17:06:13
+ * @LastEditTime: 2021-04-15 12:03:20
 -->
 <template>
   <el-dialog
@@ -163,7 +163,7 @@
 
     private reset() {
       Object.assign(this.queryPageParameters, {
-        auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
+        // auditEnum: 'ConstractAdopt', // 只显示合同审核通过的
         state: 'Start', // 只显示启用
         termName: null,
         proName: null
