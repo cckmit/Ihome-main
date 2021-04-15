@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 17:32:06
+ * @LastEditTime: 2021-04-15 16:10:26
 -->
 <template>
   <IhPage class="text-left">
@@ -168,12 +168,20 @@
             </el-table-column>
             <el-table-column
               label="条件"
-              prop="standardPay"
-            ></el-table-column>
+              prop="sendContext"
+            >
+              <template v-solt="{ row }">
+                {{row.sendContext || '-'}}
+              </template>
+            </el-table-column>
             <el-table-column
               label="派发佣金标准"
-              prop="sendContext"
-            ></el-table-column>
+              prop="sendStandard"
+            >
+              <template v-solt="{ row }">
+                {{row.sendStandard || '-'}}
+              </template>
+            </el-table-column>
           </el-table>
           <br />
         </div>
@@ -419,7 +427,11 @@ export default class NotDistributionApply extends Vue {
           cycleId: res.termId,
           designatedAgency: res.designatedAgency,
           designatedAgencyId: res.designatedAgencyId,
-          distributionMxList: res.contractMxVOList,
+          distributionMxList: res.contractMxVOList.map((i: any) => ({
+            ...i,
+            sendContext: i.standardPay,
+            sendStandard: i.sendContext,
+          })),
           handlerId: (this.$root as any).userInfo.id,
           // organizationId: res.groupId,
           padCommissionEnum: res.padCommissionEnum,

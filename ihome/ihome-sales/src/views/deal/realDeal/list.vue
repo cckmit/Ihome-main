@@ -8,31 +8,33 @@
               <el-input
                 v-model="queryPageParameters.dealCode"
                 clearable
-                placeholder=""
+                placeholder="请输入成交报告编号"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目周期">
-              <IhSelectPageByCycle
-                clearable
-                @changeOption="
-                  (data) => {
-                    queryPageParameters.proId = data.proId;
-                  }
-                "
-                v-model="queryPageParameters.projectCycle"
-                placeholder="请选择立项周期"
-              ></IhSelectPageByCycle>
+            <el-form-item label="客户信息">
+              <el-input
+                  v-model="queryPageParameters.phoneOrCusName"
+                  placeholder="客户姓名或手机"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="栋座房号">
-              <IhBuildingRoom
-                v-model="buildingRoom"
-                :proId="queryPageParameters.proId"
-                @change="buildingRoomChange"
-              />
+            <el-form-item label="成交状态">
+              <el-select
+                  v-model="queryPageParameters.status"
+                  clearable
+                  placeholder="请选择"
+                  class="width--100"
+              >
+                <el-option
+                    v-for="item in $root.dictAllList('DealStatus')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -40,44 +42,18 @@
           <div v-show="searchOpen">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="组织">
-                  <IhSelectOrgTree
-                    v-model="queryPageParameters.dealOrgId"
-                  ></IhSelectOrgTree>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="客户信息">
-                  <el-input
-                    v-model="queryPageParameters.phoneOrCusName"
-                    placeholder="客户姓名或手机"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="渠道公司">
-                  <IhSelectPageByChannel
-                    v-model="queryPageParameters.agencyId"
-                    clearable
-                    placeholder="请选择渠道公司"
-                    class="width--100"
-                  ></IhSelectPageByChannel>
-                </el-form-item>
-              </el-col>
-
-              <el-col :span="8">
                 <el-form-item label="合同类型">
                   <el-select
-                    v-model="queryPageParameters.contType"
-                    clearable
-                    placeholder="请选择"
-                    class="width--100"
+                      v-model="queryPageParameters.contType"
+                      clearable
+                      placeholder="请选择"
+                      class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('ContType')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
+                        v-for="item in $root.dictAllList('ContType')"
+                        :key="item.code"
+                        :label="item.name"
+                        :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -85,61 +61,80 @@
               <el-col :span="8">
                 <el-form-item label="成交阶段">
                   <el-select
-                    v-model="queryPageParameters.stage"
-                    clearable
-                    placeholder="请选择"
-                    class="width--100"
+                      v-model="queryPageParameters.stage"
+                      clearable
+                      placeholder="请选择"
+                      class="width--100"
                   >
                     <el-option
-                      v-for="item in $root.dictAllList('DealStage')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
+                        v-for="item in $root.dictAllList('DealStage')"
+                        :key="item.code"
+                        :label="item.name"
+                        :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
-
               <el-col :span="8">
-                <el-form-item label="成交状态">
-                  <el-select
-                    v-model="queryPageParameters.status"
-                    clearable
-                    placeholder="请选择"
-                    class="width--100"
-                  >
-                    <el-option
-                      v-for="item in $root.dictAllList('DealStatus')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
+                <el-form-item label="项目周期">
+                  <IhSelectPageByCycle
+                      clearable
+                      @changeOption="
+                  (data) => {
+                    queryPageParameters.proId = data.proId;
+                  }
+                "
+                      v-model="queryPageParameters.projectCycle"
+                      placeholder="请选择立项周期"
+                  ></IhSelectPageByCycle>
                 </el-form-item>
               </el-col>
-
-              <!-- <el-col :span="8">
-                <el-form-item label="录入人">
-                  <IhSelectPageUser
-                    v-model="queryPageParameters.entryPerson"
-                    clearable
-                  >
-                    <template v-slot="{ data }">
-                      <span style="float: left">{{ data.name }}</span>
-                      <span
-                        style="
-                          margin-left: 20px;
-                          float: right;
-                          color: #8492a6;
-                          font-size: 13px;
-                        "
-                        >{{ data.account }}</span
-                      >
-                    </template>
-                  </IhSelectPageUser>
+              <el-col :span="8">
+                <el-form-item label="栋座房号">
+                  <IhBuildingRoom
+                      v-model="buildingRoom"
+                      :proId="queryPageParameters.proId"
+                      @change="buildingRoomChange"
+                  />
                 </el-form-item>
-              </el-col> -->
-
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="归属组织">
+                  <IhSelectOrgTree
+                    placeholder="请选择"
+                    v-model="queryPageParameters.dealOrgId"
+                  ></IhSelectOrgTree>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="渠道公司">
+                  <div class="agency-wrapper">
+                    <div class="left">
+                      <el-select
+                          v-model="queryPageParameters.companyKind"
+                          clearable
+                          placeholder="公司类型"
+                          @change="changeAgencyType"
+                          class="width--100">
+                        <el-option
+                            v-for="item in companyKindOption"
+                            :key="item.code"
+                            :label="item.name"
+                            :value="item.code"
+                        ></el-option>
+                      </el-select>
+                    </div>
+                    <div class="right">
+                      <IhSelectPageByChannelCompany
+                          v-model="queryPageParameters.agencyId"
+                          :proId="queryPageParameters.companyKind"
+                          placeholder="请选择渠道公司"
+                          clearable
+                      ></IhSelectPageByChannelCompany>
+                    </div>
+                  </div>
+                </el-form-item>
+              </el-col>
               <el-col :span="8">
                 <el-form-item label="经纪人">
                   <IhSelectPageByBroker
@@ -155,9 +150,8 @@
                   ></IhSelectPageByBroker>
                 </el-form-item>
               </el-col>
-
               <el-col :span="12">
-                <el-form-item label="查询时间">
+                <el-form-item label="日期筛选">
                   <div class="search-time-wrapper">
                     <div class="time-type">
                       <el-select
@@ -191,52 +185,6 @@
                   </div>
                 </el-form-item>
               </el-col>
-
-              <!-- 
-              <el-col :span="8">
-                <el-form-item label="项目周期">
-                  <IhSelectPageByCycle
-                    clearable
-                    @changeOption="
-                      (data) => {
-                        queryPageParameters.proId = data.proId;
-                      }
-                    "
-                    v-model="queryPageParameters.projectCycle"
-                    placeholder="请选择立项周期"
-                  ></IhSelectPageByCycle>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="栋座房号">
-                  <IhBuildingRoom
-                    v-model="buildingRoom"
-                    :proId="queryPageParameters.proId"
-                    @change="buildingRoomChange"
-                  />
-                </el-form-item>
-              </el-col> -->
-              <!-- <el-col :span="8">
-                <el-form-item label="栋座">
-                  <IhSelectPageByBuild
-                    v-model="queryPageParameters.buildingId"
-                    :proId="queryPageParameters.proId"
-                    placeholder="请选择栋座"
-                    clearable
-                  ></IhSelectPageByBuild>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="房号">
-                  <IhSelectPageByRoom
-                    v-model="queryPageParameters.roomNumberId"
-                    :proId="queryPageParameters.proId"
-                    :buildingId="queryPageParameters.buildingId"
-                    placeholder="请选择房号"
-                    clearable
-                  ></IhSelectPageByRoom>
-                </el-form-item>
-              </el-col> -->
             </el-row>
           </div>
         </el-collapse-transition>
@@ -245,7 +193,6 @@
     <template v-slot:btn>
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
-
         <el-button type="info" @click="handleReset()">重置</el-button>
         <el-link
           type="primary"
@@ -260,8 +207,7 @@
       <el-table
         class="ih-table"
         :empty-text="emptyText"
-        :data="resPageInfo.list"
-      >
+        :data="resPageInfo.list">
         <el-table-column type="expand">
           <template slot-scope="scope">
             <div>
@@ -292,7 +238,6 @@
           label="成交报告编号"
           min-width="190"
         ></el-table-column>
-
         <el-table-column prop="contType" label="合同类型" min-width="190">
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.contType, "ContType") }}
@@ -303,21 +248,27 @@
           label="应收金额"
           min-width="190"
         ></el-table-column>
-
         <el-table-column
           prop="actualAmount"
           label="已收金额"
           min-width="190"
         ></el-table-column>
+        <el-table-column prop="commAmount" label="应付金额" min-width="190">
+          <template slot-scope="scope">
+            <div>{{scope.row.commAmount ? scope.row.commAmount : 0}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="paidCommAmount"
           label="已付金额"
           min-width="190"
         ></el-table-column>
-
         <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">
-            {{ $root.dictAllName(scope.row.status, "DealStatus") }}
+            <div class="deal-status-dot">
+              <span class="dot" :class="getStatusDot(scope.row.status)"></span>
+              <span>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -325,32 +276,31 @@
           label="组织信息"
           width="300"
         ></el-table-column>
-        <el-table-column
-          prop="entryPerson"
-          label="录入人"
-          min-width="80"
-        ></el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="录入日期"
-          min-width="180"
-        ></el-table-column>
+<!--        <el-table-column-->
+<!--          prop="entryPerson"-->
+<!--          label="录入人"-->
+<!--          min-width="80"-->
+<!--        ></el-table-column>-->
+<!--        <el-table-column-->
+<!--          prop="createTime"-->
+<!--          label="录入日期"-->
+<!--          min-width="130"-->
+<!--        ></el-table-column>-->
         <el-table-column
           prop="subscribeDate"
           label="认购日期"
-          min-width="120"
+          min-width="130"
         ></el-table-column>
         <el-table-column
           prop="signDate"
           label="签约日期"
-          min-width="120"
+          min-width="130"
         ></el-table-column>
-        <el-table-column
-          prop="achieveConfirmTime"
-          min-width="120"
-          label="业绩确认日期"
-        ></el-table-column>
-
+<!--        <el-table-column-->
+<!--          prop="achieveConfirmTime"-->
+<!--          min-width="130"-->
+<!--          label="业绩确认日期"-->
+<!--        ></el-table-column>-->
         <!-- 
         <el-table-column prop="contType" label="房产信息" min-width="260">
           <template slot-scope="scope">
@@ -454,25 +404,24 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { post_deal_getList } from "../../../api/deal";
-
 import PaginationMixin from "../../../mixins/pagination";
+import { post_deal_getList } from "@/api/deal";
+import {post_dict_getAllByType} from "@/api/system";
 
 @Component({
   mixins: [PaginationMixin],
 })
 export default class RealDealList extends Vue {
   private searchOpen = false;
-  buildingRoom: any = "";
+  companyKindOption: any = [];
+  buildingRoom: any = [];
   queryPageParameters: any = {
     dealCode: null,
+    phoneOrCusName: null,
     contType: null,
     status: null,
     suppContType: null,
     dealOrgId: null,
-    entryPerson: null,
-    customerName: null,
-    customerPhone: null,
     agencyId: null, // 渠道商id
     stage: null,
     projectCycle: null,
@@ -484,16 +433,16 @@ export default class RealDealList extends Vue {
     beginTime: null,
     endTime: null,
     roomNumberId: null,
-    phoneOrCusName: null,
+    companyKind: null,
   };
   selectTimeRange: any = [];
-
   resPageInfo: any = {
     total: null,
     list: [],
   };
 
   async created() {
+    await this.getCompanyTypeList();
     await this.getListMixin();
   }
 
@@ -518,6 +467,30 @@ export default class RealDealList extends Vue {
     return flag;
   }
 
+  // 改变公司类型
+  changeAgencyType() {
+    this.queryPageParameters.agencyId = null;
+  }
+
+  // 获取公司类型
+  async getCompanyTypeList() {
+    this.companyKindOption = await post_dict_getAllByType({
+      tag:"Channel",
+      type:"CompanyKind",
+      valid:"Valid",
+    });
+  }
+
+  // 获取颜色
+  getStatusDot(status: any = '') {
+    if (status === 'Draft') {
+      return 'warning';
+    } else if (status === 'ReviewPassed') {
+      return 'success';
+    } else {
+      return 'primary';
+    }
+  }
 
   // 改变查询时间
   inputTimeChange(dateArray: any) {
@@ -562,14 +535,12 @@ export default class RealDealList extends Vue {
   handleReset() {
     this.queryPageParameters = {
       dealCode: null,
+      phoneOrCusName: null,
       contType: null,
       status: null,
       suppContType: null,
       dealOrgId: null,
-      entryPerson: null,
-      customerName: null,
-      customerPhone: null,
-      agencyId: null,
+      agencyId: null, // 渠道商id
       stage: null,
       projectCycle: null,
       proId: null,
@@ -580,11 +551,11 @@ export default class RealDealList extends Vue {
       beginTime: null,
       endTime: null,
       roomNumberId: null,
+      companyKind: null,
       pageNum: 1,
       pageSize: this.queryPageParameters.pageSize,
-      phoneOrCusName: null,
     };
-    this.buildingRoom = "";
+    this.buildingRoom = [];
     this.selectTimeRange = [];
   }
 
@@ -620,6 +591,47 @@ export default class RealDealList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.agency-wrapper {
+  width: 100%;
+  display: flex;
+
+  div {
+    flex: 1;
+  }
+
+  .right {
+    flex: 2;
+  }
+}
+
+.deal-status-dot {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .dot {
+    display:block;
+    border-radius:50%;
+    width:8px;
+    height:8px;
+    box-sizing: border-box;
+    margin-right: 5px;
+  }
+
+  .warning {
+    background: #e6a23c;
+  }
+
+  .primary {
+    background: #409eff;
+  }
+
+  .success {
+    background: #67c23a;
+  }
+}
+
 .search-time-wrapper {
   width: 100%;
   display: flex;
