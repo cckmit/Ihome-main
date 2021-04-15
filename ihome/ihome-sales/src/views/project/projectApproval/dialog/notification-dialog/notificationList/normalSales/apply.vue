@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 09:34:21
+ * @LastEditTime: 2021-04-15 17:18:18
 -->
 <template>
   <ih-page class="text-left">
@@ -193,7 +193,7 @@
             prop="propertyEnum"
           >
             <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "Property")
+            row.propertyEnum ? $root.dictAllName(row.propertyEnum, "Property") : '-'
           }}</template>
           </el-table-column>
           <el-table-column
@@ -201,17 +201,21 @@
             prop="costTypeEnum"
           >
             <template v-slot="{ row }">{{
-            $root.dictAllName(row.costTypeEnum, "FeeType")
+            row.costTypeEnum ? $root.dictAllName(row.costTypeEnum, "FeeType") : '-'
           }}</template>
           </el-table-column>
           <el-table-column
             label="条件"
             prop="standardPay"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">{{ row.standardPay ? row.standardPay : '-' }}</template>
+          </el-table-column>
           <el-table-column
             label="派发佣金标准"
             prop="sendContext"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">{{ row.sendContext ? row.sendContext : '-' }}</template>
+          </el-table-column>
           <el-table-column
             fixed="right"
             label="操作"
