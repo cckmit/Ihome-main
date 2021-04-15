@@ -246,14 +246,14 @@
         <el-table-column
           prop="receiveAmount"
           label="应收金额"
-          min-width="190"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           prop="actualAmount"
           label="已收金额"
-          min-width="190"
+          min-width="150"
         ></el-table-column>
-        <el-table-column prop="commAmount" label="应付金额" min-width="190">
+        <el-table-column prop="commAmount" label="应付金额" min-width="150">
           <template slot-scope="scope">
             <div>{{scope.row.commAmount ? scope.row.commAmount : 0}}</div>
           </template>
@@ -261,7 +261,7 @@
         <el-table-column
           prop="paidCommAmount"
           label="已付金额"
-          min-width="190"
+          min-width="150"
         ></el-table-column>
         <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">

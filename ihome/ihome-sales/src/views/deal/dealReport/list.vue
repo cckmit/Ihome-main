@@ -253,22 +253,22 @@
             <div v-if="scope.row.contType">{{ $root.dictAllName(scope.row.contType, 'ContType') }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="receiveAmount" label="应收金额" align="right" min-width="190">
+        <el-table-column prop="receiveAmount" label="应收金额" align="left" min-width="150">
           <template slot-scope="scope">
             <div>{{scope.row.receiveAmount ? scope.row.receiveAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="actualAmount" label="已收金额" align="right" min-width="190">
+        <el-table-column prop="actualAmount" label="已收金额" align="left" min-width="150">
           <template slot-scope="scope">
             <div>{{scope.row.actualAmount ? scope.row.actualAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="commAmount" label="应付金额" align="right" min-width="190">
+        <el-table-column prop="commAmount" label="应付金额" align="left" min-width="150">
           <template slot-scope="scope">
             <div>{{scope.row.commAmount ? scope.row.commAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="paidCommAmount" label="已付金额" align="right" min-width="190">
+        <el-table-column prop="paidCommAmount" label="已付金额" align="left" min-width="150">
           <template slot-scope="scope">
             <div>{{scope.row.paidCommAmount ? scope.row.paidCommAmount : 0}}</div>
           </template>
