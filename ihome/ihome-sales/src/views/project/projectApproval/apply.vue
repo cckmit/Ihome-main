@@ -450,26 +450,27 @@
             label="物业类型"
             prop="propertyEnum"
           >
-            <template v-slot="{ row }">{{
-            $root.dictAllName(row.propertyEnum, "Property")
-          }}</template>
+            <template v-slot="{ row }">
+              {{ row.propertyEnum ? $root.dictAllName(row.propertyEnum, "Property") : '-' }}</template>
           </el-table-column>
           <el-table-column
             label="佣金分类"
             prop="costTypeEnum"
           >
-            <template v-slot="{ row }">{{
-            $root.dictAllName(row.costTypeEnum, "FeeType")
-          }}</template>
+            <template v-slot="{ row }">{{ row.costTypeEnum ? $root.dictAllName(row.costTypeEnum, "FeeType") : '-' }}</template>
           </el-table-column>
           <el-table-column
             label="条件"
             prop="standardPay"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">{{ row.standardPay ? row.standardPay : '-' }}</template>
+          </el-table-column>
           <el-table-column
             label="派发佣金标准"
             prop="sendContext"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">{{ row.sendContext ? row.sendContext : '-' }}</template>
+          </el-table-column>
         </el-table>
         <br />
       </div>
@@ -740,6 +741,7 @@ export default class Apply extends Vue {
         distributionMxList: this.info.contractMxVOList.map((v: any) => ({
           ...v,
           sendStandard: v.sendContext,
+          sendContext: v.standardPay,
           propertyEnum: (this.$root as any).dictAllName(
             v.propertyEnum,
             "Property"
