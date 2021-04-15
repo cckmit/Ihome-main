@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 16:57:36
+ * @LastEditTime: 2021-04-15 16:02:06
 -->
 <template>
   <IhPage class="text-left">
@@ -301,7 +301,11 @@ export default class NotSalesApply extends Vue {
           cycleId: res.termId,
           designatedAgency: res.designatedAgency,
           designatedAgencyId: res.designatedAgencyId,
-          distributionMxList: res.contractMxVOList,
+          distributionMxList: res.contractMxVOList.map((i: any) => ({
+            ...i,
+            sendContext: i.standardPay,
+            sendStandard: i.sendContext,
+          })),
           // distributionState: "",
           // exInvolvedCommiss: "",
           handlerId: (this.$root as any).userInfo.id,
