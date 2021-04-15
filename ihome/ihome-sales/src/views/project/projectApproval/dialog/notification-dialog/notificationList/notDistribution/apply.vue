@@ -521,6 +521,10 @@ export default class NotSalesApply extends Vue {
     this.setMealDialogData.padCommissionEnum = this.info.padCommissionEnum;
     this.setMealDialogData.id = this.info.termId;
     this.setMealDialogData.contractKind = "NoStandChannel";
+    if (this.isShow) {
+      this.setMealDialogData.companyKind = this.info.companyKind;
+      this.setMealDialogData.designatedAgencyId = this.info.designatedAgencyId;
+    }
     this.setmealDialogVisible = true;
   }
 

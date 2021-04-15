@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 17:19:54
+ * @LastEditTime: 2021-04-15 09:34:21
 -->
 <template>
   <ih-page class="text-left">
@@ -659,6 +659,10 @@ export default class NormalSalesApply extends Vue {
     this.setMealDialogData.padCommissionEnum = this.info.padCommissionEnum;
     this.setMealDialogData.id = this.info.termId;
     this.setMealDialogData.contractKind = "StandKindSaleConfirm";
+    if (this.isShow) {
+      this.setMealDialogData.companyKind = this.info.companyKind;
+      this.setMealDialogData.designatedAgencyId = this.info.designatedAgencyId;
+    }
     this.setmealDialogVisible = true;
   }
 

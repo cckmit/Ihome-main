@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-01 16:51:36
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-09 19:40:26
+ * @LastEditTime: 2021-04-15 09:43:03
 -->
 <template>
   <el-dialog
@@ -29,7 +29,7 @@
       ></el-table-column>
       <el-table-column
         prop="contractKind"
-        label="合同主标题"
+        label="合同类型"
         width="200"
       >
         <template v-slot="{ row }">{{
@@ -98,12 +98,12 @@
     <div>
       <el-button
         size="small"
-        type="primary"
+        type="success"
         @click="setStatus('Business')"
       >批量设置业务线申领</el-button>
       <el-button
         size="small"
-        type="primary"
+        type="success"
         @click="setStatus('MiddleAndBack')"
       >批量设置中后台申领</el-button>
       <el-button
