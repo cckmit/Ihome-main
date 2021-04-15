@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 16:41:02
+ * @LastEditTime: 2021-04-15 16:46:49
 -->
 <template>
   <el-dialog
@@ -152,7 +152,10 @@
               >
                 <template v-slot="{ row }">
                   <div>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, "Transaction") : '-'}}</div>
-                  <div :title="row.consumerName">{{row.consumerName ? row.consumerName : '-'}}</div>
+                  <div
+                    :title="row.consumerName"
+                    v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
+                  >{{row.consumerName ? row.consumerName : '-'}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -326,7 +329,10 @@
               >
                 <template v-slot="{ row }">
                   <div>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, "Transaction") : '-'}}</div>
-                  <div :title="row.consumerName">{{row.consumerName ? row.consumerName : '-'}}</div>
+                  <div
+                    :title="row.consumerName"
+                    v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
+                  >{{row.consumerName ? row.consumerName : '-'}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -441,7 +447,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{row.remark ? row.remark : 0}}</span>
+                  <span>{{row.remark ? row.remark : '-'}}</span>
                 </template>
               </el-table-column>
             </el-table>
