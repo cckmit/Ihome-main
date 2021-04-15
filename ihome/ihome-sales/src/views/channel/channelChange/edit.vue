@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 14:35:57
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-15 09:44:57
 -->
 <template>
   <IhPage>
@@ -396,14 +396,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { Form as ElForm } from "element-ui";
-import {
-  noTrim,
-  phoneValidator,
-  validIdentityCard,
-  validForbid,
-} from "ihome-common/util/base/form-ui";
-
-//引入请求数据的api
+import { noTrim, phoneValidator } from "ihome-common/util/base/form-ui";
 import {
   get_channelChange_get__id,
   post_channelChange_edit,
@@ -473,8 +466,6 @@ export default class ModifyThe extends Vue {
   private rules: any = {
     name: [
       { required: true, message: "请输入名称", trigger: "change" },
-      { validator: validForbid, trigger: "change" },
-      { validator: noTrim, trigger: "change" },
       { min: 1, max: 64, message: "长度在 1 到 64 个字符", trigger: "change" },
     ],
     creditCode: [
@@ -487,20 +478,15 @@ export default class ModifyThe extends Vue {
     ],
     shortName: [
       { required: true, message: "请输入简称", trigger: "change" },
-      { validator: validForbid, trigger: "change" },
-      { validator: noTrim, trigger: "change" },
       { min: 1, max: 16, message: "长度在 1 到 16 个字符", trigger: "change" },
     ],
     type: [{ required: true, message: "请选择类型", trigger: "change" }],
     legalPerson: [
       { required: true, message: "请输入法定代表人", trigger: "change" },
-      { validator: validForbid, trigger: "change" },
-      { validator: noTrim, trigger: "change" },
       { min: 1, max: 32, message: "长度在 1 到 32 个字符", trigger: "change" },
     ],
     legalIdentityCode: [
       { required: true, message: "请输入法人身份证号码", trigger: "change" },
-      { validator: validIdentityCard, trigger: "change" },
     ],
     setupTime: [
       { required: true, message: "请输入成立日期", trigger: "change" },
@@ -524,7 +510,6 @@ export default class ModifyThe extends Vue {
     ],
     identityCode: [
       { required: true, message: "请填写证件号码", trigger: "change" },
-      { validator: validIdentityCard, trigger: "change" },
     ],
     email: [
       // { required: true, message: "请填写邮箱", trigger: "change" },

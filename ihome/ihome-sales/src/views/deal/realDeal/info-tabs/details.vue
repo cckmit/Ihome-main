@@ -67,7 +67,7 @@
         </el-col>
       </el-row>
       <p class="line"></p>
-      <p class="p-title">房产信息</p>
+      <p class="p-title">成交信息</p>
       <el-row class="ih-info-line">
         <el-col :span="8" class="line-item">
           <div class="line-item-top">合同类型</div>
