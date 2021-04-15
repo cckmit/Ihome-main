@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-03 09:10:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-09 14:19:20
+ * @LastEditTime: 2021-04-15 16:12:33
 -->
 <template>
   <ih-page label-width="100px">
@@ -21,22 +21,28 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目周期">
-              <IhSelectPageByCycle
-                clearable
-                @change="handleChangeCycle"
-                @changeOption="(data) => {queryPageParameters.proId = data.proId}"
-                v-model="queryPageParameters.projectCycle"
-                placeholder="请选择立项周期"
-              ></IhSelectPageByCycle>
+            <el-form-item label="客户信息">
+              <el-input
+                  v-model="queryPageParameters.phoneOrCusName"
+                  clearable
+                  placeholder="客户姓名或手机号"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="栋座房号">
-              <IhBuildingRoom
-                v-model="buildingRoomId"
-                @change="changeBuildingRoom"
-                :proId="queryPageParameters.proId"/>
+            <el-form-item label="成交状态">
+              <el-select
+                  v-model="queryPageParameters.status"
+                  clearable
+                  placeholder="请选择成交状态"
+                  class="width--100">
+                <el-option
+                    v-for="item in $root.dictAllList('DealStatus')"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -44,50 +50,17 @@
           <div v-show="searchOpen">
             <el-row>
               <el-col :span="8">
-                <el-form-item label="客户信息">
-                  <el-input
-                    v-model="queryPageParameters.phoneOrCusName"
-                    clearable
-                    placeholder="客户姓名或手机号"
-                  ></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="归属组织">
-                  <IhSelectOrgTree
-                    v-model="queryPageParameters.dealOrgId"
-                    placeholder="请选择归属组织"
-                  ></IhSelectOrgTree>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="成交状态">
-                  <el-select
-                    v-model="queryPageParameters.status"
-                    clearable
-                    placeholder="请选择成交状态"
-                    class="width--100">
-                    <el-option
-                      v-for="item in $root.dictAllList('DealStatus')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
-                    ></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
                 <el-form-item label="合同类型">
                   <el-select
-                    v-model="queryPageParameters.contType"
-                    clearable
-                    placeholder="请选择合同类型"
-                    class="width--100">
+                      v-model="queryPageParameters.contType"
+                      clearable
+                      placeholder="请选择合同类型"
+                      class="width--100">
                     <el-option
-                      v-for="item in $root.dictAllList('ContType')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
+                        v-for="item in $root.dictAllList('ContType')"
+                        :key="item.code"
+                        :label="item.name"
+                        :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -95,15 +68,15 @@
               <el-col :span="8">
                 <el-form-item label="成交阶段">
                   <el-select
-                    v-model="queryPageParameters.stage"
-                    clearable
-                    placeholder="请选择成交阶段"
-                    class="width--100">
+                      v-model="queryPageParameters.stage"
+                      clearable
+                      placeholder="请选择成交阶段"
+                      class="width--100">
                     <el-option
-                      v-for="item in $root.dictAllList('DealStage')"
-                      :key="item.code"
-                      :label="item.name"
-                      :value="item.code"
+                        v-for="item in $root.dictAllList('DealStage')"
+                        :key="item.code"
+                        :label="item.name"
+                        :value="item.code"
                     ></el-option>
                   </el-select>
                 </el-form-item>
@@ -122,6 +95,33 @@
                       :value="item.code"
                     ></el-option>
                   </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="项目周期">
+                  <IhSelectPageByCycle
+                      clearable
+                      @change="handleChangeCycle"
+                      @changeOption="(data) => {queryPageParameters.proId = data.proId}"
+                      v-model="queryPageParameters.projectCycle"
+                      placeholder="请选择立项周期"
+                  ></IhSelectPageByCycle>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="栋座房号">
+                  <IhBuildingRoom
+                      v-model="buildingRoomId"
+                      @change="changeBuildingRoom"
+                      :proId="queryPageParameters.proId"/>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="归属组织">
+                  <IhSelectOrgTree
+                      v-model="queryPageParameters.dealOrgId"
+                      placeholder="请选择归属组织"
+                  ></IhSelectOrgTree>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -253,27 +253,27 @@
             <div v-if="scope.row.contType">{{ $root.dictAllName(scope.row.contType, 'ContType') }}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="receiveAmount" label="应收金额" align="right" min-width="180">
+        <el-table-column prop="receiveAmount" label="应收金额" align="right" min-width="190">
           <template slot-scope="scope">
             <div>{{scope.row.receiveAmount ? scope.row.receiveAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="actualAmount" label="已收金额" align="right" min-width="180">
+        <el-table-column prop="actualAmount" label="已收金额" align="right" min-width="190">
           <template slot-scope="scope">
             <div>{{scope.row.actualAmount ? scope.row.actualAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="commAmount" label="应付金额" align="right" min-width="180">
+        <el-table-column prop="commAmount" label="应付金额" align="right" min-width="190">
           <template slot-scope="scope">
             <div>{{scope.row.commAmount ? scope.row.commAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="paidCommAmount" label="已付金额" align="right" min-width="180">
+        <el-table-column prop="paidCommAmount" label="已付金额" align="right" min-width="190">
           <template slot-scope="scope">
             <div>{{scope.row.paidCommAmount ? scope.row.paidCommAmount : 0}}</div>
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" min-width="150">
+        <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">
             <div class="deal-status-dot">
               <span class="dot" :class="getStatusDot(scope.row.status)"></span>
@@ -281,7 +281,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column prop="dealOrg" label="组织信息" min-width="250"></el-table-column>
+        <el-table-column prop="dealOrg" label="组织信息" min-width="280"></el-table-column>
         <el-table-column prop="entryPerson" label="录入人" min-width="110"></el-table-column>
         <el-table-column prop="entryDate" label="录入日期" min-width="130">
           <template slot-scope="scope">
@@ -410,7 +410,7 @@
     mixins: [PaginationMixin],
   })
   export default class DealReportList extends Vue {
-    private searchOpen = true;
+    private searchOpen = false;
     companyKindOption: any = [];
     queryPageParameters: any = {
       dealCode: null,
