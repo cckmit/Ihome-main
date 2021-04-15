@@ -737,6 +737,10 @@ export default class Apply extends Vue {
           this.info.costSettleType,
           "CostSettleType"
         ),
+        distributionMxList: this.info.contractMxVOList.map((v: any) => ({
+          ...v,
+          sendStandard: v.sendContext,
+        })),
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });
