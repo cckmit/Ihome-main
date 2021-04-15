@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-14 17:51:24
+ * @LastEditTime: 2021-04-15 14:55:53
 -->
 <template>
   <IhPage label-width="100px">
@@ -30,6 +30,7 @@
                 v-model="queryPageParameters.contractKind"
                 placeholder="请选择合同类型 "
                 clearable
+                class="width--100"
               >
                 <el-option
                   v-for="(i, n) in $root.dictAllList('ContractKind')"
@@ -507,24 +508,27 @@
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.REVOKE'"
                 >撤回</el-dropdown-item>
 
-                <el-dropdown-item
-                  @click.native.prevent="handleGoDuplicate(row)"
-                  v-if="$route.name === 'DistributionList'"
-                  :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
-                  v-has="'B.SALES.CONTRACT.DISTLIST.STAMPFILE'"
-                >盖章版归档</el-dropdown-item>
-                <el-dropdown-item
-                  @click.native.prevent="handleGoDuplicate(row)"
-                  v-else-if="$route.name === 'DistributionListByBusiness'"
-                  :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
-                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.STAMPFILE'"
-                >盖章版归档</el-dropdown-item>
-                <el-dropdown-item
-                  @click.native.prevent="handleGoDuplicate(row)"
-                  v-else-if="$route.name === 'DistributionListByBack'"
-                  :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
-                  v-has="'B.SALES.CONTRACT.DISTBYBACK.STAMPFILE'"
-                >盖章版归档</el-dropdown-item>
+                <!-- 标准联动确认书没有盖章版归档 -->
+                <template v-if="row.contractKind !== 'StandKindSaleConfirm'">
+                  <el-dropdown-item
+                    @click.native.prevent="handleGoDuplicate(row)"
+                    v-if="$route.name === 'DistributionList'"
+                    :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
+                    v-has="'B.SALES.CONTRACT.DISTLIST.STAMPFILE'"
+                  >盖章版归档</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native.prevent="handleGoDuplicate(row)"
+                    v-else-if="$route.name === 'DistributionListByBusiness'"
+                    :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
+                    v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.STAMPFILE'"
+                  >盖章版归档</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native.prevent="handleGoDuplicate(row)"
+                    v-else-if="$route.name === 'DistributionListByBack'"
+                    :class="{ 'ih-data-disabled': row.contractKind === 'ScansAreNotArchived' || !duplicateChange(row) }"
+                    v-has="'B.SALES.CONTRACT.DISTBYBACK.STAMPFILE'"
+                  >盖章版归档</el-dropdown-item>
+                </template>
 
                 <el-dropdown-item
                   @click.native.prevent="handleTo(row, 'original')"

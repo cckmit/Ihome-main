@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-10 10:27:11
+ * @LastEditTime: 2021-04-15 14:40:24
 -->
 <template>
   <el-dialog
@@ -79,6 +79,7 @@
       @selection-change="handleSelectionChange"
       @select="handleSelect"
       max-height="320"
+      :empty-text="eText"
     >
       <el-table-column
         fixed
@@ -180,6 +181,9 @@ export default class ApplyContract extends Vue {
   private srcList: any = [];
   private srcData: any = [];
 
+  get eText() {
+    return this.resPageInfo.total === null ? "请选择周期进行查询" : "暂无数据";
+  }
   cancel() {
     this.$emit("cancel", false);
   }
@@ -314,9 +318,9 @@ export default class ApplyContract extends Vue {
     );
   }
 
-  created() {
-    this.getListMixin();
-  }
+  // created() {
+  //   this.getListMixin();
+  // }
 }
 </script>
 
