@@ -450,8 +450,7 @@
             label="物业类型"
             prop="propertyEnum"
           >
-            <template v-slot="{ row }">
-              {{ row.propertyEnum ? $root.dictAllName(row.propertyEnum, "Property") : '-' }}</template>
+            <template v-slot="{ row }">{{ row.propertyEnum ? $root.dictAllName(row.propertyEnum, "Property") : '-' }}</template>
           </el-table-column>
           <el-table-column
             label="佣金分类"
