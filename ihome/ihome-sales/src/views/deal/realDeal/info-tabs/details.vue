@@ -36,7 +36,6 @@
           </div>
         </el-col>
       </el-row>
-
       <p class="p-title">房产信息</p>
       <el-row class="ih-info-line">
         <el-col :span="8" class="line-item">
@@ -351,10 +350,14 @@
             label="分销业绩金额"
             min-width="180"
           ></el-table-column>
+          <el-table-column
+              prop="otherChannelFees"
+              label="其他渠道费用"
+              min-width="180"
+          ></el-table-column>
         </el-table>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -365,9 +368,9 @@
           style="width: 100%"
           key=""
           show-summary
+          :summary-method="getSummariesByComm"
           sum-text="合计"
-          :data="infoForm.channelCommList"
-        >
+          :data="infoForm.channelCommList">
           <el-table-column prop="target" label="拆佣对象" min-width="120">
             <template slot-scope="scope">
               <div>
@@ -419,13 +422,13 @@
         <el-table
           show-summary
           sum-text="合计"
+          :summary-method="getSummariesByAchieve"
           :data="infoForm.achieveTotalBagList"
-          style="width: 100%"
-        >
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
               <p>管理岗分配业绩</p>
-              <el-table :data="scope.row.managerAchieveList" style="width: 600">
+              <el-table :data="scope.row.managerAchieveList" style="width: 600px">
                 <el-table-column prop="manager" label="管理岗" width="200">
                 </el-table-column>
                 <el-table-column
@@ -439,7 +442,6 @@
               </el-table>
             </template>
           </el-table-column>
-
           <el-table-column prop="roleType" label="角色类型" min-width="120">
             <template slot-scope="scope">
               <div>{{ $root.dictAllName(scope.row.roleType, "DealRole") }}</div>
@@ -464,11 +466,9 @@
           <el-table-column
             prop="roleAchieveRatio"
             label="角色业绩比例（%）"
-            min-width="120"
-          >
+            min-width="120">
             <template slot-scope="scope">
-              <div v-if="suppContType">-</div>
-              <div v-else>{{ scope.row.roleAchieveRatio }}</div>
+              <div>{{ scope.row.roleAchieveRatio }}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -479,11 +479,9 @@
           <el-table-column
             prop="commFeesRatio"
             label="拆佣比例（%）"
-            min-width="150"
-          >
+            min-width="150">
             <template slot-scope="scope">
-              <div v-if="suppContType">-</div>
-              <div v-else>{{ scope.row.commFeesRatio }}</div>
+              <div>{{ scope.row.commFeesRatio }}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -492,14 +490,13 @@
             min-width="150"
           ></el-table-column>
         </el-table>
-
         <p class="p-title">分销费用</p>
         <el-table
           show-summary
           sum-text="合计"
+          :summary-method="getSummariesByAchieve"
           :data="infoForm.achieveDistriList"
-          style="width: 100%"
-        >
+          style="width: 100%">
           <el-table-column type="expand">
             <template slot-scope="scope">
               <p>管理岗分配业绩</p>
@@ -509,8 +506,7 @@
                 <el-table-column
                   prop="achieveFees"
                   label="分配金额"
-                  width="200"
-                >
+                  width="200">
                 </el-table-column>
                 <el-table-column prop="ratio" label="金额比例" width="200">
                 </el-table-column>
@@ -541,11 +537,9 @@
           <el-table-column
             prop="roleAchieveRatio"
             label="角色业绩比例（%）"
-            min-width="120"
-          >
+            min-width="120">
             <template slot-scope="scope">
-              <div v-if="suppContType">-</div>
-              <div v-else>{{ scope.row.roleAchieveRatio }}</div>
+              <div>{{ scope.row.roleAchieveRatio }}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -556,11 +550,9 @@
           <el-table-column
             prop="commFeesRatio"
             label="拆佣比例（%）"
-            min-width="150"
-          >
+            min-width="150">
             <template slot-scope="scope">
-              <div v-if="suppContType">-</div>
-              <div v-else>{{ scope.row.commFeesRatio }}</div>
+              <div>{{ scope.row.commFeesRatio }}</div>
             </template>
           </el-table-column>
           <el-table-column
@@ -571,15 +563,13 @@
         </el-table>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
         <span>附件信息</span>
         <span>
           <el-button style="float: right; padding: 3px 0" type="text"
-            >查看来访/成交信息</el-button
-          >
+            >查看来访/成交信息</el-button>
         </span>
       </div>
       <div>
@@ -746,6 +736,66 @@ export default class RealDealDetails extends Vue {
     } else if (type == "cycleName") {
       window.open(`/web-sales/projectApproval/info?id=${item.cycleId}`);
     }
+  }
+  // 拆佣合计
+  getSummariesByComm(param: any) {
+    const {columns, data} = param;
+    const sums: any = [];
+    columns.forEach((column: any, index: any) => {
+      if (index === 0) {
+        sums[index] = '合计';
+        return;
+      }
+      if ([4].includes(index)) {
+        const values = data.map((item: any) => Number(item[column.property]));
+        if (!values.every((value: any) => isNaN(value))) {
+          sums[index] = values.reduce((prev: any, curr: any) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
+              return total;
+            } else {
+              return ((this as any).$math.tofixed(prev * 1, 2));
+            }
+          }, 0);
+        } else {
+          sums[index] = '';
+        }
+      } else {
+        sums[index] = '';
+      }
+    });
+    return sums;
+  }
+  // 平台费用合计
+  getSummariesByAchieve(param: any) {
+    const {columns, data} = param;
+    const sums: any = [];
+    columns.forEach((column: any, index: any) => {
+      if (index === 0) {
+        sums[index] = '合计';
+        return;
+      }
+      if ([3, 5, 6].includes(index)) {
+        const values = data.map((item: any) => Number(item[column.property]));
+        if (!values.every((value: any) => isNaN(value))) {
+          sums[index] = values.reduce((prev: any, curr: any) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              let total = (this as any).$math.tofixed((this as any).$math.add(prev * 1, curr * 1), 2);
+              return total;
+            } else {
+              return ((this as any).$math.tofixed(prev * 1, 2));
+            }
+          }, 0);
+        } else {
+          sums[index] = '';
+        }
+      } else {
+        sums[index] = '';
+      }
+    });
+    return sums;
   }
 }
 </script>
