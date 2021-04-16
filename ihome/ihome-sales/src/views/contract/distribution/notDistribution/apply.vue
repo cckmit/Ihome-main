@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-15 16:10:26
+ * @LastEditTime: 2021-04-16 11:44:29
 -->
 <template>
   <IhPage class="text-left">
@@ -479,6 +479,14 @@ export default class NotDistributionApply extends Vue {
 .formItem {
   /deep/ .el-form-item__label {
     line-height: 20px;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-15 14:40:24
+ * @LastEditTime: 2021-04-16 11:42:08
 -->
 <template>
   <el-dialog
@@ -42,6 +42,17 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="标题备注">
+            <el-input
+              v-model="queryPageParameters.titleOrRemark"
+              placeholder="请输入关键字"
+              clearable
+            ></el-input>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
           <el-form-item
             label="渠道合同类型"
             class="formItem"
@@ -49,6 +60,7 @@
             <el-select
               v-model="queryPageParameters.contractKind"
               clearable
+              class="width--100"
             >
               <el-option
                 v-for="(i, n) in $root.dictAllList('ContractKind')"
@@ -165,7 +177,7 @@ import { post_distributContract_applyDistract } from "@/api/project/index";
   mixins: [PaginationMixin],
 })
 export default class ApplyContract extends Vue {
-  @Prop() data!: any;
+  @Prop() claimPower!: any;
   queryPageParameters: any = {
     contractTitle: null,
     termId: null,
@@ -313,9 +325,10 @@ export default class ApplyContract extends Vue {
     }
   }
   async getListMixin() {
-    this.resPageInfo = await post_distributContract_applyDistract(
-      this.queryPageParameters
-    );
+    this.resPageInfo = await post_distributContract_applyDistract({
+      ...this.queryPageParameters,
+      claimPower: this.claimPower,
+    });
   }
 
   // created() {
