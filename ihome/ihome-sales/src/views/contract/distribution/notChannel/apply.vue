@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:44:21
+ * @LastEditTime: 2021-04-16 17:19:13
 -->
 <template>
   <IhPage class="text-left">
@@ -278,6 +278,10 @@ export default class NotChannelApply extends Vue {
     titleOrRemark: null,
     channelAccountData: null,
   };
+  private channelForm: any = {
+    channelCompanyId: null,
+    channelCompanyName: null,
+  };
   private startDivisionId: any = null; //启动事业部ID
   private cityCode: any = null; //城市code
   private rules: any = {
@@ -316,6 +320,12 @@ export default class NotChannelApply extends Vue {
       channelAddress: null,
       channelCompanyId: null,
     });
+    if (
+      ["Appoint", "Strategic"].includes(this.form.channelEnum) &&
+      this.form.channelCompanyKind === "ChannelCompany"
+    ) {
+      Object.assign(this.form, this.channelForm);
+    }
   }
   private changeAccount(account: any) {
     Object.assign(this.form, {
@@ -422,9 +432,15 @@ export default class NotChannelApply extends Vue {
           await post_distribution_create(this.form);
           loading.close();
           this.$message.success("申领成功");
-          this.$goto({
-            path: "/distribution/list",
-          });
+          let path: any = sessionStorage.getItem("gotoRouter");
+          if (path) {
+            this.$goto({
+              path,
+            });
+          } else {
+            this.$router.go(-1);
+          }
+          sessionStorage.removeItem("gotoRouter");
         } catch (error) {
           console.log(error);
           loading.close();
@@ -500,6 +516,10 @@ export default class NotChannelApply extends Vue {
         }));
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
           this.getChannelInfo({ id: res.designatedAgencyId });
+          this.channelForm = {
+            channelCompanyId: res.designatedAgencyId,
+            channelCompanyName: res.designatedAgency,
+          };
         }
         if (res.exInvolvedCommiss === "Yes") {
           this.companyKindOption = (this.$root as any)
@@ -525,6 +545,9 @@ export default class NotChannelApply extends Vue {
     this.companyKindOption = (this.$root as any)
       .dictAllList("CompanyKind")
       .filter((i: any) => i.tag === "Channel");
+  }
+  beforeDestroy() {
+    sessionStorage.removeItem("gotoRouter");
   }
 }
 </script>

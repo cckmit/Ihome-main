@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:42:08
+ * @LastEditTime: 2021-04-16 17:01:34
 -->
 <template>
   <el-dialog
@@ -107,6 +107,10 @@
       <el-table-column
         label="合同主标题"
         prop="contractTitle"
+      ></el-table-column>
+      <el-table-column
+        label="标题备注"
+        prop="titleOrRemark"
       ></el-table-column>
       <el-table-column
         label="甲方公司"
@@ -245,6 +249,7 @@ export default class ApplyContract extends Vue {
           );
           break;
       }
+      sessionStorage.setItem("gotoRouter", this.$route.path);
       this.cancel();
     } else {
       this.$message.warning("请先选择一条数据");

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:44:15
+ * @LastEditTime: 2021-04-16 17:14:06
 -->
 <template>
   <IhPage class="text-left">
@@ -304,6 +304,10 @@ export default class SalesApply extends Vue {
     titleOrRemark: null,
     unContractLiability: null,
   };
+  private channelForm: any = {
+    channelCompanyId: null,
+    channelCompanyName: null,
+  };
   private startDivisionId: any = null; //启动事业部ID
   private cityCode: any = null; //城市code
   private rules: any = {
@@ -335,25 +339,13 @@ export default class SalesApply extends Vue {
       channelAddress: null,
       channelCompanyId: null,
     });
+    if (
+      ["Appoint", "Strategic"].includes(this.form.channelEnum) &&
+      this.form.channelCompanyKind === "ChannelCompany"
+    ) {
+      Object.assign(this.form, this.channelForm);
+    }
   }
-  // private async getCompanyInfo(data: any) {
-  //   try {
-  //     const res = await get_bankAccount_get__companyId({ companyId: data.id });
-  //     this.accountOption = res;
-  //     this.form.channelAddress = data.address;
-  //     let account = res.find((i: any) => i.defaultFlag);
-  //     if (account) {
-  //       this.form.channelAccountData = { id: account.id };
-  //       Object.assign(this.form, {
-  //         channelAccount: account.accountNo,
-  //         channelAccountBank: account.branchName,
-  //         channelAccountName: account.accountName,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
   private async getChannelInfo(data: any) {
     try {
       const res = await get_channel_get__id({ id: data.id });
@@ -416,6 +408,10 @@ export default class SalesApply extends Vue {
           this.form.costSettleType,
           "CostSettleType"
         ),
+        channelCompanyKind: (this.$root as any).dictAllName(
+          this.form.channelCompanyKind,
+          "CompanyKind"
+        ),
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });
@@ -437,9 +433,15 @@ export default class SalesApply extends Vue {
           await post_distribution_create(this.form);
           loading.close();
           this.$message.success("申领成功");
-          this.$goto({
-            path: "/distribution/list",
-          });
+          let path: any = sessionStorage.getItem("gotoRouter");
+          if (path) {
+            this.$goto({
+              path,
+            });
+          } else {
+            this.$router.go(-1);
+          }
+          sessionStorage.removeItem("gotoRouter");
         } catch (error) {
           console.log(error);
           loading.close();
@@ -517,6 +519,10 @@ export default class SalesApply extends Vue {
         };
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
           this.getChannelInfo({ id: res.designatedAgencyId });
+          this.channelForm = {
+            channelCompanyId: res.designatedAgencyId,
+            channelCompanyName: res.designatedAgency,
+          };
         }
       } catch (error) {
         console.log(error);
@@ -529,6 +535,9 @@ export default class SalesApply extends Vue {
     this.companyKindOption = (this.$root as any)
       .dictAllList("CompanyKind")
       .filter((i: any) => i.tag === "Channel");
+  }
+  beforeDestroy() {
+    sessionStorage.removeItem("gotoRouter");
   }
 }
 </script>

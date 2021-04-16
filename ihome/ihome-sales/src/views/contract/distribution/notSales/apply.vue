@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:44:36
+ * @LastEditTime: 2021-04-16 17:18:36
 -->
 <template>
   <IhPage class="text-left">
@@ -193,6 +193,10 @@ export default class NotSalesApply extends Vue {
     unContractLiability: null,
     titleOrRemark: null,
   };
+  private channelForm: any = {
+    channelCompanyId: null,
+    channelCompanyName: null,
+  };
   private startDivisionId: any = null; //启动事业部ID
   private cityCode: any = null; //城市code
   private rules: any = {
@@ -224,6 +228,12 @@ export default class NotSalesApply extends Vue {
       channelAddress: null,
       channelCompanyId: null,
     });
+    if (
+      ["Appoint", "Strategic"].includes(this.form.channelEnum) &&
+      this.form.channelCompanyKind === "ChannelCompany"
+    ) {
+      Object.assign(this.form, this.channelForm);
+    }
   }
   private async getChannelInfo(data: any) {
     try {
@@ -257,9 +267,15 @@ export default class NotSalesApply extends Vue {
           await post_distribution_create(this.form);
           loading.close();
           this.$message.success("申领成功");
-          this.$goto({
-            path: "/distribution/list",
-          });
+          let path: any = sessionStorage.getItem("gotoRouter");
+          if (path) {
+            this.$goto({
+              path,
+            });
+          } else {
+            this.$router.go(-1);
+          }
+          sessionStorage.removeItem("gotoRouter");
         } catch (error) {
           console.log(error);
           loading.close();
@@ -335,6 +351,10 @@ export default class NotSalesApply extends Vue {
         }));
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
           this.getChannelInfo({ id: res.designatedAgencyId });
+          this.channelForm = {
+            channelCompanyId: res.designatedAgencyId,
+            channelCompanyName: res.designatedAgency,
+          };
         }
       } catch (error) {
         console.log(error);
@@ -347,6 +367,9 @@ export default class NotSalesApply extends Vue {
     this.companyKindOption = (this.$root as any)
       .dictAllList("CompanyKind")
       .filter((i: any) => i.tag === "Channel");
+  }
+  beforeDestroy() {
+    sessionStorage.removeItem("gotoRouter");
   }
 }
 </script>
