@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-02-08 14:34:29
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-06 16:10:45
+ * @LastEditTime: 2021-04-16 17:49:01
 -->
 <template>
   <IhPage>
@@ -777,6 +777,13 @@ export default class RefundToExamineToExamine extends Vue {
         typeStr = "驳回";
         break;
     }
+    let loading = this.$loading({
+      lock: true,
+      text: "请耐心等待...",
+      spinner: "el-icon-loading",
+      background: "rgba(0, 0, 0, 0.6)",
+      customClass: "ih-loading-spinner",
+    });
     try {
       await post_refundApply_notFinancialAudit({
         buttonType,
@@ -785,11 +792,13 @@ export default class RefundToExamineToExamine extends Vue {
         status: this.info.status,
       });
       this.$message.success(`${typeStr}成功`);
+      loading.close();
       this.$goto({
         path: "/refundToExamine/list",
       });
     } catch (error) {
       console.log(error);
+      loading.close();
     }
   }
   private getSummaries({ columns, data }: any) {
@@ -921,5 +930,13 @@ export default class RefundToExamineToExamine extends Vue {
 .leftClass {
   padding-left: 10px;
   text-align: left;
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
+  }
 }
 </style>

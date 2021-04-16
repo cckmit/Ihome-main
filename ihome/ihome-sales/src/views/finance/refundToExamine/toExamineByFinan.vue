@@ -818,6 +818,13 @@ export default class RefundToExamineToExamine extends Vue {
           typeStr = "驳回";
           break;
       }
+      let loading = this.$loading({
+        lock: true,
+        text: "请耐心等待...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.6)",
+        customClass: "ih-loading-spinner",
+      });
       try {
         await post_refundApply_financialAudit({
           buttonType,
@@ -830,10 +837,12 @@ export default class RefundToExamineToExamine extends Vue {
           })),
         });
         this.$message.success(`${typeStr}成功`);
+        loading.close();
         this.$goto({
           path: "/refundToExamine/list",
         });
       } catch (error) {
+        loading.close();
         console.log(error);
       }
     } else {
@@ -1164,5 +1173,13 @@ export default class RefundToExamineToExamine extends Vue {
 .leftClass {
   padding-left: 10px;
   text-align: left;
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
+  }
 }
 </style>
