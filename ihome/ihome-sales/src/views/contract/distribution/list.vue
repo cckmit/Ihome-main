@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-15 14:55:53
+ * @LastEditTime: 2021-04-16 09:27:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -236,42 +236,36 @@
           type="danger"
           v-if="$route.name === 'DistributionList'"
           @click="handleDis(selectionData)"
-          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           v-else-if="$route.name === 'DistributionListByBusiness'"
           @click="handleDis(selectionData)"
-          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           v-else-if="$route.name === 'DistributionListByBack'"
           @click="handleDis(selectionData)"
-          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTBYBACK.REJECT'"
         >驳回</el-button>
         <el-button
           type="danger"
           v-if="$route.name === 'DistributionList'"
           @click="handleWith(selectionData)"
-          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
         >撤回</el-button>
         <el-button
           type="danger"
           v-else-if="$route.name === 'DistributionListByBusiness'"
           @click="handleWith(selectionData)"
-          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REVOKE'"
         >撤回</el-button>
         <el-button
           type="danger"
           v-else-if="$route.name === 'DistributionListByBack'"
           @click="handleWith(selectionData)"
-          :class="{ 'ih-data-disabled': !(channelChange() || contractChange()) }"
           v-has="'B.SALES.CONTRACT.DISTBYBACK.REVOKE'"
         >撤回</el-button>
         <el-button
@@ -456,8 +450,7 @@
                   @click.native.prevent="handleDis([{ ...row }])"
                   v-if="$route.name === 'DistributionList'"
                   :class="{
-                    'ih-data-disabled': !(channelChange() || contractChange()),
-                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                    'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REJECT'"
                 >审核驳回</el-dropdown-item>
@@ -465,8 +458,7 @@
                   @click.native.prevent="handleDis([{ ...row }])"
                   v-else-if="$route.name === 'DistributionListByBusiness'"
                   :class="{
-                    'ih-data-disabled': !(channelChange() || contractChange()),
-                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                    'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REJECT'"
                 >审核驳回</el-dropdown-item>
@@ -474,8 +466,7 @@
                   @click.native.prevent="handleDis([{ ...row }])"
                   v-else-if="$route.name === 'DistributionListByBack'"
                   :class="{
-                    'ih-data-disabled': !(channelChange() || contractChange()),
-                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                    'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.REJECT'"
                 >审核驳回</el-dropdown-item>
@@ -484,8 +475,7 @@
                   @click.native.prevent="handleWith([{ ...row }])"
                   v-if="$route.name === 'DistributionList'"
                   :class="{
-                    'ih-data-disabled': !(channelChange() || contractChange()),
-                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                    'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.REVOKE'"
                 >撤回</el-dropdown-item>
@@ -493,8 +483,7 @@
                   @click.native.prevent="handleWith([{ ...row }])"
                   v-else-if="$route.name === 'DistributionListByBusiness'"
                   :class="{
-                    'ih-data-disabled': !(channelChange() || contractChange()),
-                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                    'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.REVOKE'"
                 >撤回</el-dropdown-item>
@@ -502,8 +491,7 @@
                   @click.native.prevent="handleWith([{ ...row }])"
                   v-else-if="$route.name === 'DistributionListByBack'"
                   :class="{
-                    'ih-data-disabled': !(channelChange() || contractChange()),
-                    'is-disabled': !['NotDistributed', 'Pending'].includes(row.distributionState)
+                    'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.REVOKE'"
                 >撤回</el-dropdown-item>
