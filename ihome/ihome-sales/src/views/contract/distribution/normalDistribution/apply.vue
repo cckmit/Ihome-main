@@ -456,6 +456,7 @@ export default class DistributionApply extends Vue {
       channelAccountName: null,
       channelAddress: null,
       channelCompanyId: null,
+      channelLevel: null,
     });
     this.form.channelAccountData = null;
     if (

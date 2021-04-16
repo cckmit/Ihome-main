@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 18:56:58
+ * @LastEditTime: 2021-04-16 19:22:13
 -->
 <template>
   <IhPage class="text-left">
@@ -319,6 +319,7 @@ export default class NotChannelApply extends Vue {
       channelAccountName: null,
       channelAddress: null,
       channelCompanyId: null,
+      channelLevel: null,
     });
     if (
       ["Appoint", "Strategic"].includes(this.form.channelEnum) &&
