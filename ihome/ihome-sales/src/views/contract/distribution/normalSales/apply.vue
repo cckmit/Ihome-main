@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 09:12:53
+ * @LastEditTime: 2021-04-16 11:44:15
 -->
 <template>
   <IhPage class="text-left">
@@ -537,6 +537,14 @@ export default class SalesApply extends Vue {
 .formItem {
   /deep/ .el-form-item__label {
     line-height: 20px;
+  }
+}
+</style>
+<style lang="scss">
+.ih-loading-spinner {
+  .el-icon-loading,
+  .el-loading-text {
+    color: #fff;
   }
 }
 </style>

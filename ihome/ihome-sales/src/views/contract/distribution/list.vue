@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 09:30:07
+ * @LastEditTime: 2021-04-16 11:56:57
 -->
 <template>
   <IhPage label-width="100px">
@@ -42,18 +42,27 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="甲方公司">
-              <IhSelectPageByCompany
-                v-model="queryPageParameters.partyACompanyId"
+            <el-form-item label="标题备注">
+              <el-input
+                v-model="queryPageParameters.titleOrRemark"
+                placeholder="请输入关键字"
                 clearable
-                class="width--100"
-              ></IhSelectPageByCompany>
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
         <el-collapse-transition>
           <div v-show="searchOpen">
             <el-row>
+              <el-col :span="8">
+                <el-form-item label="甲方公司">
+                  <IhSelectPageByCompany
+                    v-model="queryPageParameters.partyACompanyId"
+                    clearable
+                    class="width--100"
+                  ></IhSelectPageByCompany>
+                </el-form-item>
+              </el-col>
               <el-col :span="8">
                 <el-form-item label="乙方公司">
                   <IhSelectPageByChannel
@@ -62,31 +71,6 @@
                     placeholder="请选择乙方公司"
                     class="width--100"
                   ></IhSelectPageByChannel>
-                </el-form-item>
-              </el-col>
-              <!-- <el-col :span="8">
-                <el-form-item label="项目地址">
-                  <el-input
-                    v-model="queryPageParameters.projectAddress"
-                    placeholder="项目地址"
-                    clearable
-                  ></el-input>
-                </el-form-item>
-              </el-col> -->
-              <el-col :span="8">
-                <el-form-item label="合作时间">
-                  <el-date-picker
-                    style="width:100%;"
-                    v-model="timeList"
-                    type="daterange"
-                    align="left"
-                    unlink-panels
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    :picker-options="$root.pickerOptions"
-                    value-format="yyyy-MM-dd"
-                  ></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -132,6 +116,22 @@
 
             <el-row>
               <el-col :span="8">
+                <el-form-item label="合作时间">
+                  <el-date-picker
+                    style="width:100%;"
+                    v-model="timeList"
+                    type="daterange"
+                    align="left"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="$root.pickerOptions"
+                    value-format="yyyy-MM-dd"
+                  ></el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="审核状态">
                   <el-select
                     v-model="queryPageParameters.distributionState"
@@ -165,6 +165,9 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="归档编号">
                   <el-input
@@ -174,17 +177,6 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
-              <!-- <el-col :span="8">
-                <el-form-item label="合同录入人">
-                  <IhSelectPageUser
-                    v-model="queryPageParameters.entryPerson"
-                    clearable
-                  ></IhSelectPageUser>
-                </el-form-item>
-              </el-col> -->
               <el-col :span="8">
                 <el-form-item label="合同跟进人">
                   <IhSelectPageUser
@@ -334,8 +326,13 @@
           min-width="185"
         ></el-table-column>
         <el-table-column
+          label="标题备注"
+          prop="titleOrRemark"
+          min-width="125"
+        ></el-table-column>
+        <el-table-column
           label="合同类型"
-          width="145"
+          min-width="145"
         >
           <template v-slot="{ row }">
             {{$root.dictAllName(row.contractKind, 'ContractKind')}}
@@ -594,7 +591,10 @@
       ></el-pagination>
     </template>
     <IhDialog :show="applyVisible">
-      <ApplyContract @cancel="() => (applyVisible = false)" />
+      <ApplyContract
+        :claimPower="claimPower"
+        @cancel="() => (applyVisible = false)"
+      />
     </IhDialog>
   </IhPage>
 </template>
@@ -636,6 +636,7 @@ export default class DistributionList extends Vue {
     projectId: null,
     title: null,
     contractKind: null,
+    titleOrRemark: null,
   };
   resPageInfo: any = {
     total: null,
@@ -647,6 +648,21 @@ export default class DistributionList extends Vue {
   private selectionData: any = [];
   private applyVisible = false;
 
+  private get claimPower() {
+    let type: any = null;
+    switch (this.$route.name) {
+      case "DistributionList":
+        type = "MiddleAndBack";
+        break;
+      case "DistributionListByBusiness":
+        type = "Business";
+        break;
+      case "DistributionListByBack":
+        type = "MiddleAndBack";
+        break;
+    }
+    return type;
+  }
   private originalChange(row: any) {
     const isDis = row.distributionState === "Distributed";
     return isDis;
@@ -709,6 +725,7 @@ export default class DistributionList extends Vue {
       projectId: null,
       title: null,
       contractKind: null,
+      titleOrRemark: null,
     });
     this.timeList = [];
   }
