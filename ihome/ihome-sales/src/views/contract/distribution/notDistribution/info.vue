@@ -104,7 +104,7 @@
               label="条件"
               prop="sendContext"
             >
-              <template v-solt="{ row }">
+              <template v-slot="{ row }">
                 {{row.sendContext || '-'}}
               </template>
             </el-table-column>
@@ -112,7 +112,7 @@
               label="派发佣金标准"
               prop="sendStandard"
             >
-              <template v-solt="{ row }">
+              <template v-slot="{ row }">
                 {{row.sendStandard || '-'}}
               </template>
             </el-table-column>
