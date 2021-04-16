@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 19:22:30
+ * @LastEditTime: 2021-04-16 20:18:17
 -->
 <template>
   <IhPage class="text-left">
@@ -49,6 +49,7 @@
                   class="width-150 margin-right-10"
                   v-model="form.channelCompanyKind"
                   placeholder="请选择公司类型"
+                  :disabled="['Appoint', 'Strategic'].includes(form.channelEnum)"
                   @change="changeCompanyKind"
                 >
                   <el-option
@@ -58,12 +59,15 @@
                     :value="i.code"
                   ></el-option>
                 </el-select>
-                <IhSelectPageByCompany
-                  v-if="form.channelCompanyKind === 'InfieldCompany'"
-                  style="flex: 1;max-width: 250px;"
-                  v-model="form.channelCompanyId"
-                  @changeOption="getCompanyInfo"
-                ></IhSelectPageByCompany>
+                <template v-if="form.channelCompanyKind === 'InfieldCompany'">
+                  <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
+                  <IhSelectPageByCompany
+                    v-else
+                    style="flex: 1;max-width: 250px;"
+                    v-model="form.channelCompanyId"
+                    @changeOption="getCompanyInfo"
+                  ></IhSelectPageByCompany>
+                </template>
                 <template v-else-if="form.channelCompanyKind === 'ChannelCompany'">
                   <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
                   <IhSelectPageByChannel
@@ -437,6 +441,7 @@ export default class NotDistributionApply extends Vue {
           channelCompanyId: res.designatedAgencyId,
           channelCompanyName: res.designatedAgency,
           channelEnum: res.channelEnum,
+          channelCompanyKind: res.companyKind,
           consumerComplete: res.consumerComplete,
           contractEndTime: res.contractEndTime,
           contractKind: res.contractKind,
