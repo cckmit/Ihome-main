@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 09:27:24
+ * @LastEditTime: 2021-04-16 09:30:07
 -->
 <template>
   <IhPage label-width="100px">
@@ -847,30 +847,7 @@ export default class DistributionList extends Vue {
   // 根据角色驳回不同的操作
   private handleDis(selectionData: any) {
     if (selectionData.length) {
-      if (this.contractChange()) {
-        if (
-          selectionData
-            .map((i: any) => i.distributionState)
-            .every((v: any) => v === "Pending")
-        ) {
-          this.disallowance(selectionData);
-        } else {
-          this.$message.warning("只有待审核的合同才能操作驳回");
-          return;
-        }
-      }
-      if (this.channelChange()) {
-        if (
-          selectionData
-            .map((i: any) => i.distributionState)
-            .every((v: any) => v === "NotDistributed")
-        ) {
-          this.disallowance(selectionData);
-        } else {
-          this.$message.warning("只有待派发的合同才能操作驳回");
-          return;
-        }
-      }
+      this.disallowance(selectionData);
     } else {
       this.$message.warning("请先勾选表格数据");
       return;
