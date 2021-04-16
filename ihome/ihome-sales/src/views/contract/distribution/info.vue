@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 10:46:14
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-07 19:23:50
+ * @LastEditTime: 2021-04-15 16:29:27
 -->
 <template>
   <IhPage class="text-left distribution-info">
@@ -257,11 +257,19 @@
           <el-table-column
             label="条件"
             prop="sendContext"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.sendContext || '-'}}
+            </template>
+          </el-table-column>
           <el-table-column
             label="派发佣金标准"
             prop="sendStandard"
-          ></el-table-column>
+          >
+            <template v-slot="{ row }">
+              {{row.sendStandard || '-'}}
+            </template>
+          </el-table-column>
         </el-table>
         <br />
       </div>

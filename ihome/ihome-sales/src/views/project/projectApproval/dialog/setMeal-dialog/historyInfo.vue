@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 16:10:30
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 19:51:23
+ * @LastEditTime: 2021-04-15 16:47:11
 -->
 <template>
   <el-dialog
@@ -131,7 +131,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{$root.dictAllName(row.subdivideEnum, "Subdivide")}}</span>
+                  <span>{{row.subdivideEnum ? $root.dictAllName(row.subdivideEnum, "Subdivide") : '-'}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -141,7 +141,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{$root.dictAllName(row.contractEnum, "ContType")}}</span>
+                  <span>{{row.contractEnum ? $root.dictAllName(row.contractEnum, "ContType") : '-'}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -151,8 +151,11 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</div>
-                  <div :title="row.consumerName">{{row.consumerName}}</div>
+                  <div>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, "Transaction") : '-'}}</div>
+                  <div
+                    :title="row.consumerName"
+                    v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
+                  >{{row.consumerName ? row.consumerName : '-'}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -165,7 +168,7 @@
                   <pre
                     class="text-ellipsis"
                     :title="row.condition"
-                  >{{row.condition}}</pre>
+                  >{{row.condition ? row.condition : '-'}}</pre>
                 </template>
               </el-table-column>
               <el-table-column
@@ -174,7 +177,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.receivableAmout}}</div>
+                  <div>{{`金额:` + row.receivableAmout || 0}}</div>
                   <div>{{`点数: ${row.receivablePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -184,7 +187,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.sendAmount}}</div>
+                  <div>{{`金额:` + row.sendAmount || 0}}</div>
                   <div>{{`点数: ${row.sendPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -194,7 +197,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.sendInAmount}}</div>
+                  <div>{{`金额:` + row.sendInAmount || 0}}</div>
                   <div>{{`点数: ${row.sendInPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -204,7 +207,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.generalAchieveAmount}}</div>
+                  <div>{{`金额:` + row.generalAchieveAmount || 0}}</div>
                   <div>{{`点数: ${row.generalAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -214,7 +217,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.distributeAchieveAmount}}</div>
+                  <div>{{`金额:` + row.distributeAchieveAmount || 0}}</div>
                   <div>{{`点数: ${row.distributeAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -233,7 +236,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{row.estimateComplateNum}}</span>
+                  <span>{{row.estimateComplateNum || 0}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -266,7 +269,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{row.remark}}</span>
+                  <span>{{row.remark ? row.remark : '-'}}</span>
                 </template>
               </el-table-column>
             </el-table>
@@ -304,7 +307,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{$root.dictAllName(row.subdivideEnum, "Subdivide")}}</span>
+                  <span>{{row.subdivideEnum ? $root.dictAllName(row.subdivideEnum, "Subdivide") : '-'}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -314,7 +317,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{$root.dictAllName(row.contractEnum, "ContType")}}</span>
+                  <span>{{row.contractEnum ? $root.dictAllName(row.contractEnum, "ContType") : '-'}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -324,8 +327,11 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{$root.dictAllName(row.transactionEnum, "Transaction")}}</div>
-                  <div :title="row.consumerName">{{row.consumerName}}</div>
+                  <div>{{row.transactionEnum ? $root.dictAllName(row.transactionEnum, "Transaction") : '-'}}</div>
+                  <div
+                    :title="row.consumerName"
+                    v-if="row.transactionEnum === 'Appoint' || row.transactionEnum === 'Strategic'"
+                  >{{row.consumerName ? row.consumerName : '-'}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -338,7 +344,7 @@
                   <pre
                     class="text-ellipsis"
                     :title="row.condition"
-                  >{{row.condition}}</pre>
+                  >{{row.condition ? row.condition : '-'}}</pre>
                 </template>
               </el-table-column>
               <el-table-column
@@ -348,7 +354,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{$root.dictAllName(row.padCommissionEnum, "PadCommission")}}</span>
+                  <span>{{row.padCommissionEnum ? $root.dictAllName(row.padCommissionEnum, "PadCommission") : '-'}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -357,7 +363,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.receivableAmout}}</div>
+                  <div>{{`金额:` + row.receivableAmout || 0}}</div>
                   <div>{{`点数: ${row.receivablePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -367,7 +373,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.sendAmount}}</div>
+                  <div>{{`金额:` + row.sendAmount || 0}}</div>
                   <div>{{`点数: ${row.sendPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -377,7 +383,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.sendInAmount}}</div>
+                  <div>{{`金额:` + row.sendInAmount || 0}}</div>
                   <div>{{`点数: ${row.sendInPoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -387,7 +393,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.generalAchieveAmount}}</div>
+                  <div>{{`金额:` + row.generalAchieveAmount || 0}}</div>
                   <div>{{`点数: ${row.generalAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -397,7 +403,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <div>{{`金额:` + row.distributeAchieveAmount}}</div>
+                  <div>{{`金额:` + row.distributeAchieveAmount || 0}}</div>
                   <div>{{`点数: ${row.distributeAchievePoint || 0}%`}}</div>
                 </template>
               </el-table-column>
@@ -407,7 +413,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{row.estimateComplateNum}}</span>
+                  <span>{{row.estimateComplateNum || 0}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -440,7 +446,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{row.remark}}</span>
+                  <span>{{row.remark ? row.remark : '-'}}</span>
                 </template>
               </el-table-column>
             </el-table>
