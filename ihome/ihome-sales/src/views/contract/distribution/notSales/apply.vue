@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 20:18:45
+ * @LastEditTime: 2021-04-16 20:27:00
 -->
 <template>
   <IhPage class="text-left">
@@ -65,7 +65,6 @@
                     v-else
                     style="flex: 1;max-width: 250px;"
                     v-model="form.channelCompanyId"
-                    @changeOption="getCompanyInfo"
                   ></IhSelectPageByCompany>
                 </template>
                 <template v-else-if="form.channelCompanyKind === 'ChannelCompany'">
@@ -316,7 +315,7 @@ export default class NotSalesApply extends Vue {
           channelCompanyId: res.designatedAgencyId,
           channelCompanyName: res.designatedAgency,
           channelEnum: res.channelEnum,
-          channelCompanyKind: res.companyKind,
+          // channelCompanyKind: res.companyKind,
           consumerComplete: res.consumerComplete,
           contractEndTime: res.contractEndTime,
           contractKind: res.contractKind,
@@ -365,6 +364,9 @@ export default class NotSalesApply extends Vue {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,
           };
+          Object.assign(this.form, {
+            channelCompanyKind: res.companyKind,
+          });
         }
       } catch (error) {
         console.log(error);

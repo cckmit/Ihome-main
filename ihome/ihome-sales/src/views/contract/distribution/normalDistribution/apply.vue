@@ -625,7 +625,7 @@ export default class DistributionApply extends Vue {
           // channelAddress: "",
           channelCompanyId: res.designatedAgencyId,
           channelCompanyName: res.designatedAgency,
-          channelCompanyKind: res.companyKind,
+          // channelCompanyKind: res.companyKind,
           // channelContact: "",
           // channelContactTel: "",
           channelEnum: res.channelEnum,
@@ -675,6 +675,9 @@ export default class DistributionApply extends Vue {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,
           };
+          Object.assign(this.form, {
+            channelCompanyKind: res.companyKind,
+          });
         }
       } catch (error) {
         console.log(error);

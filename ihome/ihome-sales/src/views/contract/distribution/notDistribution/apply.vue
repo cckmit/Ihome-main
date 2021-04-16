@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 20:18:17
+ * @LastEditTime: 2021-04-16 20:22:50
 -->
 <template>
   <IhPage class="text-left">
@@ -441,7 +441,7 @@ export default class NotDistributionApply extends Vue {
           channelCompanyId: res.designatedAgencyId,
           channelCompanyName: res.designatedAgency,
           channelEnum: res.channelEnum,
-          channelCompanyKind: res.companyKind,
+          // channelCompanyKind: res.companyKind,
           consumerComplete: res.consumerComplete,
           contractEndTime: res.contractEndTime,
           contractKind: res.contractKind,
@@ -488,6 +488,9 @@ export default class NotDistributionApply extends Vue {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,
           };
+          Object.assign(this.form, {
+            channelCompanyKind: res.companyKind,
+          });
         }
       } catch (error) {
         console.log(error);
