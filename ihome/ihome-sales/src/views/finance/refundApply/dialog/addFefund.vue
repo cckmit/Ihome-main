@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-07 10:16:59
+ * @LastEditTime: 2021-04-16 14:52:19
 -->
 <template>
   <el-dialog
@@ -215,7 +215,7 @@
                     type="primary"
                     @click="routeTo(item, 'payNo')"
                   >
-                    {{item}}
+                    {{item.payNo}}
                   </el-link>
                   <span v-if="i !== row.payVOs.length - 1">; </span>
                 </span>

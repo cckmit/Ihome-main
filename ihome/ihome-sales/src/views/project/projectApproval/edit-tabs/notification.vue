@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:56:49
+ * @LastEditTime: 2021-04-16 14:56:42
 -->
 <template>
   <div>
@@ -40,8 +40,7 @@
         <el-table-column
           prop="titleOrRemark"
           label="标题备注"
-        >
-        </el-table-column>
+        ></el-table-column>
         <el-table-column
           label="甲方公司"
           prop="partyCompany"

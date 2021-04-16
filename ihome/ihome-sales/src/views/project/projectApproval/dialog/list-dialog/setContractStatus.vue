@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-01 16:51:36
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 09:43:03
+ * @LastEditTime: 2021-04-16 14:56:34
 -->
 <template>
   <el-dialog
@@ -40,6 +40,10 @@
         label="合同主标题"
         prop="contractTitle"
         width="200"
+      ></el-table-column>
+      <el-table-column
+        prop="titleOrRemark"
+        label="标题备注"
       ></el-table-column>
       <el-table-column
         label="甲方公司"
