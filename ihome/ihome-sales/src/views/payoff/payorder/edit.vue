@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-07 10:36:22
+ * @LastEditTime: 2021-04-16 16:33:29
 -->
 <template>
   <IhPage>
@@ -45,6 +45,8 @@
                     cycleCity: data.city,
                     departmentOrgId: info.belongOrgId,
                   }
+                  showTable = [];
+                  info.payApplyDetailList = [];
                 }"
               ></IhSelectPageByProject>
             </el-form-item>
@@ -985,6 +987,7 @@ import {
   get_org_getUserDepartmentList,
   post_company_getAll,
 } from "@/api/system/index";
+import { post_project_getList } from "@/api/project/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "./dialog/obligation.vue";
 import axios from "axios";
@@ -1605,6 +1608,13 @@ export default class PayoffEdit extends Vue {
         },
         "clear"
       );
+      const projectItem = await post_project_getList({
+        proId: res.projectId,
+        pageNum: 1,
+        pageSize: 20,
+      });
+      this.projectCity = projectItem?.list[0]?.city;
+      this.belongOrgIdChange(res.belongOrgId);
       this.filterTabs(this.info.payApplyDetailList);
     } else {
       this.info.maker = (this.$root as any).userInfo.name;
@@ -2016,6 +2026,8 @@ export default class PayoffEdit extends Vue {
       this.channelAccountOptions = res;
       if (!type) {
         this.info.receiveAccount = null;
+        this.showTable = [];
+        this.info.payApplyDetailList = [];
         // 获取本期需抵扣金额明细
         this.queryDeductionData(item.id, this.info.projectId);
       }

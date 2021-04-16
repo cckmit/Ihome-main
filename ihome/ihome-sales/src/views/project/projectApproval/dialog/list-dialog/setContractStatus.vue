@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-01 16:51:36
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 14:56:34
+ * @LastEditTime: 2021-04-16 15:14:43
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="80%"
+    width="85%"
     title="设置合同申领状态"
     class="text-left"
   >
@@ -63,9 +63,13 @@
         prop="channelEnum"
         label="渠道类型"
       >
-        <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelEnum, "ChannelCustomer")
-          }}</template>
+        <template v-slot="{ row }">
+          <div>{{$root.dictAllName(row.channelEnum, "ChannelCustomer")}}</div>
+          <div
+            v-if="row.channelEnum === 'Appoint' || row.channelEnum === 'Strategic'"
+            :title="row.designatedAgency"
+          >{{row.designatedAgency}}</div>
+        </template>
       </el-table-column>
       <el-table-column
         label="是否可申领"
