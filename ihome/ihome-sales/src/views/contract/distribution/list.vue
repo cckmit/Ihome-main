@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:56:57
+ * @LastEditTime: 2021-04-16 19:05:07
 -->
 <template>
   <IhPage label-width="100px">
@@ -516,19 +516,19 @@
                 </template>
 
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'original')"
+                  @click.native.prevent="handleGoOriginal(row)"
                   v-if="$route.name === 'DistributionList'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'original')"
+                  @click.native.prevent="handleGoOriginal(row)"
                   v-else-if="$route.name === 'DistributionListByBusiness'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'original')"
+                  @click.native.prevent="handleGoOriginal(row)"
                   v-else-if="$route.name === 'DistributionListByBack'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.ORIGINALFILE'"
@@ -974,6 +974,38 @@ export default class DistributionList extends Vue {
         this.$router.push(`/distribution/notChannelDuplicate?id=${row.id}`);
         break;
     }
+    sessionStorage.setItem("gotoRouter", this.claimPower);
+  }
+  /**
+   * @description: 跳转原件归档
+   * @param {*} row
+   */
+  handleGoOriginal(row: any) {
+    switch (row.contractKind) {
+      case "StandKindSaleConfirm":
+        // 标准联动销售确认书
+        this.$router.push(`/distribution/normalSalesOriginal?id=${row.id}`);
+        break;
+      case "StandChannel":
+        // 标准渠道分销合同
+        this.$router.push(
+          `/distribution/normalDistributionOriginal?id=${row.id}`
+        );
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        this.$router.push(`/distribution/notDistributionOriginal?id=${row.id}`);
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        this.$router.push(`/distribution/notSalesOriginal?id=${row.id}`);
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        this.$router.push(`/distribution/notChannelOriginal?id=${row.id}`);
+        break;
+    }
+    sessionStorage.setItem("gotoRouter", this.claimPower);
   }
   /**
    * @description: 跳转不同的详情

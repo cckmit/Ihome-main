@@ -361,7 +361,12 @@ import {
   post_channelGrade_getOne,
 } from "@/api/channel/index";
 
-@Component({})
+@Component({
+  beforeRouteEnter(to, from, next) {
+    console.log(to, from);
+    next();
+  },
+})
 export default class DistributionApply extends Vue {
   private fileList: any[] = [];
   private form: any = {
@@ -572,14 +577,17 @@ export default class DistributionApply extends Vue {
           await post_distribution_create(this.form);
           loading.close();
           this.$message.success("申领成功");
-          let path: any = sessionStorage.getItem("gotoRouter");
-          if (path) {
-            this.$goto({
-              path,
-            });
-          } else {
-            this.$router.go(-1);
+          const router: any = sessionStorage.getItem("gotoRouter");
+          let path: any = null;
+          switch (router) {
+            case "MiddleAndBack":
+              path = "/distribution/list";
+              break;
+            case "Business":
+              path = "/distribution/listByBusiness";
+              break;
           }
+          this.$goto({ path });
           sessionStorage.removeItem("gotoRouter");
         } catch (error) {
           console.log(error);

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 17:41:42
+ * @LastEditTime: 2021-04-16 18:52:09
 -->
 <template>
   <el-dialog
@@ -251,7 +251,7 @@ export default class ApplyContract extends Vue {
           );
           break;
       }
-      sessionStorage.setItem("gotoRouter", this.$route.path);
+      sessionStorage.setItem("gotoRouter", this.claimPower);
       this.cancel();
     } else {
       this.$message.warning("请先选择一条数据");
