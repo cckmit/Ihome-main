@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 17:01:34
+ * @LastEditTime: 2021-04-16 17:41:42
 -->
 <template>
   <el-dialog
@@ -186,6 +186,7 @@ export default class ApplyContract extends Vue {
     contractTitle: null,
     termId: null,
     contractKind: null,
+    titleOrRemark: null,
   };
   resPageInfo: any = {
     total: null,
@@ -212,6 +213,7 @@ export default class ApplyContract extends Vue {
       contractTitle: null,
       termId: null,
       contractKind: null,
+      titleOrRemark: null,
     });
   }
   finish() {
