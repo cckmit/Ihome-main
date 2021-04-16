@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:26:15
+ * @LastEditTime: 2021-04-16 11:25:47
 -->
 <template>
   <ih-page>
@@ -55,8 +55,15 @@
               ></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
+          <el-col :span="16">
+            <el-form-item label="开发商">
+              <el-input
+                disabled
+                v-model="form.developerNames"
+                placeholder="自动生成"
+              ></el-input>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item
               label="市场化项目"
@@ -184,6 +191,7 @@ export default class EditBasicInfo extends Vue {
     provinceOption: [],
     proAddr: null,
     companyName: null,
+    developerNames: null,
   };
 
   rules: any = {

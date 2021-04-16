@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-06 17:14:55
+ * @LastEditTime: 2021-04-16 11:26:30
 -->
 <template>
   <ih-page>
@@ -37,8 +37,11 @@
               <span>{{ form.proRecord }}</span>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
+          <el-col :span="16">
+            <el-form-item label="开发商">
+              <span>{{ form.developerNames }}</span>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="市场化项目">
               <span>{{ filterExMarket(form.exMarket) }}</span>
@@ -139,6 +142,7 @@ export default class EditBasicInfo extends Vue {
     district: null,
     companyName: null,
     provinceOption: [],
+    developerNames: null,
   };
   remark = "";
   YesOrNoType: any = [

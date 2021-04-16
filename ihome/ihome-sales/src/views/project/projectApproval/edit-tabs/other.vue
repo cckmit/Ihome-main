@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 15:26:45
+ * @LastEditTime: 2021-04-16 11:55:27
 -->
 <template>
   <div>
@@ -101,6 +101,31 @@
     <br />
     <div>
       <p class="ih-info-title">其他渠道费配置</p>
+      <div class="special">
+        <div>是否使用本周期的其他渠道费用</div>
+        <div class="special-icon">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            placement="bottom-start"
+          >
+            <div slot="content">开启时该周期的成交报告优先使用本周期的其他渠道费用，
+              关闭时提交成交报告<br />不使用本周期的其他渠道费用
+            </div>
+            <i class="el-icon-question" />
+          </el-tooltip>
+        </div>
+        <div class="margin-left-20">
+          <el-switch
+            v-model="info.exUseThisChannelFee"
+            active-color="#ef9d39"
+            inactive-color="#7b7b7b"
+            @change="exUseThisChannelFeeChange"
+          >
+          </el-switch>
+        </div>
+      </div>
+      <br />
       <div class="special">
         <div>允许临时穿底</div>
         <div class="special-icon">
@@ -292,6 +317,7 @@ import {
   post_other_del,
   post_other_start,
   post_other_stop,
+  post_other_changUseThisChannelFee,
 } from "@/api/project/index.ts";
 
 @Component({
@@ -313,6 +339,7 @@ export default class Other extends Vue {
   info: any = {
     exOver: false,
     exOtherProChannelUse: false,
+    exUseThisChannelFee: true,
     shareChannelFeeVOS: [],
     bankAccount: [],
     group: [],
@@ -349,6 +376,9 @@ export default class Other extends Vue {
       });
       this.info.exOver = this.info.exOver ? true : false;
       this.info.exOtherProChannelUse = this.info.exOtherProChannelUse
+        ? true
+        : false;
+      this.info.exUseThisChannelFee = this.info.exUseThisChannelFee
         ? true
         : false;
       if (this.info.receiptMan || this.info.receiptAccount) {
@@ -408,6 +438,14 @@ export default class Other extends Vue {
     });
     this.getInfo();
     this.organDialogVisible = false;
+  }
+
+  async exUseThisChannelFeeChange(val: any) {
+    this.info.exUseThisChannelFee = val;
+    await post_other_changUseThisChannelFee({
+      termId: this.termId,
+      type: val ? 1 : 0,
+    });
   }
 
   async exOverChange(val: any) {

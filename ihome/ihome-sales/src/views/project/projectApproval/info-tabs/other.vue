@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-11 09:02:08
+ * @LastEditTime: 2021-04-16 14:21:13
 -->
 <template>
   <div>
@@ -95,6 +95,32 @@
     <br />
     <div>
       <p class="ih-info-title">其他渠道费配置</p>
+      <div class="special">
+        <div>是否使用本周期的其他渠道费用</div>
+        <div class="special-icon">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            placement="bottom-start"
+          >
+            <div slot="content">开启时该周期的成交报告优先使用本周期的其他渠道费用，
+              关闭时提交成交报告<br />不使用本周期的其他渠道费用
+            </div>
+            <i class="el-icon-question" />
+          </el-tooltip>
+        </div>
+        <div class="margin-left-20">
+          <el-switch
+            v-model="info.exUseThisChannelFee"
+            active-color="#ef9d39"
+            inactive-color="#7b7b7b"
+            :disabled="!businessManagementChange"
+            @change="exUseThisChannelFeeChange"
+          >
+          </el-switch>
+        </div>
+      </div>
+      <br />
       <div class="special">
         <div>允许临时穿底</div>
         <div class="special-icon">
@@ -219,6 +245,7 @@ import {
   get_other_get__termId,
   post_other_busnissManage_saveReceipt,
   post_other_busnissManage_saveGroup,
+  post_other_changUseThisChannelFee,
 } from "@/api/project/index.ts";
 
 @Component({
@@ -276,6 +303,9 @@ export default class Other extends Vue {
       this.info.exOtherProChannelUse = this.info.exOtherProChannelUse
         ? true
         : false;
+      this.info.exUseThisChannelFee = this.info.exUseThisChannelFee
+        ? true
+        : false;
       if (this.info.receiptMan || this.info.receiptAccount) {
         this.info.bankAccount = [
           {
@@ -312,6 +342,14 @@ export default class Other extends Vue {
   organSelect() {
     this.organDialogVisible = true;
     this.organData.id = this.info.startDivisionId;
+  }
+
+  async exUseThisChannelFeeChange(val: any) {
+    this.info.exUseThisChannelFee = val;
+    await post_other_changUseThisChannelFee({
+      termId: this.termId,
+      type: val ? 1 : 0,
+    });
   }
 
   async organFinish(data: any) {

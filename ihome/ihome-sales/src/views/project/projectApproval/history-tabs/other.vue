@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 16:06:24
+ * @LastEditTime: 2021-04-16 14:07:29
 -->
 <template>
   <div>
@@ -48,6 +48,31 @@
     <br />
     <div>
       <p class="ih-info-title">特殊业绩比例方案</p>
+      <div class="special">
+        <div>是否使用本周期的其他渠道费用</div>
+        <div class="special-icon">
+          <el-tooltip
+            class="item"
+            effect="dark"
+            placement="bottom-start"
+          >
+            <div slot="content">开启时该周期的成交报告优先使用本周期的其他渠道费用，
+              关闭时提交成交报告<br />不使用本周期的其他渠道费用
+            </div>
+            <i class="el-icon-question" />
+          </el-tooltip>
+        </div>
+        <div class="margin-left-20">
+          <el-switch
+            v-model="info.exUseThisChannelFee"
+            active-color="#ef9d39"
+            inactive-color="#7b7b7b"
+            disabled
+          >
+          </el-switch>
+        </div>
+      </div>
+      <br />
       <div class="special">
         <div>是否使用特殊业绩比例方案</div>
         <div class="special-icon">
@@ -184,6 +209,7 @@ export default class Other extends Vue {
   info: any = {
     exOver: false,
     exOtherProChannelUse: false,
+    exUseThisChannelFee: true,
     shareChannelFeeVOS: [],
     bankAccount: [],
     group: [],
@@ -216,6 +242,9 @@ export default class Other extends Vue {
       });
       this.info.exOver = this.info.exOver ? true : false;
       this.info.exOtherProChannelUse = this.info.exOtherProChannelUse
+        ? true
+        : false;
+      this.info.exUseThisChannelFee = this.info.exUseThisChannelFee
         ? true
         : false;
       if (this.info.receiptMan || this.info.receiptAccount) {
