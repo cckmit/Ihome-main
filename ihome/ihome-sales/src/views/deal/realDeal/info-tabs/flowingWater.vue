@@ -2,7 +2,7 @@
   <div>
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
-        <span>流水汇总</span>
+        <span>流水总览</span>
       </div>
       <div>
         <el-row>
