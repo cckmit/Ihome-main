@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:20:38
+ * @LastEditTime: 2021-04-17 09:03:08
 -->
 <template>
   <div>
@@ -770,7 +770,11 @@ export default class EditBasicInfo extends Vue {
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
-      this.form.jingwei = data.lat + "," + data.lng;
+      this.form.jingwei = data.lat
+        ? data.lat
+        : 0 + "," + data.lng
+        ? data.lng
+        : 0;
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(

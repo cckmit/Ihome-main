@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 17:19:15
+ * @LastEditTime: 2021-04-17 10:30:27
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -34,7 +34,7 @@
                 v-model="info.exInvolvedCommiss"
                 clearable
                 placeholder="请选择是否涉及佣金标准"
-                class="width-350"
+                style="max-width: 350px; width: 100%"
               >
                 <el-option
                   v-for="item in $root.dictAllList('YesOrNoType')"
@@ -54,7 +54,8 @@
                 v-model="info.commissionKind"
                 clearable
                 placeholder="请选择佣金类型"
-                class="width-350"
+                style="max-width: 350px; width: 100%"
+                @change="info.contractMxVOList = []"
               >
                 <el-option
                   v-for="item in $root.dictAllList('CommissionKind')"
@@ -76,7 +77,7 @@
                 v-model="info.contractTitle"
                 placeholder="请输入内容"
                 clearable
-                class="width-350"
+                style="max-width: 350px"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -86,7 +87,7 @@
                 v-model="info.titleOrRemark"
                 placeholder="请输入标题备注"
                 clearable
-                class="width-350"
+                style="max-width: 350px"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -113,6 +114,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
+                style="max-width: 350px; width: 100%"
               >
               </el-date-picker>
             </el-form-item>
@@ -364,6 +366,7 @@ export default class NotSalesApply extends Vue {
       this.queryObj.channelEnum = this.info.channelEnum;
       this.queryObj.padCommissionEnum = this.info.padCommissionEnum;
       this.queryObj.contractKind = "NoChannel";
+      this.queryObj.commissionKind = this.info.commissionKind;
       if (this.isShow) {
         this.queryObj.designatedAgencyId = this.info.designatedAgencyId;
         this.queryObj.designatedAgency = this.info.designatedAgency;
