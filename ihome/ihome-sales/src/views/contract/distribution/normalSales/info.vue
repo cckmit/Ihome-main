@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 19:08:50
+ * @LastEditTime: 2021-04-17 09:53:01
 -->
 <template>
   <IhPage class="text-left">
@@ -207,6 +207,7 @@
             <el-form-item label="盖章版归档">
               <IhUpload
                 v-model="fileList"
+                :limit="fileList.length"
                 size="100px"
                 class="upload"
               ></IhUpload>
