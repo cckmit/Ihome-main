@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 18:52:09
+ * @LastEditTime: 2021-04-17 16:25:23
 -->
 <template>
   <el-dialog
@@ -116,14 +116,21 @@
         label="甲方公司"
         prop="partyCompany"
       ></el-table-column>
-      <el-table-column label="是否垫佣">
+      <el-table-column
+        label="是否垫佣"
+        width="100"
+      >
         <template v-slot="{ row }">
           {{$root.dictAllName(row.padCommissionEnum, 'PadCommission')}}
         </template>
       </el-table-column>
-      <el-table-column label="渠道类型">
+      <el-table-column
+        label="渠道类型"
+        min-width="135"
+      >
         <template v-slot="{ row }">
-          {{$root.dictAllName(row.channelEnum, 'ChannelCustomer')}}
+          <div>{{$root.dictAllName(row.channelEnum, 'ChannelCustomer')}}</div>
+          <div>{{row.designatedAgency}}</div>
         </template>
       </el-table-column>
       <el-table-column
