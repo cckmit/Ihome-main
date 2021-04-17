@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 14:43:44
+ * @LastEditTime: 2021-04-17 16:12:23
 -->
 <template>
   <IhPage class="text-left">
@@ -15,8 +15,11 @@
         class="padding-left-20"
       >
         <el-row>
-          <el-col :span="24">
+          <el-col :span="12">
             <el-form-item label="合同类型">{{$root.dictAllName(form.contractKind, 'ContractKind')}}</el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="编号">{{form.contractNo}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>
