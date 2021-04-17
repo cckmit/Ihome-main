@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 19:05:07
+ * @LastEditTime: 2021-04-17 08:55:04
 -->
 <template>
   <IhPage label-width="100px">
@@ -735,30 +735,7 @@ export default class DistributionList extends Vue {
   // 根据角色来撤回
   private handleWith(selection: any) {
     if (selection.length) {
-      if (this.channelChange()) {
-        if (
-          selection
-            .map((i: any) => i.distributionState)
-            .every((v: any) => v === "Pending")
-        ) {
-          this.withdraw(selection);
-        } else {
-          this.$message.warning("只有待审核的合同才能操作撤回");
-          return;
-        }
-      }
-      if (this.contractChange()) {
-        if (
-          selection
-            .map((i: any) => i.distributionState)
-            .every((v: any) => v === "NotDistributed")
-        ) {
-          this.withdraw(selection);
-        } else {
-          this.$message.warning("只有待派发的合同才能操作撤回");
-          return;
-        }
-      }
+      this.withdraw(selection);
     } else {
       this.$message.warning("请先勾选表格数据");
       return;
