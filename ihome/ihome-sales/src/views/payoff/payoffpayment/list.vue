@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 11:19:36
+ * @LastEditTime: 2021-04-17 15:56:24
 -->
 <template>
   <IhPage label-width="100px">
@@ -261,6 +261,17 @@
               >
                 <template v-slot="{ row }">
                   <span v-if="row.paymentCode">{{row.paymentCode}}</span>
+                  <span v-else>---</span>
+                </template>
+              </el-table-column>
+              <el-table-column
+                v-if="['all', 'Paying'].includes(i.name)"
+                label="申请时间"
+                prop="applicationDate"
+                width="120"
+              >
+                <template v-slot="{ row }">
+                  <span v-if="row.applicationDate">{{row.applicationDate}}</span>
                   <span v-else>---</span>
                 </template>
               </el-table-column>

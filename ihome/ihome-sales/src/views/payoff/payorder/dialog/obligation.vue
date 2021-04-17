@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-07 10:45:27
+ * @LastEditTime: 2021-04-17 16:05:21
 -->
 <template>
   <el-dialog
@@ -145,6 +145,16 @@
       @page-change="pageChange"
       @size-change="sizeChange"
     >
+      <template #contType>
+        <el-table-column
+          label="合同类型"
+          width="120"
+        >
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.contType, 'ContType')}}
+          </template>
+        </el-table-column>
+      </template>
       <template #serReceive>
         <el-table-column
           label="服务费情况"
@@ -292,6 +302,9 @@ export default class Obligation extends Vue {
       label: "渠道商",
       prop: "agencyName",
       minWidth: 150,
+    },
+    {
+      slot: "contType",
     },
     {
       slot: "serReceive",

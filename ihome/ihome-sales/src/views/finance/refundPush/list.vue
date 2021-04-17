@@ -5,7 +5,7 @@
  * @Author: zyc
  * @Date: 2021-01-13 14:50:21
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-09 15:59:30
+ * @LastEditTime: 2021-04-17 16:00:26
 -->
 <template>
   <IhPage label-width="110px">
@@ -249,12 +249,17 @@
               width="150"
             ></el-table-column>
             <el-table-column
+              label="申请时间"
+              prop="createDate"
+              width="100"
+            ></el-table-column>
+            <el-table-column
               label="推送时间"
               prop="pushDate"
               width="100"
             ></el-table-column>
             <el-table-column
-              label="支付时间"
+              label="付款时间"
               prop="payDate"
               width="200"
             ></el-table-column>
