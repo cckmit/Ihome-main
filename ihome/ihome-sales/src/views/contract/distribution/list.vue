@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 09:13:35
+ * @LastEditTime: 2021-04-17 14:19:34
 -->
 <template>
   <IhPage label-width="100px">
@@ -648,8 +648,9 @@ export default class DistributionList extends Vue {
   private searchOpen = true;
   private selectionData: any = [];
   private applyVisible = false;
+  private claimPower: any = null;
 
-  private get claimPower() {
+  private claimPowerMethod() {
     let type: any = null;
     switch (this.$route.name) {
       case "DistributionList":
@@ -662,7 +663,7 @@ export default class DistributionList extends Vue {
         type = "MiddleAndBack";
         break;
     }
-    return type;
+    this.claimPower = type;
   }
   private originalChange(row: any) {
     const isDis = row.distributionState === "Distributed";
@@ -1019,6 +1020,7 @@ export default class DistributionList extends Vue {
 
   created() {
     this.getListMixin();
+    this.claimPowerMethod();
   }
 }
 </script>
