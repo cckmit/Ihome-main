@@ -190,8 +190,7 @@
             info.servicePaymentInfos &&
             (info.servicePaymentInfos.paymentInfos || [])
           "
-          style="width: 100%"
-        >
+          style="width: 100%">
           <el-table-column prop="payNo" label="收款编号" width="200">
             <template slot-scope="scope">
               <el-link type="primary" @click="gotoNew(scope.row, 'payNo')">
@@ -220,8 +219,7 @@
           <el-table-column prop="payCode" label="凭证号"> </el-table-column>
           <el-table-column prop="payTime" label="支付时间"> </el-table-column>
           <el-table-column prop="checkTime" label="对账时间"> </el-table-column>
-          <el-table-column prop="confirmTime" label="确认时间">
-          </el-table-column>
+          <el-table-column prop="confirmTime" label="确认时间"></el-table-column>
         </el-table>
       </div>
       <div v-for="(item, index) in info.agentPaymentInfos" :key="index">
@@ -263,6 +261,7 @@
           <el-table-column prop="payCode" label="凭证号"> </el-table-column>
           <el-table-column prop="payTime" label="支付时间"> </el-table-column>
           <el-table-column prop="checkTime" label="对账时间"> </el-table-column>
+          <el-table-column prop="confirmTime" label="确认时间"></el-table-column>
         </el-table>
       </div>
 
