@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
- * @LastEditors: ywl
- * @LastEditTime: 2021-03-24 15:20:43
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-17 11:19:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -73,12 +73,17 @@
           </el-col>
         </el-row>
         <el-row>
-          <el-col :span="8">
-            <el-form-item label="日期类型">
+          <el-col :span="12">
+            <el-form-item
+              label="日期类型"
+              style="text-align: left"
+            >
               <el-select
-                style="width: 100%"
+                style="width: 30%"
                 v-model="queryPageParameters.payDateType"
                 placeholder="请选择"
+                clearable
+                @clear="dateTypeClear()"
               >
                 <el-option
                   v-for="item in $root.dictAllList('PayDateType')"
@@ -87,22 +92,22 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+
+              <el-date-picker
+                style="width:70%;"
+                v-model="timeList"
+                type="daterange"
+                align="left"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="$root.pickerOptions"
+                :disabled="!queryPageParameters.payDateType"
+                value-format="yyyy-MM-dd"
+                :default-time="['00:00:00', '23:59:59']"
+              ></el-date-picker>
             </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-date-picker
-              style="width:100%;"
-              v-model="timeList"
-              type="daterange"
-              align="left"
-              unlink-panels
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-              :picker-options="$root.pickerOptions"
-              value-format="yyyy-MM-dd"
-              :default-time="['00:00:00', '23:59:59']"
-            ></el-date-picker>
           </el-col>
         </el-row>
       </el-form>
@@ -448,6 +453,14 @@ export default class ReturnConfirmList extends Vue {
       background: "rgba(0, 0, 0, 0.6)",
       customClass: "ih-loading-spinner",
     });
+  }
+
+  dateTypeClear() {
+    if (!this.queryPageParameters.payDateType) {
+      this.timeList = [];
+      this.queryPageParameters.beginDate = null;
+      this.queryPageParameters.endDate = null;
+    }
   }
 
   async getListMixin() {

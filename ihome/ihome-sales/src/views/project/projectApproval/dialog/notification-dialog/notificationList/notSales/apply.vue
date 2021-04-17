@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:40:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 17:38:34
+ * @LastEditTime: 2021-04-17 10:12:45
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -34,7 +34,7 @@
                 v-model="info.contractTitle"
                 placeholder="请输入内容"
                 clearable
-                class="width-300"
+                style="max-width: 300px;"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -44,7 +44,7 @@
                 v-model="info.titleOrRemark"
                 placeholder="请输入标题备注"
                 clearable
-                class="width-350"
+                style="max-width: 300px;"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -71,6 +71,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
+                style="max-width: 300px;width: 100%"
               >
               </el-date-picker>
             </el-form-item>

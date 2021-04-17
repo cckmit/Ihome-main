@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 17:17:15
+ * @LastEditTime: 2021-04-17 10:05:31
 -->
 <template>
   <ih-page class="text-left">
@@ -163,7 +163,7 @@
                 v-model="info.channelEnum"
                 disabled
                 placeholder="请选择渠道类型"
-                class="width--100"
+                style="width: 50%"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCustomer')"
@@ -184,7 +184,6 @@
                   v-model="info.companyKind"
                   disabled
                   placeholder="请选择公司种类"
-                  class="width--100"
                 >
                   <el-option
                     v-for="item in companyKindOption"
@@ -199,21 +198,23 @@
               :span='6'
               class="margin-left-10"
             >
-              <IhSelectPageByCompany
-                v-if="info.companyKind === 'InfieldCompany'"
-                style="flex: 1;max-width: 300px;"
-                disabled
-                :search-name="info.designatedAgency"
-                v-model="info.designatedAgencyId"
-              ></IhSelectPageByCompany>
-              <IhSelectPageByChannel
-                v-else-if="info.companyKind === 'ChannelCompany'"
-                v-model="info.designatedAgencyId"
-                disabled
-                placeholder="渠道商名称"
-                :params="searchConditon"
-                :search-name="info.designatedAgency"
-              ></IhSelectPageByChannel>
+              <el-form-item label-width="0">
+                <IhSelectPageByCompany
+                  v-if="info.companyKind === 'InfieldCompany'"
+                  style="flex: 1;max-width: 300px;"
+                  disabled
+                  :search-name="info.designatedAgency"
+                  v-model="info.designatedAgencyId"
+                ></IhSelectPageByCompany>
+                <IhSelectPageByChannel
+                  v-else-if="info.companyKind === 'ChannelCompany'"
+                  v-model="info.designatedAgencyId"
+                  disabled
+                  placeholder="渠道商名称"
+                  :params="searchConditon"
+                  :search-name="info.designatedAgency"
+                ></IhSelectPageByChannel>
+              </el-form-item>
             </el-col>
           </div>
         </el-row>
@@ -226,8 +227,8 @@
               <el-select
                 v-model="info.padCommissionEnum"
                 disabled
+                style="width: 50%"
                 placeholder="请选择垫佣周期"
-                class="width--100"
               >
                 <el-option
                   v-for="item in padCommissionEnumOptions"
@@ -322,7 +323,6 @@
             v-model="info.agencySettleCondtion"
             disabled
             placeholder="请选择"
-            class="width--50"
           >
             <el-option
               v-for="item in $root.dictAllList('AgencySettleCondtion')"
@@ -376,7 +376,6 @@
               disabled
               placeholder="请选择"
               clearabled
-              class="width-300"
             >
               <el-option
                 v-for="item in $root.dictAllList('CostSettleType')"
@@ -396,7 +395,7 @@
             <el-input
               v-model="info.agencyFeeReturnTime"
               placeholder="退回期限"
-              class="width-100"
+              style="max-width: 100px; width: 100%"
               v-digits="0"
               readonly
             />
@@ -445,7 +444,7 @@
             <el-input
               v-model="info.agencyFeeReturnRate"
               placeholder="违约金比例"
-              class="width-120"
+              style="max-width: 120px;"
               readonly
             />
           </el-form-item>

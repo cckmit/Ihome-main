@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 17:19:57
+ * @LastEditTime: 2021-04-17 10:11:29
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -33,7 +33,7 @@
                 v-model="info.contractTitle"
                 placeholder="请输入内容"
                 readonly
-                class="width-300"
+                style="max-width: 300px"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -43,7 +43,7 @@
                 v-model="info.titleOrRemark"
                 placeholder="请输入标题备注"
                 readonly
-                class="width-350"
+                style="max-width: 350px"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -74,6 +74,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
+                style="max-width: 350px; width: 100%"
               >
               </el-date-picker>
             </el-form-item>
@@ -89,7 +90,7 @@
                 v-model="info.channelEnum"
                 disabled
                 placeholder="请选择渠道类型"
-                class="width--100"
+                style="max-width: 300px; width: 100%"
               >
                 <el-option
                   v-for="item in $root.dictAllList('ChannelCustomer')"
@@ -153,7 +154,7 @@
                 v-model="info.padCommissionEnum"
                 readonly
                 placeholder="请选择垫佣周期"
-                class="width--100"
+                style="max-width: 300px; width: 100%"
                 :disabled="padCommissionEnumOptions.length === 1"
               >
                 <el-option
