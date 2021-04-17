@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-12 15:50:14
+ * @LastEditTime: 2021-04-16 19:12:09
 -->
 <template>
   <IhPage class="text-left">
@@ -169,14 +169,27 @@ export default class NotSalesInfo extends Vue {
       this.$message.warning("归档编号不能为空");
       return;
     }
-    await post_distribution_original_archive({
-      distributionId: this.form.id,
-      archiveNo: this.archiveNo,
-    });
-    this.$message.success("原件归档成功");
-    this.$goto({
-      path: "/distribution/list",
-    });
+    try {
+      await post_distribution_original_archive({
+        distributionId: this.form.id,
+        archiveNo: this.archiveNo,
+      });
+      this.$message.success("原件归档成功");
+      const router: any = sessionStorage.getItem("gotoRouter");
+      let path: any = null;
+      switch (router) {
+        case "MiddleAndBack":
+          path = "/distribution/list";
+          break;
+        case "Business":
+          path = "/distribution/listByBusiness";
+          break;
+      }
+      this.$goto({ path });
+      sessionStorage.removeItem("gotoRouter");
+    } catch (error) {
+      console.log(error);
+    }
   }
   private async submitDulicate() {
     if (!this.fileList.length || !this.archiveStatus) {
@@ -194,9 +207,18 @@ export default class NotSalesInfo extends Vue {
         distributionId: this.$route.query.id,
       });
       this.$message.success("归档成功");
-      this.$goto({
-        path: "/distribution/list",
-      });
+      const router: any = sessionStorage.getItem("gotoRouter");
+      let path: any = null;
+      switch (router) {
+        case "MiddleAndBack":
+          path = "/distribution/list";
+          break;
+        case "Business":
+          path = "/distribution/listByBusiness";
+          break;
+      }
+      this.$goto({ path });
+      sessionStorage.removeItem("gotoRouter");
     } catch (error) {
       console.log(error);
     }
@@ -227,6 +249,9 @@ export default class NotSalesInfo extends Vue {
 
   created(): void {
     this.getInfo();
+  }
+  beforeDestroy() {
+    sessionStorage.removeItem("gotoRouter");
   }
 }
 </script>

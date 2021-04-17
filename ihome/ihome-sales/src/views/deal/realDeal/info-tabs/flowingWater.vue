@@ -5,7 +5,7 @@
         <span>流水总览</span>
       </div>
       <div>
-        <el-row>
+        <el-row class="row-col-height">
           <!-- <el-col :span="6" v-for="(item, index) in waterList" :key="index">
             <div class="water-item">
               <div class="water-item-1">
@@ -533,5 +533,11 @@ export default class FlowingWater extends Vue {
 }
 .water-item-4 {
   text-align: left;
+  font-size: 13px;
+}
+.row-col-height {
+  /deep/.el-col {
+    height: 163px !important;
+  }
 }
 </style>

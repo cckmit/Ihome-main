@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:42:08
+ * @LastEditTime: 2021-04-16 18:52:09
 -->
 <template>
   <el-dialog
@@ -109,6 +109,10 @@
         prop="contractTitle"
       ></el-table-column>
       <el-table-column
+        label="标题备注"
+        prop="titleOrRemark"
+      ></el-table-column>
+      <el-table-column
         label="甲方公司"
         prop="partyCompany"
       ></el-table-column>
@@ -182,6 +186,7 @@ export default class ApplyContract extends Vue {
     contractTitle: null,
     termId: null,
     contractKind: null,
+    titleOrRemark: null,
   };
   resPageInfo: any = {
     total: null,
@@ -208,6 +213,7 @@ export default class ApplyContract extends Vue {
       contractTitle: null,
       termId: null,
       contractKind: null,
+      titleOrRemark: null,
     });
   }
   finish() {
@@ -245,6 +251,7 @@ export default class ApplyContract extends Vue {
           );
           break;
       }
+      sessionStorage.setItem("gotoRouter", this.claimPower);
       this.cancel();
     } else {
       this.$message.warning("请先选择一条数据");

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:56:57
+ * @LastEditTime: 2021-04-17 09:13:35
 -->
 <template>
   <IhPage label-width="100px">
@@ -354,7 +354,8 @@
           width="195"
         >
           <template v-slot="{ row }">
-            <span>{{row.beginTime}} 至 {{row.endTime}}</span>
+            <span v-if="row.beginTime && row.endTime">{{row.beginTime}} 至 {{row.endTime}}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -516,19 +517,19 @@
                 </template>
 
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'original')"
+                  @click.native.prevent="handleGoOriginal(row)"
                   v-if="$route.name === 'DistributionList'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTLIST.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'original')"
+                  @click.native.prevent="handleGoOriginal(row)"
                   v-else-if="$route.name === 'DistributionListByBusiness'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.ORIGINALFILE'"
                 >原件归档</el-dropdown-item>
                 <el-dropdown-item
-                  @click.native.prevent="handleTo(row, 'original')"
+                  @click.native.prevent="handleGoOriginal(row)"
                   v-else-if="$route.name === 'DistributionListByBack'"
                   :class="{ 'ih-data-disabled': !originalChange(row) }"
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.ORIGINALFILE'"
@@ -735,30 +736,7 @@ export default class DistributionList extends Vue {
   // 根据角色来撤回
   private handleWith(selection: any) {
     if (selection.length) {
-      if (this.channelChange()) {
-        if (
-          selection
-            .map((i: any) => i.distributionState)
-            .every((v: any) => v === "Pending")
-        ) {
-          this.withdraw(selection);
-        } else {
-          this.$message.warning("只有待审核的合同才能操作撤回");
-          return;
-        }
-      }
-      if (this.contractChange()) {
-        if (
-          selection
-            .map((i: any) => i.distributionState)
-            .every((v: any) => v === "NotDistributed")
-        ) {
-          this.withdraw(selection);
-        } else {
-          this.$message.warning("只有待派发的合同才能操作撤回");
-          return;
-        }
-      }
+      this.withdraw(selection);
     } else {
       this.$message.warning("请先勾选表格数据");
       return;
@@ -974,6 +952,38 @@ export default class DistributionList extends Vue {
         this.$router.push(`/distribution/notChannelDuplicate?id=${row.id}`);
         break;
     }
+    sessionStorage.setItem("gotoRouter", this.claimPower);
+  }
+  /**
+   * @description: 跳转原件归档
+   * @param {*} row
+   */
+  handleGoOriginal(row: any) {
+    switch (row.contractKind) {
+      case "StandKindSaleConfirm":
+        // 标准联动销售确认书
+        this.$router.push(`/distribution/normalSalesOriginal?id=${row.id}`);
+        break;
+      case "StandChannel":
+        // 标准渠道分销合同
+        this.$router.push(
+          `/distribution/normalDistributionOriginal?id=${row.id}`
+        );
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        this.$router.push(`/distribution/notDistributionOriginal?id=${row.id}`);
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        this.$router.push(`/distribution/notSalesOriginal?id=${row.id}`);
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        this.$router.push(`/distribution/notChannelOriginal?id=${row.id}`);
+        break;
+    }
+    sessionStorage.setItem("gotoRouter", this.claimPower);
   }
   /**
    * @description: 跳转不同的详情

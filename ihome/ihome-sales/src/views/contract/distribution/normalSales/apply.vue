@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 11:44:15
+ * @LastEditTime: 2021-04-16 20:26:43
 -->
 <template>
   <IhPage class="text-left">
@@ -49,6 +49,7 @@
                   class="width-150 margin-right-10"
                   v-model="form.channelCompanyKind"
                   placeholder="请选择公司类型"
+                  :disabled="['Appoint', 'Strategic'].includes(form.channelEnum)"
                   @change="changeCompanyKind"
                 >
                   <el-option
@@ -58,11 +59,14 @@
                     :value="i.code"
                   ></el-option>
                 </el-select>
-                <IhSelectPageByCompany
-                  v-if="form.channelCompanyKind === 'InfieldCompany'"
-                  style="flex: 1;max-width: 250px;"
-                  v-model="form.channelCompanyId"
-                ></IhSelectPageByCompany>
+                <template v-if="form.channelCompanyKind === 'InfieldCompany'">
+                  <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
+                  <IhSelectPageByCompany
+                    v-else
+                    style="flex: 1;max-width: 250px;"
+                    v-model="form.channelCompanyId"
+                  ></IhSelectPageByCompany>
+                </template>
                 <template v-else-if="form.channelCompanyKind === 'ChannelCompany'">
                   <span v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">{{form.channelCompanyName}}</span>
                   <IhSelectPageByChannel
@@ -304,6 +308,10 @@ export default class SalesApply extends Vue {
     titleOrRemark: null,
     unContractLiability: null,
   };
+  private channelForm: any = {
+    channelCompanyId: null,
+    channelCompanyName: null,
+  };
   private startDivisionId: any = null; //启动事业部ID
   private cityCode: any = null; //城市code
   private rules: any = {
@@ -334,26 +342,15 @@ export default class SalesApply extends Vue {
       channelAccountName: null,
       channelAddress: null,
       channelCompanyId: null,
+      channelLevel: null,
     });
+    if (
+      ["Appoint", "Strategic"].includes(this.form.channelEnum) &&
+      this.form.channelCompanyKind === "ChannelCompany"
+    ) {
+      Object.assign(this.form, this.channelForm);
+    }
   }
-  // private async getCompanyInfo(data: any) {
-  //   try {
-  //     const res = await get_bankAccount_get__companyId({ companyId: data.id });
-  //     this.accountOption = res;
-  //     this.form.channelAddress = data.address;
-  //     let account = res.find((i: any) => i.defaultFlag);
-  //     if (account) {
-  //       this.form.channelAccountData = { id: account.id };
-  //       Object.assign(this.form, {
-  //         channelAccount: account.accountNo,
-  //         channelAccountBank: account.branchName,
-  //         channelAccountName: account.accountName,
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }
   private async getChannelInfo(data: any) {
     try {
       const res = await get_channel_get__id({ id: data.id });
@@ -416,6 +413,10 @@ export default class SalesApply extends Vue {
           this.form.costSettleType,
           "CostSettleType"
         ),
+        channelCompanyKind: (this.$root as any).dictAllName(
+          this.form.channelCompanyKind,
+          "CompanyKind"
+        ),
       },
     }).then((res: any) => {
       const arr = new Blob([res.data], { type: "application/pdf" });
@@ -437,9 +438,18 @@ export default class SalesApply extends Vue {
           await post_distribution_create(this.form);
           loading.close();
           this.$message.success("申领成功");
-          this.$goto({
-            path: "/distribution/list",
-          });
+          const router: any = sessionStorage.getItem("gotoRouter");
+          let path: any = null;
+          switch (router) {
+            case "MiddleAndBack":
+              path = "/distribution/list";
+              break;
+            case "Business":
+              path = "/distribution/listByBusiness";
+              break;
+          }
+          this.$goto({ path });
+          sessionStorage.removeItem("gotoRouter");
         } catch (error) {
           console.log(error);
           loading.close();
@@ -471,7 +481,7 @@ export default class SalesApply extends Vue {
           // channelAddress: "",
           channelCompanyId: res.designatedAgencyId,
           channelCompanyName: res.designatedAgency,
-          // channelCompanyKind: "",
+          // channelCompanyKind: res.companyKind,
           // channelContact: "",
           // channelContactTel: "",
           channelEnum: res.channelEnum,
@@ -517,6 +527,13 @@ export default class SalesApply extends Vue {
         };
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
           this.getChannelInfo({ id: res.designatedAgencyId });
+          this.channelForm = {
+            channelCompanyId: res.designatedAgencyId,
+            channelCompanyName: res.designatedAgency,
+          };
+          Object.assign(this.form, {
+            channelCompanyKind: res.companyKind,
+          });
         }
       } catch (error) {
         console.log(error);
@@ -529,6 +546,9 @@ export default class SalesApply extends Vue {
     this.companyKindOption = (this.$root as any)
       .dictAllList("CompanyKind")
       .filter((i: any) => i.tag === "Channel");
+  }
+  beforeDestroy() {
+    sessionStorage.removeItem("gotoRouter");
   }
 }
 </script>

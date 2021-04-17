@@ -360,9 +360,18 @@ export default class DistributionInfo extends Vue {
       archiveNo: this.archiveNo,
     });
     this.$message.success("原件归档成功");
-    this.$goto({
-      path: "/distribution/list",
-    });
+    const router: any = sessionStorage.getItem("gotoRouter");
+    let path: any = null;
+    switch (router) {
+      case "MiddleAndBack":
+        path = "/distribution/list";
+        break;
+      case "Business":
+        path = "/distribution/listByBusiness";
+        break;
+    }
+    this.$goto({ path });
+    sessionStorage.removeItem("gotoRouter");
   }
   private async submitDulicate() {
     if (!this.fileList.length || !this.archiveStatus) {
@@ -380,9 +389,18 @@ export default class DistributionInfo extends Vue {
         distributionId: this.form.id,
       });
       this.$message.success("归档成功");
-      this.$goto({
-        path: "/distribution/list",
-      });
+      const router: any = sessionStorage.getItem("gotoRouter");
+      let path: any = null;
+      switch (router) {
+        case "MiddleAndBack":
+          path = "/distribution/list";
+          break;
+        case "Business":
+          path = "/distribution/listByBusiness";
+          break;
+      }
+      this.$goto({ path });
+      sessionStorage.removeItem("gotoRouter");
     } catch (error) {
       console.log(error);
     }
@@ -418,6 +436,9 @@ export default class DistributionInfo extends Vue {
 
   created(): void {
     this.getInfo();
+  }
+  beforeDestroy() {
+    sessionStorage.removeItem("gotoRouter");
   }
 }
 </script>
