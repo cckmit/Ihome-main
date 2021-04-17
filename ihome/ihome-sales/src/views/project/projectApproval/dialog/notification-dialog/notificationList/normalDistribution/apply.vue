@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 17:15:04
+ * @LastEditTime: 2021-04-17 10:03:51
 -->
 <template>
   <ih-page class="text-left">
@@ -164,7 +164,7 @@
                 v-model="info.channelEnum"
                 clearable
                 placeholder="请选择渠道类型"
-                class="width--100"
+                style="width: 50%"
                 @change="channelChange"
               >
                 <el-option
@@ -186,7 +186,6 @@
                   v-model="info.companyKind"
                   clearable
                   placeholder="请选择"
-                  class="width--100"
                   @change="companyKindChange"
                 >
                   <el-option
@@ -198,28 +197,28 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col
-              :span='6'
-              class="margin-left-10"
-            >
-              <IhSelectPageByCompany
-                v-if="info.companyKind === 'InfieldCompany'"
-                style="flex: 1;max-width: 250px;"
-                clearable
-                v-model="info.designatedAgencyId"
-                @changeOption="getChannelInfo"
-                @clear="queryUnderData('123')"
-              ></IhSelectPageByCompany>
-              <IhSelectPageByChannel
-                v-else-if="info.companyKind === 'ChannelCompany'"
-                v-model="info.designatedAgencyId"
-                clearable
-                placeholder="渠道商名称"
-                :params="searchConditon"
-                :search-name="info.designatedAgency"
-                @changeOption="getChannelInfo"
-                @clear="queryUnderData('123')"
-              ></IhSelectPageByChannel>
+            <el-col :span='6'>
+              <el-form-item label-width="0">
+                <IhSelectPageByCompany
+                  v-if="info.companyKind === 'InfieldCompany'"
+                  style="flex: 1;max-width: 350px;"
+                  clearable
+                  v-model="info.designatedAgencyId"
+                  @changeOption="getChannelInfo"
+                  @clear="queryUnderData('123')"
+                ></IhSelectPageByCompany>
+                <IhSelectPageByChannel
+                  v-else-if="info.companyKind === 'ChannelCompany'"
+                  style="flex: 1;max-width: 350px;"
+                  v-model="info.designatedAgencyId"
+                  clearable
+                  placeholder="渠道商名称"
+                  :params="searchConditon"
+                  :search-name="info.designatedAgency"
+                  @changeOption="getChannelInfo"
+                  @clear="queryUnderData('123')"
+                ></IhSelectPageByChannel>
+              </el-form-item>
             </el-col>
           </div>
         </el-row>
@@ -233,7 +232,7 @@
                 v-model="info.padCommissionEnum"
                 clearable
                 placeholder="请选择垫佣周期"
-                class="width--100"
+                style="width: 50%"
                 :disabled="padCommissionEnumOptions.length === 1"
                 @change="queryUnderData(info.padCommissionEnum)"
               >
@@ -352,7 +351,6 @@
             v-model="info.agencySettleCondtion"
             clearable
             placeholder="请选择"
-            class="width--50"
             @change="agencySettleCondtionChange"
           >
             <el-option
@@ -408,7 +406,6 @@
               clearable
               placeholder="请选择"
               clearabled
-              class="width-300"
             >
               <el-option
                 v-for="item in $root.dictAllList('CostSettleType')"
@@ -428,7 +425,7 @@
             <el-input
               v-model="info.agencyFeeReturnTime"
               placeholder="退回期限"
-              class="width-100"
+              style="max-width: 100px; width: 100%"
               v-digits="0"
             />
           </el-form-item>
@@ -480,7 +477,7 @@
             <el-input
               v-model="info.agencyFeeReturnRate"
               placeholder="违约金比例"
-              class="width-120"
+              style="max-width: 120px;"
               clearable
             />
           </el-form-item>
