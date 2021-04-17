@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 10:03:51
+ * @LastEditTime: 2021-04-17 15:16:38
 -->
 <template>
   <ih-page class="text-left">
@@ -395,26 +395,7 @@
         <div>7.3 结算代理费前乙方需提供增值税专用发票，如乙方仅能提供增值税普通发票需扣除6%或3%税费。</div>
         <br />
         <div>7.4 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的或发生投诉、诉讼导致甲方需退回
-          <el-form-item
-            label=" "
-            prop='costSettleType'
-            style="display: inline-block"
-            label-width="12px"
-          >
-            <el-select
-              v-model="info.costSettleType"
-              clearable
-              placeholder="请选择"
-              clearabled
-            >
-              <el-option
-                v-for="item in $root.dictAllList('CostSettleType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+          <span>{{ info.costSettleType ? $root.dictAllName(info.costSettleType, 'CostSettleType') : '___________'}}</span>
           的，在甲方提供客户退房、投诉等依据后，乙方应在
           <el-form-item
             prop="agencyFeeReturnTime"
@@ -571,7 +552,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
@@ -743,6 +724,23 @@ export default class NormalSalesApply extends Vue {
   };
   private companyKindOption: any = [];
   timeList: any = [];
+
+  @Watch("info.contractMxVOList")
+  getContractMxVOList(val: any) {
+    if (val.length) {
+      let contractArr: any = val.map((v: any) => v.costTypeEnum);
+      if (contractArr.every((v: any) => v === "ServiceFee")) {
+        this.info.costSettleType = "CustomerServFee";
+      } else if (contractArr.every((v: any) => v === "AgencyFee")) {
+        this.info.costSettleType = "DevelopAgenFee";
+      } else {
+        this.info.costSettleType = "DevelopAgenFeeOrCustServFee";
+      }
+    } else {
+      this.info.costSettleType = null;
+    }
+  }
+
   pickerOptions: any = {
     disabledDate: (time: any) => {
       return this.dataTimeChange(time);
