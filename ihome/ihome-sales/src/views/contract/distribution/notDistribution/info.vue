@@ -4,12 +4,12 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 19:10:49
+ * @LastEditTime: 2021-04-17 14:43:44
 -->
 <template>
   <IhPage class="text-left">
     <template #info>
-      <p class="ih-info-title">非标联动销售确认书(启动函)详情</p>
+      <p class="ih-info-title">非标渠道分销合同详情</p>
       <el-form
         label-width="100px"
         class="padding-left-20"
