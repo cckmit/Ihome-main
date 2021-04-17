@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 10:05:31
+ * @LastEditTime: 2021-04-17 14:30:30
 -->
 <template>
   <ih-page class="text-left">
@@ -365,26 +365,7 @@
         <div>7.3 结算代理费前乙方需提供增值税专用发票，如乙方仅能提供增值税普通发票需扣除6%或3%税费。</div>
         <br />
         <div>7.4 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的或发生投诉、诉讼导致甲方需退回
-          <el-form-item
-            label=" "
-            prop='costSettleType'
-            style="display: inline-block"
-            label-width="12px"
-          >
-            <el-select
-              v-model="info.costSettleType"
-              disabled
-              placeholder="请选择"
-              clearabled
-            >
-              <el-option
-                v-for="item in $root.dictAllList('CostSettleType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
+          <span>{{ $root.dictAllName(info.costSettleType, 'CostSettleType')}}</span>
           的，在甲方提供客户退房、投诉等依据后，乙方应在
           <el-form-item
             prop="agencyFeeReturnTime"
