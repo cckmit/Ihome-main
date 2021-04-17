@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 08:55:04
+ * @LastEditTime: 2021-04-17 09:13:35
 -->
 <template>
   <IhPage label-width="100px">
@@ -354,7 +354,8 @@
           width="195"
         >
           <template v-slot="{ row }">
-            <span>{{row.beginTime}} 至 {{row.endTime}}</span>
+            <span v-if="row.beginTime && row.endTime">{{row.beginTime}} 至 {{row.endTime}}</span>
+            <span v-else>-</span>
           </template>
         </el-table-column>
         <el-table-column
