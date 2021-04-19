@@ -500,7 +500,7 @@
           <el-table-column type="expand">
             <template slot-scope="scope">
               <p>管理岗分配业绩</p>
-              <el-table :data="scope.row.managerAchieveList" style="width: 600">
+              <el-table :data="scope.row.managerAchieveList" style="width: 600px">
                 <el-table-column prop="manager" label="管理岗" width="200">
                 </el-table-column>
                 <el-table-column
@@ -637,7 +637,6 @@ export default class RealDealDetails extends Vue {
     invoiceList: [], // 发票信息
   };
   tableData: any = [];
-  tableData2: any = [{}];
   fileList: any = [1, 2, 3, 4, 5, 6, 7, 8];
   srcList: any = [];
   srcData: any = [];
