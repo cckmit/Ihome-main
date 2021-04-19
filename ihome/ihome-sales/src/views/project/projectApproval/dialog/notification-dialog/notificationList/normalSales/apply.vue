@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 17:18:18
+ * @LastEditTime: 2021-04-19 15:53:07
 -->
 <template>
   <ih-page class="text-left">
@@ -284,7 +284,7 @@
           </el-form-item>
         </div>
         <div>(3) 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的，或发生投诉、诉讼导致甲方需退回
-          <u><i class="font-weight">开发商或委托方代理费/客户服务费</i> </u>，
+          <u style="font-weight: 600">{{ $root.dictAllName(info.costSettleType, 'CostSettleType')}}</u>，
           在甲方提供客户退房、投诉等依据后，乙方应在
           <el-form-item
             prop="agencyFeeReturnTime"
@@ -377,7 +377,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch } from "vue-property-decorator";
 import {
   post_distributContract_getCollectByCondition,
   post_distributContract_getCheckCollectByCondition,
@@ -423,6 +423,7 @@ export default class NormalSalesApply extends Vue {
     partyaAddr: null,
     companyKind: null,
     titleOrRemark: null,
+    costSettleType: null,
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];
@@ -477,6 +478,22 @@ export default class NormalSalesApply extends Vue {
     },
   };
 
+  @Watch("info.contractMxVOList")
+  getContractMxVOList(val: any) {
+    if (val.length) {
+      let contractArr: any = val.map((v: any) => v.costTypeEnum);
+      if (contractArr.every((v: any) => v === "ServiceFee")) {
+        this.info.costSettleType = "CustomerServFee";
+      } else if (contractArr.every((v: any) => v === "AgencyFee")) {
+        this.info.costSettleType = "DevelopAgenFee";
+      } else {
+        this.info.costSettleType = "DevelopAgenFeeOrCustServFee";
+      }
+    } else {
+      this.info.costSettleType = null;
+    }
+  }
+
   get agencyContrictId() {
     return this.$route.query.id;
   }
@@ -517,6 +534,12 @@ export default class NormalSalesApply extends Vue {
           type: "CompanyKind",
           valid: "Valid",
         });
+        if (data.companyKind === "ChannelCompany") {
+          this.searchConditon = {
+            cycleCity: window.sessionStorage.getItem("shengshiqu"),
+            departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+          };
+        }
       } else {
         this.isShow = false;
       }

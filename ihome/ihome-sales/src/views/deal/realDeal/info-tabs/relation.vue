@@ -39,17 +39,17 @@
           </el-table-column>
           <el-table-column prop="entryDate" label="录入日期" width="180">
             <template slot-scope="scope">
-              <div>{{scope.row.entryDate ? scope.row.entryDate : '-'}}</div>
+              <div>{{scope.row.entryDate ? getDateStr(scope.row.entryDate) : '-'}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="allotDate" label="业绩分配日期" width="180">
             <template slot-scope="scope">
-              <div>{{scope.row.allotDate ? scope.row.allotDate : '-'}}</div>
+              <div>{{scope.row.allotDate ? getDateStr(scope.row.allotDate) : '-'}}</div>
             </template>
           </el-table-column>
           <el-table-column prop="achieveConfirmTime" label="业绩确认日期" width="180">
             <template slot-scope="scope">
-              <div>{{scope.row.achieveConfirmTime ? scope.row.achieveConfirmTime : '-'}}</div>
+              <div>{{scope.row.achieveConfirmTime ? getDateStr(scope.row.achieveConfirmTime) : '-'}}</div>
             </template>
           </el-table-column>
         </el-table>
@@ -81,6 +81,12 @@ export default class Relation extends Vue {
       return 'success';
     } else {
       return 'primary';
+    }
+  }
+  // 获取日期年月日
+  getDateStr(value: any = '') {
+    if (value) {
+      return value.substring(0, 10);
     }
   }
 }

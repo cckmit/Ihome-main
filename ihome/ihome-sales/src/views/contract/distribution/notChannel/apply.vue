@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 19:22:13
+ * @LastEditTime: 2021-04-19 08:58:42
 -->
 <template>
   <IhPage class="text-left">
@@ -525,15 +525,15 @@ export default class NotChannelApply extends Vue {
             channelCompanyName: res.designatedAgency,
           };
         }
-        if (res.exInvolvedCommiss === "Yes") {
-          this.companyKindOption = (this.$root as any)
-            .dictAllList("CompanyKind")
-            .filter((i: any) => i.tag === res.commissionKind);
-        } else {
-          this.companyKindOption = (this.$root as any).dictAllList(
-            "CompanyKind"
-          );
-        }
+        // if (res.exInvolvedCommiss === "Yes") {
+        this.companyKindOption = (this.$root as any)
+          .dictAllList("CompanyKind")
+          .filter((i: any) => i.tag === res.commissionKind);
+        // } else {
+        //   this.companyKindOption = (this.$root as any).dictAllList(
+        //     "CompanyKind"
+        //   );
+        // }
         // 内场奖励 默认是代理公司
         if (res.commissionKind === "Infield") {
           this.form.channelCompanyKind = "AgencyCompany";

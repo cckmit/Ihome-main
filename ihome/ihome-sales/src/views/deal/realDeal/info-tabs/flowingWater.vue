@@ -143,7 +143,7 @@
             <div class="water-item">
               <div class="water-item-1">
                 <div class="water-item-1-left">付款额度</div>
-                <div class="water-item-1-right">
+                <div class="water-item-1-right" v-if="receiveAchieve.isSigned === 'Yes'">
                   <span style="color: #19be6b">●</span>
                   开发商已签字
                 </div>
@@ -162,7 +162,6 @@
       </div>
     </el-card>
     <br />
-
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
         <span>收款明细</span>
@@ -184,14 +183,9 @@
             }}】</span
           >
         </p>
-
         <el-table
-          :data="
-            info.servicePaymentInfos &&
-            (info.servicePaymentInfos.paymentInfos || [])
-          "
-          style="width: 100%"
-        >
+          :data="info.servicePaymentInfos && (info.servicePaymentInfos.paymentInfos || [])"
+          style="width: 100%">
           <el-table-column prop="payNo" label="收款编号" width="200">
             <template slot-scope="scope">
               <el-link type="primary" @click="gotoNew(scope.row, 'payNo')">
@@ -205,34 +199,27 @@
               {{ $root.dictAllName(scope.row.status, "PaymentStatus") }}
             </template>
           </el-table-column>
-          <el-table-column prop="operatorName" label="经办人">
-          </el-table-column>
+          <el-table-column prop="operatorName" label="经办人"></el-table-column>
           <el-table-column prop="businessCode" label="业务编号" width="200">
             <template slot-scope="scope">
               <el-link
                 type="primary"
-                @click="gotoNew(scope.row, 'businessCode')"
-              >
-                {{ scope.row.businessCode }}</el-link
-              >
+                @click="gotoNew(scope.row, 'businessCode')">
+                {{ scope.row.businessCode }}</el-link>
             </template>
           </el-table-column>
           <el-table-column prop="payCode" label="凭证号"> </el-table-column>
           <el-table-column prop="payTime" label="支付时间"> </el-table-column>
           <el-table-column prop="checkTime" label="对账时间"> </el-table-column>
-          <el-table-column prop="confirmTime" label="确认时间">
-          </el-table-column>
+          <el-table-column prop="confirmTime" label="确认时间"></el-table-column>
         </el-table>
       </div>
       <div v-for="(item, index) in info.agentPaymentInfos" :key="index">
         <p class="p-title">
           <span>{{ item.title }}</span>
-          <span class="red"
-            >【应收：{{ item.receiveAmount }} 已收：{{
-              item.receivedAmount
-            }}
-            未收：{{ item.unreceiveAmount }}】</span
-          >
+          <span class="red">
+            应收：{{ item.receiveAmount }} 已收：{{item.receivedAmount }}
+            未收：{{ item.unreceiveAmount }}】</span>
         </p>
         <el-table :data="item.paymentInfos" style="width: 100%">
           <el-table-column prop="payNo" label="收款编号" width="200">
@@ -254,32 +241,16 @@
             <template slot-scope="scope">
               <el-link
                 type="primary"
-                @click="gotoNew(scope.row, 'businessCode')"
-              >
-                {{ scope.row.businessCode }}</el-link
-              >
+                @click="gotoNew(scope.row, 'businessCodeByAgency')">
+                {{ scope.row.businessCode }}</el-link>
             </template>
           </el-table-column>
           <el-table-column prop="payCode" label="凭证号"> </el-table-column>
           <el-table-column prop="payTime" label="支付时间"> </el-table-column>
           <el-table-column prop="checkTime" label="对账时间"> </el-table-column>
+          <el-table-column prop="confirmTime" label="确认时间"></el-table-column>
         </el-table>
       </div>
-
-      <!-- <p class="p-title">
-        <span>开发商代理费-广州中耀实业投资有限公司 </span>
-        <span class="red">【应收：30,000.00 已收：30,000.00 未收：0.00】</span>
-      </p>
-      <el-table :data="tableData" style="width: 100%">
-        <el-table-column prop="xxx" label="收款编号"> </el-table-column>
-        <el-table-column prop="xxx" label="收款金额"> </el-table-column>
-        <el-table-column prop="xxx" label="收款状态"> </el-table-column>
-        <el-table-column prop="xxx" label="经办人"> </el-table-column>
-        <el-table-column prop="xxx" label="业务编号"> </el-table-column>
-        <el-table-column prop="xxx" label="凭证号"> </el-table-column>
-        <el-table-column prop="xxx" label="支付时间"> </el-table-column>
-        <el-table-column prop="xxx" label="对账时间"> </el-table-column>
-      </el-table> -->
     </el-card>
     <br />
     <el-card class="box-card">
@@ -295,32 +266,33 @@
               >
             </template>
           </el-table-column>
-          <el-table-column prop="invoiceTitle" label="发票抬头">
-          </el-table-column>
-          <el-table-column prop="invoiceType" label="发票类型">
+          <el-table-column prop="invoiceTitle" label="发票抬头"></el-table-column>
+          <el-table-column prop="invoiceType" label="发票类型" width="180">
             <template slot-scope="scope">
               <div>
                 {{ $root.dictAllName(scope.row.invoiceType, "InvoiceType") }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="amount" label="发票金额(含税)">
-          </el-table-column>
-          <el-table-column prop="taxRate" label="税率"> </el-table-column>
-          <el-table-column prop="noTax" label="确认主营"> </el-table-column>
-          <el-table-column prop="tax" label="税额"> </el-table-column>
-          <el-table-column prop="payee" label="收款方"> </el-table-column>
-          <el-table-column prop="status" label="开票状态">
+          <el-table-column prop="amount" label="发票金额(含税)"></el-table-column>
+          <el-table-column prop="taxRate" label="税率">
             <template slot-scope="scope">
               <div>
-                {{
-                  $root.dictAllName(scope.row.status, "InvoiceOperationStatus")
-                }}
+                {{scope.row.taxRate}}%
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="operationDate" label="开票日期">
+          <el-table-column prop="noTax" label="确认主营"></el-table-column>
+          <el-table-column prop="tax" label="税额"></el-table-column>
+          <el-table-column prop="payee" label="收款方"></el-table-column>
+          <el-table-column prop="status" label="开票状态">
+            <template slot-scope="scope">
+              <div>
+                {{$root.dictAllName(scope.row.status, "InvoiceOperationStatus")}}
+              </div>
+            </template>
           </el-table-column>
+          <el-table-column prop="operationDate" label="开票日期"></el-table-column>
         </el-table>
       </div>
     </el-card>
@@ -343,25 +315,22 @@
         </p>
         <el-table
           :data="info.servicePays && info.servicePays.paymentInfos"
-          style="width: 100%"
-        >
+          style="width: 100%">
           <el-table-column prop="applyCode" label="付款单号">
             <template slot-scope="scope">
               <el-link type="primary" @click="gotoNew(scope.row, 'applyCode')">
-                {{ scope.row.applyCode }}</el-link
-              >
+                {{ scope.row.applyCode }}</el-link>
             </template>
           </el-table-column>
-          <el-table-column prop="applyAmount" label="付款金额">
-          </el-table-column>
+          <el-table-column prop="applyAmount" label="付款金额"></el-table-column>
           <el-table-column prop="status" label="付款状态">
             <template slot-scope="scope">
               <div>
-                {{ $root.dictAllName(scope.row.status, "DealStatus") }}
+                {{ $root.dictAllName(scope.row.status, "PayoffStatus") }}
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="makerName" label="经办人"> </el-table-column>
+          <el-table-column prop="makerName" label="经办人"></el-table-column>
           <el-table-column prop="companyKind" label="收款方类型">
             <template slot-scope="scope">
               <div>
@@ -369,9 +338,13 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="agencyName" label="收款方"> </el-table-column>
-          <el-table-column prop="paymentDate" label="付款时间">
+          <el-table-column prop="agencyName" label="收款方">
+            <template slot-scope="scope">
+              <el-link type="primary" @click="gotoNew(scope.row, 'agencyName')">
+                {{ scope.row.agencyName }}</el-link>
+            </template>
           </el-table-column>
+          <el-table-column prop="paymentDate" label="付款完成日期"></el-table-column>
         </el-table>
         <div v-for="(item, index) in info.agentPays" :key="index">
           <p class="p-title">
@@ -387,22 +360,19 @@
               <template slot-scope="scope">
                 <el-link
                   type="primary"
-                  @click="gotoNew(scope.row, 'applyCode')"
-                >
-                  {{ scope.row.applyCode }}</el-link
-                >
+                  @click="gotoNew(scope.row, 'applyCode')">
+                  {{ scope.row.applyCode }}</el-link>
               </template>
             </el-table-column>
-            <el-table-column prop="applyAmount" label="付款金额">
-            </el-table-column>
+            <el-table-column prop="applyAmount" label="付款金额"></el-table-column>
             <el-table-column prop="status" label="付款状态">
               <template slot-scope="scope">
                 <div>
-                  {{ $root.dictAllName(scope.row.status, "DealStatus") }}
+                  {{ $root.dictAllName(scope.row.status, "PayoffStatus") }}
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="makerName" label="经办人"> </el-table-column>
+            <el-table-column prop="makerName" label="经办人"></el-table-column>
             <el-table-column prop="companyKind" label="收款方类型">
               <template slot-scope="scope">
                 <div>
@@ -411,9 +381,12 @@
               </template>
             </el-table-column>
             <el-table-column prop="agencyName" label="收款方">
+              <template slot-scope="scope">
+                <el-link type="primary" @click="gotoNew(scope.row, 'agencyName')">
+                  {{ scope.row.agencyName }}</el-link>
+              </template>
             </el-table-column>
-            <el-table-column prop="paymentDate" label="付款时间">
-            </el-table-column>
+            <el-table-column prop="paymentDate" label="付款完成日期"></el-table-column>
           </el-table>
         </div>
       </div>
@@ -425,14 +398,8 @@
       </div>
       <div>
         <el-table :data="info.refundItemInfos" style="width: 100%">
-          <el-table-column prop="refundNo" label="待退款项编号">
-            <template slot-scope="scope">
-              <el-link type="primary" @click="gotoNew(scope.row, 'refundNo')">
-                {{ scope.row.refundNo }}</el-link
-              >
-            </template>
-          </el-table-column>
-          <el-table-column prop="amount" label="退款金额"> </el-table-column>
+          <el-table-column prop="refundNo" label="待退款项编号"></el-table-column>
+          <el-table-column prop="amount" label="退款金额"></el-table-column>
           <el-table-column prop="status" label="退款状态">
             <template slot-scope="scope">
               <div>
@@ -447,11 +414,13 @@
               <div>收款开户行：{{ scope.row.refundBankName }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="createDate" label="生成日期">
-          </el-table-column>
-          <el-table-column prop="refundedDate" label="退款完成日期">
-          </el-table-column>
+          <el-table-column prop="createDate" label="生成日期"></el-table-column>
+          <el-table-column prop="refundedDate" label="退款完成日期"></el-table-column>
           <el-table-column prop="refundApplyNO" label="关联退款申请单编号">
+            <template slot-scope="scope">
+              <el-link type="primary" @click="gotoNew(scope.row, 'refundApplyNO')">
+                {{ scope.row.refundApplyNO }}</el-link>
+            </template>
           </el-table-column>
         </el-table>
       </div>
@@ -478,15 +447,31 @@ export default class FlowingWater extends Vue {
   }
   gotoNew(row: any, type: any) {
     if (type == "businessNo") {
-      // window.open(``);
+      if (row.feeType === 'ServiceFee') {
+        // 服务费
+        window.open(`/web-sales/dealReport/info?id=${row.id}`);
+      } else {
+        // 代理费
+        window.open(`/web-sales/applyRec/info?id=${row.id}`);
+      }
     } else if (type == "payNo") {
       window.open(`/web-sales/payment/info?id=${row.id}`);
     } else if (type == "applyCode") {
-      console.log(row);
-      debugger;
-      window.open(`/web-sales/applyRec/info?id=${row.id}`);
-    } else if (type == "refundNo") {
+      window.open(`/web-sales/payoff/info?id=${row.applyId}`);
+    } else if (type == "refundApplyNO") {
       window.open(`/web-sales/refundApply/info?id=${row.id}`);
+    } else if (type == "businessCode") {
+      window.open(`/web-sales/discount/info?id=${row.id}`);
+    } else if (type == "businessCodeByAgency") {
+      window.open(`/web-sales/applyRec/info?id=${row.id}`);
+    } else if (type == "agencyName") {
+      if (row.companyKind === 'ChannelCompany') {
+        // 付款明细 - 渠道公司类型 - 收款方
+        window.open(`/web-sales/channelBusiness/info?id=${row.id}`);
+      } else if (row.companyKind === 'AgencyCompany') {
+        // 付款明细 - 一手代理公司类型 - 收款方
+        window.open(`/web-sales/firstAgency/info?id=${row.id}`);
+      }
     }
   }
 }

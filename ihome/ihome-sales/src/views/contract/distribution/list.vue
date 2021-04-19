@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 14:19:34
+ * @LastEditTime: 2021-04-19 15:15:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -63,16 +63,54 @@
                   ></IhSelectPageByCompany>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">
+              <el-col :span="13">
                 <el-form-item label="乙方公司">
-                  <IhSelectPageByChannel
+                  <el-select
+                    style="width: 40%"
+                    v-model="queryPageParameters.channelCompanyKind"
+                    placeholder="请选择公司类型"
+                    clearable
+                    @change="() => {queryPageParameters.channelCompanyId = null}"
+                  >
+                    <el-option
+                      v-for="(i, n) in $root.dictAllList('CompanyKind')"
+                      :key="n"
+                      :label="i.name"
+                      :value="i.code"
+                    ></el-option>
+                  </el-select>
+                  <IhSelectPageByCompany
+                    v-if="queryPageParameters.channelCompanyKind === 'InfieldCompany'"
+                    style="width: 60%"
                     v-model="queryPageParameters.channelCompanyId"
                     clearable
                     placeholder="请选择乙方公司"
-                    class="width--100"
+                  ></IhSelectPageByCompany>
+                  <IhSelectPageByChannel
+                    v-else-if="queryPageParameters.channelCompanyKind === 'ChannelCompany'"
+                    style="width: 60%"
+                    v-model="queryPageParameters.channelCompanyId"
+                    clearable
+                    placeholder="请选择乙方公司"
                   ></IhSelectPageByChannel>
+                  <IhSelectPageByAgency
+                    v-else-if="queryPageParameters.channelCompanyKind === 'AgencyCompany'"
+                    placeholder="请选择乙方公司"
+                    style="width: 60%"
+                    v-model="queryPageParameters.channelCompanyId"
+                    clearable
+                  ></IhSelectPageByAgency>
+                  <el-input
+                    disabled
+                    style="width: 60%"
+                    placeholder="请选择乙方公司"
+                    v-else
+                  ></el-input>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="项目">
                   <IhSelectPageByProject
@@ -82,9 +120,6 @@
                   ></IhSelectPageByProject>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="周期">
                   <IhSelectPageByCycle
@@ -103,6 +138,9 @@
                   ></IhSelectPageDivision>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="合同编号">
                   <el-input
@@ -112,9 +150,6 @@
                   ></el-input>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="合作时间">
                   <el-date-picker
@@ -148,6 +183,9 @@
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
+
+            <el-row>
               <el-col :span="8">
                 <el-form-item label="归档状态">
                   <el-select
@@ -165,9 +203,6 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row>
               <el-col :span="8">
                 <el-form-item label="归档编号">
                   <el-input
@@ -638,6 +673,7 @@ export default class DistributionList extends Vue {
     title: null,
     contractKind: null,
     titleOrRemark: null,
+    channelCompanyKind: null,
   };
   resPageInfo: any = {
     total: null,
@@ -728,6 +764,7 @@ export default class DistributionList extends Vue {
       title: null,
       contractKind: null,
       titleOrRemark: null,
+      channelCompanyKind: null,
     });
     this.timeList = [];
   }

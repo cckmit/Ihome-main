@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 15:16:38
+ * @LastEditTime: 2021-04-19 15:53:31
 -->
 <template>
   <ih-page class="text-left">
@@ -395,7 +395,7 @@
         <div>7.3 结算代理费前乙方需提供增值税专用发票，如乙方仅能提供增值税普通发票需扣除6%或3%税费。</div>
         <br />
         <div>7.4 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的或发生投诉、诉讼导致甲方需退回
-          <span>{{ info.costSettleType ? $root.dictAllName(info.costSettleType, 'CostSettleType') : '___________'}}</span>
+          <u style="font-weight: 600">{{ $root.dictAllName(info.costSettleType, 'CostSettleType')}}</u>
           的，在甲方提供客户退房、投诉等依据后，乙方应在
           <el-form-item
             prop="agencyFeeReturnTime"
@@ -690,13 +690,6 @@ export default class NormalSalesApply extends Vue {
       {
         required: true,
         message: "请输入客户成交及确认",
-        trigger: "change",
-      },
-    ],
-    costSettleType: [
-      {
-        required: true,
-        message: "请选择费用结算类型",
         trigger: "change",
       },
     ],
