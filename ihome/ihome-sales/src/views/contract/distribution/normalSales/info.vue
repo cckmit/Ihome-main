@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 16:12:05
+ * @LastEditTime: 2021-04-19 09:35:51
 -->
 <template>
   <IhPage class="text-left">
@@ -285,6 +285,10 @@ export default class SalesApply extends Vue {
       let res = await get_distribution_detail__id({ id: id });
       this.form = { ...res };
       // this.archiveStatus = res.archiveStatus;
+      // 路由名称包含Duplicate -- 盖章版
+      // if (this.$route.name?.includes("Duplicate")) {
+      //   this.archiveStatus = "ScansAreArchived";
+      // }
       this.archiveNo = res.archiveNo;
       this.electronicFile = res.annexList
         .filter((i: any) => i.type === "ChannelContractElectronicAnnex")
