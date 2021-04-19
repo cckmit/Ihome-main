@@ -567,10 +567,10 @@
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
         <span>附件信息</span>
-        <span>
-          <el-button style="float: right; padding: 3px 0" type="text"
-            >查看来访/成交信息</el-button>
-        </span>
+<!--        <span>-->
+<!--          <el-button style="float: right; padding: 3px 0" type="text"-->
+<!--            >查看来访/成交信息</el-button>-->
+<!--        </span>-->
       </div>
       <div>
         <el-row style="padding-left: 20px">
