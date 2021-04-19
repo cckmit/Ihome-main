@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-03-23 10:35:33
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-29 10:35:12
+ * @LastEditTime: 2021-04-19 09:49:53
 -->
 <template>
   <div class="upload-container">
@@ -143,6 +143,7 @@
       v-show="false"
       ref="editUpload"
       type="file"
+      :accept="accept"
       @change="editUploadChange"
     />
   </div>
