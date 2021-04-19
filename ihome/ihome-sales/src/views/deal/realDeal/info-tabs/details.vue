@@ -136,7 +136,7 @@
           <div class="line-item-top">一手代理合同</div>
           <div class="line-item-bottom">
             <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'firstContNo')">
-              {{ infoForm.firstContNo }}</el-link
+              {{ infoForm.firstContTitle }}</el-link
             >
           </div>
         </el-col>
@@ -193,7 +193,7 @@
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
-        <span>优惠告知书</span>
+        <span>优惠告知书信息</span>
       </div>
       <div class="file-list">
         <div
@@ -230,7 +230,7 @@
             </div>
             <div class="file-item-1">编号：{{ item.noticeNo }}</div>
             <div class="file-item-1">
-              <div v-if="item.promotionMethod === 'Manual'" class="file-item-1-left special">特殊</div>
+              <div v-if="item.promotionMethod === 'Manual' && item.notificationType === 'Notification'" class="file-item-1-left special">特殊</div>
               <div style="height: 16px"></div>
               <!-- <div class="file-item-1-right">
                 <el-link type="primary">预览</el-link>
