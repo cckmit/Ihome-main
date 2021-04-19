@@ -419,6 +419,10 @@ export default class DistributionInfo extends Vue {
       let res = await get_distribution_detail__id({ id: id });
       this.form = { ...res };
       this.archiveStatus = res.archiveStatus;
+      // 路由名称包含Duplicate -- 盖章版
+      if (this.$route.name?.includes("Duplicate")) {
+        this.archiveStatus = "ScansAreArchived";
+      }
       this.archiveNo = res.archiveNo;
       this.electronicFile = res.annexList
         .filter((i: any) => i.type === "ChannelContractElectronicAnnex")

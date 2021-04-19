@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 16:12:23
+ * @LastEditTime: 2021-04-19 09:36:32
 -->
 <template>
   <IhPage class="text-left">
@@ -291,6 +291,10 @@ export default class NotChannelInfo extends Vue {
       let res = await get_distribution_detail__id({ id: id });
       this.form = { ...res };
       this.archiveStatus = res.archiveStatus;
+      // 路由名称包含Duplicate -- 盖章版
+      if (this.$route.name?.includes("Duplicate")) {
+        this.archiveStatus = "ScansAreArchived";
+      }
       this.archiveNo = res.archiveNo;
       this.electronicFile = res.annexList
         .filter((i: any) => i.type === "ChannelContractElectronicAnnex")
