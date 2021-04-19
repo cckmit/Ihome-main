@@ -143,7 +143,7 @@
             <div class="water-item">
               <div class="water-item-1">
                 <div class="water-item-1-left">付款额度</div>
-                <div class="water-item-1-right">
+                <div class="water-item-1-right" v-if="receiveAchieve.isSigned === 'Yes'">
                   <span style="color: #19be6b">●</span>
                   开发商已签字
                 </div>
