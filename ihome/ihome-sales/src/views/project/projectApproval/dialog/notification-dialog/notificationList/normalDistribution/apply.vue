@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-19 15:33:53
+ * @LastEditTime: 2021-04-19 15:53:31
 -->
 <template>
   <ih-page class="text-left">
@@ -690,13 +690,6 @@ export default class NormalSalesApply extends Vue {
       {
         required: true,
         message: "请输入客户成交及确认",
-        trigger: "change",
-      },
-    ],
-    costSettleType: [
-      {
-        required: true,
-        message: "请选择费用结算类型",
         trigger: "change",
       },
     ],

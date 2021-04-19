@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:02:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 17:19:00
+ * @LastEditTime: 2021-04-19 15:56:53
 -->
 <template>
   <ih-page class="text-left">
@@ -228,7 +228,7 @@
           />
         </div>
         <div>(3) 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的，或发生投诉、诉讼导致甲方需退回
-          <u><i class="font-weight">开发商或委托方代理费/客户服务费</i> </u>，
+          <u style="font-weight: 600">{{ $root.dictAllName(info.costSettleType, 'CostSettleType')}}</u>，
           在甲方提供客户退房、投诉等依据后，乙方应在
           <el-form-item
             prop="agencyFeeReturnTime"
@@ -331,6 +331,7 @@ export default class NormalSalesApply extends Vue {
     partyaAddr: null,
     companyKind: null,
     titleOrRemark: null,
+    costSettleType: null,
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];
