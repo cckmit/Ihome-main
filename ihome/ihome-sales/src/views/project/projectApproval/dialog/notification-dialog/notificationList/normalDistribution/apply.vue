@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-19 15:53:31
+ * @LastEditTime: 2021-04-19 17:14:41
 -->
 <template>
   <ih-page class="text-left">
@@ -776,6 +776,12 @@ export default class NormalSalesApply extends Vue {
           type: "CompanyKind",
           valid: "Valid",
         });
+        if (data.companyKind === "ChannelCompany") {
+          this.searchConditon = {
+            cycleCity: window.sessionStorage.getItem("shengshiqu"),
+            departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+          };
+        }
       } else {
         this.isShow = false;
       }
