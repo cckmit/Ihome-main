@@ -1047,9 +1047,9 @@
     <p id="anchor-6" class="ih-info-title">上传附件</p>
     <el-row style="padding-left: 20px">
       <el-col>
-        <div class="add-all-wrapper" v-if="baseInfoByTerm.exMinyuan">
-          <el-button type="success" @click="handleViewDealInfo">查看来访/成交确认信息</el-button>
-        </div>
+<!--        <div class="add-all-wrapper" v-if="baseInfoByTerm.exMinyuan">-->
+<!--          <el-button type="success" @click="handleViewDealInfo">查看来访/成交确认信息</el-button>-->
+<!--        </div>-->
         <el-table
           class="ih-table"
           :data="postData.documentVO">

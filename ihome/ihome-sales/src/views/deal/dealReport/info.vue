@@ -599,6 +599,9 @@
         <p id="anchor-7" class="ih-info-title">上传附件</p>
         <el-row style="padding-left: 20px">
           <el-col>
+<!--            <div class="add-all-wrapper">-->
+<!--              <el-button type="success">查看来访/成交确认信息</el-button>-->
+<!--            </div>-->
             <el-table
               class="ih-table"
               :data="infoForm.documentLists">
@@ -1115,6 +1118,12 @@
     overflow: hidden;
     text-overflow:ellipsis;
     white-space: nowrap;
+  }
+
+  .add-all-wrapper {
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 10px;
   }
 
   .home-type-wrapper {
