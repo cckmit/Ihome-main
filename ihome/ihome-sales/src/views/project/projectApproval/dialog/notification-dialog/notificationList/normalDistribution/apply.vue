@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-19 15:33:53
+ * @LastEditTime: 2021-04-19 17:14:41
 -->
 <template>
   <ih-page class="text-left">
@@ -693,13 +693,6 @@ export default class NormalSalesApply extends Vue {
         trigger: "change",
       },
     ],
-    costSettleType: [
-      {
-        required: true,
-        message: "请选择费用结算类型",
-        trigger: "change",
-      },
-    ],
     agencyFeeReturnTime: [
       {
         required: true,
@@ -783,6 +776,12 @@ export default class NormalSalesApply extends Vue {
           type: "CompanyKind",
           valid: "Valid",
         });
+        if (data.companyKind === "ChannelCompany") {
+          this.searchConditon = {
+            cycleCity: window.sessionStorage.getItem("shengshiqu"),
+            departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+          };
+        }
       } else {
         this.isShow = false;
       }
