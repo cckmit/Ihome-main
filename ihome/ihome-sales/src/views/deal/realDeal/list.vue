@@ -528,6 +528,7 @@ export default class RealDealList extends Vue {
       return;
     }
     this.queryPageParameters.isMainDealOnly = true;
+    this.queryPageParameters.isConfirmed = true;
     this.resPageInfo = await post_deal_getList(this.queryPageParameters);
   }
 
