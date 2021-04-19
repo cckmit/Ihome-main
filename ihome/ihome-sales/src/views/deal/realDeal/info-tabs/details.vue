@@ -680,7 +680,19 @@ export default class RealDealDetails extends Vue {
           "CompanyKind"
         );
       }
-
+      // 构建平台费用数据
+      this.infoForm.achieveTotalBagList = [];
+      this.infoForm.achieveDistriList = [];
+      if (info && info.achieveList && info.achieveList.length) {
+        info.achieveList.forEach((list: any) => {
+          if (list.type === "TotalBag") {
+            this.infoForm.achieveTotalBagList.push(list);
+          }
+          if (list.type === "Distri") {
+            this.infoForm.achieveDistriList.push(list);
+          }
+        });
+      }
       await this.getInformation(info?.id, info?.parentId, info?.cycleId);
     }
   }
