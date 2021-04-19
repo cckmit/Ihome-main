@@ -348,7 +348,7 @@
                 </el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'SUPPLEMENTANNEX')}"
-                  v-if="scope.row.status !== 'Draft'"
+                  v-if="scope.row.status !== 'Draft' && scope.row.id === scope.row.parentId"
                   @click.native.prevent="handleUpload(scope)"
                 >补充附件
                 </el-dropdown-item>
