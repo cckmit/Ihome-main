@@ -719,18 +719,16 @@ export default class RealDealDetails extends Vue {
       window.open(`/web-sales/firstAgency/info?id=${item.oneAgentTeamId}`);
     } else if (type == "agencyName") {
       let agencyId =
-        item.agencyList && item.agencyList.length
-          ? item.agencyList[0].agencyId
-          : "";
+          item.agencyList && item.agencyList.length
+              ? item.agencyList[0].agencyId
+              : "";
       if (agencyId != "") {
         window.open(`/web-sales/channelBusiness/info?id=${agencyId}`);
       }
     } else if (type == "contTitle") {
-      window.open(`/web-sales/distribution/info?contractNo=${item.contNo}`);
+      window.open(`/web-sales/distribution/normalDistributionInfo?id=${item.contId}`);
     } else if (type == "firstContNo") {
-      window.open(
-        `/web-sales/distribution/info?contractNo=${item.firstContNo}`
-      );
+      window.open(`/web-sales/distribution/notChannelInfo?id=${item.firstContId}`);
     } else if (type == "partyACustomerName") {
       window.open(`/web-sales/developers/info?id=${item.partyACustomer}`);
     } else if (type == "cycleName") {
