@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-08 20:54:08
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-09 16:09:39
+ * @LastEditTime: 2021-04-20 19:50:08
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="900px"
+    width="50%"
     class="dialog text-left"
     title="收款信息"
   >
@@ -38,6 +38,7 @@
       <el-table-column
         prop="accountNo"
         label="账号"
+        width="200"
       ></el-table-column>
       <el-table-column
         prop="branchName"
