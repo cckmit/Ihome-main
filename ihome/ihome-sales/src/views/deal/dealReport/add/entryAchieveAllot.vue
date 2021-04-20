@@ -272,7 +272,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道分销合同" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
+          <el-form-item label="渠道分销合同">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -3656,6 +3656,11 @@
         // 提交
         if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
           this.$message.warning('成交阶段未到达签约阶段，不可提交!');
+          return;
+        }
+        // 提交需要渠道分销合同有值
+        if (!this.postData.contNo) {
+          this.$message.warning('请选择渠道分销合同');
           return;
         }
       }
