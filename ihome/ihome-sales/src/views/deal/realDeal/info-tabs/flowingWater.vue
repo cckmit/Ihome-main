@@ -461,9 +461,9 @@ export default class FlowingWater extends Vue {
     } else if (type == "refundApplyNO") {
       window.open(`/web-sales/refundApply/info?id=${row.id}`);
     } else if (type == "businessCode") {
-      window.open(`/web-sales/discount/info?id=${row.id}`);
+      window.open(`/web-sales/discount/info?id=${row.businessId}`);
     } else if (type == "businessCodeByAgency") {
-      window.open(`/web-sales/applyRec/info?id=${row.id}`);
+      window.open(`/web-sales/applyRec/info?id=${row.businessId}`);
     } else if (type == "agencyName") {
       if (row.companyKind === 'ChannelCompany') {
         // 付款明细 - 渠道公司类型 - 收款方

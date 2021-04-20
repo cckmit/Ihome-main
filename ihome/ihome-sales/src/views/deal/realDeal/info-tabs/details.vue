@@ -136,7 +136,7 @@
           <div class="line-item-top">一手代理合同</div>
           <div class="line-item-bottom">
             <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'firstContNo')">
-              {{ infoForm.firstContNo }}</el-link
+              {{ infoForm.firstContTitle }}</el-link
             >
           </div>
         </el-col>
@@ -193,7 +193,7 @@
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
-        <span>优惠告知书</span>
+        <span>优惠告知书信息</span>
       </div>
       <div class="file-list">
         <div
@@ -230,7 +230,7 @@
             </div>
             <div class="file-item-1">编号：{{ item.noticeNo }}</div>
             <div class="file-item-1">
-              <div v-if="item.promotionMethod === 'Manual'" class="file-item-1-left special">特殊</div>
+              <div v-if="item.promotionMethod === 'Manual' && item.notificationType === 'Notification'" class="file-item-1-left special">特殊</div>
               <div style="height: 16px"></div>
               <!-- <div class="file-item-1-right">
                 <el-link type="primary">预览</el-link>
@@ -500,7 +500,7 @@
           <el-table-column type="expand">
             <template slot-scope="scope">
               <p>管理岗分配业绩</p>
-              <el-table :data="scope.row.managerAchieveList" style="width: 600">
+              <el-table :data="scope.row.managerAchieveList" style="width: 600px">
                 <el-table-column prop="manager" label="管理岗" width="200">
                 </el-table-column>
                 <el-table-column
@@ -637,7 +637,6 @@ export default class RealDealDetails extends Vue {
     invoiceList: [], // 发票信息
   };
   tableData: any = [];
-  tableData2: any = [{}];
   fileList: any = [1, 2, 3, 4, 5, 6, 7, 8];
   srcList: any = [];
   srcData: any = [];
@@ -680,7 +679,19 @@ export default class RealDealDetails extends Vue {
           "CompanyKind"
         );
       }
-
+      // 构建平台费用数据
+      this.infoForm.achieveTotalBagList = [];
+      this.infoForm.achieveDistriList = [];
+      if (info && info.achieveList && info.achieveList.length) {
+        info.achieveList.forEach((list: any) => {
+          if (list.type === "TotalBag") {
+            this.infoForm.achieveTotalBagList.push(list);
+          }
+          if (list.type === "Distri") {
+            this.infoForm.achieveDistriList.push(list);
+          }
+        });
+      }
       await this.getInformation(info?.id, info?.parentId, info?.cycleId);
     }
   }
@@ -719,18 +730,16 @@ export default class RealDealDetails extends Vue {
       window.open(`/web-sales/firstAgency/info?id=${item.oneAgentTeamId}`);
     } else if (type == "agencyName") {
       let agencyId =
-        item.agencyList && item.agencyList.length
-          ? item.agencyList[0].agencyId
-          : "";
+          item.agencyList && item.agencyList.length
+              ? item.agencyList[0].agencyId
+              : "";
       if (agencyId != "") {
         window.open(`/web-sales/channelBusiness/info?id=${agencyId}`);
       }
     } else if (type == "contTitle") {
-      window.open(`/web-sales/distribution/info?contractNo=${item.contNo}`);
+      window.open(`/web-sales/distribution/normalDistributionInfo?id=${item.contId}`);
     } else if (type == "firstContNo") {
-      window.open(
-        `/web-sales/distribution/info?contractNo=${item.firstContNo}`
-      );
+      window.open(`/web-sales/distribution/notChannelInfo?id=${item.firstContId}`);
     } else if (type == "partyACustomerName") {
       window.open(`/web-sales/developers/info?id=${item.partyACustomer}`);
     } else if (type == "cycleName") {

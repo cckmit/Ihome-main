@@ -16,11 +16,11 @@
       label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" ref="#anchor-1" class="ih-info-title">成交信息</p>
-      <div
-        v-if="!['ChangeInternalAchieveInf'].includes(changeType)"
-        class="add-all-wrapper padding-left-20">
-        <el-button type="success">更新明源数据</el-button>
-      </div>
+<!--      <div-->
+<!--        v-if="!['ChangeInternalAchieveInf'].includes(changeType)"-->
+<!--        class="add-all-wrapper padding-left-20">-->
+<!--        <el-button type="success">更新明源数据</el-button>-->
+<!--      </div>-->
       <el-row :gutter="5">
         <el-col :span="8">
           <el-form-item label="成交报告编号" prop="dealCode">
