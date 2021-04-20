@@ -121,23 +121,20 @@
           </div>
         </el-col>
       </el-row>
-
       <p class="p-title">拆佣公司</p>
       <el-row class="ih-info-line">
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理公司</div>
           <div class="line-item-bottom">
             <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'oneAgentTeam')">
-              {{ infoForm.oneAgentTeam }}</el-link
-            >
+              {{ infoForm.oneAgentTeam }}</el-link>
           </div>
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理合同</div>
           <div class="line-item-bottom">
             <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'firstContNo')">
-              {{ infoForm.firstContTitle }}</el-link
-            >
+              {{ infoForm.firstContTitle }}</el-link>
           </div>
         </el-col>
       </el-row>
@@ -189,7 +186,6 @@
       </el-row>
       <p class="line"></p>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -240,7 +236,6 @@
         </div>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -288,7 +283,6 @@
         </el-table>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -411,7 +405,6 @@
         </el-table>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -737,7 +730,23 @@ export default class RealDealDetails extends Vue {
         window.open(`/web-sales/channelBusiness/info?id=${agencyId}`);
       }
     } else if (type == "contTitle") {
-      window.open(`/web-sales/distribution/normalDistributionInfo?id=${item.contId}`);
+      // 需要根据渠道合同类型跳转不同的页面
+      if (item.contractKind === 'StandKindSaleConfirm') {
+        // 标准联动销售确认书(启动函)
+        window.open(`/web-sales/distribution/normalSalesInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'NoStandKindSaleConfirm') {
+        // 非标联动销售确认书(启动函)
+        window.open(`/web-sales/distribution/notSalesInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'StandChannel') {
+        // 标准渠道分销合同
+        window.open(`/web-sales/distribution/normalDistributionInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'NoStandChannel') {
+        // 非标渠道分销合同
+        window.open(`/web-sales/distribution/notDistributionInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'NoChannel') {
+        // 非渠道类合同
+        window.open(`/web-sales/distribution/notChannelInfo?id=${item.contId}`);
+      }
     } else if (type == "firstContNo") {
       window.open(`/web-sales/distribution/notChannelInfo?id=${item.firstContId}`);
     } else if (type == "partyACustomerName") {
