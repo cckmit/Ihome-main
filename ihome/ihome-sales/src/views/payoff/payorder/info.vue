@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:19
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-07 10:30:30
+ * @LastEditTime: 2021-04-20 09:15:43
 -->
 <template>
   <IhPage>
@@ -294,11 +294,12 @@
           >
             <template v-slot="{ row }">
               <div :title="row.contNo">分销协议编号:
-                <el-link
+                <!-- <el-link
                   type="primary"
                   @click="routeToDistribution(row)"
                 >{{row.contNo}}
-                </el-link>
+                </el-link> -->
+                <div>{{row.contNo}}</div>
               </div>
               <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
@@ -594,14 +595,18 @@
                   <div :title="item.title">
                     {{`名称: ${item.title}`}}
                   </div>
-                  <el-link
+                  <!-- <el-link
                     type="primary"
                     @click="routeToDistribution(item)"
                     :title="`编号: ${item.contNo}`"
                     class="text-ellipsis"
                   >
                     {{`编号: ${item.contNo}`}}
-                  </el-link>
+                  </el-link> -->
+                  <div
+                    class="text-ellipsis"
+                    :title="`编号: ${item.contNo}`"
+                  >{{`编号: ${item.contNo}`}}</div>
                 </div>
               </template>
             </template>

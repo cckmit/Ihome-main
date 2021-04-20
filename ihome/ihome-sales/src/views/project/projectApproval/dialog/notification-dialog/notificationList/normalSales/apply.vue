@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-19 15:53:07
+ * @LastEditTime: 2021-04-20 15:45:54
 -->
 <template>
   <ih-page class="text-left">
@@ -538,6 +538,7 @@ export default class NormalSalesApply extends Vue {
           this.searchConditon = {
             cycleCity: window.sessionStorage.getItem("shengshiqu"),
             departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+            isNotNeedChannelLevelApprove: true,
           };
         }
       } else {
@@ -621,6 +622,7 @@ export default class NormalSalesApply extends Vue {
           this.searchConditon = {
             cycleCity: window.sessionStorage.getItem("shengshiqu"),
             departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+            isNotNeedChannelLevelApprove: true,
             // channelEnum: this.info.channelEnum,
           };
           break;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:13:35
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 17:29:47
+ * @LastEditTime: 2021-04-20 14:45:17
 -->
 <template>
   <el-dialog
@@ -80,12 +80,28 @@
                       v-if="isShow && item.conditionModel === 'ChannelType'"
                       class="ChannelType"
                     >
-                      <IhSelectPageByChannel
+                      <!-- <IhSelectPageByChannel
                         multiple
                         value-key="id"
+                        :params="searchParams"
                         v-model="item.designatedAgency"
                         disabled
-                      ></IhSelectPageByChannel>
+                      ></IhSelectPageByChannel> -->
+                      <el-select
+                        v-model="item.designatedAgency"
+                        multiple
+                        disabled
+                        style="width: 100%"
+                        placeholder="请选择"
+                      >
+                        <el-option
+                          v-for="(item, i) in channelList"
+                          :key="i"
+                          :label="item.name"
+                          :value="item.id"
+                        >
+                        </el-option>
+                      </el-select>
                     </div>
                   </div>
                 </div>
@@ -193,8 +209,8 @@
                     disabled
                   >
                     <el-option
-                      v-for="item in padCommissionEnumOptions"
-                      :key="item.code"
+                      v-for="(item, i) in padCommissionEnumOptions"
+                      :key="i"
                       :label="item.name"
                       :value="item.code"
                     ></el-option>
@@ -304,10 +320,11 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  get_his_settleCondition_getMakingType__proId,
+  get_settleCondition_getMakingType__termId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getMaking__settleId,
 } from "@/api/project/index";
+import { post_channel_getAllListByName } from "@/api/channel/index";
 @Component({
   components: {},
 })
@@ -331,6 +348,9 @@ export default class MakingInfo extends Vue {
   budingList: any = [];
   padCommissionEnumOptions: any = [];
   agencyDisabled: any = true;
+  searchParams: any = {};
+  channelList: any = [];
+
   cancel() {
     this.$emit("cancel", false);
   }
@@ -338,9 +358,13 @@ export default class MakingInfo extends Vue {
   // 获取类型
   async getMakingType() {
     let obj: any = {};
-    obj = await get_his_settleCondition_getMakingType__proId({
-      proId: this.data.proId,
+    obj = await get_settleCondition_getMakingType__termId({
+      termId: this.$route.query.id,
     });
+    this.searchParams = {
+      cycleCity: obj.city,
+      departmentOrgId: obj.startDivisionId,
+    };
     this.PropertyOptions = obj.propertyVOS;
     this.info.settleConditionMakingVOS = obj.settleMakingListVOS.map(
       (v: any) => ({
@@ -419,12 +443,20 @@ export default class MakingInfo extends Vue {
     });
   }
 
+  // 获取渠道商信息
+  async getChannel() {
+    this.channelList = await post_channel_getAllListByName({
+      ...this.searchParams,
+    });
+  }
+
   async created() {
     await this.getMakingType();
     if (this.data.id) {
       this.getMakingInfo();
     }
     this.getBuding();
+    this.getChannel();
     this.padCommissionEnumOptions = [
       {
         code: "Veto",
