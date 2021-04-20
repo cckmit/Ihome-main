@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 09:02:06
+ * @LastEditTime: 2021-04-20 15:50:36
 -->
 <template>
   <IhPage class="text-left">
@@ -224,6 +224,7 @@ import {
 } from "@/api/project/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 import { post_distribution_create } from "@/api/contract/index";
+import { get_company_get__id } from "@/api/system/index";
 import {
   get_channel_get__id,
   post_channelGrade_getOne,
@@ -355,6 +356,14 @@ export default class NotChannelApply extends Vue {
       } catch (error) {
         console.log(error);
       }
+    }
+  }
+  private async getInfieldCompany(data: any) {
+    try {
+      const res = await get_company_get__id({ id: data.id });
+      return res;
+    } catch (error) {
+      console.log(error);
     }
   }
   private async getChannelInfo(data: any) {
@@ -523,7 +532,10 @@ export default class NotChannelApply extends Vue {
         }
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
           if (res.companyKind === "InfieldCompany") {
-            this.getCompanyInfo({ id: res.designatedAgencyId });
+            let resParams = await this.getInfieldCompany({
+              id: res.designatedAgencyId,
+            });
+            this.getCompanyInfo(resParams);
           } else if (res.companyKind === "ChannelCompany") {
             this.getChannelInfo({ id: res.designatedAgencyId });
           } else {

@@ -440,48 +440,21 @@
               <div>{{ $root.dictAllName(scope.row.roleType, "DealRole") }}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="roleAchieveCap"
-            label="角色业绩上限"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column prop="rolerName" label="角色人" min-width="150">
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色业绩比例" min-width="130">
             <template slot-scope="scope">
-              <div>{{ scope.row.rolerName }}</div>
-              <div>{{ scope.row.rolerPosition }}</div>
+              <div>{{ scope.row.roleAchieveRatio }}%</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="corporateAchieve"
-            label="角色人业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="roleAchieveRatio"
-            label="角色业绩比例（%）"
-            min-width="120">
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例" min-width="150">
             <template slot-scope="scope">
-              <div>{{ scope.row.roleAchieveRatio }}</div>
+              <div>{{ scope.row.commFeesRatio }}%</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="commFees"
-            label="拆佣金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="commFeesRatio"
-            label="拆佣比例（%）"
-            min-width="150">
-            <template slot-scope="scope">
-              <div>{{ scope.row.commFeesRatio }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="belongOrgName"
-            label="店组"
-            min-width="150"
-          ></el-table-column>
+          <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
         </el-table>
         <p class="p-title">分销费用</p>
         <el-table
@@ -511,48 +484,21 @@
               <div>{{ $root.dictAllName(scope.row.roleType, "DealRole") }}</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="roleAchieveCap"
-            label="角色业绩上限"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column prop="rolerName" label="角色人" min-width="150">
+          <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
+          <el-table-column prop="rolerName" label="角色人" min-width="150"></el-table-column>
+          <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
+          <el-table-column prop="roleAchieveRatio" label="角色业绩比例" min-width="130">
             <template slot-scope="scope">
-              <div>{{ scope.row.rolerName }}</div>
-              <div>{{ scope.row.rolerPosition }}</div>
+              <div>{{ scope.row.roleAchieveRatio }}%</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="corporateAchieve"
-            label="角色人业绩"
-            min-width="120"
-          ></el-table-column>
-          <el-table-column
-            prop="roleAchieveRatio"
-            label="角色业绩比例（%）"
-            min-width="120">
+          <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
+          <el-table-column prop="commFeesRatio" label="拆佣比例" min-width="150">
             <template slot-scope="scope">
-              <div>{{ scope.row.roleAchieveRatio }}</div>
+              <div>{{ scope.row.commFeesRatio }}%</div>
             </template>
           </el-table-column>
-          <el-table-column
-            prop="commFees"
-            label="拆佣金额"
-            min-width="150"
-          ></el-table-column>
-          <el-table-column
-            prop="commFeesRatio"
-            label="拆佣比例（%）"
-            min-width="150">
-            <template slot-scope="scope">
-              <div>{{ scope.row.commFeesRatio }}</div>
-            </template>
-          </el-table-column>
-          <el-table-column
-            prop="belongOrgName"
-            label="店组"
-            min-width="150"
-          ></el-table-column>
+          <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
         </el-table>
       </div>
     </el-card>
@@ -822,7 +768,7 @@ export default class RealDealDetails extends Vue {
         sums[index] = '合计';
         return;
       }
-      if ([3, 5, 6].includes(index)) {
+      if ([4, 6, 7].includes(index)) {
         const values = data.map((item: any) => Number(item[column.property]));
         if (!values.every((value: any) => isNaN(value))) {
           sums[index] = values.reduce((prev: any, curr: any) => {
@@ -841,6 +787,10 @@ export default class RealDealDetails extends Vue {
         sums[index] = '';
       }
     });
+    // 合计显示百分比
+    if (sums && sums.length) {
+      sums[7] = sums[7] + '%';
+    }
     return sums;
   }
 }
