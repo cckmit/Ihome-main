@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:13:35
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 14:45:17
+ * @LastEditTime: 2021-04-20 18:03:01
 -->
 <template>
   <el-dialog
@@ -364,6 +364,7 @@ export default class MakingInfo extends Vue {
     this.searchParams = {
       cycleCity: obj.city,
       departmentOrgId: obj.startDivisionId,
+      isNotNeedChannelLevelApprove: true,
     };
     this.PropertyOptions = obj.propertyVOS;
     this.info.settleConditionMakingVOS = obj.settleMakingListVOS.map(
