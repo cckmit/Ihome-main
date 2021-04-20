@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-01-14 21:55:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-26 08:36:26
+ * @LastEditTime: 2021-04-20 10:13:26
 -->
 <template>
   <IhPage label-width="120px">
@@ -54,7 +54,7 @@
             <el-form-item label="产生类别">
               <el-select
                 style="width: 100%"
-                v-model="queryPageParameters.produceType"
+                v-model="queryPageParameters.addcategory"
                 clearable
                 placeholder="请选择">
                 <el-option
@@ -70,7 +70,7 @@
             <el-form-item label="使用类别">
               <el-select
                 style="width: 100%"
-                v-model="queryPageParameters.useType"
+                v-model="queryPageParameters.usecategory"
                 clearable
                 placeholder="请选择">
                 <el-option
@@ -202,8 +202,8 @@ export default class DetailsList extends Vue {
     proId: null,
     termId: null,
     timeList: [],
-    produceType: null,
-    useType: null,
+    addcategory: null, // 产生类别
+    usecategory: null, // 使用类别
   };
   termName: any = '';
   resPageInfo: any = {
@@ -285,24 +285,28 @@ export default class DetailsList extends Vue {
       createTimeEnd: this.queryPageParameters.timeList.length ? this.queryPageParameters.timeList[1] : null,
       pageNum: type ? null : this.queryPageParameters.pageNum,
       pageSize: type ? null : this.queryPageParameters.pageSize,
-      postCategory: null, // 产生类别 服务费盈余、成交变更、成交退款、其它 使用类别 (同周期使用)Samecycle、(跨周期)Interycle、(跨项目)Interproject
+      addcategory: null, // 产生类别
+      usecategory: null, // 使用类别
       proId: this.queryPageParameters.proId, // 项目名称
       termId: this.queryPageParameters.termId, // 周期名称
       type: 0 // 类别 1:产生 2:使用
     }
     switch (this.currentTabsName) {
       case "All":
-        postData.postCategory = '';
+        postData.addcategory = null;
+        postData.usecategory = null;
         postData.type = null;
         break;
       case "produce":
         // 产生
-        postData.postCategory = this.queryPageParameters.produceType;
+        postData.addcategory = this.queryPageParameters.addcategory;
+        postData.usecategory = null;
         postData.type = 1;
         break;
       case "use":
         // 产生
-        postData.postCategory = this.queryPageParameters.useType;
+        postData.addcategory = null;
+        postData.usecategory = this.queryPageParameters.usecategory;
         postData.type = 2;
         break;
     }
@@ -313,11 +317,9 @@ export default class DetailsList extends Vue {
   changeTabPane() {
     // console.log(value.name);
     this.queryPageParameters.pageNum = 1;
-    this.queryPageParameters.produceType = null;
-    this.queryPageParameters.useType = null;
     Object.assign(this.queryPageParameters, {
-      produceType: null,
-      useType: null,
+      addcategory: null, // 产生类别
+      usecategory: null, // 使用类别
     });
     this.getListMixin();
   }
@@ -328,8 +330,8 @@ export default class DetailsList extends Vue {
       proId: null,
       termId: null,
       timeList: [],
-      produceType: null,
-      useType: null,
+      addcategory: null, // 产生类别
+      usecategory: null, // 使用类别
     });
   }
 
