@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 20:22:00
+ * @LastEditTime: 2021-04-20 14:32:19
 -->
 <template>
   <el-dialog
@@ -85,11 +85,26 @@
                       v-if="isShow && item.conditionModel === 'ChannelType'"
                       class="ChannelType"
                     >
-                      <IhSelectPageByChannel
+                      <!-- <IhSelectPageByChannel
                         multiple
+                        :params="searchParams"
                         value-key="id"
                         v-model="item.designatedAgency"
-                      ></IhSelectPageByChannel>
+                      ></IhSelectPageByChannel> -->
+                      <el-select
+                        v-model="item.designatedAgency"
+                        multiple
+                        style="width: 100%"
+                        placeholder="请选择"
+                      >
+                        <el-option
+                          v-for="(item, i) in channelList"
+                          :key="i"
+                          :label="item.name"
+                          :value="item.id"
+                        >
+                        </el-option>
+                      </el-select>
                     </div>
                   </div>
                 </div>
@@ -312,12 +327,13 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
-  get_his_settleCondition_getMakingType__proId,
+  get_settleCondition_getMakingType__termId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getMaking__settleId,
   post_settleCondition_addMaking,
   post_settleCondition_updateMaking,
 } from "@/api/project/index";
+import { post_channel_getAllListByName } from "@/api/channel/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 @Component({
@@ -355,6 +371,8 @@ export default class MakingEdit extends Vue {
     ],
   };
   agencyDisabled: any = true;
+  searchParams: any = {};
+  channelList: any = [];
 
   @Watch("data.chargeEnum", { immediate: true })
   isDisabled(val: any) {
@@ -471,9 +489,13 @@ export default class MakingEdit extends Vue {
   // 获取类型
   async getMakingType() {
     let obj: any = {};
-    obj = await get_his_settleCondition_getMakingType__proId({
-      proId: this.data.proId,
+    obj = await get_settleCondition_getMakingType__termId({
+      termId: this.$route.query.id,
     });
+    this.searchParams = {
+      cycleCity: obj.city,
+      departmentOrgId: obj.startDivisionId,
+    };
     this.PropertyOptions = obj.propertyVOS;
     this.info.settleConditionMakingVOS = obj.settleMakingListVOS.map(
       (v: any) => ({
@@ -552,12 +574,20 @@ export default class MakingEdit extends Vue {
     });
   }
 
+  // 获取渠道商信息
+  async getChannel() {
+    this.channelList = await post_channel_getAllListByName({
+      ...this.searchParams,
+    });
+  }
+
   async created() {
     await this.getMakingType();
     if (this.data.id) {
       this.getMakingInfo();
     }
     this.getBuding();
+    this.getChannel();
     if (this.data.padCommissionEnum) {
       if (this.data.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:02:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-19 15:56:53
+ * @LastEditTime: 2021-04-20 15:46:22
 -->
 <template>
   <ih-page class="text-left">
@@ -129,7 +129,6 @@
                   v-else-if="info.companyKind === 'ChannelCompany'"
                   v-model="info.designatedAgencyId"
                   disabled
-                  :params="searchConditon"
                   :search-name="info.designatedAgency"
                 ></IhSelectPageByChannel>
               </el-form-item>
@@ -335,7 +334,6 @@ export default class NormalSalesApply extends Vue {
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];
-  searchConditon: any = {};
   private companyKindOption: any = [];
   private fileList: any = [];
 

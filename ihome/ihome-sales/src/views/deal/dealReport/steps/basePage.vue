@@ -145,7 +145,7 @@
                   :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" >
-                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo)">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo, 'firstContNo', firstAgencyCompanyContList)">详情</el-link>
               </div>
             </div>
           </el-form-item>
@@ -315,6 +315,7 @@
               <el-select
                 v-model="postData.contNo"
                 @change="changeContNo"
+                :clearable="changeType === 'ChangeAchieveInf'"
                 :disabled="['ChangeBasicInf', 'RetreatRoom', 'ChangeInternalAchieveInf'].includes(changeType)"
                 placeholder="请选择渠道分销合同"
                 class="width--100">
@@ -324,7 +325,7 @@
                   :label="item.contractTitle" :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" v-if="!!postData.contNo">
-                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo)">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo, 'contNo', contNoList)">详情</el-link>
               </div>
             </div>
           </el-form-item>
@@ -2953,6 +2954,7 @@
 
     // 修改公司类型
     changeAgencyType() {
+      this.packageIdsList = [];
       this.initAgencyInfo();
     }
 
@@ -2978,6 +2980,7 @@
     // 改变渠道公司
     changeCompany(value: any) {
       console.log('changeCompany:', value);
+      this.packageIdsList = [];
       this.agencySearchName = null;
       this.initAgencyInfo('company');
       // 获取渠道分销合同
@@ -3052,18 +3055,44 @@
     }
 
     // 预览分销协议
-    previewContNo(contractNo: any) {
+    previewContNo(contractNo: any, type: any = '', list: any = []) {
       if (!contractNo) {
         this.$message.warning('请先选择需要预览的合同');
       } else {
         // 预览
-        let router = this.$router.resolve({
-          path: `/distribution/info`,
-          query: {
-            contractNo: contractNo
-          },
-        });
-        window.open(router.href, "_blank");
+        // 先获取跳转的id和合同类型
+        let id: any = '';
+        let contractKind: any = '';
+        if (list && list.length) {
+          list.forEach((item: any) => {
+            if (item.contractNo === contractNo) {
+              id = item.id;
+              contractKind = item.contractKind;
+            }
+          });
+        }
+        if (type === 'firstContNo') {
+          // 一手代理合同的跳转页面
+          window.open(`/web-sales/distribution/notChannelInfo?id=${id}`);
+        } else if (type === 'contNo') {
+          // 渠道分销合同的跳转页面,需要根据渠道合同类型跳转不同的页面
+          if (contractKind === 'StandKindSaleConfirm') {
+            // 标准联动销售确认书(启动函)
+            window.open(`/web-sales/distribution/normalSalesInfo?id=${id}`);
+          } else if (contractKind === 'NoStandKindSaleConfirm') {
+            // 非标联动销售确认书(启动函)
+            window.open(`/web-sales/distribution/notSalesInfo?id=${id}`);
+          } else if (contractKind === 'StandChannel') {
+            // 标准渠道分销合同
+            window.open(`/web-sales/distribution/normalDistributionInfo?id=${id}`);
+          } else if (contractKind === 'NoStandChannel') {
+            // 非标渠道分销合同
+            window.open(`/web-sales/distribution/notDistributionInfo?id=${id}`);
+          } else if (contractKind === 'NoChannel') {
+            // 非渠道类合同
+            window.open(`/web-sales/distribution/notChannelInfo?id=${id}`);
+          }
+        }
       }
     }
 

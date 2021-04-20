@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-16 11:54:57 ├F10: AM┤
+//2021-4-20 3:22:01 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -440,8 +440,8 @@ export async function post_his_settleCondition_getMaking__settleId (d?: any) {
 return await request.post< SettleMakingUpdateVO,SettleMakingUpdateVO> (basePath+'/his/settleCondition/getMaking/{settleId}', d)
 }
 /**查询结佣类型*/
-export async function get_his_settleCondition_getMakingType__proId (d?: any) {
-return await request.get<SettleMakingParamVO,SettleMakingParamVO>(basePath+'/his/settleCondition/getMakingType/{proId}', { params: d })
+export async function get_his_settleCondition_getMakingType__termId (d?: any) {
+return await request.get<SettleMakingParamVO,SettleMakingParamVO>(basePath+'/his/settleCondition/getMakingType/{termId}', { params: d })
 }
 /**结算条件列表页查询*/
 export async function get_his_settleCondition_getPage__termId (d?: any) {
@@ -452,8 +452,8 @@ export async function post_his_settleCondition_getPlease__settleId (d?: any) {
 return await request.post< SettlePleaseUpdateVO,SettlePleaseUpdateVO> (basePath+'/his/settleCondition/getPlease/{settleId}', d)
 }
 /**查询请佣类型*/
-export async function get_his_settleCondition_getPleaseType__proId (d?: any) {
-return await request.get<SettlePleaseParamVO,SettlePleaseParamVO>(basePath+'/his/settleCondition/getPleaseType/{proId}', { params: d })
+export async function get_his_settleCondition_getPleaseType__termId (d?: any) {
+return await request.get<SettlePleaseParamVO,SettlePleaseParamVO>(basePath+'/his/settleCondition/getPleaseType/{termId}', { params: d })
 }
 /**获取立项基础详情*/
 export async function get_his_term_get__termId (d?: any) {
@@ -868,8 +868,8 @@ export async function post_settleCondition_getMaking__settleId (d?: any) {
 return await request.post< SettleMakingUpdateVO,SettleMakingUpdateVO> (basePath+'/settleCondition/getMaking/{settleId}', d)
 }
 /**查询结佣类型*/
-export async function get_settleCondition_getMakingType__proId (d?: any) {
-return await request.get<SettleMakingParamVO,SettleMakingParamVO>(basePath+'/settleCondition/getMakingType/{proId}', { params: d })
+export async function get_settleCondition_getMakingType__termId (d?: any) {
+return await request.get<SettleMakingParamVO,SettleMakingParamVO>(basePath+'/settleCondition/getMakingType/{termId}', { params: d })
 }
 /**结算条件列表页查询*/
 export async function get_settleCondition_getPage__termId (d?: any) {
@@ -884,8 +884,8 @@ export async function post_settleCondition_getPleaseCalc (d?: any) {
 return await request.post< SettlementResponse[],SettlementResponse[]> (basePath+'/settleCondition/getPleaseCalc', d)
 }
 /**查询请佣类型*/
-export async function get_settleCondition_getPleaseType__proId (d?: any) {
-return await request.get<SettlePleaseParamVO,SettlePleaseParamVO>(basePath+'/settleCondition/getPleaseType/{proId}', { params: d })
+export async function get_settleCondition_getPleaseType__termId (d?: any) {
+return await request.get<SettlePleaseParamVO,SettlePleaseParamVO>(basePath+'/settleCondition/getPleaseType/{termId}', { params: d })
 }
 /**结佣-启用*/
 export async function post_settleCondition_startMaking (d?: any) {
@@ -1140,6 +1140,8 @@ pageNum: number;
 pageSize: number;
 /**周期ID*/
 termId: number;
+/**标题备注*/
+titleOrRemark: string;
 }
 /**AttachAgencyItemVO*/
 export interface AttachAgencyItemVO {
@@ -1441,6 +1443,13 @@ renovatLevelEnum: string;
 /**地下层数*/
 undergroundNum: number;
 }
+/**BuildingVo*/
+export interface BuildingVo {
+/**栋座Id*/
+buildingId: number;
+/**栋座名称*/
+buildingName: string;
+}
 /**CalcComplateExcelVO*/
 export interface CalcComplateExcelVO {
 /**项目代理费成交情况*/
@@ -1637,8 +1646,6 @@ departmentName: string;
 groupId: number;
 /**使用的其他渠道费用归属项目*/
 otherProName: string;
-/**使用的其他渠道费用归属周期ID*/
-otherTermId: number;
 /**使用的其他渠道费用归属周期*/
 otherTermName: string;
 /**产生/使用 其他渠道费金额*/
@@ -1748,10 +1755,6 @@ amount: number;
 departmentName: string;
 /**周期所属项目*/
 proName: string;
-/**启动事业部ID*/
-startDivisionId: number;
-/**项目周期ID*/
-termId: string;
 /**项目周期名称*/
 termName: string;
 /**使用 其他渠道费金额*/
@@ -2600,6 +2603,13 @@ channelCompanyName: string;
 /**无需爱家报备ID*/
 wxId: number;
 }
+/**DesignatedAgencyVo*/
+export interface DesignatedAgencyVo {
+/**指定中介行*/
+designatedAgency: string;
+/**指定中介行Id*/
+designatedAgencyId: number;
+}
 /**DevelopDTO*/
 export interface DevelopDTO {
 /**实收金额【实际收到金额】*/
@@ -2667,11 +2677,15 @@ partyCompany: string;
 scanningContract: string;
 /**状态(New-新增、Update-修改、Delete-删除、Stop-禁用、Start-启用、Cancel-作废、Audit-审核、Reject-驳回)*/
 state: string;
+/**标题备注*/
+titleOrRemark: string;
 }
 /**DistributContractCheckConditionVo*/
 export interface DistributContractCheckConditionVo {
 /**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
+/**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
+commissionKind: string;
 /**公司种类(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
 companyKind: string;
 /**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
@@ -2691,6 +2705,8 @@ termId: number;
 export interface DistributContractConditionChooseVo {
 /**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
+/**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
+commissionKind: string;
 /**公司种类(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
 companyKind: string;
 /**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
@@ -2710,6 +2726,8 @@ termId: number;
 export interface DistributContractConditionVo {
 /**渠道类型(成交方式)(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
+/**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
+commissionKind: string;
 /**公司种类(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
 companyKind: string;
 /**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
@@ -4219,6 +4237,8 @@ province: string;
 }
 /**ProTermVO*/
 export interface ProTermVO {
+/**子项目Ids*/
+childrenProIds: number[];
 /**突破标准线期数*/
 city: string;
 /**城市名称*/
@@ -4964,6 +4984,8 @@ termId: number;
 }
 /**SettleConditionMakingVO*/
 export interface SettleConditionMakingVO {
+/**栋座集合*/
+buildingVos: BuildingVo[];
 /**条件 <> <= >= ==(GT-大于、GE-大于等于、LT-小于、LE-小于等于、EQ-等于、NE-不等于)*/
 compare: string;
 /**条件 <> <= >= ==(GT-大于、GE-大于等于、LT-小于、LE-小于等于、EQ-等于、NE-不等于)*/
@@ -4980,6 +5002,8 @@ conditionNumB: number;
 conditionSetId: number;
 /**指定中介行*/
 designatedAgency: number[];
+/**指定中介行集合*/
+designatedAgencyVos: DesignatedAgencyVo[];
 /**多选值*/
 mulitVal: number[];
 /**根据房款回笼比率*/
@@ -4993,6 +5017,8 @@ values: string[];
 }
 /**SettleConditionPleaseVO*/
 export interface SettleConditionPleaseVO {
+/**栋座集合*/
+buildingVos: BuildingVo[];
 /**条件 <> <= >= ==(GT-大于、GE-大于等于、LT-小于、LE-小于等于、EQ-等于、NE-不等于)*/
 compare: string;
 /**条件 <> <= >= ==(GT-大于、GE-大于等于、LT-小于、LE-小于等于、EQ-等于、NE-不等于)*/
@@ -5009,6 +5035,8 @@ conditionNumB: number;
 conditionSetId: number;
 /**指定中介行*/
 designatedAgency: number[];
+/**指定中介行集合*/
+designatedAgencyVos: DesignatedAgencyVo[];
 /**多选值*/
 mulitVal: number[];
 /**根据房款回笼比率*/
@@ -5065,10 +5093,14 @@ fieldEnum: string;
 }
 /**SettleMakingParamVO*/
 export interface SettleMakingParamVO {
+/**城市编码*/
+city: string;
 /**物业类型*/
 propertyVOS: PropertyVO[];
 /**条件*/
 settleMakingListVOS: SettleMakingListVO[];
+/**启动事业部ID*/
+startDivisionId: number;
 }
 /**SettleMakingUpdateVO*/
 export interface SettleMakingUpdateVO {
@@ -5130,10 +5162,14 @@ fieldEnum: string;
 }
 /**SettlePleaseParamVO*/
 export interface SettlePleaseParamVO {
+/**城市编码*/
+city: string;
 /**物业类型*/
 propertyVOS: PropertyVO[];
 /**条件*/
 settlePleaseListVOS: SettlePleaseListVO[];
+/**启动事业部ID*/
+startDivisionId: number;
 }
 /**SettlePleaseUpdateVO*/
 export interface SettlePleaseUpdateVO {
@@ -5381,6 +5417,8 @@ contractEndTime: string;
 contractMxVOList: DistributContractMxVO[];
 /**二、合作开始时间(yyyy-MM-dd)*/
 contractStartTime: string;
+/**费用结算类型(DevelopAgenFee-开发商或者委托方代理费、CustomerServFee-客户服务费、DevelopAgenFeeOrCustServFee-开发商或者委托方代理费/客户服务费)*/
+costSettleType: string;
 /**指定中介行*/
 designatedAgency: string;
 /**中介行ID*/
@@ -5432,6 +5470,8 @@ contractEndTime: string;
 contractMxVOList: DistributContractMxVO[];
 /**二、合作开始时间(yyyy-MM-dd)*/
 contractStartTime: string;
+/**费用结算类型(DevelopAgenFee-开发商或者委托方代理费、CustomerServFee-客户服务费、DevelopAgenFeeOrCustServFee-开发商或者委托方代理费/客户服务费)*/
+costSettleType: string;
 /**指定中介行*/
 designatedAgency: string;
 /**中介行ID*/
@@ -5815,6 +5855,8 @@ busEnum: string;
 busTypeEnum: string;
 /**(必填)收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
+/**子项目Ids*/
+childrenProIds: number[];
 /**突破标准线期数*/
 city: string;
 /**城市名称*/
@@ -5997,6 +6039,8 @@ busEnum: string;
 busTypeEnum: string;
 /**(必填)收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
 chargeEnum: string;
+/**子项目Ids*/
+childrenProIds: number[];
 /**突破标准线期数*/
 city: string;
 /**城市名称*/

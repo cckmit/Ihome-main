@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-21 20:21:46
+ * @LastEditTime: 2021-04-20 14:36:16
 -->
 <template>
   <el-dialog
@@ -44,7 +44,10 @@
         <template v-for="(item, i) in info.settleConditionPleaseVOS">
           <el-row :key="i">
             <el-col :span="24">
-              <div class="condition-item">
+              <div
+                class="condition-item"
+                :class="{PartyACompany: item.checkboxed && ['Building', 'PartyACompany'].includes(item.conditionModel)}"
+              >
                 <div style="width: 100px;display: inline-block">
                   <el-checkbox
                     :label="item.conditionModel"
@@ -141,7 +144,7 @@
                   <el-select
                     v-model="item.mulitVal"
                     multiple
-                    style="width: 70%"
+                    style="width: 200%"
                     class="margin-left-20"
                     placeholder="请选择"
                   >
@@ -155,15 +158,27 @@
                   </el-select>
                 </span>
                 <span v-if="item.checkboxed && item.conditionModel === 'PartyACompany'">
-                  <div
-                    class="margin-left-20"
-                    style="display: inline-block;width: 70%"
-                  >
-                    <IhSelectPageByDeveloper
+                  <div class="margin-left-20">
+                    <!-- <IhSelectPageByDeveloper
                       multiple
                       value-key="id"
+                      :params="searchParams"
                       v-model="item.mulitVal"
-                    ></IhSelectPageByDeveloper>
+                    ></IhSelectPageByDeveloper> -->
+                    <el-select
+                      v-model="item.mulitVal"
+                      multiple
+                      style="width: 200%"
+                      placeholder="请选择"
+                    >
+                      <el-option
+                        v-for="(item, i) in developerList"
+                        :key="i"
+                        :label="item.name"
+                        :value="item.id"
+                      >
+                      </el-option>
+                    </el-select>
                   </div>
                 </span>
                 <span v-if="item.checkboxed && (item.conditionModel === 'ContractType' || item.conditionModel === 'ExRecode')">
@@ -272,12 +287,13 @@
 <script lang="ts">
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
-  get_his_settleCondition_getPleaseType__proId,
+  get_settleCondition_getPleaseType__termId,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getPlease__settleId,
   post_settleCondition_addPlease,
   post_settleCondition_updatePlease,
 } from "@/api/project/index";
+import { post_company_listAll } from "@/api/developer/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 @Component({
@@ -310,6 +326,7 @@ export default class PleaseEdit extends Vue {
     ],
   };
   agencyDisabled: any = true;
+  developerList: any = [];
 
   @Watch("data.chargeEnum", { immediate: true })
   isDisabled(val: any) {
@@ -414,8 +431,8 @@ export default class PleaseEdit extends Vue {
   // 获取类型
   async getMakingType() {
     let obj: any = {};
-    obj = await get_his_settleCondition_getPleaseType__proId({
-      proId: this.data.proId,
+    obj = await get_settleCondition_getPleaseType__termId({
+      termId: this.$route.query.id,
     });
     this.PropertyOptions = obj.propertyVOS;
     this.info.settleConditionPleaseVOS = obj.settlePleaseListVOS.map(
@@ -486,12 +503,20 @@ export default class PleaseEdit extends Vue {
     });
   }
 
+  // 获取渠道商信息
+  async getDeveloper() {
+    this.developerList = await post_company_listAll({
+      name: "",
+    });
+  }
+
   async created() {
     await this.getMakingType();
     if (this.data.id) {
       this.getMakingInfo();
     }
     this.getBuding();
+    this.getDeveloper();
     if (this.data.padCommissionEnum) {
       if (this.data.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [
@@ -562,5 +587,9 @@ export default class PleaseEdit extends Vue {
 .flex {
   display: flex;
   justify-content: flex-start;
+}
+.PartyACompany {
+  display: flex;
+  height: auto;
 }
 </style>
