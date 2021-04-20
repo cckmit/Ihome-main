@@ -378,7 +378,7 @@ export default class DistributionInfo extends Vue {
   }
   private async submitDulicate() {
     if (!this.fileList.length || !this.archiveStatus) {
-      this.$message.warning("附件或归档状态不能为空");
+      this.$message.warning("附件不能为空");
       return;
     }
     try {
