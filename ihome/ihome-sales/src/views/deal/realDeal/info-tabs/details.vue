@@ -566,7 +566,7 @@
 <!--        </span>-->
       </div>
       <div>
-        <el-row style="padding-left: 20px">
+        <el-row>
           <el-col>
             <el-table class="ih-table" :data="infoForm.documentLists">
               <el-table-column prop="fileType" label="类型" width="200">
@@ -685,8 +685,36 @@ export default class RealDealDetails extends Vue {
           }
         });
       }
+      // 初始化附件
+      this.infoForm.documentLists = this.initDocumentList(info.documentList);
       await this.getInformation(info?.id, info?.parentId, info?.cycleId);
     }
+  }
+  // 构建附件信息
+  initDocumentList(list: any = []) {
+    if (list.length === 0) return  [];
+    let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+    // 附件类型增加key
+    if (fileList.length > 0) {
+      fileList.forEach((vo: any) => {
+        this.$set(vo, 'fileList', []);
+        // vo.fileList = []; // 存放新上传的数据
+        if (list && list.length > 0) {
+          list.forEach((item: any) => {
+            if (vo.code === item.fileType) {
+              vo.fileList.push(
+                  {
+                    ...item,
+                    name: item.fileName,
+                    exAuto: true // 是否可以删除
+                  }
+              );
+            }
+          });
+        }
+      });
+    }
+    return fileList;
   }
   // 根据成交id获取优惠告知书列表
   async getInformation(id: any = "", parentId: any = "", cycleId: any = "") {
