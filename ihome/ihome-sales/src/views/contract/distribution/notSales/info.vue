@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-19 09:36:49
+ * @LastEditTime: 2021-04-20 21:58:56
 -->
 <template>
   <IhPage class="text-left">
@@ -196,7 +196,7 @@ export default class NotSalesInfo extends Vue {
   }
   private async submitDulicate() {
     if (!this.fileList.length || !this.archiveStatus) {
-      this.$message.warning("附件或归档状态不能为空");
+      this.$message.warning("附件不能为空");
       return;
     }
     try {
