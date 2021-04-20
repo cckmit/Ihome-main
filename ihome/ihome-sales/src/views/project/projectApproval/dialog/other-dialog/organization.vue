@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 14:49:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 19:50:46
+ * @LastEditTime: 2021-04-20 22:06:37
 -->
 <template>
   <el-dialog
@@ -86,14 +86,14 @@
         prop="shortName"
         label="简称"
       ></el-table-column>
-      <!-- <el-table-column
-        label="组织类型"
-        width="180"
+      <el-table-column
+        label="是否有效"
+        width="100"
       >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.orgType, "OrgType")
+          $root.dictAllName(row.status, "ValidType")
         }}</template>
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column
         prop="updateTime"
         label="修改时间"
