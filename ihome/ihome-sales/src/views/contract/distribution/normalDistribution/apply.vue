@@ -670,7 +670,11 @@ export default class DistributionApply extends Vue {
           departmentOrgId: res.startDivisionId,
         };
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
-          this.getChannelInfo({ id: res.designatedAgencyId });
+          if (res.companyKind === "InfieldCompany") {
+            this.getCompanyInfo({ id: res.designatedAgencyId });
+          } else {
+            this.getChannelInfo({ id: res.designatedAgencyId });
+          }
           this.channelForm = {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,

@@ -129,7 +129,7 @@
                   :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" >
-                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo)">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo, 'firstContNo', firstAgencyCompanyContList)">详情</el-link>
               </div>
             </div>
           </el-form-item>
@@ -277,7 +277,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道分销合同" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
+          <el-form-item label="渠道分销合同">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -290,7 +290,7 @@
                   :label="item.contractTitle" :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" >
-                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo)">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo, 'contNo', contNoList)">详情</el-link>
               </div>
             </div>
           </el-form-item>

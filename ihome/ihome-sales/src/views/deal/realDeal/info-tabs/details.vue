@@ -121,23 +121,20 @@
           </div>
         </el-col>
       </el-row>
-
       <p class="p-title">拆佣公司</p>
       <el-row class="ih-info-line">
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理公司</div>
           <div class="line-item-bottom">
             <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'oneAgentTeam')">
-              {{ infoForm.oneAgentTeam }}</el-link
-            >
+              {{ infoForm.oneAgentTeam }}</el-link>
           </div>
         </el-col>
         <el-col :span="8" class="line-item">
           <div class="line-item-top">一手代理合同</div>
           <div class="line-item-bottom">
             <el-link type="primary" class="font-weight-600" @click="gotoNew(infoForm, 'firstContNo')">
-              {{ infoForm.firstContTitle }}</el-link
-            >
+              {{ infoForm.firstContTitle }}</el-link>
           </div>
         </el-col>
       </el-row>
@@ -189,7 +186,6 @@
       </el-row>
       <p class="line"></p>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -240,7 +236,6 @@
         </div>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -288,7 +283,6 @@
         </el-table>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -411,7 +405,6 @@
         </el-table>
       </div>
     </el-card>
-
     <br />
     <el-card class="box-card">
       <div slot="header" class="clearfix card-header">
@@ -573,7 +566,7 @@
 <!--        </span>-->
       </div>
       <div>
-        <el-row style="padding-left: 20px">
+        <el-row>
           <el-col>
             <el-table class="ih-table" :data="infoForm.documentLists">
               <el-table-column prop="fileType" label="类型" width="200">
@@ -692,8 +685,36 @@ export default class RealDealDetails extends Vue {
           }
         });
       }
+      // 初始化附件
+      this.infoForm.documentLists = this.initDocumentList(info.documentList);
       await this.getInformation(info?.id, info?.parentId, info?.cycleId);
     }
+  }
+  // 构建附件信息
+  initDocumentList(list: any = []) {
+    if (list.length === 0) return  [];
+    let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
+    // 附件类型增加key
+    if (fileList.length > 0) {
+      fileList.forEach((vo: any) => {
+        this.$set(vo, 'fileList', []);
+        // vo.fileList = []; // 存放新上传的数据
+        if (list && list.length > 0) {
+          list.forEach((item: any) => {
+            if (vo.code === item.fileType) {
+              vo.fileList.push(
+                  {
+                    ...item,
+                    name: item.fileName,
+                    exAuto: true // 是否可以删除
+                  }
+              );
+            }
+          });
+        }
+      });
+    }
+    return fileList;
   }
   // 根据成交id获取优惠告知书列表
   async getInformation(id: any = "", parentId: any = "", cycleId: any = "") {
@@ -737,7 +758,23 @@ export default class RealDealDetails extends Vue {
         window.open(`/web-sales/channelBusiness/info?id=${agencyId}`);
       }
     } else if (type == "contTitle") {
-      window.open(`/web-sales/distribution/normalDistributionInfo?id=${item.contId}`);
+      // 需要根据渠道合同类型跳转不同的页面
+      if (item.contractKind === 'StandKindSaleConfirm') {
+        // 标准联动销售确认书(启动函)
+        window.open(`/web-sales/distribution/normalSalesInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'NoStandKindSaleConfirm') {
+        // 非标联动销售确认书(启动函)
+        window.open(`/web-sales/distribution/notSalesInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'StandChannel') {
+        // 标准渠道分销合同
+        window.open(`/web-sales/distribution/normalDistributionInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'NoStandChannel') {
+        // 非标渠道分销合同
+        window.open(`/web-sales/distribution/notDistributionInfo?id=${item.contId}`);
+      } else if (item.contractKind === 'NoChannel') {
+        // 非渠道类合同
+        window.open(`/web-sales/distribution/notChannelInfo?id=${item.contId}`);
+      }
     } else if (type == "firstContNo") {
       window.open(`/web-sales/distribution/notChannelInfo?id=${item.firstContId}`);
     } else if (type == "partyACustomerName") {

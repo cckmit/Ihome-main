@@ -53,7 +53,7 @@
                   <el-link
                     class="margin-left-10"
                     type="primary"
-                    @click.native.prevent="viewContNoDetail(postData.firstContNo)"
+                    @click.native.prevent="viewContNoDetail(postData.firstContNo, 'firstContNo')"
                   >查看
                   </el-link>
                 </div>
@@ -100,7 +100,7 @@
                   <el-link
                     class="margin-left-10"
                     type="primary"
-                    @click.native.prevent="viewContNoDetail(postData.contNo)"
+                    @click.native.prevent="viewContNoDetail(postData.contNo, 'contNo')"
                   >查看
                   </el-link>
                 </div>
@@ -622,6 +622,7 @@
     private srcList: any = [];
     private srcData: any = [];
     postData: any = {
+      contractKind: null,
       charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
       parentId: null,
       dealCode: null,
@@ -1006,15 +1007,33 @@
     }
 
     // 查看分销协议
-    viewContNoDetail(contractNo: any) {
-      if (!contractNo) return;
-      let router = this.$router.resolve({
-        path: `/distribution/info`,
-        query: {
-          contractNo: contractNo
-        },
-      });
-      window.open(router.href, "_blank");
+    viewContNoDetail(contractNo: any, type: any = '') {
+      if (!contractNo) {
+        this.$message.warning('请先选择需要预览的合同');
+      } else {
+        if (type === 'firstContNo') {
+          // 一手代理合同的跳转页面
+          window.open(`/web-sales/distribution/notChannelInfo?id=${this.postData.firstContId}`);
+        } else if (type === 'contNo') {
+          // 渠道分销合同的跳转页面,需要根据渠道合同类型跳转不同的页面
+          if (this.postData.contractKind === 'StandKindSaleConfirm') {
+            // 标准联动销售确认书(启动函)
+            window.open(`/web-sales/distribution/normalSalesInfo?id=${this.postData.contId}`);
+          } else if (this.postData.contractKind === 'NoStandKindSaleConfirm') {
+            // 非标联动销售确认书(启动函)
+            window.open(`/web-sales/distribution/notSalesInfo?id=${this.postData.contId}`);
+          } else if (this.postData.contractKind === 'StandChannel') {
+            // 标准渠道分销合同
+            window.open(`/web-sales/distribution/normalDistributionInfo?id=${this.postData.contId}`);
+          } else if (this.postData.contractKind === 'NoStandChannel') {
+            // 非标渠道分销合同
+            window.open(`/web-sales/distribution/notDistributionInfo?id=${this.postData.contId}`);
+          } else if (this.postData.contractKind === 'NoChannel') {
+            // 非渠道类合同
+            window.open(`/web-sales/distribution/notChannelInfo?id=${this.postData.contId}`);
+          }
+        }
+      }
     }
 
     // 跳转到指定索引的元素

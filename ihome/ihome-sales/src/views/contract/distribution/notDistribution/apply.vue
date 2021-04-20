@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 14:44:27
+ * @LastEditTime: 2021-04-20 08:53:15
 -->
 <template>
   <IhPage class="text-left">
@@ -483,7 +483,11 @@ export default class NotDistributionApply extends Vue {
           exAuto: 1,
         }));
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
-          this.getChannelInfo({ id: res.designatedAgencyId });
+          if (res.companyKind === "InfieldCompany") {
+            this.getCompanyInfo({ id: res.designatedAgencyId });
+          } else {
+            this.getChannelInfo({ id: res.designatedAgencyId });
+          }
           this.channelForm = {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,
