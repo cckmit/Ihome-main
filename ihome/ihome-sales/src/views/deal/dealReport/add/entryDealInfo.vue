@@ -17,9 +17,9 @@
       label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
-      <div class="add-all-wrapper padding-left-20" v-if="id">
-        <el-button type="success">更新明源数据</el-button>
-      </div>
+<!--      <div class="add-all-wrapper padding-left-20" v-if="id">-->
+<!--        <el-button type="success">更新明源数据</el-button>-->
+<!--      </div>-->
       <el-row :gutter="5">
         <el-col :span="8" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : 'notEmpty'">
