@@ -450,7 +450,7 @@ export default class FlowingWater extends Vue {
     if (type == "businessNo") {
       if (row.feeType === 'ServiceFee') {
         // 服务费
-        window.open(`/web-sales/dealReport/info?id=${row.businessId}`);
+        window.open(`/web-sales/dealReport/info?id=${row.businessId}&type=ID`);
       } else {
         // 代理费
         window.open(`/web-sales/applyRec/info?id=${row.businessId}`);
