@@ -3661,7 +3661,7 @@
           return;
         }
         // 提交需要渠道分销合同有值
-        if (!this.postData.contNo) {
+        if (this.postData.contType === 'DistriDeal' && !this.postData.contNo) {
           this.$message.warning('请选择渠道分销合同');
           return;
         }
