@@ -423,14 +423,15 @@
               <p>管理岗分配业绩</p>
               <el-table :data="scope.row.managerAchieveList" style="width: 600px">
                 <el-table-column prop="manager" label="管理岗" width="200">
+                  <template slot-scope="scope">
+                    <div>{{scope.row.manager}}({{scope.row.managerPosition}})</div>
+                  </template>
                 </el-table-column>
-                <el-table-column
-                  prop="achieveFees"
-                  label="分配金额"
-                  width="200"
-                >
-                </el-table-column>
+                <el-table-column prop="achieveFees" label="分配金额" width="200"></el-table-column>
                 <el-table-column prop="ratio" label="金额比例" width="200">
+                  <template slot-scope="scope">
+                    <div>{{scope.row.ratio}}%</div>
+                  </template>
                 </el-table-column>
               </el-table>
             </template>
@@ -468,13 +469,15 @@
               <p>管理岗分配业绩</p>
               <el-table :data="scope.row.managerAchieveList" style="width: 600px">
                 <el-table-column prop="manager" label="管理岗" width="200">
+                  <template slot-scope="scope">
+                    <div>{{scope.row.manager}}({{scope.row.managerPosition}})</div>
+                  </template>
                 </el-table-column>
-                <el-table-column
-                  prop="achieveFees"
-                  label="分配金额"
-                  width="200">
-                </el-table-column>
+                <el-table-column prop="achieveFees" label="分配金额" width="200"></el-table-column>
                 <el-table-column prop="ratio" label="金额比例" width="200">
+                  <template slot-scope="scope">
+                    <div>{{scope.row.ratio}}%</div>
+                  </template>
                 </el-table-column>
               </el-table>
             </template>
