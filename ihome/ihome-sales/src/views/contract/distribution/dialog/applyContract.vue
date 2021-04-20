@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 15:58:36
+ * @LastEditTime: 2021-04-20 16:30:11
 -->
 <template>
   <el-dialog
@@ -177,7 +177,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import { post_distributContract_applyDistract } from "@/api/project/index";
 
@@ -186,6 +186,14 @@ import { post_distributContract_applyDistract } from "@/api/project/index";
 })
 export default class ApplyContract extends Vue {
   @Prop() claimPower!: any;
+  @Watch("queryPageParameters.termId") watchTermId(val: any) {
+    if (!val) {
+      this.resPageInfo = {
+        total: null,
+        list: [],
+      };
+    }
+  }
   queryPageParameters: any = {
     contractTitle: null,
     termId: null,
