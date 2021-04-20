@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-1-18 8:37:18
+//2021-4-20 11:10:08 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/
@@ -39,6 +39,10 @@ return await request.get<ChannelDetail,ChannelDetail>(basePath+'/channel/get/{id
 export async function get_channel_getAll (d?: any) {
 return await request.get<ChannelVO[],ChannelVO[]>(basePath+'/channel/getAll', { params: d })
 }
+/**根据渠道商名称模糊查所有渠道商id、名字列表*/
+export async function post_channel_getAllListByName (d?: any) {
+return await request.post< ChannelNameQueryDto[],ChannelNameQueryDto[]> (basePath+'/channel/getAllListByName', d)
+}
 /**根据渠道商id返回营业执照附件*/
 export async function get_channel_getChannelBusinessLicense__channelId (d?: any) {
 return await request.get<string[],string[]>(basePath+'/channel/getChannelBusinessLicense/{channelId}', { params: d })
@@ -46,6 +50,10 @@ return await request.get<string[],string[]>(basePath+'/channel/getChannelBusines
 /**查询渠道列表*/
 export async function post_channel_getList (d?: any) {
 return await request.post< any,any> (basePath+'/channel/getList', d)
+}
+/**根据渠道商名称等级城市事业部模糊查渠道商id、名字分页列表[不需要审批通过]*/
+export async function post_channel_getListByCityAndDeptWithoutNoPass (d?: any) {
+return await request.post< any,any> (basePath+'/channel/getListByCityAndDeptWithoutNoPass', d)
 }
 /**根据渠道商名称模糊查渠道商id、名字分页列表*/
 export async function post_channel_getListByName (d?: any) {
@@ -62,6 +70,10 @@ return await request.post< number,number> (basePath+'/channel/modifyInputUser', 
 /**添加渠道经纪人*/
 export async function post_channelAgent_add (d?: any) {
 return await request.post< string,string> (basePath+'/channelAgent/add', d)
+}
+/**批量删除*/
+export async function post_channelAgent_batchDelete (d?: any) {
+return await request.post< number,number> (basePath+'/channelAgent/batchDelete', d)
 }
 /**删除渠道经纪人信息*/
 export async function post_channelAgent_delete__id (d?: any) {
@@ -83,9 +95,13 @@ return await request.post< number,number> (basePath+'/channelAgent/enable/{id}',
 export async function get_channelAgent_get__id (d?: any) {
 return await request.get<ChannelAgentVO,ChannelAgentVO>(basePath+'/channelAgent/get/{id}', { params: d })
 }
-/**根基用户ID查询渠道经纪人渠道商ID*/
-export async function get_channelAgent_get__userId (d?: any) {
-return await request.get<number,number>(basePath+'/channelAgent/get/{userId}', { params: d })
+/**根据渠道商id获取经纪人负责人列表数据*/
+export async function post_channelAgent_getAgentAndChannelPersonByChannelId (d?: any) {
+return await request.post< any,any> (basePath+'/channelAgent/getAgentAndChannelPersonByChannelId', d)
+}
+/**根据渠道商ID查询渠道经纪人列表*/
+export async function post_channelAgent_getAgentByChannelId (d?: any) {
+return await request.post< any,any> (basePath+'/channelAgent/getAgentByChannelId', d)
 }
 /**根据渠道商ID查询渠道经纪人列表*/
 export async function get_channelAgent_getAllByChannelId__channelId (d?: any) {
@@ -94,6 +110,10 @@ return await request.get<ChannelAgent[],ChannelAgent[]>(basePath+'/channelAgent/
 /**查询经纪人渠道等级渠道商信息列表*/
 export async function post_channelAgent_getChannelAgentAndChannelGrade (d?: any) {
 return await request.post< any,any> (basePath+'/channelAgent/getChannelAgentAndChannelGrade', d)
+}
+/**根基用户ID查询渠道经纪人渠道商ID*/
+export async function get_channelAgent_getChannelIdByUSerId__userId (d?: any) {
+return await request.get<number,number>(basePath+'/channelAgent/getChannelIdByUSerId/{userId}', { params: d })
 }
 /**根据渠道经纪人名称，渠道商id查询渠道经纪人列表*/
 export async function post_channelAgent_getDealChannelAgentList (d?: any) {
@@ -106,6 +126,10 @@ return await request.post< any,any> (basePath+'/channelAgent/getList', d)
 /**根据经纪人名字模糊查经纪人id、名字分页列表*/
 export async function post_channelAgent_getListByName (d?: any) {
 return await request.post< any,any> (basePath+'/channelAgent/getListByName', d)
+}
+/**根据经纪人姓名电话,渠道商id转换成经纪人名称*/
+export async function post_channelAgent_getNameByChannelIdAndUserId (d?: any) {
+return await request.post< string,string> (basePath+'/channelAgent/getNameByChannelIdAndUserId', d)
 }
 /**根基渠道经纪人姓名电话查询用户ID*/
 export async function post_channelAgent_getUserIdByNameAndMobile (d?: any) {
@@ -153,7 +177,7 @@ return await request.post< any,any> (basePath+'/channelApproval/getList', d)
 }
 /**getSummaryIds*/
 export async function get_channelApproval_getSummaryIds (d?: any) {
-return await request.get<any,any>(basePath+'/channelApproval/getSummaryIds', { params: d })
+return await request.get<number[],number[]>(basePath+'/channelApproval/getSummaryIds', { params: d })
 }
 /**变更经办人*/
 export async function post_channelApproval_modifyApprovalUser (d?: any) {
@@ -183,6 +207,10 @@ return await request.get<ChannelApprovalRecordVO[],ChannelApprovalRecordVO[]>(ba
 export async function post_channelBank_add (d?: any) {
 return await request.post< number,number> (basePath+'/channelBank/add', d)
 }
+/**批量删除*/
+export async function post_channelBank_batchDelete (d?: any) {
+return await request.post< number,number> (basePath+'/channelBank/batchDelete', d)
+}
 /**删除渠道商银行账户信息*/
 export async function post_channelBank_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelBank/delete/{id}', d)
@@ -198,6 +226,10 @@ return await request.get<ChannelBankVO,ChannelBankVO>(basePath+'/channelBank/get
 /**查询渠道商银行账户列表*/
 export async function get_channelBank_getAll__channelId (d?: any) {
 return await request.get<ChannelBank[],ChannelBank[]>(basePath+'/channelBank/getAll/{channelId}', { params: d })
+}
+/**根据渠道商ID，银行账号获取银行账户名称*/
+export async function post_channelBank_getNameByChannelIdAndCode (d?: any) {
+return await request.post< string,string> (basePath+'/channelBank/getNameByChannelIdAndCode', d)
 }
 /**添加变更渠道商银行账户*/
 export async function post_channelBankChange_add (d?: any) {
@@ -307,6 +339,14 @@ return await request.post< ChannelGradeAttachmentVO,ChannelGradeAttachmentVO> (b
 export async function post_channelGrade_getChannelGradeByChannelIdAndCityCode (d?: any) {
 return await request.post< ChannelGrade,ChannelGrade> (basePath+'/channelGrade/getChannelGradeByChannelIdAndCityCode', d)
 }
+/**根据当前用户id获取当前用户对应的渠道商等级的事业部id*/
+export async function get_channelGrade_getCurrentUserGradeDeptId (d?: any) {
+return await request.get<number[],number[]>(basePath+'/channelGrade/getCurrentUserGradeDeptId', { params: d })
+}
+/**根据渠道商id返回所有的渠道等级的业务开展城市*/
+export async function get_channelGrade_getGradeCitiesByChannelId__channelId (d?: any) {
+return await request.get<string[],string[]>(basePath+'/channelGrade/getGradeCitiesByChannelId/{channelId}', { params: d })
+}
 /**查询渠道等级列表*/
 export async function post_channelGrade_getList (d?: any) {
 return await request.post< any,any> (basePath+'/channelGrade/getList', d)
@@ -375,10 +415,6 @@ return await request.post< string,string> (basePath+'/channelGradeStandard/addMa
 export async function post_channelGradeStandard_delete__id (d?: any) {
 return await request.post< number,number> (basePath+'/channelGradeStandard/delete/{id}', d)
 }
-/**下载渠道供应商管理办法附件【未实现】*/
-export async function get_channelGradeStandard_download (d?: any) {
-return await request.get<any,any>(basePath+'/channelGradeStandard/download', { params: d })
-}
 /**修改渠道评级标准*/
 export async function post_channelGradeStandard_edit (d?: any) {
 return await request.post< string,string> (basePath+'/channelGradeStandard/edit', d)
@@ -389,7 +425,7 @@ return await request.get<ChannelGradeStandardVO,ChannelGradeStandardVO>(basePath
 }
 /**根据城市编码渠道等级查询*/
 export async function post_channelGradeStandard_getAllByCityCodeAndChannelGrade (d?: any) {
-return await request.post< ChannelGradeStandardVO[],ChannelGradeStandardVO[]> (basePath+'/channelGradeStandard/getAllByCityCodeAndChannelGrade', d)
+return await request.post< ChannelGradeStandardAndAttachmentVO,ChannelGradeStandardAndAttachmentVO> (basePath+'/channelGradeStandard/getAllByCityCodeAndChannelGrade', d)
 }
 /**查询渠道评级标准列表*/
 export async function post_channelGradeStandard_getList (d?: any) {
@@ -472,8 +508,23 @@ list:T[];
 /**总记录数*/
 total: number;
 }
+/**AllChannelNameQueryVO*/
+export interface AllChannelNameQueryVO {
+/**分销协议渠道类型(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+channelEnum: string;
+/**周期城市编码*/
+cycleCity: string;
+/**事业部ID*/
+departmentOrgId: number;
+/**是否不需要渠道等级审核通过*/
+isNotNeedChannelLevelApprove: boolean;
+/**名称*/
+name: string;
+}
 /**ApproveRecordVO*/
 export interface ApproveRecordVO {
+/**综合查询被执行人查询结果附件*/
+channelAttachments: ChannelAttachmentBaseVO[];
 /**(必填)id*/
 id: number;
 /**(必填)处理意见*/
@@ -514,6 +565,23 @@ status: string;
 updateTime: string;
 /**更新用户*/
 updateUser: number;
+/**关联用户表的ID*/
+userId: number;
+}
+/**ChannelAgentAndLeaderVO*/
+export interface ChannelAgentAndLeaderVO {
+/**邮箱*/
+email: string;
+/**ID*/
+id: number;
+/**手机号码*/
+mobile: string;
+/**姓名*/
+name: string;
+/**姓名或手机号码*/
+nameOrTel: string;
+/**渠道经纪人/渠道负责人类型*/
+type: string;
 /**关联用户表的ID*/
 userId: number;
 }
@@ -578,10 +646,23 @@ status: string;
 }
 /**ChannelAgentNameAndMobileVO*/
 export interface ChannelAgentNameAndMobileVO {
+/**渠道商ID*/
+channelId: number;
 /**手机号码*/
 mobile: string;
 /**姓名*/
 name: string;
+}
+/**ChannelAgentNameQueryParam*/
+export interface ChannelAgentNameQueryParam {
+/**渠道商ID*/
+channelId: number;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**用户ID*/
+userId: number;
 }
 /**ChannelAgentNameVO*/
 export interface ChannelAgentNameVO {
@@ -598,6 +679,8 @@ channelId: number;
 mobile: string;
 /**姓名*/
 name: string;
+/**姓名或者手机号码*/
+nameOrMobile: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -606,6 +689,32 @@ pageSize: number;
 settlementFlag: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
+}
+/**ChannelAgentSimpleQueryVO*/
+export interface ChannelAgentSimpleQueryVO {
+/**渠道商ID*/
+channelId: number;
+/**姓名或者电话*/
+nameOrTel: string;
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+}
+/**ChannelAgentSimpleVO*/
+export interface ChannelAgentSimpleVO {
+/**邮箱*/
+email: string;
+/**ID*/
+id: number;
+/**手机号码*/
+mobile: string;
+/**姓名*/
+name: string;
+/**姓名或手机号码*/
+nameOrTel: string;
+/**关联用户表的ID*/
+userId: number;
 }
 /**ChannelAgentVO*/
 export interface ChannelAgentVO {
@@ -660,7 +769,7 @@ fileType: string;
 id: number;
 /**入库编号*/
 storageNum: string;
-/**类型*/
+/**类型(Specially-特批入库材料、SupplierList-供应商名录)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -669,7 +778,7 @@ updateUser: number;
 }
 /**ChannelApprovalBaseVO*/
 export interface ChannelApprovalBaseVO {
-/**呈批说明*/
+/**经办部门意见*/
 approvalDesc: string;
 /**呈批标题*/
 approvalTitle: string;
@@ -812,6 +921,8 @@ operatorUsername: string;
 remark: string;
 /**结果*/
 result: string;
+/**OA流程ID*/
+summaryId: number;
 /**系统类型*/
 systemType: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -847,6 +958,8 @@ operatorUsername: string;
 remark: string;
 /**结果*/
 result: string;
+/**OA流程ID*/
+summaryId: number;
 /**系统类型*/
 systemType: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -856,7 +969,7 @@ updateUser: number;
 }
 /**ChannelApprovalUpdateBaseVO*/
 export interface ChannelApprovalUpdateBaseVO {
-/**呈批说明*/
+/**经办部门意见*/
 approvalDesc: string;
 /**呈批标题*/
 approvalTitle: string;
@@ -910,7 +1023,7 @@ export interface ChannelAttachmentBaseVO {
 fileId: string;
 /**文件名*/
 fileName: string;
-/**类型*/
+/**类型(BusinessLicense-（盖章）营业执照、PermitToOpenAccount-（盖章）开户许可证、CopyOfIDCardOfLegalPerson-（盖章）法人身份证正反面复印件、ConfirmationOfAuthorization-（盖章）签约授权确认函、PowerOfAttorney-（盖章）法人授权书、CopyOfClientIDCard-（盖章）被委托人身份证复印件、ComprehensiveQueryResult-综合查询被执行人查询结果、OtherAttachment-其他附件)*/
 type: string;
 }
 /**ChannelAttachmentChange*/
@@ -929,7 +1042,7 @@ fileId: string;
 fileName: string;
 /**ID*/
 id: number;
-/**类型*/
+/**类型(BusinessLicense-（盖章）营业执照、PermitToOpenAccount-（盖章）开户许可证、CopyOfIDCardOfLegalPerson-（盖章）法人身份证正反面复印件、ConfirmationOfAuthorization-（盖章）签约授权确认函、PowerOfAttorney-（盖章）法人授权书、CopyOfClientIDCard-（盖章）被委托人身份证复印件、ComprehensiveQueryResult-综合查询被执行人查询结果、OtherAttachment-其他附件)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -942,7 +1055,7 @@ export interface ChannelAttachmentChangeBaseVO {
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**类型*/
+/**类型(BusinessLicense-（盖章）营业执照、PermitToOpenAccount-（盖章）开户许可证、CopyOfIDCardOfLegalPerson-（盖章）法人身份证正反面复印件、ConfirmationOfAuthorization-（盖章）签约授权确认函、PowerOfAttorney-（盖章）法人授权书、CopyOfClientIDCard-（盖章）被委托人身份证复印件、ComprehensiveQueryResult-综合查询被执行人查询结果、OtherAttachment-其他附件)*/
 type: string;
 }
 /**ChannelAttachmentVO*/
@@ -963,7 +1076,7 @@ fileName: string;
 id: number;
 /**文件名后缀*/
 suffix: string;
-/**类型*/
+/**类型(BusinessLicense-（盖章）营业执照、PermitToOpenAccount-（盖章）开户许可证、CopyOfIDCardOfLegalPerson-（盖章）法人身份证正反面复印件、ConfirmationOfAuthorization-（盖章）签约授权确认函、PowerOfAttorney-（盖章）法人授权书、CopyOfClientIDCard-（盖章）被委托人身份证复印件、ComprehensiveQueryResult-综合查询被执行人查询结果、OtherAttachment-其他附件)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -1096,6 +1209,13 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**ChannelBankQueryParamVO*/
+export interface ChannelBankQueryParamVO {
+/**账户号码*/
+accountNo: string;
+/**渠道商ID*/
+channelId: number;
+}
 /**ChannelBankUpdateBaseVO*/
 export interface ChannelBankUpdateBaseVO {
 /**账户名称*/
@@ -1134,8 +1254,10 @@ export interface ChannelBankVO {
 accountName: string;
 /**账户号码*/
 accountNo: string;
-/**账号类型-中文(Base-基本存款账户、Commonly-一般存款账户)*/
+/**账号类型(Base-基本存款账户、Commonly-一般存款账户)*/
 accountType: string;
+/**账号类型-中文*/
+accountTypeName: string;
 /**开户银行*/
 branchName: string;
 /**联行号*/
@@ -1654,7 +1776,7 @@ export interface ChannelGradeAttachmentBaseVO {
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**类型*/
+/**类型(工商年报显示的缴纳社保人数截图-工商年报显示的缴纳社保人数截图、门店照片（20家以下提供所有，否则至少提供20家）-门店照片（20家以下提供所有，否则至少提供20家）、开发商《文字下发单》-开发商《文字下发单》、相关成交数据（须分子公司及事业部负责人签字）-相关成交数据（须分子公司及事业部负责人签字）、（签字）合格供应商推荐表-（签字）合格供应商推荐表、合作的开发商《分销合同》（可模糊佣金标准）-合作的开发商《分销合同》（可模糊佣金标准）、（签字）供应商考察基本情况表-（签字）供应商考察基本情况表、（盖章签字）供应商调查函-（盖章签字）供应商调查函、成交数据导出表-成交数据导出表、特批入库材料-特批入库材料、其他材料-其他材料)*/
 type: string;
 }
 /**ChannelGradeAttachmentChangeBaseVO*/
@@ -1663,7 +1785,7 @@ export interface ChannelGradeAttachmentChangeBaseVO {
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**类型*/
+/**类型(工商年报显示的缴纳社保人数截图-工商年报显示的缴纳社保人数截图、门店照片（20家以下提供所有，否则至少提供20家）-门店照片（20家以下提供所有，否则至少提供20家）、开发商《文字下发单》-开发商《文字下发单》、相关成交数据（须分子公司及事业部负责人签字）-相关成交数据（须分子公司及事业部负责人签字）、（签字）合格供应商推荐表-（签字）合格供应商推荐表、合作的开发商《分销合同》（可模糊佣金标准）-合作的开发商《分销合同》（可模糊佣金标准）、（签字）供应商考察基本情况表-（签字）供应商考察基本情况表、（盖章签字）供应商调查函-（盖章签字）供应商调查函、成交数据导出表-成交数据导出表、特批入库材料-特批入库材料、其他材料-其他材料)*/
 type: string;
 }
 /**ChannelGradeAttachmentChangeVO*/
@@ -1684,7 +1806,7 @@ gradeId: number;
 id: number;
 /**文件名后缀*/
 suffix: string;
-/**类型*/
+/**类型(工商年报显示的缴纳社保人数截图-工商年报显示的缴纳社保人数截图、门店照片（20家以下提供所有，否则至少提供20家）-门店照片（20家以下提供所有，否则至少提供20家）、开发商《文字下发单》-开发商《文字下发单》、相关成交数据（须分子公司及事业部负责人签字）-相关成交数据（须分子公司及事业部负责人签字）、（签字）合格供应商推荐表-（签字）合格供应商推荐表、合作的开发商《分销合同》（可模糊佣金标准）-合作的开发商《分销合同》（可模糊佣金标准）、（签字）供应商考察基本情况表-（签字）供应商考察基本情况表、（盖章签字）供应商调查函-（盖章签字）供应商调查函、成交数据导出表-成交数据导出表、特批入库材料-特批入库材料、其他材料-其他材料)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -1735,7 +1857,7 @@ gradeId: number;
 id: number;
 /**文件名后缀*/
 suffix: string;
-/**类型*/
+/**类型(工商年报显示的缴纳社保人数截图-工商年报显示的缴纳社保人数截图、门店照片（20家以下提供所有，否则至少提供20家）-门店照片（20家以下提供所有，否则至少提供20家）、开发商《文字下发单》-开发商《文字下发单》、相关成交数据（须分子公司及事业部负责人签字）-相关成交数据（须分子公司及事业部负责人签字）、（签字）合格供应商推荐表-（签字）合格供应商推荐表、合作的开发商《分销合同》（可模糊佣金标准）-合作的开发商《分销合同》（可模糊佣金标准）、（签字）供应商考察基本情况表-（签字）供应商考察基本情况表、（盖章签字）供应商调查函-（盖章签字）供应商调查函、成交数据导出表-成交数据导出表、特批入库材料-特批入库材料、其他材料-其他材料)*/
 type: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
@@ -2186,6 +2308,8 @@ operateTime: string;
 operation: string;
 /**处理人*/
 operator: number;
+/**处理人岗位*/
+operatorJobName: string;
 /**处理人姓名*/
 operatorName: string;
 /**处理意见*/
@@ -2215,6 +2339,8 @@ operateTime: string;
 operation: string;
 /**处理人*/
 operator: number;
+/**处理人岗位*/
+operatorJobName: string;
 /**处理人姓名*/
 operatorName: string;
 /**处理意见*/
@@ -2226,6 +2352,36 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**ChannelGradeStandard*/
+export interface ChannelGradeStandard {
+/**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
+channelGrade: string;
+/**城市等级(OneTierCity-一线城市、SecondTierCity-二线城市、ThirdTierCity-三线城市)*/
+cityGrade: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**评级项*/
+gradeItem: string;
+/**评级标准*/
+gradeStandard: string;
+/**ID*/
+id: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**ChannelGradeStandardAndAttachmentVO*/
+export interface ChannelGradeStandardAndAttachmentVO {
+/**所需材料*/
+channelGradeStandardAttachments: string[];
+/**评级标准集合*/
+channelGradeStandards: ChannelGradeStandard[];
+}
 /**ChannelGradeStandardAttachment*/
 export interface ChannelGradeStandardAttachment {
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -2236,7 +2392,7 @@ createUser: number;
 deleted: number;
 /**ID*/
 id: number;
-/**类型*/
+/**类型(工商年报显示的缴纳社保人数截图-工商年报显示的缴纳社保人数截图、门店照片（20家以下提供所有，否则至少提供20家）-门店照片（20家以下提供所有，否则至少提供20家）、开发商《文字下发单》-开发商《文字下发单》、相关成交数据（须分子公司及事业部负责人签字）-相关成交数据（须分子公司及事业部负责人签字）、（签字）合格供应商推荐表-（签字）合格供应商推荐表、合作的开发商《分销合同》（可模糊佣金标准）-合作的开发商《分销合同》（可模糊佣金标准）、（签字）供应商考察基本情况表-（签字）供应商考察基本情况表、（盖章签字）供应商调查函-（盖章签字）供应商调查函、成交数据导出表-成交数据导出表、特批入库材料-特批入库材料、其他材料-其他材料)*/
 materialType: string;
 /**渠道ID*/
 standardId: number;
@@ -2383,6 +2539,8 @@ export interface ChannelIdAndCityCodeQueryVO {
 channelId: number;
 /**城市编号*/
 cityCode: string;
+/**事业部*/
+departmentOrgId: number;
 }
 /**ChannelInvitationCodeDetail*/
 export interface ChannelInvitationCodeDetail {
@@ -2477,6 +2635,8 @@ channelEnum: string;
 cycleCity: string;
 /**事业部ID*/
 departmentOrgId: number;
+/**是否不需要渠道等级审核通过*/
+isNotNeedChannelLevelApprove: boolean;
 /**名称*/
 name: string;
 /**(必填)当前页*/
@@ -2619,6 +2779,8 @@ operateTime: string;
 operation: string;
 /**处理人*/
 operator: number;
+/**处理人岗位*/
+operatorJobName: string;
 /**处理人姓名*/
 operatorName: string;
 /**处理意见*/
@@ -2648,6 +2810,8 @@ operateTime: string;
 operation: string;
 /**处理人*/
 operator: number;
+/**处理人岗位*/
+operatorJobName: string;
 /**处理人姓名*/
 operatorName: string;
 /**处理意见*/
@@ -2889,6 +3053,8 @@ status: string;
 export interface DealChannelAgentVO {
 /**渠道商ID*/
 channelId: number;
+/**渠道商名称*/
+channelName: string;
 /**邮箱*/
 email: string;
 /**ID*/
@@ -2901,6 +3067,8 @@ name: string;
 settlementFlag: string;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
+/**用户ID*/
+userId: number;
 }
 /**FlowComment*/
 export interface FlowComment {
@@ -2951,7 +3119,7 @@ export interface OaAttachmentVO {
 fileId: string;
 /**文件名称*/
 fileName: string;
-/**文件类型*/
+/**文件类型(Specially-特批入库材料、SupplierList-供应商名录)*/
 type: string;
 }
 /**OaFlowInfoModel*/
@@ -2993,4 +3161,11 @@ setupTime: string;
 shortName: string;
 /**公司类型(limitedLiabilityCompany-有限责任公司（自然人投资或控股）、CompanyLimitedByShares-股份有限公司、IndividualIndustrial-个体工商户)*/
 type: string;
+}
+/**batchDeleteListVO*/
+export interface batchDeleteListVO {
+/**渠道商ID*/
+channelId: number;
+/**要删除的ID集合*/
+ids: number[];
 }
