@@ -2720,6 +2720,7 @@
 
     // 改变公司类型
     changeAgencyType() {
+      this.packageIdsList = [];
       this.initAgencyInfo();
     }
 
@@ -2745,6 +2746,7 @@
     // 改变渠道公司
     changeCompany(value: any) {
       console.log('changeCompany:', value);
+      this.packageIdsList = [];
       this.agencySearchName = null;
       this.initAgencyInfo('company');
       // 获取渠道分销合同
