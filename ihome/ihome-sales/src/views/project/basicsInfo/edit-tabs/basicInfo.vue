@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 09:03:08
+ * @LastEditTime: 2021-04-20 16:13:47
 -->
 <template>
   <div>
@@ -770,11 +770,9 @@ export default class EditBasicInfo extends Vue {
         ...v,
         title: (this.$root as any).dictAllName(v.propertyEnum, "Property"),
       }));
-      this.form.jingwei = data.lat
-        ? data.lat
-        : 0 + "," + data.lng
-        ? data.lng
-        : 0;
+      if (data.lat && data.lng) {
+        this.form.jingwei = data.lat + "," + data.lng;
+      }
       let arr: any = [];
       this.contantList.forEach((v: any) => {
         arr.push(
@@ -951,8 +949,12 @@ export default class EditBasicInfo extends Vue {
         obj.districtName = (this.$root as any).getAreaName(
           this.form.provinceOption[2]
         );
-        obj.lng = this.form.jingwei.split(",")[0];
-        obj.lat = this.form.jingwei.split(",")[1];
+        if (this.form.jingwei) {
+          obj.lng = this.form.jingwei.split(",")[0];
+          obj.lat = this.form.jingwei.split(",")[1];
+        } else {
+          this.$message.warning("请点击地图坐标获取经纬度");
+        }
         obj.searchAddr = this.form.searchAddr;
         obj.propertyArgs = this.checkBoxChangeList.map((v: any) => ({
           ...v.msg,
