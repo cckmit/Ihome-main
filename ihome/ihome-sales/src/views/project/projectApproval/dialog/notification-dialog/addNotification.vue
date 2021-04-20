@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-02-03 11:35:42
+ * @LastEditTime: 2021-04-20 20:37:07
 -->
 <template>
   <el-dialog
@@ -209,8 +209,6 @@ export default class AddNotification extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-</style>
-<style lang="scss" >
 .inputTpye {
   display: flex;
   justify-content: flex-start;
@@ -222,7 +220,7 @@ export default class AddNotification extends Vue {
 }
 .formItem {
   /deep/ .el-form-item__label {
-    line-height: 20px;
+    line-height: 20px !important;
   }
 }
 </style>
