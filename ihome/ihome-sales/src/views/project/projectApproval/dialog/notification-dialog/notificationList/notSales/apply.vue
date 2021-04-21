@@ -161,7 +161,9 @@ export default class NotSalesApply extends Vue {
         agencyContrictId: this.agencyContrictId,
       });
       this.info = { ...data, ...JSON.parse(res), timeList: [] };
-      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+      if (data.contractStartTime && data.contractEndTime) {
+        this.info.timeList = [data.contractStartTime, data.contractEndTime];
+      }
       this.fileList = data.attachTermItemVOS.map((v: any) => ({
         fileId: v.fileId,
         fileName: v.fileName,
