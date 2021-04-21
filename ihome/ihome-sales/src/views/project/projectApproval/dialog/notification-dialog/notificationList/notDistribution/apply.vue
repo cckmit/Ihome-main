@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 10:29:37
+ * @LastEditTime: 2021-04-21 18:24:12
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -105,14 +105,17 @@
           <div v-if="isShow">
             <el-col
               :span='6'
-              style="margin-left: -70px"
+              class="width-200"
             >
-              <el-form-item prop="companyKind">
+              <el-form-item
+                prop="companyKind"
+                label-width="50px"
+              >
                 <el-select
                   v-model="info.companyKind"
                   clearable
                   placeholder="请选择公司种类"
-                  class="width--100"
+                  class="width--150"
                   @change="companyKindChange"
                 >
                   <el-option
@@ -130,22 +133,31 @@
             >
               <IhSelectPageByCompany
                 v-if="info.companyKind === 'InfieldCompany'"
-                style="flex: 1;max-width: 250px;"
+                style="flex: 1;max-width: 300px;"
                 clearable
                 v-model="info.designatedAgencyId"
                 @changeOption="getChannelInfo"
                 @clear="queryUnderData('123')"
               ></IhSelectPageByCompany>
-              <IhSelectPageByChannel
-                v-else-if="info.companyKind === 'ChannelCompany'"
-                v-model="info.designatedAgencyId"
-                clearable
-                placeholder="渠道商名称"
-                :params="searchConditon"
-                :search-name="info.designatedAgency"
-                @changeOption="getChannelInfo"
-                @clear="queryUnderData('123')"
-              ></IhSelectPageByChannel>
+              <div v-else-if="info.companyKind === 'ChannelCompany'">
+                <IhSelectPageByChannel
+                  v-model="info.designatedAgencyId"
+                  style="flex: 1;max-width: 300px;"
+                  clearable
+                  placeholder="渠道商名称"
+                  :params="searchConditon"
+                  :search-name="info.designatedAgency"
+                  @changeOption="getChannelInfo"
+                  @clear="queryUnderData('123')"
+                ></IhSelectPageByChannel>
+                <el-link
+                  v-if="info.designatedAgencyId"
+                  type="primary"
+                  :href="`/web-sales/channelBusiness/info?id=${info.designatedAgencyId}`"
+                  class="margin-left-10"
+                  target="_blank"
+                >详情</el-link>
+              </div>
             </el-col>
           </div>
         </el-row>

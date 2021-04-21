@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 10:41:40
+ * @LastEditTime: 2021-04-21 14:54:29
 -->
 <template>
   <IhPage label-width="100px">
@@ -15,12 +15,29 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="项目盘编">
+            <el-form-item label="周期名称">
               <el-input
-                v-model="queryPageParameters.proNo"
+                v-model="queryPageParameters.termName"
                 clearable
-                placeholder="请输入项目盘编"
+                placeholder="请输入周期名称"
               ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="审核状态">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.auditEnum"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('Audit')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -37,16 +54,22 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="周期名称">
-              <el-input
-                v-model="queryPageParameters.termName"
+            <el-form-item label="启动事业部">
+              <IhSelectPageDivision
+                v-model="queryPageParameters.startDivisionId"
                 clearable
-                placeholder="请输入周期名称"
-              ></el-input>
+              >
+              </IhSelectPageDivision>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
+          <el-col :span="8">
+            <el-form-item label="发起人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.initiatorId"
+                clearable
+              ></IhSelectPageUser>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="业务类型">
               <el-select
@@ -70,20 +93,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="周期审核状态">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.auditEnum"
+            <el-form-item label="项目盘编">
+              <el-input
+                v-model="queryPageParameters.proNo"
                 clearable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('Audit')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
+                placeholder="请输入项目盘编"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -106,7 +121,6 @@
         </el-row>
       </el-form>
     </template>
-
     <template v-slot:btn>
       <el-row>
         <el-button
@@ -172,6 +186,16 @@
           width="300"
         ></el-table-column>
         <el-table-column
+          prop="startDivisionName"
+          label="启动事业部"
+          width="220"
+        ></el-table-column>
+        <el-table-column
+          prop="initiatorName"
+          label="发起人"
+          width="120"
+        ></el-table-column>
+        <el-table-column
           prop="busTypeEnum"
           label="业务类型"
         >
@@ -189,7 +213,7 @@
         </el-table-column>
         <el-table-column
           prop="auditEnum"
-          label="周期审核状态"
+          label="审核状态"
           width="150"
         >
           <template v-slot="{ row }">{{
@@ -321,15 +345,17 @@ import SetContractStatus from "./dialog/list-dialog/setContractStatus.vue";
 })
 export default class ProjectApproval extends Vue {
   queryPageParameters: any = {
-    proNo: null,
-    proId: null,
     termName: null,
+    auditEnum: null,
+    proId: null,
+    startDivisionId: null,
+    initiatorId: null,
     busTypeEnum: null,
+    proNo: null,
+    state: null,
     province: null,
     city: null,
     district: null,
-    auditEnum: null,
-    state: null,
   };
   provinceOption: any = [];
   selection: any = [];
@@ -406,15 +432,17 @@ export default class ProjectApproval extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      proNo: null,
-      proId: null,
       termName: null,
+      auditEnum: null,
+      proId: null,
+      startDivisionId: null,
+      initiatorId: null,
       busTypeEnum: null,
+      proNo: null,
+      state: null,
       province: null,
       city: null,
       district: null,
-      auditEnum: null,
-      state: null,
     });
     this.provinceOption = [];
   }

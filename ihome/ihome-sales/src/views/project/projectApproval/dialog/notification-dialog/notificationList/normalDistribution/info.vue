@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 10:29:15
+ * @LastEditTime: 2021-04-21 18:15:21
 -->
 <template>
   <ih-page class="text-left">
@@ -177,9 +177,12 @@
           <div v-if="isShow">
             <el-col
               :span='6'
-              style="margin-left: -50px"
+              class="width-200"
             >
-              <el-form-item prop="companyKind">
+              <el-form-item
+                prop="companyKind"
+                label-width="20px"
+              >
                 <el-select
                   v-model="info.companyKind"
                   disabled
@@ -198,22 +201,29 @@
               :span='6'
               class="margin-left-10"
             >
-              <el-form-item label-width="0">
-                <IhSelectPageByCompany
-                  v-if="info.companyKind === 'InfieldCompany'"
-                  style="flex: 1;max-width: 300px;"
-                  disabled
-                  :search-name="info.designatedAgency"
-                  v-model="info.designatedAgencyId"
-                ></IhSelectPageByCompany>
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 300px;"
+                disabled
+                :search-name="info.designatedAgency"
+                v-model="info.designatedAgencyId"
+              ></IhSelectPageByCompany>
+              <div v-else-if="info.companyKind === 'ChannelCompany'">
                 <IhSelectPageByChannel
-                  v-else-if="info.companyKind === 'ChannelCompany'"
                   v-model="info.designatedAgencyId"
                   disabled
+                  style="flex: 1;max-width: 300px;"
                   placeholder="渠道商名称"
                   :search-name="info.designatedAgency"
                 ></IhSelectPageByChannel>
-              </el-form-item>
+                <el-link
+                  v-if="info.designatedAgencyId"
+                  type="primary"
+                  :href="`/web-sales/channelBusiness/info?id=${info.designatedAgencyId}`"
+                  class="margin-left-10"
+                  target="_blank"
+                >详情</el-link>
+              </div>
             </el-col>
           </div>
         </el-row>
