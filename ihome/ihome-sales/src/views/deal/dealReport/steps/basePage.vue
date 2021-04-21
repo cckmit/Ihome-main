@@ -2981,6 +2981,7 @@
       this.brokerSearchName = null;
       // 初始化渠道分销合同
       this.postData.contNo = null;
+      this.postData.isMat = null;
       this.contNoList = [];
       // 初始化收派套餐
       this.initAllReceiveList();
