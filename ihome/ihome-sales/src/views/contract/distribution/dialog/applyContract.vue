@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 16:30:11
+ * @LastEditTime: 2021-04-21 17:08:50
 -->
 <template>
   <el-dialog
@@ -29,6 +29,7 @@
               v-model="queryPageParameters.termId"
               placeholder="请选择周期"
               clearable
+              :params="{auditEnums: ['TermAdopt','ConstractWait','ConstractConduct','ConstractAdopt','ConstractReject']}"
             ></IhSelectPageByCycle>
           </el-form-item>
         </el-col>
