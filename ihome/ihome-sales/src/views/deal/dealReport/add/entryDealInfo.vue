@@ -98,7 +98,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="一手代理公司" :prop="oneAgentRequiredFlag ? 'oneAgentTeamId' : 'notEmpty'">
+          <el-form-item label="一手代理公司">
             <el-select
               v-model="postData.oneAgentTeamId"
               clearable
@@ -297,7 +297,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="是否垫佣" :prop="postData.contType === 'DistriDeal' ? 'isMat' : 'notEmpty'">
+          <el-form-item label="是否垫佣">
             <el-select
               v-model="postData.isMat"
               disabled
@@ -1085,7 +1085,11 @@
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       await this.getInformation(id, res?.cycleId);
       // 获取一手代理合同的值
-      this.firstAgencyCompanyContList = await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
+      if (res.oneAgentTeamId) {
+        await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
+      } else {
+        this.firstAgencyCompanyContList = [];
+      }
       // 获取对应的一手代理合同的ids
       this.firstAgencyIdsList = [];
       if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
@@ -1098,7 +1102,11 @@
       // 获取渠道分销合同的值
       this.packageIdsList = [];
       if (res.agencyList && res.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        if (res.agencyList[0].agencyId) {
+          await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        } else {
+          this.contNoList = [];
+        }
         // 获取对应的渠道分销合同的ids
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list: any) => {
@@ -1158,21 +1166,6 @@
         this.postData.receiveVO = this.initReceiveVO(res.receiveList);
         this.postData.documentVO = this.initDocumentVO(res.charge, res.contType, res.documentList);
       });
-    }
-
-    // 编辑 --- 获取分销协议
-    async initContNoList(data: any, contNo: any) {
-      let info: any = await (this as any).$parent.getContNoList(data); // 获取分销协议
-      this.packageIdsList = [];
-      this.contNoList = [];
-      if (info && info.contracts && info.contracts.length) {
-        this.contNoList = info.contracts;
-        info.contracts.forEach((item: any) => {
-          if (item.contractNo === contNo) {
-            this.packageIdsList = item.packageMxIds;
-          }
-        });
-      }
     }
 
     // 编辑 --- 通过周期ID获取信息
@@ -1818,6 +1811,7 @@
       this.brokerSearchName = null;
       // 初始化渠道分销合同
       this.postData.contNo = null;
+      this.postData.isMat = null;
       this.contNoList = [];
       // 初始化收派套餐
       this.initReceive();
@@ -2019,6 +2013,7 @@
     * companyKind: String。渠道公司类型 AgencyCompany
     * */
     async getOneAgentTeamContNo(type: any = '', channelCompanyId: any = '', cycleId: any = '', companyKind: any = '') {
+      if (!channelCompanyId || !cycleId) return;
       let postData: any = {
         channelCompanyId: channelCompanyId,
         channelCompanyKind: companyKind,

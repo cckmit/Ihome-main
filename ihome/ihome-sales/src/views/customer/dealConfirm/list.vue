@@ -3,8 +3,8 @@
  * @version: 1.0
  * @Author: yag
  * @Date: 2021年2月9日17:39:50
- * @LastEditors: yag
- * @LastEditTime: 2021年2月9日17:39:53
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-21 14:53:59
 -->
 <template>
   <IhPage label-width="100px">
@@ -38,7 +38,7 @@
                     queryPageParameters.proId = data.proId;
                   }
                 "
-				:params="{auditEnum : 'ConstractAdopt'}"
+                :params="{auditEnums: ['ConstractAdopt']}"
                 v-model="queryPageParameters.proCycleId"
                 placeholder="请选择项目周期"
               ></IhSelectPageByCycle>
@@ -106,8 +106,14 @@
                 v-model="queryPageParameters.exMarket"
                 placeholder="请选择项目类型"
               >
-                <el-option label="市场化项目" value="1">市场化项目</el-option>
-                <el-option label="非市场化项目" value="0">非市场化项目</el-option>
+                <el-option
+                  label="市场化项目"
+                  value="1"
+                >市场化项目</el-option>
+                <el-option
+                  label="非市场化项目"
+                  value="0"
+                >非市场化项目</el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -116,22 +122,35 @@
     </template>
     <template #btn>
       <el-row>
-        <el-button type="primary" @click="search()">查询</el-button>
-        <el-button type="info" @click="reset()">重置</el-button>
+        <el-button
+          type="primary"
+          @click="search()"
+        >查询</el-button>
+        <el-button
+          type="info"
+          @click="reset()"
+        >重置</el-button>
         <el-button
           type="success"
           @click="handleExport()"
           v-has="'B.SALES.CUSTOMER.DEALCONFIRM.EXPORTLIST'"
-          >导出列表</el-button
-        >
+        >导出列表</el-button>
       </el-row>
     </template>
     <template #table>
       <br />
       <!-- table-标签页 -->
-      <el-tabs v-model="tabsValue" type="border-card" @tab-click="changTable">
+      <el-tabs
+        v-model="tabsValue"
+        type="border-card"
+        @tab-click="changTable"
+      >
         <template v-for="(i, n) in tabsList">
-          <el-tab-pane :label="i.label" :name="i.name" :key="n">
+          <el-tab-pane
+            :label="i.label"
+            :name="i.name"
+            :key="n"
+          >
             <!-- table-content -->
             <el-table
               class="ih-table"
@@ -165,17 +184,30 @@
                 prop="proCycleDept"
                 width="250"
               ></el-table-column>
-              <el-table-column label="报备类型" prop="reportType" width="120">
+              <el-table-column
+                label="报备类型"
+                prop="reportType"
+                width="120"
+              >
                 <template v-slot="{ row }">{{
                   $root.dictAllName(row.reportType, "ReportType")
                 }}</template>
               </el-table-column>
-              <el-table-column label="客户信息" width="200">
+              <el-table-column
+                label="客户信息"
+                width="200"
+              >
                 <template v-slot="{ row }">
-                  <div class="text-ellipsis" :title="row.name">
+                  <div
+                    class="text-ellipsis"
+                    :title="row.name"
+                  >
                     {{ `客户姓名：${row.name}` }}
                   </div>
-                  <div class="text-ellipsis" :title="row.sex">
+                  <div
+                    class="text-ellipsis"
+                    :title="row.sex"
+                  >
                     {{ `客户性别：`
                     }}{{ $root.dictAllName(row.sex, "SexType") }}
                   </div>
@@ -219,7 +251,10 @@
                 prop="expectedTime"
                 width="140"
               ></el-table-column>
-              <el-table-column label="栋座房号" width="200">
+              <el-table-column
+                label="栋座房号"
+                width="200"
+              >
                 <template v-slot="{ row }">
                   <div class="text-ellipsis">
                     {{ `${(row.subBuildingName || "" )+row.roomNo}` }}
@@ -245,7 +280,10 @@
                 min-width="120"
               >
                 <template slot-scope="scope">
-                  <el-link type="primary" @click="goToDealInfo(scope)">{{
+                  <el-link
+                    type="primary"
+                    @click="goToDealInfo(scope)"
+                  >{{
                     scope.row.dealCode
                   }}</el-link>
                 </template>
@@ -268,29 +306,25 @@
                     v-if="row.exMarket === 0 && i.name === 'NewDeal'"
                     v-has="'B.SALES.CUSTOMER.DEALCONFIRM.SYNC'"
                     @click="synchronization(row)"
-                    >同步状态</el-link
-                  >
+                  >同步状态</el-link>
                   <el-link
                     type="primary"
                     v-if="row.exMarket === 1 && i.name === 'NewDeal'"
                     @click="validDealOperation(row)"
                     v-has="'B.SALES.CUSTOMER.DEALCONFIRM.EFFECTIVE'"
                     class="margin-right-10"
-                    >有效</el-link
-                  >
+                  >有效</el-link>
                   <el-link
                     type="primary"
                     v-if="row.exMarket === 1 && i.name === 'NewDeal'"
                     @click="invalidDealOperation(row)"
                     v-has="'B.SALES.CUSTOMER.DEALCONFIRM.INVALID'"
-                    >无效</el-link
-                  >
+                  >无效</el-link>
                   <el-link
                     type="primary"
                     @click="fileDetailOperation(row)"
                     v-has="'B.SALES.CUSTOMER.DEALCONFIRM.FILEDETAIL'"
-                    >附件详情</el-link
-                  >
+                  >附件详情</el-link>
                 </template>
               </el-table-column>
             </el-table>
@@ -546,7 +580,6 @@ export default class ReturnConfirmList extends Vue {
     });
     window.open(router.href, "_blank");
   }
-
 }
 </script>
 <style lang="scss" scoped>

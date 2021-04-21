@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 21:58:56
+ * @LastEditTime: 2021-04-21 11:31:47
 -->
 <template>
   <IhPage class="text-left">
@@ -40,7 +40,13 @@
             <el-form-item label="甲方公司">{{form.partyCompany}}</el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="乙方公司">{{form.channelCompanyName}}</el-form-item>
+            <el-form-item label="乙方公司">
+              <el-link
+                type="primary"
+                :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                target="_blank"
+              >{{form.channelCompanyName}}</el-link>
+            </el-form-item>
           </el-col>
         </el-row>
         <el-row>

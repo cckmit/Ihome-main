@@ -26,7 +26,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "element-ui": "^2.13.2",
-    "ihome-common": "^2.0.12",
+    "ihome-common": "^2.0.13",
     "js-cookie": "^2.2.1",
     "nprogress": "^0.2.0",
     "umy-ui": "^1.1.6",

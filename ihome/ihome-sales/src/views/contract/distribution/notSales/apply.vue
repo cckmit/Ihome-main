@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 20:27:00
+ * @LastEditTime: 2021-04-21 11:31:25
 -->
 <template>
   <IhPage class="text-left">
@@ -77,6 +77,14 @@
                     @changeOption="getChannelInfo"
                     :params="searchParams"
                   ></IhSelectPageByChannel>
+                  <el-link
+                    class="margin-left-10"
+                    v-show="form.channelCompanyId"
+                    type="primary"
+                    :underline="false"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >详情</el-link>
                 </template>
               </div>
             </el-form-item>

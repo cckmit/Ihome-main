@@ -4,13 +4,12 @@
  * @Author: ywl
  * @Date: 2020-12-04 16:33:16
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-01 17:09:20
+ * @LastEditTime: 2021-04-21 17:00:45
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { IhSelectPageBase } from "ihome-common/ui/packages/select-page/index";
-
-import { post_term_getList } from "@/api/project/index";
+import IhSelectPageBase from "./select-page-base.vue";
+import { post_term_fuzzySearch } from "@/api/project/index";
 
 @Component({
   extends: IhSelectPageBase,
@@ -50,7 +49,7 @@ export default class SelectPageByCycle extends Vue {
 
   async getSelectList() {
     this.searchLoad = true;
-    let res = await post_term_getList({
+    let res = await post_term_fuzzySearch({
       termName: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,

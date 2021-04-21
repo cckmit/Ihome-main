@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-20 15:03:13
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-14 08:45:34
+ * @LastEditTime: 2021-04-21 16:59:32
 -->
 <template>
   <el-select
@@ -169,7 +169,7 @@ export default class IhSelectPage extends Vue {
   //   }
   // }
   @Watch("filterText")
-  filter(val: any) {
+  filter(val: any, oldVal: any) {
     if (this.isInit) {
       if (val.length >= 2 && !this.isKeyUp) {
         this.pageInfo.pageNum = 1;
@@ -179,7 +179,7 @@ export default class IhSelectPage extends Vue {
         } else {
           debounce(this.getSelectList, 500);
         }
-      } else if (!val.length) {
+      } else if (oldVal && oldVal.length && val.length === 0) {
         this.pageInfo.pageNum = 1;
         this.getSelectList();
       }
@@ -252,7 +252,7 @@ export default class IhSelectPage extends Vue {
   }
   handleKeyup() {
     if (this.isKeyUp) {
-      this.getSelectList();
+      // this.getSelectList();
     }
   }
   async getSelectList() {
