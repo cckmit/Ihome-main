@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 09:41:36
+ * @LastEditTime: 2021-04-21 10:28:23
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -238,7 +238,9 @@ export default class NotSalesApply extends Vue {
       ...JSON.parse(res),
       timeList: [],
     };
-    this.info.timeList = [data.contractStartTime, data.contractEndTime];
+    if (data.contractStartTime && data.contractEndTime) {
+      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+    }
     this.fileList = data.attachTermItemVOS.map((v: any) => ({
       fileId: v.fileId,
       fileName: v.fileName,
