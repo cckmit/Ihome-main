@@ -81,7 +81,7 @@
             <el-form-item label="渠道公司">
               <div v-if="infoForm.agencyList && infoForm.agencyList.length">
                 {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
-                <span style="color: red">[{{$root.dictAllName(infoForm.companyKind, 'CompanyKind')}}]</span>
+                <span style="color: red">[{{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].companyKind, 'CompanyKind') : '-'}}]</span>
               </div>
               <div v-else>-</div>
             </el-form-item>
