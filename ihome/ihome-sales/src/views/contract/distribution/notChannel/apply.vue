@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:22:32
+ * @LastEditTime: 2021-04-21 19:41:58
 -->
 <template>
   <IhPage class="text-left">
@@ -98,13 +98,22 @@
                     target="_blank"
                   >详情</el-link>
                 </template>
-                <IhSelectPageByAgency
-                  v-else-if="form.channelCompanyKind === 'AgencyCompany'"
-                  placeholder="请选择渠道公司"
-                  style="flex: 1;max-width: 250px;"
-                  v-model="form.channelCompanyId"
-                  @changeOption="getAgencyCompany"
-                ></IhSelectPageByAgency>
+                <template v-else-if="form.channelCompanyKind === 'AgencyCompany'">
+                  <IhSelectPageByAgency
+                    placeholder="请选择渠道公司"
+                    style="flex: 1;max-width: 250px;"
+                    v-model="form.channelCompanyId"
+                    @changeOption="getAgencyCompany"
+                  ></IhSelectPageByAgency>
+                  <el-link
+                    class="margin-left-10"
+                    v-show="form.channelCompanyId"
+                    type="primary"
+                    :underline="false"
+                    :href="`/web-sales/firstAgency/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >详情</el-link>
+                </template>
               </div>
             </el-form-item>
           </el-col>
