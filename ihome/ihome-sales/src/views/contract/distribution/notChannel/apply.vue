@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 15:50:36
+ * @LastEditTime: 2021-04-21 11:22:32
 -->
 <template>
   <IhPage class="text-left">
@@ -89,6 +89,14 @@
                     @changeOption="getChannelInfo"
                     :params="searchParams"
                   ></IhSelectPageByChannel>
+                  <el-link
+                    class="margin-left-10"
+                    v-show="form.channelCompanyId"
+                    type="primary"
+                    :underline="false"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >详情</el-link>
                 </template>
                 <IhSelectPageByAgency
                   v-else-if="form.channelCompanyKind === 'AgencyCompany'"

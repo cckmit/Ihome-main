@@ -51,7 +51,13 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="乙方公司">{{form.channelCompanyName}}</el-form-item>
+            <el-form-item label="乙方公司">
+              <el-link
+                type="primary"
+                :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                target="_blank"
+              >{{form.channelCompanyName}}</el-link>
+            </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item
@@ -206,7 +212,19 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}
+              <template v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">
+                <div style="display: flex;">
+                  <span>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
+                  <el-link
+                    type="primary"
+                    class="margin-left-10"
+                    style="display: inline;"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >{{form.channelCompanyName}}</el-link>
+                </div>
+              </template>
+              <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>

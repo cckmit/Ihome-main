@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-20 15:53:17
+ * @LastEditTime: 2021-04-21 11:28:42
 -->
 <template>
   <IhPage class="text-left">
@@ -78,6 +78,14 @@
                     @changeOption="getChannelInfo"
                     :params="searchParams"
                   ></IhSelectPageByChannel>
+                  <el-link
+                    class="margin-left-10"
+                    v-show="form.channelCompanyId"
+                    type="primary"
+                    :underline="false"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >详情</el-link>
                 </template>
               </div>
             </el-form-item>
@@ -144,7 +152,19 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="渠道类型">
-              {{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}
+              <template v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">
+                <div style="display: flex;">
+                  <span>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
+                  <el-link
+                    type="primary"
+                    class="margin-left-10"
+                    style="display: inline;"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >{{form.channelCompanyName}}</el-link>
+                </div>
+              </template>
+              <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
