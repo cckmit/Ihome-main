@@ -84,7 +84,7 @@
           <el-col :span="8">
             <el-form-item label="渠道公司">
               <div v-if="postData.agencyList && postData.agencyList.length">
-                {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].agencyName : ''}}
+                {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].companyKind === 'InfieldCompany' ? postData.agencyList[0].companyName : postData.agencyList[0].agencyName : '-'}}
                 <span style="color: red">[{{postData.agencyList && postData.agencyList.length ? $root.dictAllName(postData.agencyList[0].companyKind, 'CompanyKind') : '-'}}]</span>
               </div>
               <div v-else>-</div>
