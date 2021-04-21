@@ -1557,14 +1557,6 @@
           });
         }
       }
-      if (res.cycleId && res.house.propertyType && res.agencyList && res.agencyList.length) {
-        let params: any = {
-          channelId: res.agencyList[0].agencyId,
-          cycleId: res.cycleId,
-          property: res.house.propertyType
-        }
-        await this.initContNoList(params, res.contNo);
-      }
       (this as any).$nextTick(async () => {
         // 初始化按钮显示
         this.addFlag = false;
@@ -1651,21 +1643,6 @@
           this.dividerTips = '加载成功';
         }
       });
-    }
-
-    // 编辑 --- 获取分销协议
-    async initContNoList(data: any, contNo: any) {
-      let info: any = await (this as any).$parent.getContNoList(data); // 获取分销协议
-      this.packageIdsList = [];
-      this.contNoList = [];
-      if (info && info.contracts && info.contracts.length) {
-        this.contNoList = info.contracts;
-        info.contracts.forEach((item: any) => {
-          if (item.contractNo === contNo) {
-            this.packageIdsList = item.packageMxIds;
-          }
-        });
-      }
     }
 
     // 编辑 --- 通过周期ID获取信息

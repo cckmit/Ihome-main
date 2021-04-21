@@ -2065,33 +2065,6 @@
       }
     }
 
-    /*
-    * 获取分销协议编号选项和对应的packageIDS
-    * channelId: 渠道商公司ID
-    * cycleId: 周期ID
-    * property: 物业类型
-    * contNo: 初始化的分销协议编号
-    * */
-    async getContNoList(channelId: any, cycleId: any, property: any, contNo: any) {
-      let objData: any = {
-        channelId: channelId, // 渠道商公司ID
-        cycleId: cycleId, // 周期ID
-        property: property // 物业类型
-      }
-      const info: any = await post_pageData_initDistribution(objData);
-      if (info.contracts && info.contracts.length) {
-        this.contNoList = info.contracts;
-        this.packageIdsList = [];
-        info.contracts.forEach((item: any) => {
-          if (item.contractNo === contNo) {
-            this.packageIdsList = item.packageMxIds;
-          }
-        });
-      } else {
-        this.contNoList = [];
-      }
-    }
-
     // 根据项目周期和房号初始化页面数据
     async initPageById(cycleId: any, roomId: any, propertyType: any = '') {
       if (!cycleId || !roomId || !propertyType) return;

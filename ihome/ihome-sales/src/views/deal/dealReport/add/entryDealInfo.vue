@@ -1168,21 +1168,6 @@
       });
     }
 
-    // 编辑 --- 获取分销协议
-    async initContNoList(data: any, contNo: any) {
-      let info: any = await (this as any).$parent.getContNoList(data); // 获取分销协议
-      this.packageIdsList = [];
-      this.contNoList = [];
-      if (info && info.contracts && info.contracts.length) {
-        this.contNoList = info.contracts;
-        info.contracts.forEach((item: any) => {
-          if (item.contractNo === contNo) {
-            this.packageIdsList = item.packageMxIds;
-          }
-        });
-      }
-    }
-
     // 编辑 --- 通过周期ID获取信息
     async editBaseDealInfo(id: any) {
       if (!id) return;
