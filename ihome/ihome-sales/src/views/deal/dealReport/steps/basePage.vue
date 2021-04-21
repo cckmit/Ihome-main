@@ -1911,15 +1911,15 @@
       } else {
         this.firstAgencyCompanyContList = [];
       }
-      // 获取对应的一手代理合同的ids
-      this.firstAgencyIdsList = [];
-      if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
-        this.firstAgencyCompanyContList.forEach((list: any) => {
-          if (list.contractNo === res.firstContNo) {
-            this.firstAgencyIdsList = this.getIdsList(list.distributionMxList);
-          }
-        });
-      }
+      // // 获取对应的一手代理合同的ids
+      // this.firstAgencyIdsList = [];
+      // if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
+      //   this.firstAgencyCompanyContList.forEach((list: any) => {
+      //     if (list.contractNo === res.firstContNo) {
+      //       this.firstAgencyIdsList = this.getIdsList(list.distributionMxList);
+      //     }
+      //   });
+      // }
       this.postData = {
         ...this.postData,
         ...res
@@ -2884,15 +2884,15 @@
 
     // 改变一手代理合同
     changeFirstContNo(value: any = '') {
-      this.firstAgencyIdsList = [];
-      this.initAllReceiveList();
+      // this.firstAgencyIdsList = [];
+      // this.initAllReceiveList();
       this.showContAnnexList('firstAgency', []);
       if (!value) return;
       if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
         this.firstAgencyCompanyContList.forEach((item: any) => {
           if (item.contractNo === value) {
             // 获取一手代理合同返回的收派套餐id
-            this.firstAgencyIdsList = this.getIdsList(item.distributionMxList);
+            // this.firstAgencyIdsList = this.getIdsList(item.distributionMxList);
             // 回显合同附件信息
             this.showContAnnexList('firstAgency', item.annexList);
           }
@@ -3560,7 +3560,8 @@
         contType: this.postData.contType, // 合同类型
         // hasRecord: this.baseInfoInDeal.hasRecord, // 是否有成交报备(是否分销成交)
         // contNo: this.postData.contNo, // 分销协议编号
-        packageMxIds: [...this.packageIdsList, ...this.firstAgencyIdsList], // 分销成交 --- 选择分销协议后的ids
+        // packageMxIds: [...this.packageIdsList, ...this.firstAgencyIdsList], // 分销成交 --- 选择分销协议后的ids
+        packageMxIds: [...this.packageIdsList], // 分销成交 --- 选择分销协议后的ids
         costTypeEnum: scope.row.type, // 费用类型
         partyAId: scope.row.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
