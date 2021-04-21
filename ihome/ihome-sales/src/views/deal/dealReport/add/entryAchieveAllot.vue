@@ -17,9 +17,9 @@
       label-width="110px"
       class="demo-ruleForm">
       <p id="anchor-1" class="ih-info-title">成交信息</p>
-      <div class="add-all-wrapper padding-left-20" v-if="id">
-        <el-button type="success">更新明源数据</el-button>
-      </div>
+<!--      <div class="add-all-wrapper padding-left-20" v-if="id">-->
+<!--        <el-button type="success">更新明源数据</el-button>-->
+<!--      </div>-->
       <el-row :gutter="5">
         <el-col :span="8" v-if="!!postData.dealCode">
           <el-form-item label="成交报告编号" :prop="!!postData.dealCode ? 'dealCode' : 'notEmpty'">
@@ -129,7 +129,7 @@
                   :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" >
-                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo)">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.firstContNo, 'firstContNo', firstAgencyCompanyContList)">详情</el-link>
               </div>
             </div>
           </el-form-item>
@@ -272,7 +272,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="渠道分销合同" :prop="postData.contType === 'DistriDeal' ? 'contNo' : 'notEmpty'">
+          <el-form-item label="渠道分销合同">
             <div class="contNo-wrapper">
               <el-select
                 v-model="postData.contNo"
@@ -285,7 +285,7 @@
                   :label="item.contractTitle" :value="item.contractNo"></el-option>
               </el-select>
               <div class="link-wrapper" v-if="!!postData.contNo">
-                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo)">详情</el-link>
+                <el-link type="primary" @click.native.prevent="previewContNo(postData.contNo, 'contNo', contNoList)">详情</el-link>
               </div>
             </div>
           </el-form-item>
@@ -2720,6 +2720,7 @@
 
     // 改变公司类型
     changeAgencyType() {
+      this.packageIdsList = [];
       this.initAgencyInfo();
     }
 
@@ -2745,6 +2746,7 @@
     // 改变渠道公司
     changeCompany(value: any) {
       console.log('changeCompany:', value);
+      this.packageIdsList = [];
       this.agencySearchName = null;
       this.initAgencyInfo('company');
       // 获取渠道分销合同
@@ -3656,6 +3658,11 @@
         // 提交
         if (['Recognize', 'Subscribe'].includes(this.postData.stage)) {
           this.$message.warning('成交阶段未到达签约阶段，不可提交!');
+          return;
+        }
+        // 提交需要渠道分销合同有值
+        if (this.postData.contType === 'DistriDeal' && !this.postData.contNo) {
+          this.$message.warning('请选择渠道分销合同');
           return;
         }
       }

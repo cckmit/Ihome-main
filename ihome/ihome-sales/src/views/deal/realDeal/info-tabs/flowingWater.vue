@@ -430,6 +430,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import { get_deal_getDealSumAmount__id } from "../../../../api/deal/index";
+import { get_refundItem_getRefundApplyId__applyNo } from "../../../../api/finance/index";
 @Component({
   components: {},
 })
@@ -449,21 +450,22 @@ export default class FlowingWater extends Vue {
     if (type == "businessNo") {
       if (row.feeType === 'ServiceFee') {
         // 服务费
-        window.open(`/web-sales/dealReport/info?id=${row.id}`);
+        window.open(`/web-sales/dealReport/info?id=${row.businessId}&type=ID`);
       } else {
         // 代理费
-        window.open(`/web-sales/applyRec/info?id=${row.id}`);
+        window.open(`/web-sales/applyRec/info?id=${row.businessId}`);
       }
     } else if (type == "payNo") {
       window.open(`/web-sales/payment/info?id=${row.id}`);
     } else if (type == "applyCode") {
       window.open(`/web-sales/payoff/info?id=${row.applyId}`);
     } else if (type == "refundApplyNO") {
-      window.open(`/web-sales/refundApply/info?id=${row.id}`);
+      this.getIdAndGotoNew(row.refundApplyNO);
+      // window.open(`/web-sales/refundApply/info?id=${row.id}`);
     } else if (type == "businessCode") {
-      window.open(`/web-sales/discount/info?id=${row.id}`);
+      window.open(`/web-sales/discount/info?id=${row.businessId}`);
     } else if (type == "businessCodeByAgency") {
-      window.open(`/web-sales/applyRec/info?id=${row.id}`);
+      window.open(`/web-sales/applyRec/info?id=${row.businessId}`);
     } else if (type == "agencyName") {
       if (row.companyKind === 'ChannelCompany') {
         // 付款明细 - 渠道公司类型 - 收款方
@@ -472,6 +474,13 @@ export default class FlowingWater extends Vue {
         // 付款明细 - 一手代理公司类型 - 收款方
         window.open(`/web-sales/firstAgency/info?id=${row.id}`);
       }
+    }
+  }
+  // 退款明细 - 根据退款申请单号获取退款申请ID后跳转
+  async getIdAndGotoNew(applyNo: any = '') {
+    let applyId: any = await get_refundItem_getRefundApplyId__applyNo({applyNo: applyNo});
+    if (applyId) {
+      window.open(`/web-sales/refundApply/info?id=${applyId}`);
     }
   }
 }

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-19 09:36:15
+ * @LastEditTime: 2021-04-20 21:58:31
 -->
 <template>
   <IhPage class="text-left">
@@ -253,7 +253,7 @@ export default class NotChannelInfo extends Vue {
   }
   private async submitDulicate() {
     if (!this.fileList.length || !this.archiveStatus) {
-      this.$message.warning("附件或归档状态不能为空");
+      this.$message.warning("附件不能为空");
       return;
     }
     try {

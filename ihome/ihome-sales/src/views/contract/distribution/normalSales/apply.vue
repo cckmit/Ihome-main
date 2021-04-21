@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-16 20:26:43
+ * @LastEditTime: 2021-04-20 16:02:44
 -->
 <template>
   <IhPage class="text-left">
@@ -109,6 +109,21 @@
                 v-model="form.handlerId"
                 :search-name="handlerName"
               ></IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item
+              label="代理费计付标准备注"
+              class="formItem"
+            >
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 3, maxRows: 3}"
+                v-model="form.agencyFeeRemark"
+                disabled
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>

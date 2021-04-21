@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 12:00:28
+ * @LastEditTime: 2021-04-20 10:41:40
 -->
 <template>
   <IhPage label-width="100px">
@@ -467,7 +467,7 @@ export default class ProjectApproval extends Vue {
   search() {
     this.queryPageParameters.province = this.provinceOption[0];
     this.queryPageParameters.city = this.provinceOption[1];
-    this.queryPageParameters.county = this.provinceOption[2];
+    this.queryPageParameters.district = this.provinceOption[2];
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

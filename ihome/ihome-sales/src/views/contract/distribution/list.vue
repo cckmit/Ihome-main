@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-19 15:15:27
+ * @LastEditTime: 2021-04-19 17:32:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -63,12 +63,15 @@
                   ></IhSelectPageByCompany>
                 </el-form-item>
               </el-col>
-              <el-col :span="13">
-                <el-form-item label="乙方公司">
+              <el-col :span="12">
+                <el-form-item
+                  label="乙方公司"
+                  style="text-align: left"
+                >
                   <el-select
-                    style="width: 40%"
+                    style="width: 30%"
                     v-model="queryPageParameters.channelCompanyKind"
-                    placeholder="请选择公司类型"
+                    placeholder="公司类型"
                     clearable
                     @change="() => {queryPageParameters.channelCompanyId = null}"
                   >
@@ -81,14 +84,14 @@
                   </el-select>
                   <IhSelectPageByCompany
                     v-if="queryPageParameters.channelCompanyKind === 'InfieldCompany'"
-                    style="width: 60%"
+                    style="width: 70%"
                     v-model="queryPageParameters.channelCompanyId"
                     clearable
                     placeholder="请选择乙方公司"
                   ></IhSelectPageByCompany>
                   <IhSelectPageByChannel
                     v-else-if="queryPageParameters.channelCompanyKind === 'ChannelCompany'"
-                    style="width: 60%"
+                    style="width: 70%"
                     v-model="queryPageParameters.channelCompanyId"
                     clearable
                     placeholder="请选择乙方公司"
@@ -96,7 +99,7 @@
                   <IhSelectPageByAgency
                     v-else-if="queryPageParameters.channelCompanyKind === 'AgencyCompany'"
                     placeholder="请选择乙方公司"
-                    style="width: 60%"
+                    style="width: 70%"
                     v-model="queryPageParameters.channelCompanyId"
                     clearable
                   ></IhSelectPageByAgency>

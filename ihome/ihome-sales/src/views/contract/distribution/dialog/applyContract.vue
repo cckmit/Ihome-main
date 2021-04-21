@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-17 16:25:23
+ * @LastEditTime: 2021-04-20 16:30:11
 -->
 <template>
   <el-dialog
@@ -18,10 +18,13 @@
     title="申领渠道合同"
     top="5vh"
   >
-    <el-form label-width="80px">
+    <el-form label-width="120px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="周期">
+          <el-form-item
+            label="周期"
+            required
+          >
             <IhSelectPageByCycle
               v-model="queryPageParameters.termId"
               placeholder="请选择周期"
@@ -30,10 +33,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item
-            label="合同主标题"
-            class="formItem"
-          >
+          <el-form-item label="合同主标题">
             <el-input
               v-model="queryPageParameters.contractTitle"
               placeholder="请输入关键字"
@@ -53,10 +53,7 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item
-            label="渠道合同类型"
-            class="formItem"
-          >
+          <el-form-item label="渠道合同类型">
             <el-select
               v-model="queryPageParameters.contractKind"
               clearable
@@ -73,7 +70,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="margin-left-80">
+    <div class="margin-left-120">
       <el-button
         type="primary"
         @click="search()"
@@ -180,7 +177,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import { post_distributContract_applyDistract } from "@/api/project/index";
 
@@ -189,6 +186,14 @@ import { post_distributContract_applyDistract } from "@/api/project/index";
 })
 export default class ApplyContract extends Vue {
   @Prop() claimPower!: any;
+  @Watch("queryPageParameters.termId") watchTermId(val: any) {
+    if (!val) {
+      this.resPageInfo = {
+        total: null,
+        list: [],
+      };
+    }
+  }
   queryPageParameters: any = {
     contractTitle: null,
     termId: null,
@@ -212,6 +217,10 @@ export default class ApplyContract extends Vue {
     this.$emit("cancel", false);
   }
   search() {
+    if (!this.queryPageParameters.termId) {
+      this.$message.warning("请先选择周期");
+      return;
+    }
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }

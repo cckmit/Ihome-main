@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-19 08:58:42
+ * @LastEditTime: 2021-04-20 15:50:36
 -->
 <template>
   <IhPage class="text-left">
@@ -224,6 +224,7 @@ import {
 } from "@/api/project/index";
 import { get_bankAccount_get__companyId } from "@/api/finance/index";
 import { post_distribution_create } from "@/api/contract/index";
+import { get_company_get__id } from "@/api/system/index";
 import {
   get_channel_get__id,
   post_channelGrade_getOne,
@@ -357,6 +358,14 @@ export default class NotChannelApply extends Vue {
       }
     }
   }
+  private async getInfieldCompany(data: any) {
+    try {
+      const res = await get_company_get__id({ id: data.id });
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async getChannelInfo(data: any) {
     try {
       const res = await get_channel_get__id({ id: data.id });
@@ -399,7 +408,6 @@ export default class NotChannelApply extends Vue {
     if (this.form.commissionKind === "Infield")
       try {
         const res = await post_company_getAccountById({ id: data.id });
-        console.log(res, "getAgencyCompany");
         this.accountOption = res.map((i: any) => ({
           accountName: i.name,
           accountNo: i.number,
@@ -518,8 +526,21 @@ export default class NotChannelApply extends Vue {
           fileName: i.fileName,
           exAuto: 1,
         }));
+        // 内场奖励 默认是代理公司
+        if (res.commissionKind === "Infield") {
+          this.form.channelCompanyKind = "AgencyCompany";
+        }
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
-          this.getChannelInfo({ id: res.designatedAgencyId });
+          if (res.companyKind === "InfieldCompany") {
+            let resParams = await this.getInfieldCompany({
+              id: res.designatedAgencyId,
+            });
+            this.getCompanyInfo(resParams);
+          } else if (res.companyKind === "ChannelCompany") {
+            this.getChannelInfo({ id: res.designatedAgencyId });
+          } else {
+            this.getAgencyCompany({ id: res.designatedAgencyId });
+          }
           this.channelForm = {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,
@@ -534,10 +555,6 @@ export default class NotChannelApply extends Vue {
         //     "CompanyKind"
         //   );
         // }
-        // 内场奖励 默认是代理公司
-        if (res.commissionKind === "Infield") {
-          this.form.channelCompanyKind = "AgencyCompany";
-        }
       } catch (error) {
         console.log(error);
       }

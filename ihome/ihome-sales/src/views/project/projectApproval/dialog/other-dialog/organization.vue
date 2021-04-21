@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 14:49:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 14:58:36
+ * @LastEditTime: 2021-04-20 22:06:37
 -->
 <template>
   <el-dialog
@@ -13,7 +13,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="80%"
+    width="60%"
     class="text-left dialog-table"
     :title="`成交归属组织`"
     :append-to-body="true"
@@ -30,59 +30,6 @@
               placeholder="名称"
               clearable
             ></el-input>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="组织层级">
-            <el-select
-              v-model="queryPageParameters.level"
-              clearable
-              placeholder="请选择组组织层级"
-              class="width--100"
-            >
-              <el-option
-                v-for="(item, index) in levelOptions"
-                :key="index"
-                :label="item"
-                :value="item"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="部门分类">
-            <el-select
-              v-model="queryPageParameters.departmentType"
-              clearable
-              placeholder="请选择部门分类"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in $root.dictAllList('DepartmentType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="组织类型">
-            <el-select
-              v-model="queryPageParameters.orgType"
-              clearable
-              placeholder="请选择组织类型"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in $root.dictAllList('OrgType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -122,6 +69,7 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange"
       @select="handleSelect"
+      height="400"
     >
       <el-table-column
         fixed
@@ -133,42 +81,22 @@
         fixed
         prop="name"
         label="名称"
-        width="180"
       ></el-table-column>
       <el-table-column
         prop="shortName"
         label="简称"
-        width="180"
       ></el-table-column>
       <el-table-column
-        prop="level"
-        label="层级"
-      ></el-table-column>
-      <el-table-column
-        label="组织类型"
-        width="180"
+        label="是否有效"
+        width="100"
       >
         <template v-slot="{ row }">{{
-          $root.dictAllName(row.orgType, "OrgType")
+          $root.dictAllName(row.status, "ValidType")
         }}</template>
       </el-table-column>
       <el-table-column
-        prop="createUserName"
-        label="创建人"
-      ></el-table-column>
-      <el-table-column
-        prop="createTime"
-        label="创建时间"
-        width="180"
-      ></el-table-column>
-      <el-table-column
-        prop="updateUserName"
-        label="修改人"
-      ></el-table-column>
-      <el-table-column
         prop="updateTime"
-        label="修改人时间"
-        width="180"
+        label="修改时间"
       ></el-table-column>
     </el-table>
     <br />
@@ -208,8 +136,7 @@ export default class Organization extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   queryPageParameters: any = {
-    departmentType: null,
-    level: 0,
+    level: 7,
     name: null,
     orgType: "Group",
     status: null,
@@ -224,18 +151,8 @@ export default class Organization extends Vue {
     return this.resPageInfo.total === null ? "正在加载数据..." : "暂无数据";
   }
 
-  get levelOptions() {
-    const list = [0, 1, 2, 3, 4, 5, 6, 7];
-    return list;
-  }
-
   async created() {
     this.queryPageParameters.name = this.data.groupName;
-    // this.selection = [
-    //   {
-    //     id: this.data.groupId,
-    //   },
-    // ];
     await this.getListMixin();
     const item = this.resPageInfo.list.find(
       (v: any) => v.id === this.data.groupId
@@ -251,8 +168,7 @@ export default class Organization extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      departmentType: null,
-      level: 0,
+      level: 7,
       name: null,
       orgType: "Group",
       status: null,
@@ -284,16 +200,6 @@ export default class Organization extends Vue {
     } else {
       this.$message.warning("请先勾选表格数据");
     }
-  }
-
-  routerTo(row: any, type: string) {
-    const item = this.$router.resolve({
-      path: `/projectApproval/${type}`,
-      query: {
-        id: row.id,
-      },
-    });
-    window.open(item.href, "_blank");
   }
 }
 </script>
