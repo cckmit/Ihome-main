@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:26
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 10:29:44
+ * @LastEditTime: 2021-04-21 18:30:47
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -104,14 +104,17 @@
           <div v-if="isShow">
             <el-col
               :span='6'
-              style="margin-left: -70px"
+              class="width-200"
             >
-              <el-form-item prop="companyKind">
+              <el-form-item
+                prop="companyKind"
+                label-width="50px"
+              >
                 <el-select
                   v-model="info.companyKind"
-                  readonly
+                  disabled
                   placeholder="请选择公司种类"
-                  class="width--100"
+                  class="width--150"
                 >
                   <el-option
                     v-for="item in companyKindOption"
@@ -133,14 +136,23 @@
                 :search-name="info.designatedAgency"
                 v-model="info.designatedAgencyId"
               ></IhSelectPageByCompany>
-              <IhSelectPageByChannel
-                v-else-if="info.companyKind === 'ChannelCompany'"
-                v-model="info.designatedAgencyId"
-                disabled
-                placeholder="渠道商名称"
-                :params="searchConditon"
-                :search-name="info.designatedAgency"
-              ></IhSelectPageByChannel>
+              <div v-else-if="info.companyKind === 'ChannelCompany'">
+                <IhSelectPageByChannel
+                  v-model="info.designatedAgencyId"
+                  style="flex: 1;max-width: 300px;"
+                  disabled
+                  placeholder="渠道商名称"
+                  :params="searchConditon"
+                  :search-name="info.designatedAgency"
+                ></IhSelectPageByChannel>
+                <el-link
+                  v-if="info.designatedAgencyId"
+                  type="primary"
+                  :href="`/web-sales/channelBusiness/info?id=${info.designatedAgencyId}`"
+                  class="margin-left-10"
+                  target="_blank"
+                >详情</el-link>
+              </div>
             </el-col>
           </div>
         </el-row>

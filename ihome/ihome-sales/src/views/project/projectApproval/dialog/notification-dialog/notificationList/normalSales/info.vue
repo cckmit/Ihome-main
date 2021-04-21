@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:02:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 15:46:22
+ * @LastEditTime: 2021-04-21 18:16:29
 -->
 <template>
   <ih-page class="text-left">
@@ -125,12 +125,21 @@
                   :search-name="info.designatedAgency"
                   v-model="info.designatedAgencyId"
                 ></IhSelectPageByCompany>
-                <IhSelectPageByChannel
-                  v-else-if="info.companyKind === 'ChannelCompany'"
-                  v-model="info.designatedAgencyId"
-                  disabled
-                  :search-name="info.designatedAgency"
-                ></IhSelectPageByChannel>
+                <div v-else-if="info.companyKind === 'ChannelCompany'">
+                  <IhSelectPageByChannel
+                    v-model="info.designatedAgencyId"
+                    style="flex: 1;max-width: 300px;"
+                    disabled
+                    :search-name="info.designatedAgency"
+                  ></IhSelectPageByChannel>
+                  <el-link
+                    v-if="info.designatedAgencyId"
+                    type="primary"
+                    :href="`/web-sales/channelBusiness/info?id=${info.designatedAgencyId}`"
+                    class="margin-left-10"
+                    target="_blank"
+                  >详情</el-link>
+                </div>
               </el-form-item>
             </el-col>
           </div>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 11:34:52
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-10 09:29:20
+ * @LastEditTime: 2021-04-21 17:48:16
 -->
 <template>
   <el-dialog
@@ -19,7 +19,23 @@
   >
     <template v-for="(item, i) in form">
       <div :key="i">
-        <p class="ih-info-title">{{item.companyName + '关联栋座'}}</p>
+        <div class="titleButton">
+          <p class="ih-info-title">{{item.companyName + '关联栋座'}}</p>
+          <div class="buttons">
+            <el-button
+              v-if="item.isShow"
+              type="success"
+              size="mini"
+              @click="setAll(item, 'all')"
+            >全选</el-button>
+            <el-button
+              v-else
+              type="success"
+              size="mini"
+              @click="setAll(item, 'no')"
+            >反选</el-button>
+          </div>
+        </div>
         <div style="margin-left: 20px">
           <el-checkbox-group
             v-model="item.buildingIds"
@@ -31,7 +47,8 @@
               :label="list.buildingId"
               :key="i"
               border
-            >{{list.buildingName}}</el-checkbox-button>
+            >{{list.buildingName}}
+            </el-checkbox-button>
           </el-checkbox-group>
         </div>
       </div>
@@ -43,14 +60,18 @@
       <el-button @click="cancel()">取 消</el-button>
       <el-button
         type="primary"
+        :loading="finishLoading"
         @click="finish()"
       >保 存</el-button>
     </span>
   </el-dialog>
 </template>
 <script lang="ts">
-import { Component, Vue, Prop } from "vue-property-decorator";
-import { post_partyAContract_getBuilding__termId } from "@/api/project/index.ts";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
+import {
+  post_partyAContract_getBuilding__termId,
+  post_partyAContract_addPartyABuildings,
+} from "@/api/project/index.ts";
 
 @Component({
   components: {},
@@ -59,6 +80,7 @@ export default class PartyABuding extends Vue {
   @Prop({ default: null }) data: any;
   dialogVisible = true;
   info: any = [];
+  finishLoading: any = false;
   form: any = [
     {
       companyId: null,
@@ -67,10 +89,23 @@ export default class PartyABuding extends Vue {
     },
   ];
 
+  @Watch("form", { immediate: true, deep: true })
+  buildingWatch(val: any) {
+    if (val.length) {
+      val.forEach((v: any) => {
+        if (v.buildingIds.length === this.info.length) {
+          v.isShow = false;
+        } else {
+          v.isShow = true;
+        }
+      });
+    }
+  }
+
   cancel() {
     this.$emit("cancel", false);
   }
-  finish() {
+  async finish() {
     let pass: any = true;
     this.form.forEach((v: any) => {
       if (!v.buildingIds.length) {
@@ -79,8 +114,36 @@ export default class PartyABuding extends Vue {
       }
     });
     if (pass) {
-      this.$emit("finish", this.form);
+      this.finishLoading = true;
+      this.form = this.form.map((v: any) => ({
+        companyId: v.companyId,
+        companyName: v.companyName,
+        buildingIds: v.buildingIds,
+      }));
+      let obj: any = {};
+      obj.partyAInfoVOS = [...this.form];
+      obj.termId = this.$route.query.id;
+      try {
+        await post_partyAContract_addPartyABuildings(obj);
+        this.finishLoading = false;
+        this.$emit("finish");
+      } catch (err) {
+        console.log(err);
+        this.finishLoading = false;
+      }
     }
+  }
+
+  setAll(data: any, type: any) {
+    const index = this.form.findIndex(
+      (v: any) => v.companyId === data.companyId
+    );
+    const arr = this.info.map((v: any) => v.buildingId);
+    this.$set(this.form, index, {
+      companyId: data.companyId,
+      companyName: data.companyName,
+      buildingIds: type === "all" ? arr : [],
+    });
   }
 
   async getInfo() {
@@ -90,7 +153,7 @@ export default class PartyABuding extends Vue {
   }
 
   async created() {
-    this.getInfo();
+    await this.getInfo();
     this.form = [...this.data];
   }
 }
@@ -107,6 +170,13 @@ export default class PartyABuding extends Vue {
   /deep/.el-checkbox-button__inner {
     border-left: none;
     border-radius: 0 0 0 0;
+  }
+}
+
+.titleButton {
+  display: flex;
+  .buttons {
+    margin: 5px 0 0 10px;
   }
 }
 </style>

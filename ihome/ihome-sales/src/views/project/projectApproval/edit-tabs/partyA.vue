@@ -204,7 +204,6 @@ import {
   get_partyAContract_get__termId,
   post_partyAContract_saveOaRemark,
   post_partyAContract_del,
-  post_partyAContract_addPartyABuildings,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -309,11 +308,7 @@ export default class PartyA extends Vue {
     this.budingEditDialogVisible = true;
   }
 
-  async budingEditFinish(data: any) {
-    let obj: any = {};
-    obj.partyAInfoVOS = data;
-    obj.termId = this.$route.query.id;
-    await post_partyAContract_addPartyABuildings(obj);
+  async budingEditFinish() {
     this.$message.success("关联成功");
     this.getInfo();
     this.budingEditDialogVisible = false;

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-12 17:18:08
+ * @LastEditTime: 2021-04-21 10:05:52
 -->
 <template>
   <div>
@@ -21,7 +21,13 @@
             label="合作项目"
             class="formItem"
           >
-            <div class="word-break line-height">{{ info.proName }}</div>
+            <div class="word-break line-height">
+              <el-link
+                type="primary"
+                :href="`/web-sales/projects/childInfo?id=${info.proId}`"
+                target="_blank"
+              >{{ info.proName }}</el-link>
+            </div>
           </el-form-item>
         </el-col>
         <el-col :span="8">

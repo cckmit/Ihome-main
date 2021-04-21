@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-10 11:24:49
+ * @LastEditTime: 2021-04-21 15:10:41
 -->
 <template>
   <IhPage label-width="110px">
@@ -15,17 +15,8 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="项目盘编">
-              <el-input
-                clearable
-                v-model="queryPageParameters.proNo"
-                placeholder="项目盘编"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="项目名称">
-              <IhSelectPageByProject
+              <!-- <IhSelectPageByProject
                 v-model="queryPageParameters.proId"
                 clearable
                 :props="{
@@ -33,55 +24,20 @@
                   key: 'proId',
                   lable: 'proName'
                 }"
-              ></IhSelectPageByProject>
+              ></IhSelectPageByProject> -->
+              <el-input
+                clearable
+                v-model="queryPageParameters.proName"
+                placeholder="推广名/备案名/明源楼盘名"
+              ></el-input>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="8">
-            <el-form-item label="周期名称">
-              <IhSelectPageByCycle
-                v-model="queryPageParameters.termId"
-                clearable
-                :props="{
-                  value: 'termId',
-                  key: 'termId',
-                  lable: 'termName'
-                }"
-              ></IhSelectPageByCycle>
-            </el-form-item>
-          </el-col> -->
-          <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader
-                v-model="provinceOption"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              />
-            </el-form-item>
-          </el-col>
-          <!-- <el-col :span="8">
-            <el-form-item label="业务类型">
-              <el-select
-                v-model="queryPageParameters.busTypeEnum"
-                clearable
-                placeholder="业务类型"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('BusType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col> -->
           <el-col :span="8">
             <el-form-item label="项目审核状态">
               <el-select
                 v-model="queryPageParameters.auditEnum"
                 clearable
-                placeholder="项目审核状态"
+                placeholder="请选择"
                 class="width--100"
               >
                 <el-option
@@ -108,6 +64,68 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="关联明源">
+              <el-select
+                v-model="queryPageParameters.exMinyuan"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in YesOrNoType"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="父/子项目">
+              <el-select
+                v-model="queryPageParameters.exParent"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in ParOrChild"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="明源区域公司">
+              <el-input
+                clearable
+                v-model="queryPageParameters.companyName"
+                placeholder="模糊搜索"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="项目盘编">
+              <el-input
+                clearable
+                v-model="queryPageParameters.proNo"
+                placeholder="模糊搜索"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader
+                v-model="provinceOption"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              />
             </el-form-item>
           </el-col>
         </el-row>
@@ -147,42 +165,46 @@
         ></el-table-column>
         <el-table-column
           fixed
-          prop="proName"
           label="项目名称"
-          width="300"
-        ></el-table-column>
-        <el-table-column
-          label="市场化项目"
-          prop="exMarket"
-          width="100"
+          min-width="250"
         >
           <template v-slot="{ row }">
-            {{row.exMarket? '是' : '否'}}
+            <div>{{`推广名: ${row.proName}`}}</div>
+            <div>{{`备案名: ${row.proRecord}`}}</div>
           </template>
         </el-table-column>
         <el-table-column
-          prop="province"
-          label="省份"
+          prop="exMarket"
+          width="150"
         >
-          <template v-slot="{ row }">{{
-            $root.getAreaName(row.province)
-          }}</template>
+          <template #header>
+            <div>市场化项目</div>
+            <div>关联明源</div>
+          </template>
+          <template v-slot="{ row }">
+            <div>{{row.exMarket? '是' : '否'}}</div>
+            <div>{{row.exMinyuan? '是' : '否'}}</div>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="city"
-          label="城市"
+          label="明源信息"
+          min-width="200"
         >
-          <template v-slot="{ row }">{{
-            $root.getAreaName(row.city)
-          }}</template>
+          <template v-slot="{ row }">
+            <div>{{`父/子：${row.exParent ? '父项目' : '子项目'}`}}</div>
+            <div>{{`楼盘名：${row.myName ? row.myName : '-'}`}}</div>
+            <div>{{`区域公司：${row.companyName ? row.companyName : '-'}`}}</div>
+          </template>
         </el-table-column>
         <el-table-column
-          prop="district"
-          label="行政区"
+          label="省市区"
+          width="150"
         >
-          <template v-slot="{ row }">{{
-            $root.getAreaName(row.district)
-          }}</template>
+          <template v-slot="{ row }">
+            <div>{{$root.getAreaName(row.province)}}</div>
+            <div>{{$root.getAreaName(row.city)}}</div>
+            <div>{{$root.getAreaName(row.district)}}</div>
+          </template>
         </el-table-column>
         <el-table-column
           prop="proAddr"
@@ -268,15 +290,17 @@ import PaginationMixin from "@/mixins/pagination";
 })
 export default class ProjectList extends Vue {
   queryPageParameters: any = {
+    proName: null,
+    auditEnum: null,
+    exMarket: null,
+    exMinyuan: null,
+    exParent: null,
+    companyName: null,
     proNo: null,
     proId: null,
-    termName: null,
     province: null,
     city: null,
     district: null,
-    busTypeEnum: null,
-    auditEnum: null,
-    exMarket: null,
   };
   provinceOption: any = [];
   resPageInfo: any = {
@@ -292,6 +316,17 @@ export default class ProjectList extends Vue {
     {
       code: 0,
       name: "否",
+    },
+  ];
+
+  ParOrChild = [
+    {
+      code: 1,
+      name: "父项目",
+    },
+    {
+      code: 0,
+      name: "子项目",
     },
   ];
 
@@ -328,15 +363,17 @@ export default class ProjectList extends Vue {
   }
   reset() {
     Object.assign(this.queryPageParameters, {
+      proName: null,
+      auditEnum: null,
+      exMarket: null,
+      exMinyuan: null,
+      exParent: null,
+      companyName: null,
       proNo: null,
       proId: null,
-      termName: null,
       province: null,
       city: null,
       district: null,
-      busTypeEnum: null,
-      auditEnum: null,
-      exMarket: null,
     });
     this.provinceOption = [];
   }
