@@ -1527,7 +1527,7 @@
       await this.getInformation(id, res?.cycleId); // 优惠告知书
       // 获取一手代理合同的值
       if (res.oneAgentTeamId) {
-        this.firstAgencyCompanyContList = await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
+        await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
       } else {
         this.firstAgencyCompanyContList = [];
       }
@@ -1544,7 +1544,7 @@
       this.packageIdsList = [];
       if (res.agencyList && res.agencyList.length) {
         if (res.agencyList[0].agencyId) {
-          this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+          await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
         } else {
           this.contNoList = [];
         }
