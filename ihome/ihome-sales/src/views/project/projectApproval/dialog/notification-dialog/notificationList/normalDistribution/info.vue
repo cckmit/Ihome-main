@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 15:46:13
+ * @LastEditTime: 2021-04-21 10:29:15
 -->
 <template>
   <ih-page class="text-left">
@@ -573,7 +573,9 @@ export default class NormalSalesApply extends Vue {
       agencyContrictId: this.agencyContrictId,
     });
     this.info = { ...data, ...JSON.parse(res), timeList: [] };
-    this.info.timeList = [data.contractStartTime, data.contractEndTime];
+    if (data.contractStartTime && data.contractEndTime) {
+      this.info.timeList = [data.contractStartTime, data.contractEndTime];
+    }
     this.fileList = data.attachTermItemVOS.map((v: any) => ({
       fileId: v.fileId,
       fileName: v.fileName,

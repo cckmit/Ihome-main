@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 15:48:33
+ * @LastEditTime: 2021-04-21 10:11:08
 -->
 <template>
   <el-dialog
@@ -1465,6 +1465,7 @@ export default class SetMealEdit extends Vue {
       this.searchConditon = {
         cycleCity: item.city,
         departmentOrgId: item.startDivisionId,
+        isNotNeedChannelLevelApprove: true,
       };
       this.propertyEnumOptions = item.propertyDropDowm;
       this.info.partyAInfoList = [...item.partyAInfoList];
