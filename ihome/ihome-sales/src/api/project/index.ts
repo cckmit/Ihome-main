@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-20 3:22:01 ├F10: PM┤
+//2021-4-21 5:05:13 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -939,6 +939,10 @@ return await request.post< number,number> (basePath+'/term/contractApplyAttach',
 export async function post_term_del__termId (d?: any) {
 return await request.post< number,number> (basePath+'/term/del/{termId}', d)
 }
+/**项目模糊查询*/
+export async function post_term_fuzzySearch (d?: any) {
+return await request.post< any,any> (basePath+'/term/fuzzySearch', d)
+}
 /**获取立项基础详情*/
 export async function get_term_get__termId (d?: any) {
 return await request.get<TermRespVO,TermRespVO>(basePath+'/term/get/{termId}', { params: d })
@@ -1646,11 +1650,13 @@ departmentName: string;
 groupId: number;
 /**使用的其他渠道费用归属项目*/
 otherProName: string;
+/**使用的其他渠道费用归属周期ID*/
+otherTermId: number;
 /**使用的其他渠道费用归属周期*/
 otherTermName: string;
 /**产生/使用 其他渠道费金额*/
 postAmount: number;
-/**使用类别 (同周期使用)Samecycle、(跨周期)Interycle、(跨项目)Interproject*/
+/**使用类别 PoolOperaUseCategoryEnum：(同周期使用)Samecycle、(跨周期)Interycle、(跨项目)Interproject产生类别 PoolOperaAddCategoryEnum：ServiceFeesurplus("服务费盈余"), TansactionRefund("成交退款"), TransactionChange("成交变更"), TransactionSupplement("成交补充"),Rollback("回滚"), Other("其他");*/
 postCategory: string;
 /**周期所属项目*/
 proName: string;
@@ -1755,6 +1761,8 @@ amount: number;
 departmentName: string;
 /**周期所属项目*/
 proName: string;
+/**启动事业部ID*/
+startDivisionId: number;
 /**项目周期名称*/
 termName: string;
 /**使用 其他渠道费金额*/
@@ -5669,6 +5677,17 @@ termName: string;
 /**项目周期阶段 SUBSCRIPTION-认购(默认)、RECOGNIZE-认筹(Subscription-认购、Recognize-认筹)*/
 termStageEnum: string;
 }
+/**TermDropArgsVO*/
+export interface TermDropArgsVO {
+/**审核状态*/
+auditEnums: string[];
+/**(必填)当前页*/
+pageNum: number;
+/**(必填)每页条数*/
+pageSize: number;
+/**周期名称*/
+termName: string;
+}
 /**TermDropDownVo*/
 export interface TermDropDownVo {
 /**项目所属城市*/
@@ -5680,6 +5699,19 @@ startDivisionId: number;
 /**ID*/
 termId: number;
 /**周期名称 合作项目名称(项目推广名)+周期时间*/
+termName: string;
+}
+/**TermDropVO*/
+export interface TermDropVO {
+/**店组ID*/
+groupId: number;
+/**项目ID*/
+proId: number;
+/**事业部ID*/
+startDivisionId: number;
+/**周期ID*/
+termId: number;
+/**周期名称*/
 termName: string;
 }
 /**TermHisVO*/
@@ -5992,6 +6024,8 @@ busTypeEnum: string;
 city: string;
 /**区*/
 district: string;
+/**立项发起人ID*/
+initiatorId: number;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -6004,6 +6038,8 @@ proName: string;
 proNo: string;
 /**省*/
 province: string;
+/**启动事业部ID*/
+startDivisionId: number;
 /**周期状态(Stop-禁用、Start-启用)*/
 state: string;
 /**立项ID*/
@@ -6242,6 +6278,10 @@ companyId: number;
 district: string;
 /**成交店组ID*/
 groupId: number;
+/**立项发起人ID*/
+initiatorId: number;
+/**立项发起人姓名*/
+initiatorName: string;
 /**项目ID*/
 proId: number;
 /**(必填)项目名*/
@@ -6252,6 +6292,8 @@ proNo: string;
 province: string;
 /**启动事业部ID*/
 startDivisionId: number;
+/**启动事业部名称*/
+startDivisionName: string;
 /**周期状态(Stop-禁用、Start-启用)*/
 state: string;
 /**周期结束时间(yyyy-MM-dd)*/
