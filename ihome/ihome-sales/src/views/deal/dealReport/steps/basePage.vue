@@ -331,7 +331,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="是否垫佣" prop="isMat">
+          <el-form-item label="是否垫佣" :prop="postData.contType === 'DistriDeal' && postData.contNo ? 'isMat' : 'notEmpty'">
             <el-select
               v-model="postData.isMat"
               disabled

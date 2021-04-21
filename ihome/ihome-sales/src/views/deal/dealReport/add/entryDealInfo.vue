@@ -98,7 +98,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="一手代理公司" :prop="oneAgentRequiredFlag ? 'oneAgentTeamId' : 'notEmpty'">
+          <el-form-item label="一手代理公司">
             <el-select
               v-model="postData.oneAgentTeamId"
               clearable
@@ -297,7 +297,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="postData.contType === 'DistriDeal'">
-          <el-form-item label="是否垫佣" :prop="postData.contType === 'DistriDeal' ? 'isMat' : 'notEmpty'">
+          <el-form-item label="是否垫佣">
             <el-select
               v-model="postData.isMat"
               disabled
