@@ -1085,7 +1085,11 @@
       await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       await this.getInformation(id, res?.cycleId);
       // 获取一手代理合同的值
-      this.firstAgencyCompanyContList = await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
+      if (res.oneAgentTeamId) {
+        this.firstAgencyCompanyContList = await this.getOneAgentTeamContNo('oneAgent', res.oneAgentTeamId, res.cycleId, 'AgencyCompany');
+      } else {
+        this.firstAgencyCompanyContList = [];
+      }
       // 获取对应的一手代理合同的ids
       this.firstAgencyIdsList = [];
       if (this.firstAgencyCompanyContList && this.firstAgencyCompanyContList.length) {
@@ -1098,7 +1102,11 @@
       // 获取渠道分销合同的值
       this.packageIdsList = [];
       if (res.agencyList && res.agencyList.length) {
-        this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        if (res.agencyList[0].agencyId) {
+          this.contNoList = await this.getOneAgentTeamContNo('contNo', res.agencyList[0].agencyId, res.cycleId, res.agencyList[0].companyKind);
+        } else {
+          this.contNoList = [];
+        }
         // 获取对应的渠道分销合同的ids
         if (this.contNoList && this.contNoList.length) {
           this.contNoList.forEach((list: any) => {
@@ -2019,6 +2027,7 @@
     * companyKind: String。渠道公司类型 AgencyCompany
     * */
     async getOneAgentTeamContNo(type: any = '', channelCompanyId: any = '', cycleId: any = '', companyKind: any = '') {
+      if (!channelCompanyId || !cycleId) return;
       let postData: any = {
         channelCompanyId: channelCompanyId,
         channelCompanyKind: companyKind,
