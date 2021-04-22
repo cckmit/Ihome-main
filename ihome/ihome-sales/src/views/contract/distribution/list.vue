@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-19 17:32:36
+ * @LastEditTime: 2021-04-21 19:49:36
 -->
 <template>
   <IhPage label-width="100px">
@@ -359,15 +359,15 @@
         ></el-table-column>
         <el-table-column
           fixed
-          label="标题"
+          label="标题/备注"
           prop="title"
-          min-width="185"
-        ></el-table-column>
-        <el-table-column
-          label="标题备注"
-          prop="titleOrRemark"
-          min-width="125"
-        ></el-table-column>
+          min-width="195"
+        >
+          <template v-slot="{ row }">
+            <div>{{row.title}}</div>
+            <div style="color: #2ec4b6;">{{row.titleOrRemark}}</div>
+          </template>
+        </el-table-column>
         <el-table-column
           label="合同类型"
           min-width="145"
@@ -376,11 +376,6 @@
             {{$root.dictAllName(row.contractKind, 'ContractKind')}}
           </template>
         </el-table-column>
-        <el-table-column
-          label="甲方公司"
-          prop="partyACompanyName"
-          min-width="150"
-        ></el-table-column>
         <el-table-column
           label="乙方公司"
           prop="channelCompanyName"
@@ -406,11 +401,7 @@
           prop="cycleName"
           min-width="185"
         ></el-table-column>
-        <el-table-column
-          label="归属组织"
-          prop="organizationName"
-          width="150"
-        ></el-table-column>
+        <el-table-column label="是否垫佣"></el-table-column>
         <el-table-column
           label="合同编号"
           prop="contractNo"
@@ -443,6 +434,16 @@
           label="合同跟进人"
           prop="handlerName"
           width="110"
+        ></el-table-column>
+        <el-table-column
+          label="归属组织"
+          prop="organizationName"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          label="甲方公司"
+          prop="partyACompanyName"
+          min-width="150"
         ></el-table-column>
         <el-table-column
           label="操作"

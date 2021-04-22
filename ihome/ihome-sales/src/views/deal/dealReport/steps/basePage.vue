@@ -2055,8 +2055,14 @@
         if(data && data.length > 0) {
           this.postData.companyKind = data[0].companyKind; // 渠道公司类型
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
-          this.postData.agencyName = data[0].agencyName; // 渠道公司
-          this.agencySearchName = data[0].agencyName; // 渠道公司
+          if (data[0].companyKind === 'InfieldCompany') {
+            // 内部公司和外部公司不一样
+            this.agencySearchName = data[0].companyName; // 渠道公司
+            this.postData.agencyName = data[0].companyName; // 渠道公司
+          } else {
+            this.agencySearchName = data[0].agencyName; // 渠道公司
+            this.postData.agencyName = data[0].agencyName; // 渠道公司
+          }
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
           this.postData.brokerId = data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName = data[0].brokerName || data[0].broker; // 渠道经纪人

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:22:54
+ * @LastEditTime: 2021-04-21 19:50:57
 -->
 <template>
   <IhPage class="text-left">
@@ -56,10 +56,18 @@
           <el-col :span="12">
             <el-form-item label="乙方公司">
               <el-link
+                v-if="form.channelCompanyKind === 'ChannelCompany'"
                 type="primary"
                 :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
                 target="_blank"
               >{{form.channelCompanyName}}</el-link>
+              <el-link
+                v-else-if="form.channelCompanyKind === 'AgencyCompany'"
+                type="primary"
+                :href="`/web-sales/firstAgency/info?id=${form.channelCompanyId}`"
+                target="_blank"
+              >{{form.channelCompanyName}}</el-link>
+              <span v-else>{{form.channelCompanyName}}</span>
             </el-form-item>
           </el-col>
         </el-row>

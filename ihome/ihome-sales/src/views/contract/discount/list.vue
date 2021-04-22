@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-12 17:50:45
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-21 18:30:02
 -->
 <template>
   <IhPage label-width="80px">
@@ -233,13 +233,13 @@
           fixed
           label="编号"
           prop="noticeNo"
-          min-width="230"
+          min-width="210"
         ></el-table-column>
-        <el-table-column
-          label="类型"
-          prop="notificationType"
-          width="120"
-        >
+        <el-table-column width="120">
+          <template #header>
+            <div>类型</div>
+            <div>模板类型</div>
+          </template>
           <template v-slot="{ row }">
             {{$root.dictAllName(row.notificationType, 'NotificationType')}}
           </template>
@@ -254,71 +254,61 @@
           prop="cycleName"
           width="230"
         ></el-table-column>
-        <el-table-column
-          label="栋座"
-          prop="buyUnitName"
-          width="120"
-        ></el-table-column>
-        <el-table-column
-          label="房号"
-          prop="roomNumberName"
-          min-width="120"
-        ></el-table-column>
-        <el-table-column
-          label="甲方名称"
-          width="200"
-          prop="partyAName"
-        ></el-table-column>
-        <el-table-column
-          label="区域"
-          width="220"
-          prop="area"
-        ></el-table-column>
-        <el-table-column
-          label="客户名称"
-          prop="ownerName"
-          width="120"
-        >
+        <el-table-column min-width="150">
+          <template #header>
+            <div>栋座</div>
+            <div>房号</div>
+          </template>
           <template v-slot="{ row }">
-            <div
-              v-for="(i, n) in row.ownerList"
-              :key="n"
-            >{{i.ownerName}} <span v-if="n !== (row.ownerList.length-1)">、</span></div>
+            <div>{{row.buyUnitName}}</div>
+            <div>{{row.roomNumberName}}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="客户电话"
-          prop="ownerMobile"
-          width="125"
-        >
+        <el-table-column width="230">
+          <template #header>
+            <div>甲方名称</div>
+            <div>区域</div>
+          </template>
           <template v-slot="{ row }">
-            <div
-              v-for="(i, n) in row.ownerList"
-              :key="n"
-            >{{i.ownerMobile}} <span v-if="n !== (row.ownerList.length-1)">、</span></div>
+            <div>{{row.partyAName}}</div>
+            <div>{{row.area}}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="状态"
-          prop="notificationStatus"
-          width="135"
-        >
+        <el-table-column width="120">
+          <template #header>
+            <div>客户名称</div>
+            <div>客户电话</div>
+          </template>
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
+            <div>
+              <span
+                v-for="(i, n) in row.ownerList"
+                :key="n"
+              >{{i.ownerName}}<span v-if="n !== (row.ownerList.length-1)">、</span>
+              </span>
+            </div>
+            <div style="color: #2ec4b6;">
+              <span
+                v-for="(i, n) in row.ownerList"
+                :key="n"
+              >{{i.ownerMobile}}<span v-if="n !== (row.ownerList.length-1)">、</span></span>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="业管审核状态"
-          width="120"
-        >
+        <el-table-column width="135">
+          <template #header>
+            <div>告知书状态</div>
+            <div>业管审核状态</div>
+          </template>
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.reviewStatus, 'ReviewStatus') || '-'}}
+            <div>{{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}</div>
+            <div>{{$root.dictAllName(row.reviewStatus, 'ReviewStatus') || '-'}}</div>
           </template>
         </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
-          min-width="120"
+          min-width="100"
         >
           <template v-slot="{ row }">
             <!-- :class="{'ih-data-disabled':row.notificationType !== 'Notification'}" -->

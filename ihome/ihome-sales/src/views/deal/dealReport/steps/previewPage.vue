@@ -79,16 +79,16 @@
           </el-col>
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
             <el-form-item label="渠道公司">
-              <div v-if="infoForm.agencyList && infoForm.agencyList.length">
-                {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].agencyName : ''}}
-                <span style="color: red">[{{infoForm.agencyList && infoForm.agencyList.length ? $root.dictAllName(infoForm.agencyList[0].companyKind, 'CompanyKind') : '-'}}]</span>
+              <div v-if="infoForm.agencyName">
+                {{infoForm.agencyName}}
+                <span style="color: red">[{{$root.dictAllName(infoForm.companyKind, 'CompanyKind')}}]</span>
               </div>
               <div v-else>-</div>
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal' && infoForm.companyKind === 'ChannelCompany'">
             <el-form-item label="经纪人">
-              {{infoForm.agencyList && infoForm.agencyList.length ? infoForm.agencyList[0].broker : ''}}
+              {{infoForm.brokerName}}
             </el-form-item>
           </el-col>
           <el-col :span="8" v-if="infoForm.contType === 'DistriDeal'">
