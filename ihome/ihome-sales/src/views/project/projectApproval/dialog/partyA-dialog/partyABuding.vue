@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 11:34:52
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 17:48:16
+ * @LastEditTime: 2021-04-21 19:47:57
 -->
 <template>
   <el-dialog
@@ -24,13 +24,13 @@
           <div class="buttons">
             <el-button
               v-if="item.isShow"
-              type="success"
+              type="primary"
               size="mini"
               @click="setAll(item, 'all')"
             >全选</el-button>
             <el-button
               v-else
-              type="success"
+              type="primary"
               size="mini"
               @click="setAll(item, 'no')"
             >反选</el-button>
@@ -41,14 +41,14 @@
             v-model="item.buildingIds"
             size="small"
           >
-            <el-checkbox-button
+            <el-checkbox
               class="checkBox"
               v-for="(list, i) in info"
               :label="list.buildingId"
               :key="i"
               border
             >{{list.buildingName}}
-            </el-checkbox-button>
+            </el-checkbox>
           </el-checkbox-group>
         </div>
       </div>
@@ -166,11 +166,6 @@ export default class PartyABuding extends Vue {
 }
 .checkBox {
   margin: 0 0 10px 10px;
-  border-left: 1px solid #dcdfe6;
-  /deep/.el-checkbox-button__inner {
-    border-left: none;
-    border-radius: 0 0 0 0;
-  }
 }
 
 .titleButton {

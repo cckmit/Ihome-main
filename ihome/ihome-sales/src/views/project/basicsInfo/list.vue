@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 15:10:41
+ * @LastEditTime: 2021-04-22 15:04:33
 -->
 <template>
   <IhPage label-width="110px">
@@ -258,6 +258,11 @@
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
+                <!-- <el-dropdown-item
+                  :class="{'ih-data-disabled': !recallChange(row)}"
+                  @click.native.prevent="recall(row)"
+                  v-has="'B.SALES.PROJECT.BASICLIST.RECALL'"
+                >撤回</el-dropdown-item> -->
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -336,16 +341,21 @@ export default class ProjectList extends Vue {
   }
 
   delChange(row: any) {
-    const Draft = row.auditEnum === "Draft";
-    const Reject = row.auditEnum === "Reject";
+    const Draft = row.auditEnum === "Draft"; // 草稿
+    const Reject = row.auditEnum === "Reject"; // 驳回
     return Draft || Reject;
   }
 
   auditChange(row: any) {
-    const Conduct = row.auditEnum === "Conduct";
+    const Conduct = row.auditEnum === "Conduct"; // 审核中
     const RBusinessManagement = this.$roleTool.RBusinessManagement();
     const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
     return (RBusinessManagement || RHeadBusinessManagement) && Conduct;
+  }
+
+  recallChange(row: any) {
+    const Conduct = row.auditEnum === "Conduct";
+    return Conduct;
   }
 
   get emptyText() {
@@ -454,6 +464,12 @@ export default class ProjectList extends Vue {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  async recall(row: any) {
+    console.log(row);
+    // try {
+    // }
   }
 
   created() {
