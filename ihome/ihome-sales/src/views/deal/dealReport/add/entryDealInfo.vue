@@ -1747,8 +1747,14 @@
         // 分销成交模式
         if(data.length > 0) {
           this.postData.agencyId = data[0].agencyId; // 渠道公司Id
-          this.postData.agencyName = data[0].agencyName; // 渠道公司
-          this.agencySearchName = data[0].agencyName; // 渠道公司
+          if (data[0].companyKind === 'InfieldCompany') {
+            // 内部公司和外部公司不一样
+            this.agencySearchName = data[0].companyName; // 渠道公司
+            this.postData.agencyName = data[0].companyName; // 渠道公司
+          } else {
+            this.agencySearchName = data[0].agencyName; // 渠道公司
+            this.postData.agencyName = data[0].agencyName; // 渠道公司
+          }
           this.postData.channelLevel = data[0].channelLevel; // 渠道等级Id
           this.postData.brokerId= data[0].brokerId; // 渠道经纪人Id
           this.postData.brokerName= data[0].brokerName || data[0].broker; // 渠道经纪人
@@ -1757,6 +1763,7 @@
         }
       } else {
         // 非分销成交模式 --- 没有渠道相关信息
+        this.agencySearchName = null;
         let list: any = ['agencyId', 'agencyName', 'channelLevel', 'brokerId', 'brokerName', 'companyKind'];
         this.resetObject('postData', list); // 重置值
       }
