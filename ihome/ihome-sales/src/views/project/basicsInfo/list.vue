@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 15:10:41
+ * @LastEditTime: 2021-04-23 08:50:59
 -->
 <template>
   <IhPage label-width="110px">
@@ -258,6 +258,11 @@
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
                 >删除</el-dropdown-item>
+                <el-dropdown-item
+                  :class="{'ih-data-disabled': !recallChange(row)}"
+                  @click.native.prevent="recall(row)"
+                  v-has="'B.SALES.PROJECT.BASICLIST.RECALL'"
+                >撤回</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -282,6 +287,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_project_getList,
   post_project_del__proId,
+  post_project_cancel__proId,
 } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 @Component({
@@ -336,16 +342,21 @@ export default class ProjectList extends Vue {
   }
 
   delChange(row: any) {
-    const Draft = row.auditEnum === "Draft";
-    const Reject = row.auditEnum === "Reject";
+    const Draft = row.auditEnum === "Draft"; // 草稿
+    const Reject = row.auditEnum === "Reject"; // 驳回
     return Draft || Reject;
   }
 
   auditChange(row: any) {
-    const Conduct = row.auditEnum === "Conduct";
+    const Conduct = row.auditEnum === "Conduct"; // 审核中
     const RBusinessManagement = this.$roleTool.RBusinessManagement();
     const RHeadBusinessManagement = this.$roleTool.RHeadBusinessManagement();
     return (RBusinessManagement || RHeadBusinessManagement) && Conduct;
+  }
+
+  recallChange(row: any) {
+    const Conduct = row.auditEnum === "Conduct";
+    return Conduct;
   }
 
   get emptyText() {
@@ -453,6 +464,21 @@ export default class ProjectList extends Vue {
       this.getListMixin();
     } catch (error) {
       console.log(error);
+    }
+  }
+
+  async recall(row: any) {
+    try {
+      await post_project_cancel__proId({
+        proId: row.proId,
+      });
+      this.$message({
+        type: "success",
+        message: "撤回成功!",
+      });
+      this.getListMixin();
+    } catch (err) {
+      console.log(err);
     }
   }
 

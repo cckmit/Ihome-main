@@ -215,10 +215,10 @@
                 项目周期：{{ scope.row.termName }}
               </div>
               <div class="expand-content">
-                渠道公司：{{ scope.row.channelName }}
+                渠道公司：{{ scope.row.companyKind === 'InfieldCompany' ? scope.row.companyName : scope.row.channelName }}
               </div>
               <div class="expand-content">
-                经纪人：{{ scope.row.brokerName }}
+                经纪人：{{ scope.row.brokerName ? scope.row.brokerName : '-' }}
               </div>
               <br />
               <div class="expand-content">
@@ -249,7 +249,7 @@
           min-width="150"
         ></el-table-column>
         <el-table-column
-          prop="actualAmount"
+          prop="paidAmount"
           label="已收金额"
           min-width="150"
         ></el-table-column>
@@ -405,7 +405,7 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "../../../mixins/pagination";
-import { post_deal_getList } from "@/api/deal";
+import { post_deal_getSumList } from "@/api/deal";
 import {post_dict_getAllByType} from "@/api/system";
 
 @Component({
@@ -527,9 +527,9 @@ export default class RealDealList extends Vue {
       });
       return;
     }
-    this.queryPageParameters.isMainDealOnly = true;
+    // this.queryPageParameters.isMainDealOnly = true;
     this.queryPageParameters.isConfirmed = true;
-    this.resPageInfo = await post_deal_getList(this.queryPageParameters);
+    this.resPageInfo = await post_deal_getSumList(this.queryPageParameters);
   }
 
   // 重置
