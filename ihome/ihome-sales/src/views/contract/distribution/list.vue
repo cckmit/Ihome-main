@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 11:16:16
+ * @LastEditTime: 2021-04-23 18:21:55
 -->
 <template>
   <IhPage label-width="100px">
@@ -498,6 +498,25 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
+                  v-if="$route.name === 'DistributionList'"
+                  v-has="'B.SALES.CONTRACT.DISTLIST.AUDIT'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
+                  @click.native.prevent="handleToAudit(row)"
+                >审核</el-dropdown-item>
+                <el-dropdown-item
+                  v-else-if="$route.name === 'DistributionListByBusiness'"
+                  v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.AUDIT'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
+                  @click.native.prevent="handleToAudit(row)"
+                >审核</el-dropdown-item>
+                <el-dropdown-item
+                  v-else-if="$route.name === 'DistributionListByBack'"
+                  v-has="'B.SALES.CONTRACT.DISTBYBACK.AUDIT'"
+                  :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
+                  @click.native.prevent="handleToAudit(row)"
+                >审核</el-dropdown-item>
+
+                <!-- <el-dropdown-item
                   @click.native.prevent="review([{ ...row }])"
                   v-if="$route.name === 'DistributionList'"
                   :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
@@ -514,9 +533,9 @@
                   v-else-if="$route.name === 'DistributionListByBack'"
                   :class="{ 'ih-data-disabled': row.distributionState !== 'Pending' }"
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.VERIFY'"
-                >审核通过</el-dropdown-item>
+                >审核通过</el-dropdown-item> -->
 
-                <el-dropdown-item
+                <!-- <el-dropdown-item
                   @click.native.prevent="handleDis([{ ...row }])"
                   v-if="$route.name === 'DistributionList'"
                   :class="{
@@ -539,7 +558,7 @@
                     'ih-data-disabled': !['Pending'].includes(row.distributionState)
                   }"
                   v-has="'B.SALES.CONTRACT.DISTBYBACK.REJECT'"
-                >审核驳回</el-dropdown-item>
+                >审核驳回</el-dropdown-item> -->
 
                 <el-dropdown-item
                   @click.native.prevent="handleWith([{ ...row }])"
@@ -1112,6 +1131,34 @@ export default class DistributionList extends Vue {
       case "NoChannel":
         // 非渠道类合同
         this.$router.push(`/distribution/notChannelInfo?id=${row.id}`);
+        break;
+    }
+  }
+  /**
+   * @description: 跳转审核页面
+   * @param {*} row
+   */
+  handleToAudit(row: any) {
+    switch (row.contractKind) {
+      case "StandKindSaleConfirm":
+        // 标准联动销售确认书
+        this.$router.push(`/distribution/normalSalesAudit?id=${row.id}`);
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        this.$router.push(`/distribution/notSalesAudit?id=${row.id}`);
+        break;
+      case "StandChannel":
+        // 标准渠道分销合同
+        this.$router.push(`/distribution/normalDistributionAudit?id=${row.id}`);
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        this.$router.push(`/distribution/notDistributionAudit?id=${row.id}`);
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        this.$router.push(`/distribution/notChannelAudit?id=${row.id}`);
         break;
     }
   }

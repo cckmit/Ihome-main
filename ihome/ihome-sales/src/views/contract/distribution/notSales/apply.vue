@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:31:25
+ * @LastEditTime: 2021-04-23 16:57:09
 -->
 <template>
   <IhPage class="text-left">
@@ -12,7 +12,7 @@
       <p class="ih-info-title">非标联动销售确认书(启动函)申领</p>
       <el-form
         ref="Form"
-        label-width="95px"
+        label-width="100px"
         class="padding-left-20"
         :model="form"
         :rules="rules"
@@ -92,21 +92,18 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="乙方渠道等级"
-              class="formItem"
-            >
+            <el-form-item label="乙方渠道等级">
               <span v-if="form.channelCompanyKind === 'InfieldCompany'">-</span>
               <span v-else-if="form.channelCompanyKind === 'ChannelCompany'">{{$root.dictAllName(form.channelLevel, 'ChannelLevel')}}</span>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="合作期限">
               {{form.contractStartTime}} -- {{form.contractEndTime}}
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
             <el-form-item
               label="合同跟进人"
@@ -117,6 +114,25 @@
                 v-model="form.handlerId"
                 :search-name="handlerName"
               ></IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="渠道类型">
+              <template v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">
+                <div style="display: flex;">
+                  <span>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
+                  <el-link
+                    type="primary"
+                    class="margin-left-10"
+                    style="display: inline;"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >{{form.channelCompanyName}}</el-link>
+                </div>
+              </template>
+              <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -367,7 +383,13 @@ export default class NotSalesApply extends Vue {
           exAuto: 1,
         }));
         if (["Appoint", "Strategic"].includes(res.channelEnum)) {
-          this.getChannelInfo({ id: res.designatedAgencyId });
+          if (res.companyKind === "ChannelCompany") {
+            // let resParams = await this.getInfieldCompany({
+            //   id: res.designatedAgencyId,
+            // });
+            // this.getCompanyInfo(resParams);
+            this.getChannelInfo({ id: res.designatedAgencyId });
+          }
           this.channelForm = {
             channelCompanyId: res.designatedAgencyId,
             channelCompanyName: res.designatedAgency,

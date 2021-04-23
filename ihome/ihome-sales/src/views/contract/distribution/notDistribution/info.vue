@@ -224,6 +224,20 @@
         >提交</el-button>
         <el-button @click="$router.go(-1)">取消</el-button>
       </div>
+      <!-- 审核 -->
+      <div
+        class="text-center"
+        v-if="$route.name === 'NotDistributionAudit'"
+      >
+        <el-button
+          type="success"
+          @click="checkSuccess()"
+        >通过</el-button>
+        <el-button
+          type="danger"
+          @click="checkReject()"
+        >驳回</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -234,6 +248,8 @@ import {
   get_distribution_detail__id,
   post_distribution_duplicate,
   post_distribution_original_archive,
+  post_distribution_review,
+  post_distribution_disallowance,
 } from "@/api/contract/index";
 
 @Component({})
@@ -244,6 +260,28 @@ export default class NotChannelInfo extends Vue {
   private archiveStatus: any = null;
   private archiveNo: any = null;
 
+  private async checkSuccess() {
+    try {
+      await post_distribution_review({ ids: [this.form.id] });
+      this.$message.success("审核通过");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async checkReject() {
+    try {
+      await post_distribution_disallowance({ ids: [this.form.id] });
+      this.$message.success("驳回成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async submitOriginal() {
     if (!this.archiveNo) {
       this.$message.warning("归档编号不能为空");

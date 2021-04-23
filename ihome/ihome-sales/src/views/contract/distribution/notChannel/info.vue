@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 19:50:57
+ * @LastEditTime: 2021-04-23 18:11:20
 -->
 <template>
   <IhPage class="text-left">
@@ -101,6 +101,11 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同跟进人">{{form.handlerName}}</el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="垫佣周期">{{$root.dictAllName(form.padCommissionEnum, 'PadCommission')}}</el-form-item>
           </el-col>
         </el-row>
         <div v-if="form.exInvolvedCommiss === 'Yes'">
@@ -218,6 +223,20 @@
         >提交</el-button>
         <el-button @click="$router.go(-1)">取消</el-button>
       </div>
+      <!-- 审核 -->
+      <div
+        class="text-center"
+        v-if="$route.name === 'NotChannelAudit'"
+      >
+        <el-button
+          type="success"
+          @click="checkSuccess()"
+        >通过</el-button>
+        <el-button
+          type="danger"
+          @click="checkReject()"
+        >驳回</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -228,6 +247,8 @@ import {
   get_distribution_detail__id,
   post_distribution_duplicate,
   post_distribution_original_archive,
+  post_distribution_review,
+  post_distribution_disallowance,
 } from "@/api/contract/index";
 
 @Component({})
@@ -238,6 +259,28 @@ export default class NotChannelInfo extends Vue {
   private archiveStatus: any = null;
   private archiveNo: any = null;
 
+  private async checkSuccess() {
+    try {
+      await post_distribution_review({ ids: [this.form.id] });
+      this.$message.success("审核通过");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async checkReject() {
+    try {
+      await post_distribution_disallowance({ ids: [this.form.id] });
+      this.$message.success("驳回成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async submitOriginal() {
     if (!this.archiveNo) {
       this.$message.warning("归档编号不能为空");

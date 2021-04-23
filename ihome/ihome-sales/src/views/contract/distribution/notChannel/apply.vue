@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 15:28:44
+ * @LastEditTime: 2021-04-23 16:34:44
 -->
 <template>
   <IhPage class="text-left">
@@ -173,6 +173,11 @@
                 :search-name="handlerName"
               ></IhSelectPageUser>
             </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item label="垫佣周期">{{$root.dictAllName(form.padCommissionEnum, 'PadCommission')}}</el-form-item>
           </el-col>
         </el-row>
         <div v-if="form.exInvolvedCommiss === 'Yes'">

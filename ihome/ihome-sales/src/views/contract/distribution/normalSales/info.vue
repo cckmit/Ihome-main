@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:13:36
+ * @LastEditTime: 2021-04-23 18:07:10
 -->
 <template>
   <IhPage class="text-left">
@@ -262,6 +262,20 @@
         >提交</el-button>
         <el-button @click="$router.go(-1)">取消</el-button>
       </div>
+      <!-- 审核 -->
+      <div
+        class="text-center"
+        v-if="$route.name === 'NormalSalesAudit'"
+      >
+        <el-button
+          type="success"
+          @click="checkSuccess()"
+        >通过</el-button>
+        <el-button
+          type="danger"
+          @click="checkReject()"
+        >驳回</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -271,6 +285,8 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   get_distribution_detail__id,
   post_distribution_original_archive,
+  post_distribution_review,
+  post_distribution_disallowance,
 } from "@/api/contract/index";
 
 @Component({})
@@ -280,6 +296,28 @@ export default class SalesApply extends Vue {
   private electronicFile: any = [];
   private archiveNo: any = null;
 
+  private async checkSuccess() {
+    try {
+      await post_distribution_review({ ids: [this.form.id] });
+      this.$message.success("审核通过");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async checkReject() {
+    try {
+      await post_distribution_disallowance({ ids: [this.form.id] });
+      this.$message.success("驳回成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async submitOriginal() {
     if (!this.archiveNo) {
       this.$message.warning("归档编号不能为空");
