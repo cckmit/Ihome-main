@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 10:05:52
+ * @LastEditTime: 2021-04-23 17:42:35
 -->
 <template>
   <div>
@@ -30,7 +30,7 @@
             </div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="16">
           <el-form-item
             label="项目地址"
             class="formItem"
@@ -48,7 +48,7 @@
             <div class="word-break line-height">{{ info.proRecord }}</div>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="16">
           <el-form-item
             label="开发商"
             class="formItem"

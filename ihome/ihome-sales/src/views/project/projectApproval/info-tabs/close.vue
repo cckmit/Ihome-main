@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-15 17:34:15
+ * @LastEditTime: 2021-04-23 15:05:50
 -->
 <template>
   <div>
@@ -39,11 +39,30 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row, 'making')"
-            >查看</el-button>
+              @click.native.prevent="view(row, 'making')"
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+              v-if="businessManagementChange"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="start(row, 'making')"
+                  v-if="row.cancel"
+                >启用</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="cancellation(row, 'making')"
+                  v-if="!row.cancel"
+                >作废</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -80,11 +99,30 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row, 'please')"
-            >查看</el-button>
+              @click.native.prevent="view(row, 'please')"
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+              v-if="businessManagementChange"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="start(row, 'please')"
+                  v-if="row.cancel"
+                >启用</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="cancellation(row, 'please')"
+                  v-if="!row.cancel"
+                >作废</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -107,7 +145,13 @@
 import { Component, Vue } from "vue-property-decorator";
 import MakingInfo from "../dialog/close-dialog/makingInfo.vue";
 import PleaseInfo from "../dialog/close-dialog/pleaseInfo.vue";
-import { get_settleCondition_getPage__termId } from "@/api/project/index.ts";
+import {
+  get_settleCondition_getPage__termId,
+  post_settleCondition_cancelPlease,
+  post_settleCondition_cancelMaking,
+  post_settleCondition_startMaking,
+  post_settleCondition_startPlease,
+} from "@/api/project/index.ts";
 @Component({
   components: {
     MakingInfo,
@@ -125,6 +169,12 @@ export default class Close extends Vue {
   makingData: any = {};
   pleaseData: any = {};
 
+  private get businessManagementChange() {
+    const businessManagementEdit =
+      this.$route.name === "businessManagementEdit"; //路由判断
+    return businessManagementEdit;
+  }
+
   created() {
     this.getInfo();
   }
@@ -136,6 +186,38 @@ export default class Close extends Vue {
         termId: id,
       });
     }
+  }
+
+  async start(data: any, type: any) {
+    if (type === "making") {
+      await post_settleCondition_startMaking({
+        settleId: data.settleId,
+        termId: this.$route.query.id,
+      });
+    } else {
+      await post_settleCondition_startPlease({
+        settleId: data.settleId,
+        termId: this.$route.query.id,
+      });
+    }
+    this.$message.success("启用成功");
+    this.getInfo();
+  }
+
+  async cancellation(data: any, type: any) {
+    if (type === "making") {
+      await post_settleCondition_cancelMaking({
+        settleId: data.settleId,
+        termId: this.$route.query.id,
+      });
+    } else {
+      await post_settleCondition_cancelPlease({
+        settleId: data.settleId,
+        termId: this.$route.query.id,
+      });
+    }
+    this.$message.success("作废成功");
+    this.getInfo();
   }
 
   view(row: any, type: any) {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2020-12-11 09:19:25
+ * @LastEditTime: 2021-04-23 17:36:01
 -->
 <template>
   <div>
@@ -60,11 +60,30 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row)"
-            >查看</el-button>
+              @click.native.prevent="view(row)"
+            >查看</el-link>
+            <!-- <el-dropdown
+              v-if="businessManagementChange"
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item
+                  @click.native.prevent="start(row)"
+                  v-if="row.state === 'Cancel'"
+                >启用</el-dropdown-item>
+                <el-dropdown-item
+                  @click.native.prevent="cancellation(row)"
+                  v-if="row.state === 'Start'"
+                >作废</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>
@@ -80,7 +99,11 @@
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
 import Info from "../dialog/setMeal-dialog/info.vue";
-import { post_collectandsend_getAllByTerm } from "@/api/project/index.ts";
+import {
+  post_collectandsend_getAllByTerm,
+  post_collectandsend_start,
+  post_collectandsend_cancel,
+} from "@/api/project/index.ts";
 @Component({
   components: {
     Info,
@@ -91,6 +114,12 @@ export default class SetMeal extends Vue {
   viewDialogVisible = false;
   info: any = [];
   infoData: any = {};
+
+  private get businessManagementChange() {
+    const businessManagementEdit =
+      this.$route.name === "businessManagementEdit"; //路由判断
+    return businessManagementEdit;
+  }
 
   created() {
     this.getInfo();
@@ -103,6 +132,22 @@ export default class SetMeal extends Vue {
         termId: id,
       });
     }
+  }
+
+  async start(row: any) {
+    await post_collectandsend_start({
+      packageId: row.packageId,
+    });
+    this.$message.success("启用成功");
+    this.getInfo();
+  }
+
+  async cancellation(data: any) {
+    await post_collectandsend_cancel({
+      packageId: data.packageId,
+    });
+    this.$message.success("作废成功");
+    this.getInfo();
   }
 
   view(row: any) {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 18:02:49
+ * @LastEditTime: 2021-04-23 11:14:47
 -->
 <template>
   <el-dialog
@@ -473,14 +473,25 @@ export default class MakingEdit extends Vue {
           this.finishLoading = false;
         }
       } else {
-        try {
-          obj.settleId = this.data.id;
-          await post_settleCondition_updateMaking(obj);
-          this.$message.success("修改成功");
-          this.finishLoading = false;
-          this.$emit("finish");
-        } catch (err) {
-          this.finishLoading = false;
+        if (this.data.type === "edit") {
+          try {
+            obj.settleId = this.data.id;
+            await post_settleCondition_updateMaking(obj);
+            this.$message.success("修改成功");
+            this.finishLoading = false;
+            this.$emit("finish");
+          } catch (err) {
+            this.finishLoading = false;
+          }
+        } else {
+          try {
+            await post_settleCondition_addMaking(obj);
+            this.finishLoading = false;
+            this.$message.success("复制成功");
+            this.$emit("finish");
+          } catch (err) {
+            this.finishLoading = false;
+          }
         }
       }
     }

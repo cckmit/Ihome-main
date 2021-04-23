@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 11:18:51
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 20:37:07
+ * @LastEditTime: 2021-04-23 14:40:58
 -->
 <template>
   <el-dialog
@@ -178,7 +178,7 @@ export default class AddNotification extends Vue {
       obj.startTime = this.form.timeList[0];
       obj.endTime = this.form.timeList[1];
       obj.exPreferentialItem = this.form.exPreferentialItem ? 1 : 0;
-      if (this.data.title === "新增") {
+      if (["新增", "复制"].includes(this.data.title)) {
         try {
           await post_preferential_add(obj);
           this.finishLoading = false;
@@ -186,7 +186,7 @@ export default class AddNotification extends Vue {
         } catch (err) {
           this.finishLoading = false;
         }
-      } else {
+      } else if (this.data.title === "编辑") {
         try {
           await post_preferential_update(obj);
           this.finishLoading = false;
