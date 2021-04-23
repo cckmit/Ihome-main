@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 15:05:12
+ * @LastEditTime: 2021-04-23 17:36:01
 -->
 <template>
   <div>
@@ -55,7 +55,7 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="150"
+          width="120"
           fixed="right"
           align="center"
         >
@@ -64,7 +64,7 @@
               type="primary"
               @click.native.prevent="view(row)"
             >查看</el-link>
-            <el-dropdown
+            <!-- <el-dropdown
               v-if="businessManagementChange"
               trigger="click"
               class="margin-left-15"
@@ -83,7 +83,7 @@
                   v-if="row.state === 'Start'"
                 >作废</el-dropdown-item>
               </el-dropdown-menu>
-            </el-dropdown>
+            </el-dropdown> -->
           </template>
         </el-table-column>
       </el-table>
