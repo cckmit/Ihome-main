@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 16:21:23
+ * @LastEditTime: 2021-04-23 11:21:52
 -->
 <template>
   <div>
@@ -39,11 +39,10 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row, 'making')"
-            >查看</el-button>
+              @click.native.prevent="view(row, 'making')"
+            >查看</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -80,11 +79,10 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row, 'please')"
-            >查看</el-button>
+              @click.native.prevent="view(row, 'please')"
+            >查看</el-link>
           </template>
         </el-table-column>
       </el-table>

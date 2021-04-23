@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-11 15:36:42
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 14:36:16
+ * @LastEditTime: 2021-04-23 11:17:22
 -->
 <template>
   <el-dialog
@@ -415,14 +415,25 @@ export default class PleaseEdit extends Vue {
           this.finishLoading = false;
         }
       } else {
-        try {
-          obj.settleId = this.data.id;
-          await post_settleCondition_updatePlease(obj);
-          this.$message.success("修改成功");
-          this.finishLoading = false;
-          this.$emit("finish");
-        } catch (err) {
-          this.finishLoading = false;
+        if (this.data.type === "edit") {
+          try {
+            obj.settleId = this.data.id;
+            await post_settleCondition_updatePlease(obj);
+            this.$message.success("修改成功");
+            this.finishLoading = false;
+            this.$emit("finish");
+          } catch (err) {
+            this.finishLoading = false;
+          }
+        } else {
+          try {
+            await post_settleCondition_addPlease(obj);
+            this.$emit("finish");
+            this.finishLoading = false;
+            this.$message.success("复制成功");
+          } catch (err) {
+            this.finishLoading = false;
+          }
         }
       }
     }

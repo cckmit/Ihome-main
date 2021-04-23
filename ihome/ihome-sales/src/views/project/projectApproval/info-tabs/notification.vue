@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:56:59
+ * @LastEditTime: 2021-04-23 15:07:56
 -->
 <template>
   <div>
@@ -118,14 +118,14 @@
                 >复制</el-dropdown-item>
                 <el-dropdown-item
                   type="success"
-                  v-if="row.state === 'Stop' && !['StandKindSaleConfirm', 'NoStandKindSaleConfirm'].includes(row.contractKind) && contractApprovalChange"
+                  v-if="row.state === 'Stop' &&  businessManagementChange"
                   :loading="startLoading"
                   @click.native.prevent="start(row)"
                 >启用</el-dropdown-item>
                 <el-dropdown-item
                   type="danger"
                   :loading="stopLoading"
-                  v-if="row.state === 'Start' && !['StandKindSaleConfirm', 'NoStandKindSaleConfirm'].includes(row.contractKind) && contractApprovalChange"
+                  v-if="row.state === 'Start' &&  businessManagementChange"
                   @click.native.prevent="stop(row)"
                 >禁用</el-dropdown-item>
               </el-dropdown-menu>
@@ -247,21 +247,35 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="180"
+            width="140"
             fixed="right"
             align="center"
           >
             <template v-slot="{ row }">
-              <el-button
-                size="small"
-                type="success"
-                @click="previewBottom(row)"
-              >预览</el-button>
-              <el-button
-                size="small"
-                type="success"
+              <el-link
+                type="primary"
                 @click="uploadQRcode(row)"
-              >下载二维码</el-button>
+              >二维码</el-link>
+              <el-dropdown
+                trigger="click"
+                class="margin-left-15"
+              >
+                <span class="el-dropdown-link">
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native.prevent="previewBottom(row)">预览</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native.prevent="startlation(row)"
+                    v-if="row.state === 'Stop' && businessManagementChange"
+                  >启用</el-dropdown-item>
+                  <el-dropdown-item
+                    @click.native.prevent="stoplation(row)"
+                    v-if="row.state === 'Start' && businessManagementChange"
+                  >禁用</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </template>
           </el-table-column>
         </el-table>
@@ -333,6 +347,8 @@ import {
   post_distributContract_saveOaRemark,
   post_distributContract_start__agencyContrictId,
   post_distributContract_cancel__agencyContrictId,
+  post_preferential_start__preferentialMxId,
+  post_preferential_cancel__preferentialMxId,
 } from "@/api/project/index.ts";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import TemplateSelect from "../dialog/notification-dialog/templateSelect.vue";
@@ -373,13 +389,14 @@ export default class Notification extends Vue {
   }
 
   private get contractApprovalChange() {
-    const TermAdopt = this.info.auditEnum === "TermAdopt"; // 立项审核通过
-    const ConstractWait = this.info.auditEnum === "ConstractWait"; // 合同待审核
-    const ConstractReject = this.info.auditEnum === "ConstractReject"; // 合同审核驳回
     const contractApprovalEdit = this.$route.name === "contractApprovalEdit"; //路由判断
-    return (
-      (TermAdopt || ConstractWait || ConstractReject) && contractApprovalEdit
-    );
+    return contractApprovalEdit;
+  }
+
+  private get businessManagementChange() {
+    const businessManagementEdit =
+      this.$route.name === "businessManagementEdit"; //路由判断
+    return businessManagementEdit;
   }
 
   async getInfo() {
@@ -700,6 +717,24 @@ export default class Notification extends Vue {
     this.$message.success("保存成功");
     this.getInfo();
     this.editDialogVisible = false;
+  }
+
+  //优惠告知书启用
+  async startlation(data: any) {
+    await post_preferential_start__preferentialMxId({
+      preferentialMxId: data.preferentialMxId,
+    });
+    this.$message.success("启用成功");
+    this.getInfo();
+  }
+
+  //优惠告知书作废
+  async stoplation(data: any) {
+    await post_preferential_cancel__preferentialMxId({
+      preferentialMxId: data.preferentialMxId,
+    });
+    this.$message.success("禁用成功");
+    this.getInfo();
   }
 }
 </script>

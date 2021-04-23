@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:57:09
+ * @LastEditTime: 2021-04-23 15:12:07
 -->
 <template>
   <div>
@@ -77,14 +77,8 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-link
-              type="primary"
-              @click="viewTemplate(row)"
-            >查看</el-link>
-            <el-link
-              type="primary"
-              @click="previewTop(row)"
-            >预览</el-link>
+            <el-link @click="viewTemplate(row)">查看</el-link>
+            <el-link @click="previewTop(row)">预览</el-link>
           </template>
         </el-table-column>
       </el-table>
@@ -192,16 +186,8 @@
             align="center"
           >
             <template v-slot="{ row }">
-              <el-button
-                size="small"
-                type="success"
-                @click="previewBottom(row)"
-              >预览</el-button>
-              <el-button
-                size="small"
-                type="success"
-                @click="uploadQRcode(row)"
-              >下载二维码</el-button>
+              <el-link @click="uploadQRcode(row)">二维码</el-link>
+              <el-link @click="previewBottom(row)">预览</el-link>
             </template>
           </el-table-column>
         </el-table>

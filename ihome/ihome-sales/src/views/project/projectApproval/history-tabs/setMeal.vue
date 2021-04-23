@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-01-09 16:14:58
+ * @LastEditTime: 2021-04-23 10:50:51
 -->
 <template>
   <div>
@@ -60,11 +60,10 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row)"
-            >查看</el-button>
+              @click.native.prevent="view(row)"
+            >查看</el-link>
           </template>
         </el-table-column>
       </el-table>

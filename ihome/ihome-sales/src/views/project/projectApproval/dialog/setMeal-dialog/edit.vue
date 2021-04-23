@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 09:20:11
+ * @LastEditTime: 2021-04-23 16:01:56
 -->
 <template>
   <el-dialog
@@ -531,7 +531,7 @@
               </el-table-column>
               <el-table-column
                 label="操作"
-                width="250"
+                width="300"
                 align="center"
               >
                 <template v-slot="{ row, $index }">
@@ -545,6 +545,11 @@
                     type="primary"
                     @click="shiftDown(row, i, $index)"
                   >下移</el-button>
+                  <el-button
+                    size="small"
+                    type="success"
+                    @click="copyRow(row, i, $index)"
+                  >复制</el-button>
                   <el-button
                     size="small"
                     type="danger"
@@ -966,7 +971,7 @@
               </el-table-column>
               <el-table-column
                 label="操作"
-                width="250"
+                width="300"
                 align="center"
               >
                 <template v-slot="{ row, $index }">
@@ -980,6 +985,11 @@
                     type="primary"
                     @click="shiftDown(row, i, $index)"
                   >下移</el-button>
+                  <el-button
+                    size="small"
+                    type="success"
+                    @click="copyRow(row, i, $index)"
+                  >复制</el-button>
                   <el-button
                     size="small"
                     type="danger"
@@ -1330,17 +1340,30 @@ export default class SetMealEdit extends Vue {
     obj.termId = this.$route.query.id;
     if (this.data.id) {
       obj.packageId = this.data.id;
-      try {
-        await post_collectandsend_update(obj);
-        this.finishLoading = false;
-        this.$emit("finish");
-      } catch (err) {
-        this.finishLoading = false;
+      if (this.data.type === "edit") {
+        try {
+          await post_collectandsend_update(obj);
+          this.finishLoading = false;
+          this.$message.success("修改成功");
+          this.$emit("finish");
+        } catch (err) {
+          this.finishLoading = false;
+        }
+      } else {
+        try {
+          await post_collectandsend_add(obj);
+          this.finishLoading = false;
+          this.$message.success("复制成功");
+          this.$emit("finish");
+        } catch (err) {
+          this.finishLoading = false;
+        }
       }
     } else {
       try {
         await post_collectandsend_add(obj);
         this.finishLoading = false;
+        this.$message.success("新增成功");
         this.$emit("finish");
       } catch (err) {
         this.finishLoading = false;
@@ -1611,6 +1634,15 @@ export default class SetMealEdit extends Vue {
     } else {
       this.$message.warning("最后一行不可再下移");
     }
+  }
+
+  // 复制行
+  copyRow(data: any, i: number, index: number) {
+    this.info.colletionandsendMxs[i].colletionandsendDetails.splice(
+      index + 1,
+      0,
+      { ...data, packageMxId: "" }
+    );
   }
 
   // 删除行

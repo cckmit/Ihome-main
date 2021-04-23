@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:26:20
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:52:34
+ * @LastEditTime: 2021-04-23 11:19:12
 -->
 <template>
   <div>
@@ -43,33 +43,29 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="220"
+          width="120"
           fixed="right"
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row, 'making')"
-            >查看</el-button>
-            <el-button
-              size="small"
-              type="success"
-              @click="edit(row, 'making')"
-            >修改</el-button>
-            <el-button
-              v-if="row.cancel"
-              size="small"
-              type="success"
-              @click="start(row, 'making')"
-            >启用</el-button>
-            <el-button
-              v-if="!row.cancel"
-              size="small"
-              type="danger"
-              @click="cancellation(row, 'making')"
-            >作废</el-button>
+              @click.native.prevent="view(row, 'making')"
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="edit(row, 'making')">编辑</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="copy(row, 'making')">复制</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="del(row, 'making')">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -110,33 +106,29 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="220"
+          width="120"
           fixed="right"
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row, 'please')"
-            >查看</el-button>
-            <el-button
-              size="small"
-              type="success"
-              @click="edit(row, 'please')"
-            >修改</el-button>
-            <el-button
-              v-if="row.cancel"
-              size="small"
-              type="success"
-              @click="start(row, 'please')"
-            >启用</el-button>
-            <el-button
-              v-if="!row.cancel"
-              size="small"
-              type="danger"
-              @click="cancellation(row, 'please')"
-            >作废</el-button>
+              @click.native.prevent="view(row, 'please')"
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="edit(row, 'please')">编辑</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="copy(row, 'please')">复制</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="del(row, 'please')">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -177,10 +169,8 @@ import PleaseEdit from "../dialog/close-dialog/pleaseEdit.vue";
 import PleaseInfo from "../dialog/close-dialog/pleaseInfo.vue";
 import {
   get_settleCondition_getPage__termId,
-  post_settleCondition_cancelPlease,
-  post_settleCondition_cancelMaking,
-  post_settleCondition_startMaking,
-  post_settleCondition_startPlease,
+  post_settleCondition_deleteMaking,
+  post_settleCondition_deletePlease,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -243,6 +233,7 @@ export default class Close extends Vue {
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
         proId: this.info.proId,
+        type: "edit",
       };
       this.makingEditDialogVisible = true;
     } else {
@@ -251,8 +242,55 @@ export default class Close extends Vue {
         chargeEnum: this.info.chargeEnum,
         padCommissionEnum: this.info.padCommissionEnum,
         proId: this.info.proId,
+        type: "edit",
       };
       this.pleaseEditDialogVisible = true;
+    }
+  }
+
+  copy(row: any, type: any) {
+    if (type === "making") {
+      this.makingData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
+        type: "coyp",
+      };
+      this.makingEditDialogVisible = true;
+    } else {
+      this.pleaseData = {
+        id: row.settleId,
+        chargeEnum: this.info.chargeEnum,
+        padCommissionEnum: this.info.padCommissionEnum,
+        proId: this.info.proId,
+        type: "coyp",
+      };
+      this.pleaseEditDialogVisible = true;
+    }
+  }
+
+  async del(row: any, type: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      if (type === "making") {
+        await post_settleCondition_deleteMaking({
+          termId: this.$route.query.id,
+          settleId: row.settleId,
+        });
+      } else {
+        await post_settleCondition_deletePlease({
+          termId: this.$route.query.id,
+          settleId: row.settleId,
+        });
+      }
+      this.getInfo();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -283,38 +321,6 @@ export default class Close extends Vue {
 
   pleaseEditFinish() {
     this.pleaseEditDialogVisible = false;
-    this.getInfo();
-  }
-
-  async start(data: any, type: any) {
-    if (type === "making") {
-      await post_settleCondition_startMaking({
-        settleId: data.settleId,
-        termId: this.$route.query.id,
-      });
-    } else {
-      await post_settleCondition_startPlease({
-        settleId: data.settleId,
-        termId: this.$route.query.id,
-      });
-    }
-    this.$message.success("启用成功");
-    this.getInfo();
-  }
-
-  async cancellation(data: any, type: any) {
-    if (type === "making") {
-      await post_settleCondition_cancelMaking({
-        settleId: data.settleId,
-        termId: this.$route.query.id,
-      });
-    } else {
-      await post_settleCondition_cancelPlease({
-        settleId: data.settleId,
-        termId: this.$route.query.id,
-      });
-    }
-    this.$message.success("作废成功");
     this.getInfo();
   }
 }

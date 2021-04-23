@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:22:45
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:54:20
+ * @LastEditTime: 2021-04-23 11:15:33
 -->
 <template>
   <div>
@@ -64,33 +64,29 @@
         </el-table-column>
         <el-table-column
           label="操作"
-          width="220"
+          width="120"
           fixed="right"
           align="center"
         >
           <template v-slot="{ row }">
-            <el-button
-              size="small"
+            <el-link
               type="primary"
-              @click="view(row)"
-            >查看</el-button>
-            <el-button
-              size="small"
-              type="success"
-              @click="edit(row)"
-            >修改</el-button>
-            <el-button
-              v-if="row.state === 'Cancel'"
-              size="small"
-              type="success"
-              @click="start(row)"
-            >启用</el-button>
-            <el-button
-              v-if="row.state === 'Start'"
-              size="small"
-              type="danger"
-              @click="cancellation(row)"
-            >作废</el-button>
+              @click.native.prevent="view(row)"
+            >查看</el-link>
+            <el-dropdown
+              trigger="click"
+              class="margin-left-15"
+            >
+              <span class="el-dropdown-link">
+                更多
+                <i class="el-icon-arrow-down el-icon--right"></i>
+              </span>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item @click.native.prevent="edit(row)">编辑</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="copy(row)">复制</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="del(row)">删除</el-dropdown-item>
+              </el-dropdown-menu>
+            </el-dropdown>
           </template>
         </el-table-column>
       </el-table>
@@ -116,8 +112,7 @@ import Edit from "../dialog/setMeal-dialog/edit.vue";
 import Info from "../dialog/setMeal-dialog/info.vue";
 import {
   post_collectandsend_getAllByTerm,
-  post_collectandsend_start,
-  post_collectandsend_cancel,
+  post_collectandsend_delete,
 } from "@/api/project/index.ts";
 @Component({
   components: {
@@ -152,7 +147,31 @@ export default class SetMeal extends Vue {
 
   edit(row: any) {
     this.editData.id = row.packageId;
+    this.editData.type = "edit";
     this.dialogVisible = true;
+  }
+
+  copy(row: any) {
+    this.editData.id = row.packageId;
+    this.editData.type = "copy";
+    this.dialogVisible = true;
+  }
+
+  async del(row: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_collectandsend_delete({
+        termId: row.termId,
+        packageId: row.packageId,
+      });
+      this.getInfo();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   view(row: any) {
@@ -161,28 +180,7 @@ export default class SetMeal extends Vue {
   }
 
   async addFinish() {
-    if (this.editData.id) {
-      this.$message.success("修改成功");
-    } else {
-      this.$message.success("新增成功");
-    }
     this.dialogVisible = false;
-    this.getInfo();
-  }
-
-  async start(row: any) {
-    await post_collectandsend_start({
-      packageId: row.packageId,
-    });
-    this.$message.success("启用成功");
-    this.getInfo();
-  }
-
-  async cancellation(data: any) {
-    await post_collectandsend_cancel({
-      packageId: data.packageId,
-    });
-    this.$message.success("作废成功");
     this.getInfo();
   }
 }

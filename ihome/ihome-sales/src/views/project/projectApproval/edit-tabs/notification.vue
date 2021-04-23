@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 14:56:42
+ * @LastEditTime: 2021-04-23 14:44:17
 -->
 <template>
   <div>
@@ -98,30 +98,10 @@
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item
-                  type="success"
-                  @click.native.prevent="editTemplate(row)"
-                >编辑</el-dropdown-item>
-                <el-dropdown-item
-                  type="success"
-                  @click.native.prevent="previewTop(row)"
-                >预览</el-dropdown-item>
-                <el-dropdown-item
-                  type="success"
-                  @click.native.prevent="copyTop(row)"
-                >复制</el-dropdown-item>
-                <el-dropdown-item
-                  type="success"
-                  v-if="row.state === 'Stop'"
-                  :loading="startLoading"
-                  @click.native.prevent="start(row)"
-                >启用</el-dropdown-item>
-                <el-dropdown-item
-                  type="danger"
-                  :loading="stopLoading"
-                  v-if="row.state === 'Start'"
-                  @click.native.prevent="stop(row)"
-                >禁用</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="editTemplate(row)">编辑</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="previewTop(row)">预览</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="copyTop(row)">复制</el-dropdown-item>
+                <el-dropdown-item @click.native.prevent="delTop(row)">删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -249,38 +229,30 @@
           </el-table-column>
           <el-table-column
             label="操作"
-            width="320"
+            width="140"
             fixed="right"
             align="center"
           >
             <template v-slot="{ row }">
-              <el-button
-                size="small"
-                type="success"
-                @click="editNotification(row)"
-              >编辑</el-button>
-              <el-button
-                size="small"
-                type="success"
-                @click="previewBottom(row)"
-              >预览</el-button>
-              <el-button
-                size="small"
-                type="success"
+              <el-link
+                type="primary"
                 @click="uploadQRcode(row)"
-              >下载二维码</el-button>
-              <el-button
-                size="small"
-                type="success"
-                v-if="row.state === 'Stop'"
-                @click="startlation(row)"
-              >启用</el-button>
-              <el-button
-                size="small"
-                type="danger"
-                v-if="row.state === 'Start'"
-                @click="stoplation(row)"
-              >禁用</el-button>
+              >二维码</el-link>
+              <el-dropdown
+                trigger="click"
+                class="margin-left-15"
+              >
+                <span class="el-dropdown-link">
+                  更多
+                  <i class="el-icon-arrow-down el-icon--right"></i>
+                </span>
+                <el-dropdown-menu slot="dropdown">
+                  <el-dropdown-item @click.native.prevent="editNotification(row)">编辑</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="previewBottom(row)">预览</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="copyBottom(row)">复制</el-dropdown-item>
+                  <el-dropdown-item @click.native.prevent="delBottom(row)">删除</el-dropdown-item>
+                </el-dropdown-menu>
+              </el-dropdown>
             </template>
           </el-table-column>
         </el-table>
@@ -371,11 +343,9 @@ import {
   get_distributContract_get__termId,
   post_distributContract_saveOaRemark,
   post_preferential_uploadTemplate,
-  post_distributContract_start__agencyContrictId,
-  post_distributContract_cancel__agencyContrictId,
-  post_preferential_start__preferentialMxId,
-  post_preferential_cancel__preferentialMxId,
   post_preferential_updateRetuenDays,
+  post_distributContract_delete,
+  post_preferential_delete,
 } from "@/api/project/index.ts";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
@@ -607,6 +577,23 @@ export default class Notification extends Vue {
     }
   }
 
+  async delTop(data: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_distributContract_delete({
+        termId: data.termId,
+        agencyContrictId: data.agencyContrictId,
+      });
+      this.getInfo();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   viewTemplate(data: any) {
     switch (data.contractKind) {
       case "StandKindSaleConfirm":
@@ -649,35 +636,6 @@ export default class Notification extends Vue {
           },
         });
         break;
-    }
-  }
-
-  // 中介分销合同启用
-  async start(data: any) {
-    try {
-      this.startLoading = true;
-      await post_distributContract_start__agencyContrictId({
-        agencyContrictId: data.agencyContrictId,
-      });
-      this.startLoading = false;
-      this.$message.success("启用成功");
-      this.getInfo();
-    } catch (err) {
-      this.startLoading = false;
-    }
-  }
-
-  async stop(data: any) {
-    try {
-      this.stopLoading = true;
-      await post_distributContract_cancel__agencyContrictId({
-        agencyContrictId: data.agencyContrictId,
-      });
-      this.stopLoading = false;
-      this.$message.success("禁用成功");
-      this.getInfo();
-    } catch (err) {
-      this.stopLoading = false;
     }
   }
 
@@ -769,7 +727,37 @@ export default class Notification extends Vue {
       timeList: [data.startTime, data.endTime],
       noChangeTime: [this.info.termStart, this.info.termEnd],
     };
-    this.addNotificationData.title = "修改";
+    this.addNotificationData.title = "编辑";
+  }
+
+  // 优惠告知书复制
+  copyBottom(data: any) {
+    this.addType = "copy";
+    this.addDialogVisible = true;
+    this.addNotificationData = {
+      ...data,
+      timeList: [data.startTime, data.endTime],
+      noChangeTime: [this.info.termStart, this.info.termEnd],
+    };
+    this.addNotificationData.title = "复制";
+  }
+
+  // 优惠告知书删除
+  async delBottom(data: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_preferential_delete({
+        termId: data.termId,
+        preferentialMxId: data.preferentialMxId,
+      });
+      this.getInfo();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   //优惠告知书下载二维码
@@ -794,29 +782,13 @@ export default class Notification extends Vue {
     });
   }
 
-  //优惠告知书启用
-  async startlation(data: any) {
-    await post_preferential_start__preferentialMxId({
-      preferentialMxId: data.preferentialMxId,
-    });
-    this.$message.success("启用成功");
-    this.getInfo();
-  }
-
-  //优惠告知书作废
-  async stoplation(data: any) {
-    await post_preferential_cancel__preferentialMxId({
-      preferentialMxId: data.preferentialMxId,
-    });
-    this.$message.success("禁用成功");
-    this.getInfo();
-  }
-
   async addFinish() {
     if (this.addType === "add") {
       this.$message.success("新增成功");
     } else if (this.addType === "edit") {
       this.$message.success("修改成功");
+    } else if (this.addType === "copy") {
+      this.$message.success("复制成功");
     }
     this.getInfo();
     this.addDialogVisible = false;
