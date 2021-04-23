@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-7 7:23:02 ├F10: PM┤
+//2021-4-23 10:34:51 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/contract"
 /**附件上传*/
@@ -79,10 +79,6 @@ return await request.post< any,any> (basePath+'/distribution/applets/channel/lis
 export async function post_distribution_channel_type (d?: any) {
 return await request.post< any,any> (basePath+'/distribution/channel/type', d)
 }
-/**通过周期ID查询渠道商*/
-export async function post_distribution_channels_cycleId (d?: any) {
-return await request.post< any,any> (basePath+'/distribution/channels/cycleId', d)
-}
 /**渠道合同申领*/
 export async function post_distribution_create (d?: any) {
 return await request.post< number,number> (basePath+'/distribution/create', d)
@@ -139,6 +135,14 @@ return await request.post< Distribution[],Distribution[]> (basePath+'/distributi
 export async function post_distribution_review (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/distribution/review', d)
 }
+/**平台签署回调*/
+export async function post_distribution_sign_callback (d?: any) {
+return await request.post< boolean,boolean> (basePath+'/distribution/sign/callback', d)
+}
+/**test*/
+export async function get_distribution_test (d?: any) {
+return await request.get<boolean,boolean>(basePath+'/distribution/test', { params: d })
+}
 /**周期审核通过，需要更新水印*/
 export async function post_distribution_update_watermark__cycleId (d?: any) {
 return await request.post< boolean,boolean> (basePath+'/distribution/update/watermark/{cycleId}', d)
@@ -150,6 +154,10 @@ return await request.post< boolean,boolean> (basePath+'/distribution/withdraw', 
 /**甲方合同操作日志*/
 export async function post_distributionOperatingLog_list (d?: any) {
 return await request.post< any,any> (basePath+'/distributionOperatingLog/list', d)
+}
+/**通过合同ID查询收派信息列表*/
+export async function get_distributionmx_distributionMxListById__distributionId (d?: any) {
+return await request.get<DealDistributionMxResponse[],DealDistributionMxResponse[]>(basePath+'/distributionmx/distributionMxListById/{distributionId}', { params: d })
 }
 /**分销协议收派套餐查询*/
 export async function post_distributionmx_receive_detail (d?: any) {
@@ -998,26 +1006,6 @@ export interface CustomerNameResponse {
 /**(必填)业主名字*/
 ownerName: string;
 }
-/**DealChannelRequest*/
-export interface DealChannelRequest {
-/**(必填)周期ID*/
-cycleId: number;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
-}
-/**DealChannelResponse*/
-export interface DealChannelResponse {
-/**渠道公司*/
-channelCompanyId: number;
-/**渠道公司名字*/
-channelCompanyName: string;
-/**(必填)当前页*/
-pageNum: number;
-/**(必填)每页条数*/
-pageSize: number;
-}
 /**DealDistributionMxResponse*/
 export interface DealDistributionMxResponse {
 /**收派套餐条件*/
@@ -1104,19 +1092,17 @@ channelCompanyKind: string;
 channelContact: string;
 /**渠道联系人*/
 channelContactTel: string;
-/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelLevel: string;
 /**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
 commissionKind: string;
-/**模版公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
-companyKind: string;
 /**客户成交以及确认*/
 consumerComplete: string;
 /**合作结束时间(yyyy-MM-dd)*/
 contractEndTime: string;
-/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
 /**合同编号*/
 contractNo: string;
@@ -1138,8 +1124,12 @@ cycleId: number;
 deleted: number;
 /**指定中介行ID*/
 designatedAgencyId: number;
-/**审核状态(Distributed-已派发、NotDistributed-待渠道岗派发、Pending-待业管岗审核、Drafting-草稿、Disallowance-驳回)*/
+/**审核状态(Distributed-已派发、Pending-待渠道管理岗审核、Drafting-草稿、Disallowance-审核驳回)*/
 distributionState: string;
+/**undefined*/
+efileId: string;
+/**undefined*/
+eflowId: string;
 /**录入人*/
 entryPersonId: number;
 /**是否涉及佣金标准(Yes-是、No-否)*/
@@ -1170,6 +1160,8 @@ projectId: number;
 projectName: string;
 /**补充条款*/
 supplementary: string;
+/**标题备注*/
+titleOrRemark: string;
 /**违约责任*/
 unContractLiability: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1199,6 +1191,8 @@ channelAccountBank: string;
 channelAccountName: string;
 /**(必填)渠道公司*/
 channelCompanyId: number;
+/**(必填)渠道公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+channelCompanyKind: string;
 /**(必填)渠道联系人*/
 channelContact: string;
 /**(必填)渠道联系人电话*/
@@ -1208,7 +1202,7 @@ channelLevel: string;
 }
 /**DistributionChannelTypeResponse*/
 export interface DistributionChannelTypeResponse {
-/**(必填)渠道类型(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**(必填)渠道类型(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**(必填)渠道合同编号*/
 contractNo: string;
@@ -1249,19 +1243,17 @@ channelCompanyKind: string;
 channelContact: string;
 /**渠道联系人电话*/
 channelContactTel: string;
-/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelLevel: string;
 /**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
 commissionKind: string;
-/**模版公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
-companyKind: string;
 /**客户成交以及确认*/
 consumerComplete: string;
 /**合作结束时间(yyyy-MM-dd)*/
 contractEndTime: string;
-/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
 /**合作开始时间(yyyy-MM-dd)*/
 contractStartTime: string;
@@ -1279,14 +1271,12 @@ designatedAgency: string;
 designatedAgencyId: number;
 /**收派信息*/
 distributionMxList: DistributionMxCreateRequestVO[];
-/**派发状态(Distributed-已派发、NotDistributed-待渠道岗派发、Pending-待业管岗审核、Drafting-草稿、Disallowance-驳回)*/
+/**派发状态(Distributed-已派发、Pending-待渠道管理岗审核、Drafting-草稿、Disallowance-审核驳回)*/
 distributionState: string;
 /**是否涉及佣金标准(Yes-是、No-否)*/
 exInvolvedCommiss: string;
 /**合同跟进人*/
 handlerId: number;
-/**归属组织*/
-organizationId: number;
 /**是否垫佣 VETO-否、 TREE-3个月 SIX-6个月 NINE-9个月 MORETEN 10个月以上(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
 /**甲方公司Id 甲方合同-乙方*/
@@ -1299,6 +1289,8 @@ partyaMan: string;
 partyaTel: string;
 /**补充条款*/
 supplementary: string;
+/**标题备注*/
+titleOrRemark: string;
 /**违约责任*/
 unContractLiability: string;
 }
@@ -1340,19 +1332,17 @@ channelCompanyName: string;
 channelContact: string;
 /**渠道联系人*/
 channelContactTel: string;
-/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelLevel: string;
 /**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
 commissionKind: string;
-/**模版公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
-companyKind: string;
 /**客户成交以及确认*/
 consumerComplete: string;
 /**合作结束时间(yyyy-MM-dd)*/
 contractEndTime: string;
-/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
 /**合同编号*/
 contractNo: string;
@@ -1375,9 +1365,13 @@ deleted: number;
 /**指定中介行ID*/
 designatedAgencyId: number;
 /**收派条件*/
-distributionMxList: DistributionMxQueryResponse[];
-/**审核状态(Distributed-已派发、NotDistributed-待渠道岗派发、Pending-待业管岗审核、Drafting-草稿、Disallowance-驳回)*/
+distributionMxList: DealDistributionMxResponse[];
+/**审核状态(Distributed-已派发、Pending-待渠道管理岗审核、Drafting-草稿、Disallowance-审核驳回)*/
 distributionState: string;
+/**undefined*/
+efileId: string;
+/**undefined*/
+eflowId: string;
 /**录入人*/
 entryPersonId: number;
 /**是否涉及佣金标准(Yes-是、No-否)*/
@@ -1412,6 +1406,8 @@ projectId: number;
 projectName: string;
 /**补充条款*/
 supplementary: string;
+/**标题备注*/
+titleOrRemark: string;
 /**违约责任*/
 unContractLiability: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1438,13 +1434,15 @@ archiveStatus: string;
 beginTime: string;
 /**乙方公司*/
 channelCompanyId: number;
-/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+/**乙方公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+channelCompanyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
 /**合同编号*/
 contractNo: string;
 /**周期*/
 cycleId: number;
-/**审核状态(Distributed-已派发、NotDistributed-待渠道岗派发、Pending-待业管岗审核、Drafting-草稿、Disallowance-驳回)*/
+/**审核状态(Distributed-已派发、Pending-待渠道管理岗审核、Drafting-草稿、Disallowance-审核驳回)*/
 distributionState: string;
 /**合作结束时间(yyyy-MM-dd)*/
 endTime: string;
@@ -1462,6 +1460,8 @@ projectAddress: string;
 projectId: number;
 /**标题*/
 title: string;
+/**标题备注*/
+titleOrRemark: string;
 }
 /**DistributionMxCreateRequestVO*/
 export interface DistributionMxCreateRequestVO {
@@ -1499,6 +1499,8 @@ channelCompanyKind: string;
 cycleId: number;
 /**渠道合同编号*/
 distributionNo: string;
+/**过滤状态：为空就是过滤启动涵，不为空就不需要过滤*/
+filterStatus: string;
 }
 /**DistributionMxQueryResponse*/
 export interface DistributionMxQueryResponse {
@@ -1510,16 +1512,20 @@ annexList: AnnexListVO[];
 channelCompanyId: number;
 /**渠道公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
 channelCompanyKind: string;
-/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelLevel: string;
+/**合同类型(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contractKind: string;
 /**渠道合同编号*/
 contractNo: string;
 /**渠道合同标题*/
 contractTitle: string;
 /**收派信息*/
 distributionMxList: DealDistributionMxResponse[];
+/**id*/
+id: number;
 }
 /**DistributionOperatingLogListRequest*/
 export interface DistributionOperatingLogListRequest {
@@ -1576,7 +1582,7 @@ export interface DistributionPreviewResponseVO {
 agencyCostCondition: string;
 /**代理费结算方式*/
 agencyCostSettleWay: string;
-/**备注*/
+/**计费标准备注*/
 agencyFeeRemark: string;
 /**房屋未成交乙方退回代理费逾期违约金比例*/
 agencyFeeReturnRate: string;
@@ -1590,10 +1596,12 @@ channelAccountBank: string;
 channelAccountName: string;
 /**乙方地址*/
 channelAddress: string;
-/**乙方公司*/
-channelCompany: string;
 /**乙方公司Id*/
 channelCompanyId: number;
+/**乙方公司类型*/
+channelCompanyKind: string;
+/**乙方公司*/
+channelCompanyName: string;
 /**乙方联系人*/
 channelContact: string;
 /**乙方电话*/
@@ -1602,6 +1610,8 @@ channelContactTel: string;
 consumerComplete: string;
 /**合作结束时间(yyyy-MM-dd)*/
 contractEndTime: string;
+/**合同类型*/
+contractKind: string;
 /**编号*/
 contractNo: string;
 /**合作开始时间(yyyy-MM-dd)*/
@@ -1630,6 +1640,8 @@ partyaTel: string;
 projectsName: string;
 /**备案名称*/
 recordName: string;
+/**展示日期*/
+showDate: string;
 /**补充条款*/
 supplementary: string;
 /**违约责任*/
@@ -1645,13 +1657,15 @@ archiveStatus: string;
 beginTime: string;
 /**乙方公司*/
 channelCompanyId: number;
-/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+/**乙方公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+channelCompanyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
 /**合同编号*/
 contractNo: string;
 /**周期*/
 cycleId: number;
-/**审核状态(Distributed-已派发、NotDistributed-待渠道岗派发、Pending-待业管岗审核、Drafting-草稿、Disallowance-驳回)*/
+/**审核状态(Distributed-已派发、Pending-待渠道管理岗审核、Drafting-草稿、Disallowance-审核驳回)*/
 distributionState: string;
 /**合作结束时间(yyyy-MM-dd)*/
 endTime: string;
@@ -1661,6 +1675,8 @@ entryPerson: number;
 handler: number;
 /**归属组织*/
 organizationId: number;
+/**是否垫佣 VETO-否、 TREE-3个月 SIX-6个月 NINE-9个月 MORETEN 10个月以上(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+padCommissionEnum: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -1673,6 +1689,8 @@ projectAddress: string;
 projectId: number;
 /**标题*/
 title: string;
+/**标题备注*/
+titleOrRemark: string;
 }
 /**DistributionQueryResponseVO*/
 export interface DistributionQueryResponseVO {
@@ -1684,9 +1702,11 @@ archiveStatus: string;
 beginTime: string;
 /**乙方公司*/
 channelCompanyId: number;
+/**乙方公司类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+channelCompanyKind: string;
 /**乙方公司名字*/
 channelCompanyName: string;
-/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非准渠道分销合同、NoChannel-非渠道类合同)*/
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
 /**合同编号*/
 contractNo: string;
@@ -1700,7 +1720,7 @@ cycleId: number;
 cycleName: string;
 /**已删除*/
 deleted: number;
-/**审核状态(Distributed-已派发、NotDistributed-待渠道岗派发、Pending-待业管岗审核、Drafting-草稿、Disallowance-驳回)*/
+/**审核状态(Distributed-已派发、Pending-待渠道管理岗审核、Drafting-草稿、Disallowance-审核驳回)*/
 distributionState: string;
 /**合作结束时间(yyyy-MM-dd)*/
 endTime: string;
@@ -1714,6 +1734,8 @@ id: number;
 organizationId: number;
 /**归属组织名字*/
 organizationName: string;
+/**是否垫佣 VETO-否、 TREE-3个月 SIX-6个月 NINE-9个月 MORETEN 10个月以上(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+padCommissionEnum: string;
 /**甲方公司*/
 partyACompanyId: number;
 /**甲方公司名字*/
@@ -1726,6 +1748,8 @@ projectId: number;
 projectName: string;
 /**标题*/
 title: string;
+/**标题备注*/
+titleOrRemark: string;
 /**更新时间(yyyy-MM-dd HH:mm:ss)*/
 updateTime: string;
 /**更新用户*/
@@ -2089,6 +2113,8 @@ ownerName: string;
 partyAId: number;
 /**项目ID*/
 projectId: number;
+/**业管审核状态(Pending-待审核、Audited-已审核)*/
+reviewStatus: string;
 /**房号*/
 roomNumberId: number;
 /**模版类型(PaperTemplate-纸质模板、ElectronicTemplate-电子模版)*/
