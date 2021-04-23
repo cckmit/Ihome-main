@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:28:42
+ * @LastEditTime: 2021-04-23 15:28:53
 -->
 <template>
   <IhPage class="text-left">
@@ -384,7 +384,7 @@ export default class NotDistributionApply extends Vue {
       const res = await get_channel_get__id({ id: data.id });
       this.accountOption = res.channelBanks.map((i: any) => ({
         accountName: i.accountName,
-        accountNo: i.branchNo,
+        accountNo: i.accountNo,
         branchName: i.branchName,
         id: i.id,
       }));
@@ -393,7 +393,7 @@ export default class NotDistributionApply extends Vue {
       if (account) {
         this.form.channelAccountData = { id: account.id };
         Object.assign(this.form, {
-          channelAccount: account.branchNo,
+          channelAccount: account.accountNo,
           channelAccountBank: account.branchName,
           channelAccountName: account.accountName,
         });
