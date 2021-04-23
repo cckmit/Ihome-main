@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:13:52
+ * @LastEditTime: 2021-04-23 15:28:25
 -->
 <template>
   <IhPage class="text-left">
@@ -391,7 +391,7 @@ export default class SalesApply extends Vue {
       const res = await get_channel_get__id({ id: data.id });
       // this.accountOption = res.channelBanks.map((i: any) => ({
       //   accountName: i.accountName,
-      //   accountNo: i.branchNo,
+      //   accountNo: i.accountNo,
       //   branchName: i.branchName,
       //   id: i.id,
       // }));
@@ -400,7 +400,7 @@ export default class SalesApply extends Vue {
       // if (account) {
       //   this.form.channelAccountData = { id: account.id };
       //   Object.assign(this.form, {
-      //     channelAccount: account.branchNo,
+      //     channelAccount: account.accountNo,
       //     channelAccountBank: account.branchName,
       //     channelAccountName: account.accountName,
       //   });

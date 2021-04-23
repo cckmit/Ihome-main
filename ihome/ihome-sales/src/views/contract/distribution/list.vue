@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 19:49:36
+ * @LastEditTime: 2021-04-23 11:16:16
 -->
 <template>
   <IhPage label-width="100px">
@@ -224,6 +224,24 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="是否垫佣">
+                  <el-select
+                    class="width--100"
+                    v-model="queryPageParameters.padCommissionEnum"
+                    clearable
+                  >
+                    <el-option
+                      v-for="(i, n) in $root.dictAllList('PadCommission')"
+                      :key="n"
+                      :label="i.name"
+                      :value="i.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
           </div>
         </el-collapse-transition>
       </el-form>
@@ -401,7 +419,22 @@
           prop="cycleName"
           min-width="185"
         ></el-table-column>
-        <el-table-column label="是否垫佣"></el-table-column>
+        <el-table-column label="佣金标准">
+          <template v-slot="{ row }">
+            <span v-if="['NoStandKindSaleConfirm', 'NoStandChannel'].includes(row.ContractKind)">-</span>
+            <el-button
+              v-else
+              size="mini"
+              type="primary"
+              @click="handleShowBrokerage(row)"
+            >查看</el-button>
+          </template>
+        </el-table-column>
+        <el-table-column label="是否垫佣">
+          <template v-slot="{ row }">
+            {{$root.dictAllName(row.padCommissionEnum, 'PadCommission') || '-'}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="合同编号"
           prop="contractNo"
@@ -636,6 +669,12 @@
         @cancel="() => (applyVisible = false)"
       />
     </IhDialog>
+    <IhDialog :show="brokerageVisible">
+      <Brokerage
+        :list="brokerList"
+        @cancel="() => (brokerageVisible = false)"
+      />
+    </IhDialog>
   </IhPage>
 </template>
 
@@ -643,6 +682,7 @@
 import { Component, Vue } from "vue-property-decorator";
 import PaginationMixin from "@/mixins/pagination";
 import ApplyContract from "./dialog/applyContract.vue";
+import Brokerage from "./dialog/brokerage.vue";
 import axios from "axios";
 import { getToken } from "ihome-common/util/cookies";
 import {
@@ -652,10 +692,11 @@ import {
   post_distribution_disallowance,
   post_distribution_withdraw,
   post_distribution_delete,
+  get_distributionmx_distributionMxListById__distributionId,
 } from "@/api/contract/index";
 
 @Component({
-  components: { ApplyContract },
+  components: { ApplyContract, Brokerage },
   mixins: [PaginationMixin],
 })
 export default class DistributionList extends Vue {
@@ -678,6 +719,7 @@ export default class DistributionList extends Vue {
     contractKind: null,
     titleOrRemark: null,
     channelCompanyKind: null,
+    padCommissionEnum: null,
   };
   resPageInfo: any = {
     total: null,
@@ -689,6 +731,8 @@ export default class DistributionList extends Vue {
   private selectionData: any = [];
   private applyVisible = false;
   private claimPower: any = null;
+  private brokerageVisible = false;
+  private brokerList: any[] = [];
 
   private claimPowerMethod() {
     let type: any = null;
@@ -725,6 +769,21 @@ export default class DistributionList extends Vue {
 
   private openToggle(): void {
     this.searchOpen = !this.searchOpen;
+  }
+  private async handleShowBrokerage(row: any) {
+    try {
+      this.brokerList = await get_distributionmx_distributionMxListById__distributionId(
+        { distributionId: row.id }
+      );
+      if (this.brokerList.length) {
+        this.brokerageVisible = true;
+      } else {
+        this.$message.warning("此合同不涉及佣金标准，具体请查看合同详情及附件");
+      }
+    } catch (error) {
+      console.log(error);
+      this.brokerageVisible = false;
+    }
   }
   private async remove(row: any) {
     try {
@@ -769,6 +828,7 @@ export default class DistributionList extends Vue {
       contractKind: null,
       titleOrRemark: null,
       channelCompanyKind: null,
+      padCommissionEnum: null,
     });
     this.timeList = [];
   }

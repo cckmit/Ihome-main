@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 19:41:58
+ * @LastEditTime: 2021-04-23 15:28:44
 -->
 <template>
   <IhPage class="text-left">
@@ -389,7 +389,7 @@ export default class NotChannelApply extends Vue {
       if (this.form.exInvolvedCommiss === "Yes") {
         this.accountOption = res.channelBanks.map((i: any) => ({
           accountName: i.accountName,
-          accountNo: i.branchNo,
+          accountNo: i.accountNo,
           branchName: i.branchName,
           id: i.id,
         }));
@@ -400,7 +400,7 @@ export default class NotChannelApply extends Vue {
         if (account) {
           this.form.channelAccountData = { id: account.id };
           Object.assign(this.form, {
-            channelAccount: account.branchNo,
+            channelAccount: account.accountNo,
             channelAccountBank: account.branchName,
             channelAccountName: account.accountName,
           });

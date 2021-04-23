@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 18:30:02
+ * @LastEditTime: 2021-04-22 09:34:21
 -->
 <template>
   <IhPage label-width="80px">
@@ -308,7 +308,7 @@
         <el-table-column
           fixed="right"
           label="操作"
-          min-width="100"
+          width="110"
         >
           <template v-slot="{ row }">
             <!-- :class="{'ih-data-disabled':row.notificationType !== 'Notification'}" -->

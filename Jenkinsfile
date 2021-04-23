@@ -15,7 +15,7 @@ pipeline {
 			agent {
 				docker {
 					image '${NEXUS3_ADDRESS}/node-npm:${NODE_NPM_VERSION}' 
-					args '-p 3000:3000 --add-host nexus.polyic.cn:192.168.5.121' 
+					args '-p 3000:3000 --add-host nexus.polyic.cn:192.168.200.117' 
 				}
 			}	
             steps {
