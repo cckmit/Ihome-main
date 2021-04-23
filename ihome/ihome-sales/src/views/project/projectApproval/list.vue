@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 14:54:29
+ * @LastEditTime: 2021-04-23 09:07:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -269,12 +269,12 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.EDITDISTRIBUT'"
                 >补充协议</el-dropdown-item>
                 <el-dropdown-item
-                  v-if="row.state === 'Stop' && row.auditEnum === 'ConstractAdopt'"
+                  :class="{'ih-data-disabled': !startChange(row)}"
                   @click.native.prevent="start(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.QYZQ'"
                 >启用周期</el-dropdown-item>
                 <el-dropdown-item
-                  v-if="row.state === 'Start' && row.auditEnum === 'ConstractAdopt'"
+                  :class="{'ih-data-disabled': !stopChange(row)}"
                   @click.native.prevent="stop(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.ZFZQ'"
                 >作废周期</el-dropdown-item>
@@ -386,6 +386,42 @@ export default class ProjectApproval extends Vue {
   businessManagementChange(row: any) {
     const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
     return ConstractAdopt;
+  }
+
+  // 启动周期权限控制
+  startChange(row: any) {
+    const Stop = row.state === "Stop";
+    const TermAdopt = row.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
+    const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
+    const ConstractConduct = row.auditEnum === "ConstractConduct"; // 合同审核中
+    return (
+      Stop &&
+      (TermAdopt ||
+        ConstractWait ||
+        ConstractConduct ||
+        ConstractReject ||
+        ConstractAdopt)
+    );
+  }
+
+  // 作废周期权限控制
+  stopChange(row: any) {
+    const Start = row.state === "Start";
+    const TermAdopt = row.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
+    const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
+    const ConstractConduct = row.auditEnum === "ConstractConduct"; // 合同审核中
+    return (
+      Start &&
+      (TermAdopt ||
+        ConstractWait ||
+        ConstractConduct ||
+        ConstractReject ||
+        ConstractAdopt)
+    );
   }
 
   delChange(row: any) {
