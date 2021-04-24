@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 15:07:56
+ * @LastEditTime: 2021-04-24 15:13:40
 -->
 <template>
   <div>
@@ -56,9 +56,9 @@
           label="是否垫佣"
           width="120"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.padCommissionEnum, "PadCommission")
-          }}</template>
+          <template v-slot="{ row }">
+            {{ row.padCommissionEnum ? $root.dictAllName(row.padCommissionEnum, "PadCommission") : '-'}}
+          </template>
         </el-table-column>
         <el-table-column
           prop="channelEnum"
