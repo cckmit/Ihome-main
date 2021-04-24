@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 08:50:59
+ * @LastEditTime: 2021-04-24 17:39:27
 -->
 <template>
   <IhPage label-width="110px">
@@ -170,7 +170,7 @@
         >
           <template v-slot="{ row }">
             <div>{{`推广名: ${row.proName}`}}</div>
-            <div>{{`备案名: ${row.proRecord}`}}</div>
+            <div>{{`备案名: ${row.proRecord ? row.proRecord: '-'}`}}</div>
           </template>
         </el-table-column>
         <el-table-column
