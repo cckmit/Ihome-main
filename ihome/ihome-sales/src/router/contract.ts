@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-14 15:25:58
+ * @LastEditTime: 2021-04-23 17:26:13
  */
 import { RouteConfig } from 'vue-router'
 
@@ -92,6 +92,12 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '标准渠道分销合同详情', icon: 'form' }
       },
       {
+        path: 'normalDistributionAudit',
+        name: 'NormalDistributionAudit',
+        component: () => import('@/views/contract/distribution/normalDistribution/info.vue'),
+        meta: { title: '标准渠道分销合同审核', icon: 'form' }
+      },
+      {
         path: 'normalDistributionDuplicate',
         name: 'NormalDistributionDuplicate',
         component: () => import('@/views/contract/distribution/normalDistribution/info.vue'),
@@ -116,6 +122,12 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '标准联动销售确认书详情', icon: 'form' }
       },
       {
+        path: 'normalSalesAudit',
+        name: 'NormalSalesAudit',
+        component: () => import('@/views/contract/distribution/normalSales/info.vue'),
+        meta: { title: '标准联动销售确认书审核', icon: 'form' }
+      },
+      {
         path: 'normalSalesOriginal',
         name: 'NormalSalesOriginal',
         component: () => import('@/views/contract/distribution/normalSales/info.vue'),
@@ -132,6 +144,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'NotDistributionInfo',
         component: () => import('@/views/contract/distribution/notDistribution/info.vue'),
         meta: { title: '非标渠道分销合同详情', icon: 'form' }
+      },
+      {
+        path: 'notDistributionAudit',
+        name: 'NotDistributionAudit',
+        component: () => import('@/views/contract/distribution/notDistribution/info.vue'),
+        meta: { title: '非标渠道分销合同审核', icon: 'form' }
       },
       {
         path: 'notDistributionDuplicate',
@@ -158,6 +176,12 @@ const contractRoutes: Array<RouteConfig> = [
         meta: { title: '非标联动销售确认书详情', icon: 'form' }
       },
       {
+        path: 'notSalesAudit',
+        name: 'NotSalesAudit',
+        component: () => import('@/views/contract/distribution/notSales/info.vue'),
+        meta: { title: '非标联动销售确认书审核', icon: 'form' }
+      },
+      {
         path: 'notSalesDuplicate',
         name: 'NotSalesDuplicate',
         component: () => import('@/views/contract/distribution/notSales/info.vue'),
@@ -180,6 +204,12 @@ const contractRoutes: Array<RouteConfig> = [
         name: 'NotChannelInfo',
         component: () => import('@/views/contract/distribution/notChannel/info.vue'),
         meta: { title: '非渠道合同详情', icon: 'form' }
+      },
+      {
+        path: 'notChannelAudit',
+        name: 'NotChannelAudit',
+        component: () => import('@/views/contract/distribution/notChannel/info.vue'),
+        meta: { title: '非渠道合同审核', icon: 'form' }
       },
       {
         path: 'notChannelDuplicate',

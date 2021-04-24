@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:31:47
+ * @LastEditTime: 2021-04-23 18:13:35
 -->
 <template>
   <IhPage class="text-left">
@@ -51,21 +51,37 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item
-              label="乙方渠道等级"
-              class="formItem"
-            >{{$root.dictAllName(form.channelLevel, 'ChannelLevel')}}</el-form-item>
+            <el-form-item label="乙方渠道等级">{{$root.dictAllName(form.channelLevel, 'ChannelLevel')}}</el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12">
             <el-form-item label="合作期限">
               {{form.contractStartTime}} -- {{form.contractEndTime}}
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12">
             <el-form-item label="合同跟进人">
               {{form.handlerName}}
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item label="渠道类型">
+              <template v-if="['Appoint', 'Strategic'].includes(form.channelEnum)">
+                <div style="display: flex;">
+                  <span>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
+                  <el-link
+                    type="primary"
+                    class="margin-left-10"
+                    style="display: inline;"
+                    :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >{{form.channelCompanyName}}</el-link>
+                </div>
+              </template>
+              <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -153,6 +169,20 @@
         >提交</el-button>
         <el-button @click="$router.go(-1)">取消</el-button>
       </div>
+      <!-- 审核 -->
+      <div
+        class="text-center"
+        v-if="$route.name === 'NotSalesAudit'"
+      >
+        <el-button
+          type="success"
+          @click="checkSuccess()"
+        >通过</el-button>
+        <el-button
+          type="danger"
+          @click="checkReject()"
+        >驳回</el-button>
+      </div>
     </template>
   </IhPage>
 </template>
@@ -163,6 +193,8 @@ import {
   get_distribution_detail__id,
   post_distribution_duplicate,
   post_distribution_original_archive,
+  post_distribution_review,
+  post_distribution_disallowance,
 } from "@/api/contract/index";
 
 @Component({})
@@ -173,6 +205,28 @@ export default class NotSalesInfo extends Vue {
   private archiveStatus: any = null;
   private archiveNo: any = null;
 
+  private async checkSuccess() {
+    try {
+      await post_distribution_review({ ids: [this.form.id] });
+      this.$message.success("审核通过");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  private async checkReject() {
+    try {
+      await post_distribution_disallowance({ ids: [this.form.id] });
+      this.$message.success("驳回成功");
+      this.$goto({
+        path: "/distribution/list",
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
   private async submitOriginal() {
     if (!this.archiveNo) {
       this.$message.warning("归档编号不能为空");
