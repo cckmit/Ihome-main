@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:40:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 10:12:45
+ * @LastEditTime: 2021-04-24 11:13:27
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -44,7 +44,7 @@
                 v-model="info.titleOrRemark"
                 placeholder="请输入标题备注"
                 clearable
-                style="max-width: 300px;"
+                style="max-width: 400px;"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -71,11 +71,90 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
-                style="max-width: 300px;width: 100%"
+                style="max-width: 400px;width: 100%"
               >
               </el-date-picker>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="12">
+            <el-form-item
+              label="渠道类型"
+              prop="channelEnum"
+            >
+              <el-select
+                v-model="info.channelEnum"
+                clearable
+                placeholder="请选择渠道类型"
+                style="max-width: 300px;width: 100%"
+                @change="channelChange"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ChannelCustomer')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <div v-if="isShow">
+            <el-col
+              :span='5'
+              class="width-200"
+            >
+              <el-form-item
+                prop="companyKind"
+                label-width="50px"
+              >
+                <el-select
+                  v-model="info.companyKind"
+                  clearable
+                  placeholder="请选择"
+                  class="width--150"
+                  @change="companyKindChange"
+                >
+                  <el-option
+                    v-for="item in companyKindOption"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col
+              :span='7'
+              class="margin-left-10"
+            >
+              <IhSelectPageByCompany
+                v-if="info.companyKind === 'InfieldCompany'"
+                style="flex: 1;max-width: 300px;"
+                clearable
+                v-model="info.designatedAgencyId"
+                @changeOption="getChannelInfo"
+              ></IhSelectPageByCompany>
+              <div v-else-if="info.companyKind === 'ChannelCompany'">
+                <IhSelectPageByChannel
+                  v-model="info.designatedAgencyId"
+                  style="flex: 1;max-width: 300px;"
+                  clearable
+                  placeholder="渠道商名称"
+                  :params="searchConditon"
+                  :search-name="info.designatedAgency"
+                  @changeOption="getChannelInfo"
+                ></IhSelectPageByChannel>
+                <el-link
+                  v-if="info.designatedAgencyId"
+                  type="primary"
+                  :href="`/web-sales/channelBusiness/info?id=${info.designatedAgencyId}`"
+                  class="margin-left-10"
+                  target="_blank"
+                >详情</el-link>
+              </div>
+            </el-col>
+          </div>
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -106,7 +185,7 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { get_company_get__id } from "@/api/system";
+import { get_company_get__id, post_dict_getAllByType } from "@/api/system";
 import {
   post_distributContract_addNoStandKindSaleConfirm,
   get_distributContract_getDistri__agencyContrictId,
@@ -132,6 +211,10 @@ export default class NotSalesApply extends Vue {
     proRecord: null,
     termId: null,
     timeList: [],
+    channelEnum: null,
+    companyKind: null,
+    designatedAgencyId: null,
+    designatedAgency: null,
     titleOrRemark: null,
   };
   private rules: any = {
@@ -142,7 +225,17 @@ export default class NotSalesApply extends Vue {
         trigger: "change",
       },
     ],
+    channelEnum: [
+      {
+        required: true,
+        message: "请选择渠道类型",
+        trigger: "change",
+      },
+    ],
   };
+  private searchConditon: any = {};
+  private isShow: any = false;
+  private companyKindOption: any = [];
   private fileList: any = [];
   private finishLoading: any = false;
 
@@ -170,6 +263,23 @@ export default class NotSalesApply extends Vue {
         type: v.type,
         exAuto: v.exAuto,
       }));
+      if (data.channelEnum === "Appoint" || data.channelEnum === "Strategic") {
+        this.isShow = true;
+        this.companyKindOption = await post_dict_getAllByType({
+          tag: "Channel",
+          type: "CompanyKind",
+          valid: "Valid",
+        });
+        if (data.companyKind === "ChannelCompany") {
+          this.searchConditon = {
+            cycleCity: window.sessionStorage.getItem("shengshiqu"),
+            departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+            isNotNeedChannelLevelApprove: true,
+          };
+        }
+      } else {
+        this.isShow = false;
+      }
     } else {
       Object.assign(this.info, JSON.parse(res));
       if (this.info.preferentialPartyAId) {
@@ -181,6 +291,45 @@ export default class NotSalesApply extends Vue {
         this.info.partyaAddr = item?.address;
       }
     }
+  }
+
+  companyKindChange(val: any) {
+    this.info.designatedAgencyId = null;
+    this.info.designatedAgency = null;
+    if (val) {
+      switch (val) {
+        case "ChannelCompany":
+          this.searchConditon = {
+            cycleCity: window.sessionStorage.getItem("shengshiqu"),
+            departmentOrgId: window.sessionStorage.getItem("departmentOrgId"),
+            isNotNeedChannelLevelApprove: true,
+            // channelEnum: this.info.channelEnum,
+          };
+          break;
+        case "InfieldCompany":
+          this.searchConditon = {};
+          break;
+      }
+    }
+  }
+
+  async channelChange(val: any) {
+    if (val === "Appoint" || val === "Strategic") {
+      this.isShow = true;
+      this.companyKindOption = await post_dict_getAllByType({
+        tag: "Channel",
+        type: "CompanyKind",
+        valid: "Valid",
+      });
+    } else {
+      this.isShow = false;
+      this.companyKindOption = [];
+    }
+  }
+
+  getChannelInfo(item: any) {
+    this.info.designatedAgency = item.name;
+    this.info.designatedAgencyId = item.id;
   }
 
   newFileList(data: any) {
@@ -277,7 +426,7 @@ export default class NotSalesApply extends Vue {
 }
 .positon {
   position: absolute;
-  bottom: 50px;
+  bottom: 30px;
   left: calc(50% - 75px);
 }
 </style>

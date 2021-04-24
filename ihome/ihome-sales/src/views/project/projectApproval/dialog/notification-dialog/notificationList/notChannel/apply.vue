@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 10:30:27
+ * @LastEditTime: 2021-04-24 11:12:03
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -121,6 +121,29 @@
           </el-col>
         </el-row>
         <div v-if="isShow">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item
+                label="垫佣周期"
+                prop="padCommissionEnum"
+              >
+                <el-select
+                  v-model="info.padCommissionEnum"
+                  clearable
+                  placeholder="请选择垫佣周期"
+                  style="max-width: 350px; width: 100%"
+                  :disabled="padCommissionEnumOptions.length === 1"
+                >
+                  <el-option
+                    v-for="item in padCommissionEnumOptions"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <div class="text-right padding-right-10">
             <el-button
               type="success"
@@ -245,6 +268,7 @@ export default class NotSalesApply extends Vue {
     exInvolvedCommiss: null,
     contractMxVOList: [],
     titleOrRemark: null,
+    padCommissionEnum: null,
   };
   private rules: any = {
     contractTitle: [
@@ -268,6 +292,13 @@ export default class NotSalesApply extends Vue {
         trigger: "change",
       },
     ],
+    padCommissionEnum: [
+      {
+        required: true,
+        message: "请选择垫佣周期",
+        trigger: "change",
+      },
+    ],
   };
   private fileList: any = [];
   private finishLoading: any = false;
@@ -275,6 +306,7 @@ export default class NotSalesApply extends Vue {
   queryObj: any = {};
   setmealDialogVisible: any = false;
   setMealDialogData: any = {};
+  padCommissionEnumOptions: any = [];
 
   @Watch("info.exInvolvedCommiss", { immediate: true })
   async getIsShow(val: any) {
@@ -324,6 +356,39 @@ export default class NotSalesApply extends Vue {
         this.info.partyCompanyId = item?.id;
         this.info.partyaAddr = item?.address;
       }
+    }
+    if (this.info?.padCommissionEnum) {
+      if (this.info?.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: this.info.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              this.info.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.info.padCommissionEnum = "Veto";
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
+    } else {
+      this.info.padCommissionEnum = "Veto";
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+      ];
     }
   }
 
@@ -398,7 +463,6 @@ export default class NotSalesApply extends Vue {
       obj.contractStartTime = flag ? this.info.timeList[0] : null;
       obj.contractEndTime = flag ? this.info.timeList[1] : null;
       delete obj.timeList;
-      delete obj.padCommissionEnum;
       delete obj.preferentialPartyAId;
       console.log(obj);
       if (!this.info.attachTermItemVOS.length) {
@@ -470,7 +534,6 @@ export default class NotSalesApply extends Vue {
   font-weight: 600;
 }
 .positon {
-  position: absolute;
   bottom: 50px;
   left: calc(50% - 75px);
 }

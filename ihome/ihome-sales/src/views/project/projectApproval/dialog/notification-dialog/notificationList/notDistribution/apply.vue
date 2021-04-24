@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 18:24:12
+ * @LastEditTime: 2021-04-24 11:12:52
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -44,7 +44,7 @@
                 v-model="info.titleOrRemark"
                 placeholder="请输入标题备注"
                 clearable
-                style="max-width: 350px"
+                style="max-width: 400px"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -74,7 +74,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
-                style="max-width: 350px; width: 100%"
+                style="max-width: 400px; width: 100%"
               >
               </el-date-picker>
             </el-form-item>
@@ -104,7 +104,7 @@
           </el-col>
           <div v-if="isShow">
             <el-col
-              :span='6'
+              :span='5'
               class="width-200"
             >
               <el-form-item
@@ -114,7 +114,7 @@
                 <el-select
                   v-model="info.companyKind"
                   clearable
-                  placeholder="请选择公司种类"
+                  placeholder="请选择"
                   class="width--150"
                   @change="companyKindChange"
                 >
@@ -128,7 +128,7 @@
               </el-form-item>
             </el-col>
             <el-col
-              :span='6'
+              :span='7'
               class="margin-left-10"
             >
               <IhSelectPageByCompany
@@ -680,8 +680,6 @@ export default class NotSalesApply extends Vue {
   font-weight: 600;
 }
 .positon {
-  position: absolute;
-  bottom: 10px;
   left: calc(50% - 75px);
 }
 </style>
