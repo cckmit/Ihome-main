@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 18:21:55
+ * @LastEditTime: 2021-04-25 15:16:22
 -->
 <template>
   <IhPage label-width="100px">
@@ -262,19 +262,19 @@
           v-if="$route.name === 'DistributionList'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.VERIFY'"
-        >审核</el-button>
+        >通过</el-button>
         <el-button
           type="success"
           v-else-if="$route.name === 'DistributionListByBusiness'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.VERIFY'"
-        >审核</el-button>
+        >通过</el-button>
         <el-button
           type="success"
           v-else-if="$route.name === 'DistributionListByBack'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTBYBACK.VERIFY'"
-        >审核</el-button>
+        >通过</el-button>
         <!-- <el-button
           type="success"
           @click="distribute(selectionData)"
