@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 15:59:01
+ * @LastEditTime: 2021-04-25 16:11:02
 -->
 <template>
   <IhPage label-width="100px">
@@ -297,42 +297,42 @@
         >申领合同</el-button>
 
         <el-button
-          type="success"
+          type="info"
           v-if="$route.name === 'DistributionList'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.AUDIT'"
-        >批量审核通过</el-button>
+        >审核通过</el-button>
         <el-button
-          type="success"
+          type="info"
           v-else-if="$route.name === 'DistributionListByBusiness'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.AUDIT'"
-        >批量审核通过</el-button>
+        >审核通过</el-button>
         <el-button
-          type="success"
+          type="info"
           v-else-if="$route.name === 'DistributionListByBack'"
           @click="review(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTBYBACK.AUDIT'"
-        >批量审核通过</el-button>
+        >审核通过</el-button>
 
         <el-button
           type="danger"
           v-if="$route.name === 'DistributionList'"
           @click="handleDis(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTLIST.AUDIT'"
-        >批量审核驳回</el-button>
+        >审核驳回</el-button>
         <el-button
           type="danger"
           v-else-if="$route.name === 'DistributionListByBusiness'"
           @click="handleDis(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.AUDIT'"
-        >批量审核驳回</el-button>
+        >审核驳回</el-button>
         <el-button
           type="danger"
           v-else-if="$route.name === 'DistributionListByBack'"
           @click="handleDis(selectionData)"
           v-has="'B.SALES.CONTRACT.DISTBYBACK.AUDIT'"
-        >批量审核驳回</el-button>
+        >审核驳回</el-button>
 
         <el-button
           type="warning"
