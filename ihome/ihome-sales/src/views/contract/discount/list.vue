@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-27 16:27:36
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-22 09:34:21
+ * @LastEditTime: 2021-04-25 10:24:21
 -->
 <template>
   <IhPage label-width="80px">
@@ -241,7 +241,8 @@
             <div>模板类型</div>
           </template>
           <template v-slot="{ row }">
-            {{$root.dictAllName(row.notificationType, 'NotificationType')}}
+            <div>{{$root.dictAllName(row.notificationType, 'NotificationType')}}</div>
+            <div>{{$root.dictAllName(row.templateType, 'TemplateType')}}</div>
           </template>
         </el-table-column>
         <el-table-column
