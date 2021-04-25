@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 16:11:02
+ * @LastEditTime: 2021-04-25 17:48:12
 -->
 <template>
   <IhPage label-width="100px">
@@ -463,7 +463,11 @@
           label="归档编号"
           prop="archiveNo"
           width="200"
-        ></el-table-column>
+        >
+          <template v-slot="{ row }">
+            {{row.archiveNo || '-'}}
+          </template>
+        </el-table-column>
         <el-table-column
           label="合同跟进人"
           prop="handlerName"
