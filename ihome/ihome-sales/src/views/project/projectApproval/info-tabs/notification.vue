@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 15:13:40
+ * @LastEditTime: 2021-04-25 11:51:01
 -->
 <template>
   <div>
@@ -66,7 +66,7 @@
           width="350"
         >
           <template v-slot="{ row }">
-            <div>{{$root.dictAllName(row.channelEnum, "ChannelCustomer")}}</div>
+            <div>{{row.channelEnum ? $root.dictAllName(row.channelEnum, "ChannelCustomer") : '-'}}</div>
             <div
               v-if="row.channelEnum === 'Appoint' || row.channelEnum === 'Strategic'"
               :title="row.designatedAgency"
