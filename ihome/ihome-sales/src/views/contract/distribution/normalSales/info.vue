@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 18:07:10
+ * @LastEditTime: 2021-04-25 17:11:19
 -->
 <template>
   <IhPage class="text-left">
@@ -238,7 +238,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <!-- <el-row>
           <el-col :span="24">
             <el-form-item label="盖章版归档">
               <IhUpload
@@ -249,7 +249,7 @@
               ></IhUpload>
             </el-form-item>
           </el-col>
-        </el-row>
+        </el-row> -->
       </el-form>
       <!-- 原件归档 -->
       <div
