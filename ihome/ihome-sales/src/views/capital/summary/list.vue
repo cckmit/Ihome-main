@@ -23,20 +23,30 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <IhSelectPageByProject
-                v-model="queryPageParameters.proId"
-                placeholder="请选择项目名称"
-                clearable
-              ></IhSelectPageByProject>
+<!--              <IhSelectPageByProject-->
+<!--                v-model="queryPageParameters.proId"-->
+<!--                placeholder="请选择项目名称"-->
+<!--                clearable-->
+<!--              ></IhSelectPageByProject>-->
+              <el-input
+                  clearable
+                  v-model="queryPageParameters.proName"
+                  placeholder="模糊搜索,支持模糊搜索"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <IhSelectPageByCycle
-                v-model="queryPageParameters.termId"
-                placeholder="请选择周期名称"
-                clearable
-              ></IhSelectPageByCycle>
+<!--              <IhSelectPageByCycle-->
+<!--                v-model="queryPageParameters.termId"-->
+<!--                placeholder="请选择周期名称"-->
+<!--                clearable-->
+<!--              ></IhSelectPageByCycle>-->
+              <el-input
+                  clearable
+                  v-model="queryPageParameters.termName"
+                  placeholder="周期名称,支持模糊搜索"
+              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -100,8 +110,10 @@ import {getToken} from "ihome-common/util/cookies";
 export default class SummaryList extends Vue {
   queryPageParameters: any = {
     org: null,
-    proId: null,
-    termId: null
+    // proId: null,
+    // termId: null,
+    proName: null,
+    termName: null,
   };
   resPageInfo: any = {
     total: null,
@@ -142,8 +154,10 @@ export default class SummaryList extends Vue {
   async exportMsg() {
     let postData: any = {
       org: this.queryPageParameters.org,
-      proId: this.queryPageParameters.proId,
-      termId: this.queryPageParameters.termId,
+      // proId: this.queryPageParameters.proId,
+      // termId: this.queryPageParameters.termId,
+      proName: this.queryPageParameters.proName,
+      termName: this.queryPageParameters.termName,
     }
     const token: any = getToken();
     axios({
@@ -179,8 +193,10 @@ export default class SummaryList extends Vue {
   reset() {
     Object.assign(this.queryPageParameters, {
       org: null,
-      proId: null,
-      termId: null
+      // proId: null,
+      // termId: null,
+      proName: null,
+      termName: null
     });
   }
 
@@ -189,7 +205,8 @@ export default class SummaryList extends Vue {
     let router = this.$router.resolve({
       path: "/details/list",
       query: {
-        termId: row.termId,
+        proName: row.proName,
+        termName: row.termName,
       },
     });
     window.open(router.href, "_blank");

@@ -16,22 +16,32 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="项目名称">
-              <IhSelectPageByProject
-                v-model="queryPageParameters.proId"
-                placeholder="请选择项目名称"
-                clearable
-              ></IhSelectPageByProject>
+<!--              <IhSelectPageByProject-->
+<!--                v-model="queryPageParameters.proId"-->
+<!--                placeholder="请选择项目名称"-->
+<!--                clearable-->
+<!--              ></IhSelectPageByProject>-->
+              <el-input
+                  clearable
+                  v-model="queryPageParameters.proName"
+                  placeholder="项目名称,支持模糊搜索"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="周期名称">
-              <IhSelectPageByCycle
-                v-model="queryPageParameters.termId"
-                :searchName="termName"
-                @change="changeTerm"
-                placeholder="请选择周期名称"
-                clearable
-              ></IhSelectPageByCycle>
+<!--              <IhSelectPageByCycle-->
+<!--                v-model="queryPageParameters.termId"-->
+<!--                :searchName="termName"-->
+<!--                @change="changeTerm"-->
+<!--                placeholder="请选择周期名称"-->
+<!--                clearable-->
+<!--              ></IhSelectPageByCycle>-->
+              <el-input
+                  clearable
+                  v-model="queryPageParameters.termName"
+                  placeholder="周期名称,支持模糊搜索"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -116,7 +126,7 @@
         <el-tab-pane label="产生明细" name="produce">
           <el-table
             class="ih-table"
-            :data="resPageInfo.list"
+            :data="resPageInfo.produceList"
             :empty-text="emptyText">
             <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
               <template slot-scope="scope">
@@ -139,7 +149,7 @@
         <el-tab-pane label="使用明细" name="use">
           <el-table
             class="ih-table"
-            :data="resPageInfo.list"
+            :data="resPageInfo.useList"
             :empty-text="emptyText">
             <el-table-column label="成交报告编号" prop="dealCode" fixed min-width="220">
               <template slot-scope="scope">
@@ -199,8 +209,10 @@ import {getToken} from "ihome-common/util/cookies";
 export default class DetailsList extends Vue {
   currentTabsName: any = 'All';
   queryPageParameters: any = {
-    proId: null,
-    termId: null,
+    // proId: null,
+    // termId: null,
+    proName: null,
+    termName: null,
     timeList: [],
     addcategory: null, // 产生类别
     usecategory: null, // 使用类别
@@ -209,6 +221,8 @@ export default class DetailsList extends Vue {
   resPageInfo: any = {
     total: null,
     list: [],
+    produceList: [],
+    useList: [],
   };
   detailsSum: any = {
     desc: null,
@@ -216,15 +230,18 @@ export default class DetailsList extends Vue {
   }; // 汇总
 
   async created() {
-    let termId: any = this.$route.query.termId;
-    if (termId) {
+    let proName: any = this.$route.query.proName;
+    let termName: any = this.$route.query.termName;
+    if (proName || termName) {
       this.$nextTick(async () => {
-        this.queryPageParameters.termId = termId  * 1;
-        await this.getTermName(termId);
+        // this.queryPageParameters.termId = termId  * 1;
+        // await this.getTermName(termId);
+        this.queryPageParameters.proName = proName;
+        this.queryPageParameters.termName = termName;
         await this.getListMixin();
       })
     } else {
-      this.termName = '';
+      // this.termName = '';
       await this.getListMixin();
     }
     // await this.getListMixin();
@@ -260,9 +277,25 @@ export default class DetailsList extends Vue {
 
   async getListMixin() {
     let postData: any = await this.getPostData();
-    this.resPageInfo = await post_capitalPoolFlow_detail(postData);
+    // this.resPageInfo = await post_capitalPoolFlow_detail(postData);
+    let res: any = await post_capitalPoolFlow_detail(postData);
+    if (this.currentTabsName === 'produce') {
+      this.resPageInfo.list = [];
+      this.resPageInfo.produceList = res.list;
+      this.resPageInfo.useList = [];
+    } else if (this.currentTabsName === 'use') {
+      this.resPageInfo.list = [];
+      this.resPageInfo.produceList = [];
+      this.resPageInfo.useList = res.list;
+    } else {
+      this.resPageInfo.list = res.list;
+      this.resPageInfo.produceList = [];
+      this.resPageInfo.useList = [];
+    }
+    this.resPageInfo.total = res.total;
     this.detailsSum = await post_capitalPoolFlow_detailsum(postData);
     // console.log(this.detailsSum);
+    // console.log(this.currentTabsName);
   }
 
   // 获取周期名称
@@ -287,8 +320,10 @@ export default class DetailsList extends Vue {
       pageSize: type ? null : this.queryPageParameters.pageSize,
       addcategory: null, // 产生类别
       usecategory: null, // 使用类别
-      proId: this.queryPageParameters.proId, // 项目名称
-      termId: this.queryPageParameters.termId, // 周期名称
+      // proId: this.queryPageParameters.proId, // 项目名称
+      // termId: this.queryPageParameters.termId, // 周期名称
+      proName: this.queryPageParameters.proName,
+      termName: this.queryPageParameters.termName,
       type: 0 // 类别 1:产生 2:使用
     }
     switch (this.currentTabsName) {
@@ -327,8 +362,10 @@ export default class DetailsList extends Vue {
   reset() {
     this.termName = '';
     Object.assign(this.queryPageParameters, {
-      proId: null,
-      termId: null,
+      // proId: null,
+      // termId: null,
+      proName: null,
+      termName: null,
       timeList: [],
       addcategory: null, // 产生类别
       usecategory: null, // 使用类别
