@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 16:15:48
+ * @LastEditTime: 2021-04-24 14:41:54
 -->
 <template>
   <div>
@@ -87,14 +87,14 @@
             <span class="text-ellipsis">{{ form.buildingGuidName }}</span>
           </el-form-item>
         </el-col>
-        <el-col
+        <!-- <el-col
           :span="8"
           v-if="isShow"
         >
           <el-form-item label="同步明源房号数据">
             <span class="text-ellipsis">{{ filterExMarket(form.exSyncRoom) }}</span>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="8">
           <el-form-item label="省份">
             <span class="text-ellipsis">{{ $root.getAreaName(form.province) }}</span>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 10:28:23
+ * @LastEditTime: 2021-04-24 11:17:06
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -120,6 +120,28 @@
           </el-col>
         </el-row>
         <div v-if="isShow">
+          <el-row>
+            <el-col :span="12">
+              <el-form-item
+                label="垫佣周期"
+                prop="padCommissionEnum"
+              >
+                <el-select
+                  v-model="info.padCommissionEnum"
+                  disabled
+                  placeholder="请选择垫佣周期"
+                  style="max-width: 350px; width: 100%"
+                >
+                  <el-option
+                    v-for="item in padCommissionEnumOptions"
+                    :key="item.code"
+                    :label="item.name"
+                    :value="item.code"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
           <br />
           <el-table
             class="ih-table partyA-table"
@@ -205,10 +227,12 @@ export default class NotSalesApply extends Vue {
     exInvolvedCommiss: null,
     contractMxVOList: [],
     titleOrRemark: null,
+    padCommissionEnum: null,
   };
   private fileList: any = [];
   private finishLoading: any = false;
   private isShow: any = false;
+  padCommissionEnumOptions: any = [];
 
   @Watch("info.exInvolvedCommiss", { immediate: true })
   async getIsShow(val: any) {
@@ -247,6 +271,39 @@ export default class NotSalesApply extends Vue {
       type: v.type,
       exAuto: v.exAuto,
     }));
+    if (this.info?.padCommissionEnum) {
+      if (this.info?.padCommissionEnum !== "Veto") {
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: this.info.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              this.info.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      } else {
+        this.info.padCommissionEnum = "Veto";
+        this.padCommissionEnumOptions = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      }
+    } else {
+      this.info.padCommissionEnum = "Veto";
+      this.padCommissionEnumOptions = [
+        {
+          code: "Veto",
+          name: "否",
+        },
+      ];
+    }
   }
 
   cancel() {
@@ -264,7 +321,6 @@ export default class NotSalesApply extends Vue {
   font-weight: 600;
 }
 .positon {
-  position: absolute;
   bottom: 50px;
   left: calc(50% - 75px);
 }

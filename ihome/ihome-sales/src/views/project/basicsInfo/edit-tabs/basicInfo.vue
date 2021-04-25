@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 16:13:47
+ * @LastEditTime: 2021-04-24 14:41:42
 -->
 <template>
   <div>
@@ -152,7 +152,7 @@
             ></el-input>
           </el-form-item>
         </el-col>
-        <el-col
+        <!-- <el-col
           :span="8"
           v-if="isShow"
         >
@@ -173,7 +173,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="16">
           <el-form-item
             label="项目地址"
