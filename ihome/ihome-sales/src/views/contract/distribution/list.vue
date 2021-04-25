@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 17:48:12
+ * @LastEditTime: 2021-04-25 18:04:38
 -->
 <template>
   <IhPage label-width="100px">
@@ -422,7 +422,7 @@
         ></el-table-column>
         <el-table-column label="佣金标准">
           <template v-slot="{ row }">
-            <span v-if="['NoStandKindSaleConfirm', 'NoStandChannel'].includes(row.ContractKind)">-</span>
+            <span v-if="['NoStandKindSaleConfirm', 'NoStandChannel'].includes(row.contractKind)">-</span>
             <el-button
               v-else
               size="mini"
