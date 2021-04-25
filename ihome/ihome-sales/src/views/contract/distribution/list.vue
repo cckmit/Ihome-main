@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 15:39:35
+ * @LastEditTime: 2021-04-25 15:59:01
 -->
 <template>
   <IhPage label-width="100px">
@@ -257,6 +257,45 @@
           type="info"
           @click="handleReact()"
         >重置</el-button>
+
+        <el-button
+          type="success"
+          v-if="$route.name === 'DistributionList'"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISTLIST.EXPORTLIST'"
+        >导出列表</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.EXPORTLIST'"
+        >导出列表</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="handleExport()"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.EXPORTLIST'"
+        >导出列表</el-button>
+
+        <el-button
+          type="success"
+          v-if="$route.name === 'DistributionList'"
+          @click="applyVisible = true"
+          v-has="'B.SALES.CONTRACT.DISTLIST.APPLY'"
+        >申领合同</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBusiness'"
+          @click="applyVisible = true"
+          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.APPLY'"
+        >申领合同</el-button>
+        <el-button
+          type="success"
+          v-else-if="$route.name === 'DistributionListByBack'"
+          @click="applyVisible = true"
+          v-has="'B.SALES.CONTRACT.DISTBYBACK.APPLY'"
+        >申领合同</el-button>
+
         <el-button
           type="success"
           v-if="$route.name === 'DistributionList'"
@@ -314,43 +353,6 @@
           v-has="'B.SALES.CONTRACT.DISTBYBACK.REVOKE'"
         >撤回</el-button>
 
-        <el-button
-          type="success"
-          v-if="$route.name === 'DistributionList'"
-          @click="applyVisible = true"
-          v-has="'B.SALES.CONTRACT.DISTLIST.APPLY'"
-        >申领合同</el-button>
-        <el-button
-          type="success"
-          v-else-if="$route.name === 'DistributionListByBusiness'"
-          @click="applyVisible = true"
-          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.APPLY'"
-        >申领合同</el-button>
-        <el-button
-          type="success"
-          v-else-if="$route.name === 'DistributionListByBack'"
-          @click="applyVisible = true"
-          v-has="'B.SALES.CONTRACT.DISTBYBACK.APPLY'"
-        >申领合同</el-button>
-
-        <el-button
-          type="success"
-          v-if="$route.name === 'DistributionList'"
-          @click="handleExport()"
-          v-has="'B.SALES.CONTRACT.DISTLIST.EXPORTLIST'"
-        >导出列表</el-button>
-        <el-button
-          type="success"
-          v-else-if="$route.name === 'DistributionListByBusiness'"
-          @click="handleExport()"
-          v-has="'B.SALES.CONTRACT.DISTBYBUSINESS.EXPORTLIST'"
-        >导出列表</el-button>
-        <el-button
-          type="success"
-          v-else-if="$route.name === 'DistributionListByBack'"
-          @click="handleExport()"
-          v-has="'B.SALES.CONTRACT.DISTBYBACK.EXPORTLIST'"
-        >导出列表</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
