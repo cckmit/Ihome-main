@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:46:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 11:12:52
+ * @LastEditTime: 2021-04-25 10:19:38
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -75,6 +75,7 @@
                 end-placeholder="结束日期"
                 value-format="yyyy-MM-dd"
                 style="max-width: 400px; width: 100%"
+                :picker-options="pickerOptions"
               >
               </el-date-picker>
             </el-form-item>
@@ -344,6 +345,7 @@ export default class NotSalesApply extends Vue {
     ],
   };
   private fileList: any = [];
+  private timeList: any = [];
   private finishLoading: any = false;
   companyKindOption: any = [];
   searchConditon: any = {};
@@ -363,6 +365,7 @@ export default class NotSalesApply extends Vue {
 
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
+    this.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
     if (this.agencyContrictId) {
       const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
@@ -442,6 +445,18 @@ export default class NotSalesApply extends Vue {
         },
       ];
     }
+  }
+
+  pickerOptions: any = {
+    disabledDate: (time: any) => {
+      return this.dataTimeChange(time);
+    },
+  };
+
+  dataTimeChange(time: any) {
+    let start: any = new Date(this.timeList[0]).getTime() - 8.64e7;
+    let end: any = new Date(this.timeList[1]).getTime();
+    return time.getTime() < start || time.getTime() > end;
   }
 
   newFileList(data: any) {
