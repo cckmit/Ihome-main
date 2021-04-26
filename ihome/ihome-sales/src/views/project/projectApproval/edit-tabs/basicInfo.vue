@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-01 14:51:42
+ * @LastEditTime: 2021-04-26 14:38:52
 -->
 <template>
   <div class="project-approval-box">
@@ -274,8 +274,7 @@
           >
             <el-select
               v-model="info.exDirectDevelop"
-              clearable
-              :disabled="exDirectDevelopDisabled"
+              disabled
               placeholder="请选择"
               class="width--100"
             >
