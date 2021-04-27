@@ -93,6 +93,7 @@
         <el-col :span="24">
           <el-form-item label="证件编号" prop="certificateNumber">
             <el-input
+              :maxlength="18"
               clearable
               v-model="postData.certificateNumber"
               placeholder="证件编号"
