@@ -552,6 +552,8 @@
     post_suppDeal_updateRetreatRoom, // 修改退房
     post_suppDeal_updateStaffAchieveChange, // 修改内部员工业绩变更
   } from "@/api/deal";
+  import { getToken } from "ihome-common/util/cookies";
+  import axios from "axios";
 
   @Component({
     components: {},
@@ -647,14 +649,15 @@
         this.pageData.noticeDealList.forEach((item: any) => {
           list.push(
             {
+              ...item,
               noticeAttachmentList: item.annexList, // 告知书附件
               noticeNo: '————', // 优惠告知书编号 --- 暂时新增的没有
               notificationStatus: null, // 告知书状态 --- 暂时新增的没有
               notificationStatusName: '新增', // 告知书状态 --- 显示新增
-              notificationType: item.notificationType, // 告知书状态 --- 显示新增
+              notificationType: item.notificationType, // 告知书类型
               paymentAmount: null, // 优惠金额
               templateId: null, // 预览编号
-              templateType: item.templateType, // 模版类型 --- 显示新增
+              templateType: item.templateType, // 模版类型
             }
           )
         })
@@ -802,12 +805,20 @@
 
     // 预览-优惠告知书
     preview(scope: any) {
-      // console.log(scope);
+      console.log(scope);
       if (scope.row.templateType === "ElectronicTemplate") {
-        window.open(
-          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-        );
+        // 电子版 - 需要区分新增还是原来的优惠告知书预览
+        if (scope.row.notificationStatus) {
+          // 原来的
+          window.open(
+            `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
+          );
+        } else {
+          // 新增的
+          this.previewAddNotice(scope.row);
+        }
       } else {
+        // 纸质版
         let imgList = scope.row.noticeAttachmentList || scope.row.annexList;
         this.srcList = imgList.map(
           (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
@@ -822,6 +833,93 @@
           this.$message.warning("暂无图片");
         }
       }
+    }
+
+    previewAddNotice(row: any = '') {
+      if (row) {
+        const token: any = getToken();
+        let postData: any = this.getAddNoticeData(row);
+        axios({
+          method: "POST",
+          url: `/sales-api/contract/template/notice/deal/preview`,
+          xsrfHeaderName: "Authorization",
+          responseType: "blob",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "bearer " + token,
+          },
+          data: {
+            ...postData
+          },
+        }).then((res: any) => {
+          const arr = new Blob([res.data], { type: "application/pdf" });
+          const href = window.URL.createObjectURL(arr);
+          window.open(href);
+        });
+      }
+    }
+
+    // 获取预览新增优惠告知书的对象
+    getAddNoticeData(data: any = '') {
+      let obj: any = {
+        buyUnit: null, // 优惠告知书 + 补充协议
+        cycleId: null, // 优惠告知书
+        explain: null, // 优惠告知书
+        notificationType: data.notificationType, // 全部
+        originalNotices: null, // 原告知书信息 - 已生效的 - 全部
+        ownerList: [], // 优惠告知书
+        paymentAmount: null, // 优惠告知书 + 退款申请书
+        reason: null, // 终止协议
+        reasonDescription: null, // 终止协议
+        roomNumberId: null // 优惠告知书 + 补充协议
+      }
+      if (this.pageData.offerNoticeVO && this.pageData.offerNoticeVO.length) {
+        this.pageData.offerNoticeVO.forEach((vo: any) => {
+          if (vo.notificationStatus === 'BecomeEffective') {
+            obj.originalNotices = vo.noticeNo;
+          }
+        });
+      }
+      switch (data.notificationType) {
+        case 'Notification':
+          // 优惠告知书
+          obj.buyUnit = this.infoForm.buildingId;
+          obj.cycleId = this.infoForm.cycleId;
+          obj.explain = data.explain;
+          if (this.infoForm && this.infoForm.customerList && this.infoForm.customerList.length) {
+            this.infoForm.customerList.forEach((list: any) => {
+              obj.ownerList.push(
+                {
+                  ownerCertificateNo: list.cardNo, // 业主证件号码
+                  ownerMobile: list.customerPhone, // 业主联系电话
+                  ownerName: list.customerName, // 业主名字
+                }
+              )
+            });
+          }
+          obj.paymentAmount = data.paymentAmount;
+          obj.roomNumberId = this.infoForm.roomId;
+          console.log(1);
+          break;
+        case 'SupplementaryAgreement':
+          // 补充协议
+          obj.buyUnit = this.infoForm.buildingId;
+          obj.roomNumberId = this.infoForm.roomId;
+          console.log(2);
+          break;
+        case 'TerminationAgreement':
+          // 终止协议
+          obj.reason = data.explain;
+          obj.reasonDescription = data.reasonDescription ? data.reasonDescription : (this as any).$root.dictAllName(data.reason, 'Reason');
+          console.log(3);
+          break;
+        case 'RefundApplication':
+          // 退款申请书
+          console.log(4);
+          obj.paymentAmount = data.paymentAmount;
+          break;
+      }
+      return obj;
     }
 
     // 预览分销协议
