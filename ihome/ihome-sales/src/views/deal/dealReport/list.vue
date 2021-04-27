@@ -323,13 +323,11 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'UPDATE')}"
                   v-has="'B.SALES.DEAL.DEALLIST.UPDATE'"
                   @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'DELETE')}"
                   v-has="'B.SALES.DEAL.DEALLIST.DELETE'"
                   @click.native.prevent="handleDelete(scope)"
                 >删除
