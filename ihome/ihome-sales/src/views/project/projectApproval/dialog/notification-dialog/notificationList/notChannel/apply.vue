@@ -132,7 +132,6 @@
                   clearable
                   placeholder="请选择垫佣周期"
                   style="max-width: 350px; width: 100%"
-                  :disabled="padCommissionEnumOptions.length === 1"
                 >
                   <el-option
                     v-for="item in padCommissionEnumOptions"

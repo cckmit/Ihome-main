@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:36:34
+ * @LastEditTime: 2021-04-27 19:30:18
 -->
 <template>
   <ih-page class="text-left">
@@ -245,7 +245,6 @@
                 clearable
                 placeholder="请选择垫佣周期"
                 style="width: 50%"
-                :disabled="padCommissionEnumOptions.length === 1"
                 @change="queryUnderData(info.padCommissionEnum)"
               >
                 <el-option
