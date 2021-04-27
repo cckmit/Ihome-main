@@ -206,11 +206,9 @@
       <el-row>
         <el-button type="primary" @click="getListMixin()">查询</el-button>
         <el-button
-          :class="{ 'ih-data-disabled': !hasDealAddAuth('ADD')}"
           v-has="'B.SALES.DEAL.DEALLIST.ADD'"
           type="success" @click="handleAdd('add')">新增成交</el-button>
         <el-button
-          :class="{ 'ih-data-disabled': !hasDealAddAuth('ACHIEVEDECLARE')}"
           v-has="'B.SALES.DEAL.DEALLIST.ACHIEVEDECLARE'"
           type="success" @click="handleAdd('declare')">业绩申报</el-button>
         <el-button type="info" @click="handleReset()">重置</el-button>
@@ -323,13 +321,13 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'UPDATE')}"
+                  :class="{ 'ih-data-disabled': hasDataRole(scope.row)}"
                   v-has="'B.SALES.DEAL.DEALLIST.UPDATE'"
                   @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
                 <el-dropdown-item
-                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'DELETE')}"
+                  :class="{ 'ih-data-disabled': hasDataRole(scope.row)}"
                   v-has="'B.SALES.DEAL.DEALLIST.DELETE'"
                   @click.native.prevent="handleDelete(scope)"
                 >删除
@@ -471,6 +469,23 @@
           // 业绩申报 - 案场
           flag = (this as any).$roleTool.RProjectSite();
           break;
+      }
+      return flag;
+    }
+
+    // 根据成交报告状态判断是否显示修改和删除按钮
+    hasDataRole(row: any) {
+      let flag: any = true; // 是否禁用、默认禁用
+      if (row.id === row.parentId) {
+        // 主成交 - 草稿、驳回、业绩申报待确认
+        if (['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(row.status)) {
+          flag = false;
+        }
+      } else {
+        // 补充成交 - 草稿、驳回
+        if (['Draft', 'Reject'].includes(row.status)) {
+          flag = false;
+        }
       }
       return flag;
     }
