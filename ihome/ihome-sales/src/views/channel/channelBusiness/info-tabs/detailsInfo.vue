@@ -3,8 +3,8 @@
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 11:06:42
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-04-27 15:01:39
 -->
 <template>
   <div class="text-left">
@@ -336,7 +336,7 @@ export default class Home extends Vue {
     let submitList: any = this.fileListType.map((v: any) => {
       return {
         ...v,
-        fileList: arr.filter((j: any) => j.fileType === v.code),
+        fileList: arr.filter((j: any) => j.type === v.code),
       };
     });
     let isSubmit = true;
@@ -351,7 +351,7 @@ export default class Home extends Vue {
       let uploadArr: any = arr.map((v: any) => ({
         fileId: v.fileId,
         fileName: v.fileName,
-        type: v.fileType,
+        type: v.type,
       }));
       obj.channelAttachments = uploadArr.filter(
         (v: any) => v.type === "ComprehensiveQueryResult"

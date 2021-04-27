@@ -73,7 +73,7 @@
     <div style="margin-bottom: 50px">
       <el-tabs v-model="tabActive">
         <el-tab-pane label="成交详情" name="1">
-          <RealDealDetails />
+          <RealDealDetails :pageData="info" />
         </el-tab-pane>
 
         <el-tab-pane label="流水详情" name="2">
