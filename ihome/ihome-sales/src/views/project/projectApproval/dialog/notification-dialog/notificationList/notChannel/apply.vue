@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 11:12:03
+ * @LastEditTime: 2021-04-27 11:38:32
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -328,6 +328,8 @@ export default class NotSalesApply extends Vue {
 
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
     if (this.agencyContrictId) {
       const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
@@ -356,39 +358,6 @@ export default class NotSalesApply extends Vue {
         this.info.partyCompanyId = item?.id;
         this.info.partyaAddr = item?.address;
       }
-    }
-    if (this.info?.padCommissionEnum) {
-      if (this.info?.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: this.info.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              this.info.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
-      } else {
-        this.info.padCommissionEnum = "Veto";
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
-    } else {
-      this.info.padCommissionEnum = "Veto";
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-      ];
     }
   }
 

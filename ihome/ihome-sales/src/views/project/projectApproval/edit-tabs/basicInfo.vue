@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-26 14:38:52
+ * @LastEditTime: 2021-04-27 11:30:01
 -->
 <template>
   <div class="project-approval-box">
@@ -1108,7 +1108,32 @@ export default class FirstAgencyEdit extends Vue {
   }
 
   padCommissionEnumChange(val: any) {
-    window.sessionStorage.setItem("padCommissionEnum", val);
+    let arr: any = [];
+    if (val) {
+      if (val === "Veto") {
+        arr = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+        ];
+      } else {
+        arr = [
+          {
+            code: "Veto",
+            name: "否",
+          },
+          {
+            code: this.info.padCommissionEnum,
+            name: (this.$root as any).dictAllName(
+              this.info.padCommissionEnum,
+              "PadCommission"
+            ),
+          },
+        ];
+      }
+    }
+    window.sessionStorage.setItem("padCommissionEnum", JSON.stringify(arr));
   }
 
   async submitContract() {
@@ -1238,6 +1263,7 @@ export default class FirstAgencyEdit extends Vue {
         res.timeList = [];
       }
       this.info = { ...res };
+      this.padCommissionEnumChange(res.padCommissionEnum);
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
       this.oldInfo = { ...res };

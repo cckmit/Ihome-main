@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:10:50
+ * @LastEditTime: 2021-04-27 11:36:34
 -->
 <template>
   <ih-page class="text-left">
@@ -245,6 +245,7 @@
                 clearable
                 placeholder="请选择垫佣周期"
                 style="width: 50%"
+                :disabled="padCommissionEnumOptions.length === 1"
                 @change="queryUnderData(info.padCommissionEnum)"
               >
                 <el-option
@@ -768,6 +769,8 @@ export default class NormalSalesApply extends Vue {
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
     this.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
     if (this.agencyContrictId) {
       const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
@@ -809,39 +812,6 @@ export default class NormalSalesApply extends Vue {
         this.info.partyCompanyId = item?.id;
         this.info.partyaAddr = item?.address;
       }
-    }
-    if (this.info.padCommissionEnum) {
-      if (this.info.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: this.info.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              this.info.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
-      } else {
-        this.info.padCommissionEnum = "Veto";
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
-    } else {
-      this.info.padCommissionEnum = "Veto";
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-      ];
     }
   }
 

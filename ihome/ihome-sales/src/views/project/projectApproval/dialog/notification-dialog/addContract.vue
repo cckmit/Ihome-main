@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-02 15:37:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 16:18:29
+ * @LastEditTime: 2021-04-27 11:42:48
 -->
 <template>
   <el-dialog
@@ -674,39 +674,8 @@ export default class AddContract extends Vue {
         8.1.7 擅自将甲方提供的资料及在工作过程中知悉的甲方商业秘密对外披露、提供、发布等；
         8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`;
     }
-    if (this.data?.padCommissionEnum) {
-      if (this.data?.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: this.data.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              this.data.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
-      } else {
-        this.info.padCommissionEnum = "Veto";
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
-    } else {
-      this.info.padCommissionEnum = "Veto";
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-      ];
-    }
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
   }
 
   async getListMixin() {

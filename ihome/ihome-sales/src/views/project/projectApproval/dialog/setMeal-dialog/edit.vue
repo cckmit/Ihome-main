@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 16:01:56
+ * @LastEditTime: 2021-04-27 11:44:00
 -->
 <template>
   <el-dialog
@@ -1434,28 +1434,8 @@ export default class SetMealEdit extends Vue {
         departmentOrgId: res.startDivisionId,
         isNotNeedChannelLevelApprove: true,
       };
-      if (res.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: res.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              res.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
-      } else {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
+      let options: any = sessionStorage.getItem("padCommissionEnum");
+      this.padCommissionEnumOptions = JSON.parse(options);
       this.propertyEnumOptions = res.propertyDropDowm;
       this.info = (this.$tool as any).deepClone(res);
       this.info.timeList = [this.info.startTime, this.info.endTime];

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:13:35
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 18:03:01
+ * @LastEditTime: 2021-04-27 11:41:50
 -->
 <template>
   <el-dialog
@@ -458,19 +458,8 @@ export default class MakingInfo extends Vue {
     }
     this.getBuding();
     this.getChannel();
-    this.padCommissionEnumOptions = [
-      {
-        code: "Veto",
-        name: "否",
-      },
-      {
-        code: this.data.padCommissionEnum,
-        name: (this.$root as any).dictAllName(
-          this.data.padCommissionEnum,
-          "PadCommission"
-        ),
-      },
-    ];
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
   }
 }
 </script>

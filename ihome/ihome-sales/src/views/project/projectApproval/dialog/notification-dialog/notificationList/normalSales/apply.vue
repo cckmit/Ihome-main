@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:35:57
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 18:12:39
+ * @LastEditTime: 2021-04-27 11:38:02
 -->
 <template>
   <ih-page class="text-left">
@@ -520,6 +520,8 @@ export default class NormalSalesApply extends Vue {
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
     this.timeList = [JSON.parse(res).termStart, JSON.parse(res).termEnd];
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
     if (this.agencyContrictId) {
       const data = await get_distributContract_getDistri__agencyContrictId({
         agencyContrictId: this.agencyContrictId,
@@ -567,39 +569,6 @@ export default class NormalSalesApply extends Vue {
         this.info.partyCompanyId = item?.id;
         this.info.partyaAddr = item?.address;
       }
-    }
-    if (this.info?.padCommissionEnum) {
-      if (this.info?.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: this.info.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              this.info.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
-      } else {
-        this.info.padCommissionEnum = "Veto";
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
-    } else {
-      this.info.padCommissionEnum = "Veto";
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-      ];
     }
   }
 

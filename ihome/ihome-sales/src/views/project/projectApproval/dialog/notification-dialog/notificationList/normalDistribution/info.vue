@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 09:26:54
+ * @LastEditTime: 2021-04-27 11:34:08
 -->
 <template>
   <ih-page class="text-left">
@@ -579,6 +579,8 @@ export default class NormalSalesApply extends Vue {
 
   async getInfo() {
     const res: any = sessionStorage.getItem("addContract");
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
     const data = await get_distributContract_getDistri__agencyContrictId({
       agencyContrictId: this.agencyContrictId,
     });
@@ -592,39 +594,6 @@ export default class NormalSalesApply extends Vue {
       type: v.type,
       exAuto: v.exAuto,
     }));
-    if (this.info?.padCommissionEnum) {
-      if (this.info?.padCommissionEnum !== "Veto") {
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-          {
-            code: this.info.padCommissionEnum,
-            name: (this.$root as any).dictAllName(
-              this.info.padCommissionEnum,
-              "PadCommission"
-            ),
-          },
-        ];
-      } else {
-        this.info.padCommissionEnum = "Veto";
-        this.padCommissionEnumOptions = [
-          {
-            code: "Veto",
-            name: "否",
-          },
-        ];
-      }
-    } else {
-      this.info.padCommissionEnum = "Veto";
-      this.padCommissionEnumOptions = [
-        {
-          code: "Veto",
-          name: "否",
-        },
-      ];
-    }
   }
 
   cancel() {

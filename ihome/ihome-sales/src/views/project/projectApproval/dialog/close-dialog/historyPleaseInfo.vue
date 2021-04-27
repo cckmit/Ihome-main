@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 16:17:09
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 14:52:38
+ * @LastEditTime: 2021-04-27 11:41:29
 -->
 <template>
   <el-dialog
@@ -396,19 +396,8 @@ export default class PleaseEdit extends Vue {
     }
     this.getBuding();
     this.getDeveloper();
-    this.padCommissionEnumOptions = [
-      {
-        code: "Veto",
-        name: "否",
-      },
-      {
-        code: this.data.padCommissionEnum,
-        name: (this.$root as any).dictAllName(
-          this.data.padCommissionEnum,
-          "PadCommission"
-        ),
-      },
-    ];
+    let options: any = sessionStorage.getItem("padCommissionEnum");
+    this.padCommissionEnumOptions = JSON.parse(options);
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 14:21:13
+ * @LastEditTime: 2021-04-27 11:57:13
 -->
 <template>
   <div>
@@ -280,10 +280,9 @@ export default class Other extends Vue {
   screen = "";
 
   private get businessManagementChange() {
-    const ConstractAdopt = this.info.auditEnum === "ConstractAdopt"; // 合同审核通过
     const businessManagementEdit =
       this.$route.name === "businessManagementEdit"; //路由判断
-    return ConstractAdopt && businessManagementEdit;
+    return businessManagementEdit;
   }
 
   get termId() {

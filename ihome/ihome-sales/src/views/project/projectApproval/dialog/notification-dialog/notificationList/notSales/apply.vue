@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:40:39
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 11:13:27
+ * @LastEditTime: 2021-04-27 11:39:42
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -426,7 +426,7 @@ export default class NotSalesApply extends Vue {
 }
 .positon {
   position: absolute;
-  bottom: 30px;
+  bottom: 50px;
   left: calc(50% - 75px);
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 17:42:35
+ * @LastEditTime: 2021-04-27 11:47:06
 -->
 <template>
   <div>
@@ -608,7 +608,32 @@ export default class FirstAgencyEdit extends Vue {
       this.info.timeList = [res.termStart, res.termEnd];
       this.info.companyId = res.companyId;
       window.sessionStorage.setItem("proId", res.proId);
-      window.sessionStorage.setItem("padCommissionEnum", res.padCommissionEnum);
+      let arr: any = [];
+      if (res.padCommissionEnum) {
+        if (res.padCommissionEnum === "Veto") {
+          arr = [
+            {
+              code: "Veto",
+              name: "否",
+            },
+          ];
+        } else {
+          arr = [
+            {
+              code: "Veto",
+              name: "否",
+            },
+            {
+              code: this.info.padCommissionEnum,
+              name: (this.$root as any).dictAllName(
+                this.info.padCommissionEnum,
+                "PadCommission"
+              ),
+            },
+          ];
+        }
+      }
+      window.sessionStorage.setItem("padCommissionEnum", JSON.stringify(arr));
       this.getFileListType(res.attachTermVOS);
     }
   }
