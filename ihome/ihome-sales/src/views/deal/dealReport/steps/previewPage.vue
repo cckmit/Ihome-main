@@ -863,9 +863,9 @@
       if (postData && postData.customerVO && postData.customerVO.length) {
         postData.customerVO.forEach((vo: any, index: any) => {
           if (index === 0) {
-            vo.isCustomer = true;
+            vo.isCustomer = 'Yes';
           } else {
-            vo.isCustomer = false;
+            vo.isCustomer = 'No';
           }
         });
         console.log('previewPage:', postData.customerVO);
