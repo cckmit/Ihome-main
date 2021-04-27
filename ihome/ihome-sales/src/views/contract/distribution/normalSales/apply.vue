@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 15:28:25
+ * @LastEditTime: 2021-04-26 18:06:31
 -->
 <template>
   <IhPage class="text-left">
@@ -447,10 +447,6 @@ export default class SalesApply extends Vue {
         costSettleType: (this.$root as any).dictAllName(
           this.form.costSettleType,
           "CostSettleType"
-        ),
-        channelCompanyKind: (this.$root as any).dictAllName(
-          this.form.channelCompanyKind,
-          "CompanyKind"
         ),
       },
     }).then((res: any) => {
