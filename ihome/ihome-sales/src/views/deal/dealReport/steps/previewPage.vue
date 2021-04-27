@@ -655,7 +655,7 @@
               notificationStatus: null, // 告知书状态 --- 暂时新增的没有
               notificationStatusName: '新增', // 告知书状态 --- 显示新增
               notificationType: item.notificationType, // 告知书类型
-              paymentAmount: null, // 优惠金额
+              // paymentAmount: null, // 优惠金额
               templateId: null, // 预览编号
               templateType: item.templateType, // 模版类型
             }
