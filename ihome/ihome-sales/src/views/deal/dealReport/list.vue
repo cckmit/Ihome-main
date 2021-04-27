@@ -321,11 +321,13 @@
               </span>
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': hasDataRole(scope.row)}"
                   v-has="'B.SALES.DEAL.DEALLIST.UPDATE'"
                   @click.native.prevent="handleEdit(scope)"
                 >修改
                 </el-dropdown-item>
                 <el-dropdown-item
+                  :class="{ 'ih-data-disabled': hasDataRole(scope.row)}"
                   v-has="'B.SALES.DEAL.DEALLIST.DELETE'"
                   @click.native.prevent="handleDelete(scope)"
                 >删除
@@ -467,6 +469,23 @@
           // 业绩申报 - 案场
           flag = (this as any).$roleTool.RProjectSite();
           break;
+      }
+      return flag;
+    }
+
+    // 根据成交报告状态判断是否显示修改和删除按钮
+    hasDataRole(row: any) {
+      let flag: any = true; // 是否禁用、默认禁用
+      if (row.id === row.parentId) {
+        // 主成交 - 草稿、驳回、业绩申报待确认
+        if (['Draft', 'AchieveDeclareUnconfirm', 'Reject'].includes(row.status)) {
+          flag = false;
+        }
+      } else {
+        // 补充成交 - 草稿、驳回
+        if (['Draft', 'Reject'].includes(row.status)) {
+          flag = false;
+        }
       }
       return flag;
     }
