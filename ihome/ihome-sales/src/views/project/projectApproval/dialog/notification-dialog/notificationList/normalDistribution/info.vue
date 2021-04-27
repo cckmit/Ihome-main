@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 18:15:21
+ * @LastEditTime: 2021-04-27 09:26:54
 -->
 <template>
   <ih-page class="text-left">
@@ -306,7 +306,7 @@
           <el-form-item
             prop="consumerComplete"
             label=" "
-            label-width="12px"
+            label-width="0"
           >
             <el-input
               show-word-limit
@@ -326,7 +326,7 @@
         <el-form-item
           label="7.1 代理期间成交的单位："
           prop='agencySettleCondtion'
-          label-width="200px"
+          label-width="180px"
         >
           <el-select
             v-model="info.agencySettleCondtion"
@@ -343,7 +343,7 @@
         </el-form-item>
         <el-form-item
           label=" "
-          label-width="50px"
+          label-width="0"
         >
           <el-input
             class="textareaClass"
@@ -359,7 +359,7 @@
           <el-form-item
             prop="agencyCostSettleWay"
             label="7.2"
-            label-width="50px"
+            label-width="0"
           >
             <el-input
               show-word-limit

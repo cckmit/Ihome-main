@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 18:10:56
+ * @LastEditTime: 2021-04-27 11:10:50
 -->
 <template>
   <ih-page class="text-left">
@@ -245,7 +245,6 @@
                 clearable
                 placeholder="请选择垫佣周期"
                 style="width: 50%"
-                :disabled="padCommissionEnumOptions.length === 1"
                 @change="queryUnderData(info.padCommissionEnum)"
               >
                 <el-option
@@ -357,7 +356,7 @@
         <el-form-item
           label="7.1 代理期间成交的单位："
           prop='agencySettleCondtion'
-          label-width="200px"
+          label-width="185px"
         >
           <el-select
             v-model="info.agencySettleCondtion"
@@ -375,7 +374,7 @@
         </el-form-item>
         <el-form-item
           label=" "
-          label-width="50px"
+          label-width="0"
         >
           <el-input
             class="textareaClass"
@@ -391,7 +390,7 @@
           <el-form-item
             prop="agencyCostSettleWay"
             label="7.2"
-            label-width="50px"
+            label-width="0"
           >
             <el-input
               show-word-limit
@@ -811,8 +810,8 @@ export default class NormalSalesApply extends Vue {
         this.info.partyaAddr = item?.address;
       }
     }
-    if (this.info?.padCommissionEnum) {
-      if (this.info?.padCommissionEnum !== "Veto") {
+    if (this.info.padCommissionEnum) {
+      if (this.info.padCommissionEnum !== "Veto") {
         this.padCommissionEnumOptions = [
           {
             code: "Veto",

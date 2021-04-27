@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-25 11:51:01
+ * @LastEditTime: 2021-04-27 11:01:55
 -->
 <template>
   <div>
@@ -413,7 +413,7 @@ export default class Notification extends Vue {
         proId: this.info.proId,
         proName: this.info.proName,
         proRecord: this.info.proRecord,
-        padCommissionEnum: this.info.padCommissionEnum,
+        // padCommissionEnum: this.info.padCommissionEnum,
         preferentialPartyAId: this.info.preferentialPartyAId,
         termId: this.$route.query.id,
         chargeEnum: this.info.chargeEnum,

@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-12-15 15:03:46
- * @LastEditors: ywl
- * @LastEditTime: 2020-12-23 20:26:27
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-04-26 10:39:56
 -->
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
@@ -27,6 +27,10 @@ export default class IhSelectPageByDeveloper extends Vue {
     },
   })
   props?: any;
+  @Prop({
+    default: "Audited",
+  })
+  status?: any;
 
   optionList: any = [];
   // 分页信息
@@ -44,7 +48,7 @@ export default class IhSelectPageByDeveloper extends Vue {
       name: this.filterText,
       pageSize: this.pageInfo.pageSize,
       pageNum: this.pageInfo.pageNum,
-      status: "Audited",
+      status: this.status,
     });
     this.optionList = res.list;
     this.pageInfo = res;

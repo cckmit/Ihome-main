@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 14:41:42
+ * @LastEditTime: 2021-04-26 10:49:36
 -->
 <template>
   <div>
@@ -61,6 +61,7 @@
             <IhSelectPageByDeveloper
               v-model="form.developerId"
               :searchName="form.developerName"
+              :status="''"
             >
             </IhSelectPageByDeveloper>
           </el-form-item>
