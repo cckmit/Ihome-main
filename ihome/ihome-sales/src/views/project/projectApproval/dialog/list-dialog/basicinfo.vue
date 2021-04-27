@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-30 08:49:31
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 16:31:28
+ * @LastEditTime: 2021-04-27 15:43:44
 -->
 <template>
   <el-dialog
@@ -45,15 +45,6 @@
             ></IhSelectPageByProject>
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="8">
-          <el-form-item label="周期名称">
-            <el-input
-              clearable
-              v-model="queryPageParameters.termName"
-              placeholder="周期名称"
-            ></el-input>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="8">
           <el-form-item label="省市区">
             <IhCascader
@@ -64,23 +55,6 @@
             />
           </el-form-item>
         </el-col>
-        <!-- <el-col :span="8">
-          <el-form-item label="业务类型">
-            <el-select
-              v-model="queryPageParameters.busTypeEnum"
-              clearable
-              placeholder="业务类型"
-              class="width--100"
-            >
-              <el-option
-                v-for="item in $root.dictAllList('BusType')"
-                :key="item.code"
-                :label="item.name"
-                :value="item.code"
-              ></el-option>
-            </el-select>
-          </el-form-item>
-        </el-col> -->
         <el-col :span="8">
           <el-form-item label="项目审核状态">
             <el-select
@@ -100,7 +74,7 @@
         </el-col>
       </el-row>
     </el-form>
-    <div class="margin-left-80">
+    <div class="margin-left-100">
       <el-button
         type="primary"
         @click="search()"
@@ -118,6 +92,7 @@
       :empty-text="emptyText"
       @selection-change="handleSelectionChange"
       @select="handleSelect"
+      :height="450"
     >
       <el-table-column
         type="selection"
