@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:20:24
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:57:21
+ * @LastEditTime: 2021-04-27 14:12:11
 -->
 <template>
   <div>
@@ -163,7 +163,6 @@ import PartyABuding from "../dialog/partyA-dialog/partyABuding.vue";
 import {
   get_partyAContract_get__termId,
   post_partyAContract_saveOaRemark,
-  post_partyAContract_busnissManage_addPartyABuildings,
 } from "@/api/project/index.ts";
 @Component({
   components: { PartyADialog, PartyABuding },
@@ -231,11 +230,7 @@ export default class PartyA extends Vue {
     this.budingEditDialogVisible = true;
   }
 
-  async budingEditFinish(data: any) {
-    let obj: any = {};
-    obj.partyAInfoVOS = data;
-    obj.termId = this.$route.query.id;
-    await post_partyAContract_busnissManage_addPartyABuildings(obj);
+  async budingEditFinish() {
     this.$message.success("关联成功");
     this.getInfo();
     this.budingEditDialogVisible = false;

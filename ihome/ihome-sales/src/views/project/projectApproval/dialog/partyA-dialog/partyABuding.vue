@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 11:34:52
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-21 19:47:57
+ * @LastEditTime: 2021-04-27 14:10:12
 -->
 <template>
   <el-dialog
@@ -71,6 +71,7 @@ import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import {
   post_partyAContract_getBuilding__termId,
   post_partyAContract_addPartyABuildings,
+  post_partyAContract_busnissManage_addPartyABuildings,
 } from "@/api/project/index.ts";
 
 @Component({
@@ -124,7 +125,12 @@ export default class PartyABuding extends Vue {
       obj.partyAInfoVOS = [...this.form];
       obj.termId = this.$route.query.id;
       try {
-        await post_partyAContract_addPartyABuildings(obj);
+        if (this.$route.name === "businessManagementEdit") {
+          await post_partyAContract_busnissManage_addPartyABuildings(obj);
+        } else {
+          debugger;
+          await post_partyAContract_addPartyABuildings(obj);
+        }
         this.finishLoading = false;
         this.$emit("finish");
       } catch (err) {
