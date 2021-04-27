@@ -859,6 +859,17 @@
       // console.log(type);
       if (!type) return;
       let postData: any = this.pageData.currentPostData;
+      // 处理客户信息
+      if (postData && postData.customerVO && postData.customerVO.length) {
+        postData.customerVO.forEach((vo: any, index: any) => {
+          if (index === 0) {
+            vo.isCustomer = true;
+          } else {
+            vo.isCustomer = false;
+          }
+        });
+        console.log('previewPage:', postData.customerVO);
+      }
       // 获取补发告知书页面附件信息
       postData.documentVO = this.getDocumentVo(postData.documentVO);
       try {
