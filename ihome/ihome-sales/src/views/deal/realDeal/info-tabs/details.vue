@@ -194,7 +194,7 @@
       <div class="file-list">
         <div
           class="file-item-border"
-          v-for="(item, index) in infoForm.offerNoticeList"
+          v-for="(item, index) in offerNoticeList"
           :key="index"
         >
           <div class="file-item">
@@ -552,38 +552,71 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { get_deal_get__id } from "../../../../api/deal";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import { post_notice_customer_information } from "../../../../api/contract";
 // import { get_invoice_getInvoiceInfo__businessCode } from "../../../../api/finance";
 @Component({
   components: {},
 })
 export default class RealDealDetails extends Vue {
-  infoForm: any = {
-    charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
-    dealCode: null,
-    dealOrgName: null, // 成交组织name
-    house: {}, // 房产信息
-    offerNoticeList: [], // 优惠告知书
-    customerList: [], // 客户信息
-    agencyList: [], // 渠道信息
-    receiveList: [], // 收派金额
-    receiveAchieveList: [], // 应收业绩 - 收派信息下
-    channelCommList: [], // 对外拆佣信息
-    achieveList: [], // 平台费用 - 包含总包和分销
-    achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
-    achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
-    documentLists: [], // 附件信息
-    processRecordList: [], // 审核信息
-    invoiceList: [], // 发票信息
-  };
+  @Prop() pageData?: any; // 基础数据
+  offerNoticeList: any = [];
   tableData: any = [];
   fileList: any = [1, 2, 3, 4, 5, 6, 7, 8];
   srcList: any = [];
   srcData: any = [];
   companyKind: any = null;
   private isShowImg = false;
+
+  get infoForm() {
+    let obj: any = {
+      charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
+      dealCode: null,
+      dealOrgName: null, // 成交组织name
+      house: {}, // 房产信息
+      customerList: [], // 客户信息
+      agencyList: [], // 渠道信息
+      receiveList: [], // 收派金额
+      receiveAchieveList: [], // 应收业绩 - 收派信息下
+      channelCommList: [], // 对外拆佣信息
+      achieveList: [], // 平台费用 - 包含总包和分销
+      achieveTotalBagList: [], // 平台费用 - 总包 - 前端拆分
+      achieveDistriList: [], // 平台费用 - 分销 - 前端拆分
+      documentLists: [], // 附件信息
+      processRecordList: [], // 审核信息
+      invoiceList: [], // 发票信息
+    }
+    if (this.pageData) {
+      obj = {
+        ...obj,
+        ...this.pageData
+      }
+      if (obj.agencyList && obj.agencyList.length > 0) {
+        let companyKind = obj.agencyList[0].companyKind;
+        this.companyKind = (this as any).$root.dictAllName(
+          companyKind,
+          "CompanyKind"
+        );
+      }
+      // 构建平台费用数据
+      obj.achieveTotalBagList = [];
+      obj.achieveDistriList = [];
+      if (this.pageData && this.pageData.achieveList && this.pageData.achieveList.length) {
+        this.pageData.achieveList.forEach((list: any) => {
+          if (list.type === "TotalBag") {
+            obj.achieveTotalBagList.push(list);
+          }
+          if (list.type === "Distri") {
+            obj.achieveDistriList.push(list);
+          }
+        });
+      }
+      // 初始化附件
+      obj.documentLists = this.initDocumentList(this.pageData.documentList);
+      this.getInformation(this.pageData?.id, this.pageData?.parentId, this.pageData?.cycleId);
+    }
+    return obj;
+  }
 
   pre(item: any) {
     console.log("pre");
@@ -605,38 +638,6 @@ export default class RealDealDetails extends Vue {
       } else {
         this.$message.warning("暂无图片");
       }
-    }
-  }
-  async created() {
-    if (this.$route.query.id) {
-      let info: any = await get_deal_get__id({ id: this.$route.query.id });
-      this.infoForm = {
-        ...this.infoForm,
-        ...info,
-      };
-      if (this.infoForm.agencyList && this.infoForm.agencyList.length > 0) {
-        let companyKind = this.infoForm.agencyList[0].companyKind;
-        this.companyKind = (this as any).$root.dictAllName(
-          companyKind,
-          "CompanyKind"
-        );
-      }
-      // 构建平台费用数据
-      this.infoForm.achieveTotalBagList = [];
-      this.infoForm.achieveDistriList = [];
-      if (info && info.achieveList && info.achieveList.length) {
-        info.achieveList.forEach((list: any) => {
-          if (list.type === "TotalBag") {
-            this.infoForm.achieveTotalBagList.push(list);
-          }
-          if (list.type === "Distri") {
-            this.infoForm.achieveDistriList.push(list);
-          }
-        });
-      }
-      // 初始化附件
-      this.infoForm.documentLists = this.initDocumentList(info.documentList);
-      await this.getInformation(info?.id, info?.parentId, info?.cycleId);
     }
   }
   // 构建附件信息
@@ -679,7 +680,7 @@ export default class RealDealDetails extends Vue {
       });
       // console.log('优惠告知书列表', list);
       this.$nextTick(() => {
-        this.infoForm.offerNoticeList = [...idList, ...parentIdList];
+        this.offerNoticeList = [...idList, ...parentIdList];
       });
     } else {
       const list: any = await post_notice_customer_information({
@@ -688,12 +689,12 @@ export default class RealDealDetails extends Vue {
       });
       // console.log('优惠告知书列表', list);
       if (list && list.length > 0) {
-        this.infoForm.offerNoticeList = list;
+        this.offerNoticeList = list;
       } else {
-        this.infoForm.offerNoticeList = [];
+        this.offerNoticeList = [];
       }
     }
-    console.log(this.infoForm.offerNoticeList);
+    console.log(this.offerNoticeList);
   }
   gotoNew(item: any, type: any) {
     if (type == "oneAgentTeam") {
