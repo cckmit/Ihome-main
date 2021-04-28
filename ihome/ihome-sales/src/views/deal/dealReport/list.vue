@@ -350,11 +350,11 @@
                   @click.native.prevent="handleUpload(scope)"
                 >补充附件
                 </el-dropdown-item>
-                <el-dropdown trigger="click" class="el-dropdown-menu__item" placement="top-start">
-                  <span
-                    v-has="'B.SALES.DEAL.DEALLIST.SUPPLEMENTDEAL'"
-                    :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'SUPPLEMENTDEAL')}"
-                    class="el-dropdown-link">
+                <el-dropdown
+                  v-has="'B.SALES.DEAL.DEALLIST.SUPPLEMENTDEAL'"
+                  :class="{ 'ih-data-disabled': hasBtnRole(scope.row, 'SUPPLEMENTDEAL')}"
+                  trigger="click" class="el-dropdown-menu__item" placement="top-start">
+                  <span class="el-dropdown-link">
                   补充成交
                   <i class="el-icon-arrow-down el-icon--right"></i>
                   </span>
