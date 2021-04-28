@@ -97,26 +97,26 @@
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
         :empty-text="emptyText">
-        <el-table-column prop="custName" label="客户姓名" min-width="80px"></el-table-column>
-        <el-table-column prop="custTel" label="手机号码" min-width="90px"></el-table-column>
-        <el-table-column prop="custOrg" label="客户来源" min-width="80px">
+        <el-table-column prop="custName" label="客户姓名" min-width="80"></el-table-column>
+        <el-table-column prop="custTel" label="手机号码" min-width="90"></el-table-column>
+        <el-table-column prop="custOrg" label="客户来源" min-width="80">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.custOrg, "CustOrg")
           }}</template>
         </el-table-column>
-        <el-table-column prop="custType" label="客户类型" min-width="80px">
+        <el-table-column prop="custType" label="客户类型" min-width="80">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.custType, "CustType")
           }}</template>
         </el-table-column>
-        <el-table-column prop="cardType" label="证件类型" min-width="90px">
+        <el-table-column prop="cardType" label="证件类型" min-width="90">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.cardType, "CardType")
           }}</template>
         </el-table-column>
-        <el-table-column prop="certificateNumber" label="证件编号" min-width="120px"></el-table-column>
-        <el-table-column prop="email" label="邮箱" min-width="100px"></el-table-column>
-        <el-table-column prop="createTime" label="创建时间" min-width="150px"></el-table-column>
+        <el-table-column prop="certificateNumber" label="证件编号" min-width="120"></el-table-column>
+        <el-table-column prop="email" label="邮箱" min-width="100"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" min-width="150"></el-table-column>
       </el-table>
     </template>
     <template v-slot:pagination>
@@ -165,14 +165,20 @@ export default class CustomerList extends Vue {
     createTimeRealMax: null,
     createTimeRealMin: null,
   };
-
   resPageInfo: any = {
     total: null,
     list: [],
   };
+  addData: any = null;
+  value: any = "";
+  searchOpen = true;
+  currentPage: any = 1;
+  tableData: any = [];
+  total: any = null;
+  dialogVisible = false;
 
   createTimeRealChange(dateArray: any) {
-    if (dateArray) {
+    if (dateArray && dateArray.length) {
       this.queryPageParameters.createTimeRealMin = dateArray[0];
       this.queryPageParameters.createTimeRealMax = dateArray[1];
     } else {
@@ -192,23 +198,13 @@ export default class CustomerList extends Vue {
     });
   }
 
-  addData: any = null;
-  value: any = "";
-  searchOpen = true;
-
-  currentPage: any = 1;
-  tableData: any = [];
-  total: any = null;
-
-  dialogVisible = false;
-
   add(data: any) {
     this.addData = data;
     this.dialogVisible = true;
   }
 
   async created() {
-    this.getListMixin();
+    await this.getListMixin();
   }
   async getListMixin() {
     this.resPageInfo = await post_customer_getCustList(

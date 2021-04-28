@@ -100,11 +100,6 @@
             <el-select
               v-model="form.cardType"
               placeholder="请选择证件类型"
-              @change="
-                () => {
-                  handleCardChange();
-                }
-              "
               :disabled="showCardType"
             >
               <el-option
@@ -242,7 +237,7 @@ export default class CustomerAdd extends Vue {
       this.form.cardType = "IDCard"; //客户类型为个人时默认选择居民身份证
       this.rules.certificateNumber = [
         { required: true, message: "证件编号不能为空", trigger: "change" },
-        { validator: validIdentityCard, trigger: "change" },
+        // { validator: validIdentityCard, trigger: "change" },
       ];
     }
     if (value.length > 0) {
