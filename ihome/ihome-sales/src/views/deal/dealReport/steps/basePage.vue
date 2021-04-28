@@ -4118,7 +4118,8 @@
           stage: 'SignUp', // 2021-03-01 补充成交只有签约状态
           isMat: this.postData.contType === 'DistriDeal' ? this.postData.isMat : null, // 分销成交再传
           contNo: this.postData.contType === 'DistriDeal' ? this.postData.contNo : null, // 分销成交再传
-          noticeIds: [] // 优惠告知书Id
+          noticeIds: [], // 优惠告知书Ids
+          notices: [] // 优惠告知书
         }, // 成交基础信息
         documentVO: this.postData.uploadDocumentList && this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseVO: {
@@ -4192,9 +4193,23 @@
       if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
         this.postData.offerNoticeVO.forEach((item: any) => {
           dataObj.dealVO.noticeIds.push(item.noticeId);
+          dataObj.dealVO.notices.push(
+            {
+              customerInformationList: item.customerInformationList,
+              dealId: item.dealId,
+              noticeId: item.noticeId,
+              noticeNo: item.noticeNo,
+              notificationStatus: item.notificationStatus,
+              notificationType: item.notificationType,
+              paymentAmount: item.paymentAmount,
+              templateId: item.templateId,
+              templateType: item.templateType
+            }
+          );
         });
       } else {
         dataObj.dealVO.noticeIds = null;
+        dataObj.dealVO.notices = null;
       }
       if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
         if (this.btnType === "edit") {

@@ -3903,6 +3903,7 @@
           firstId = firstNoticeList[0].noticeId;
           obj.basic.dealVO.notices.push(
             {
+              customerInformationList: firstNoticeList[0].customerInformationList,
               dealId: firstNoticeList[0].dealId,
               noticeId: firstNoticeList[0].noticeId,
               noticeNo: firstNoticeList[0].noticeNo,
@@ -3918,6 +3919,7 @@
           if (vo.noticeId !== firstId) {
             obj.basic.dealVO.notices.push(
               {
+                customerInformationList: vo.customerInformationList,
                 dealId: vo.dealId,
                 noticeId: vo.noticeId,
                 noticeNo: vo.noticeNo,
