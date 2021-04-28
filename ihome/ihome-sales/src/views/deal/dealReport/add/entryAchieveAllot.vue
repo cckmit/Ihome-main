@@ -2772,7 +2772,17 @@
       //   this.tempContType = value;
       // }
       // console.log(this.tempContType);
-      console.log(value);
+      // console.log(value);
+      // 清空渠道公司类型、渠道公司、经纪人、分销合同、是否垫佣字段
+      this.postData.companyKind = null;
+      this.postData.agencyId = null;
+      this.postData.agencyName = null;
+      this.agencySearchName = null;
+      this.postData.brokerId = null;
+      this.postData.brokerName = null;
+      this.brokerSearchName = null;
+      this.postData.contNo = null;
+      this.postData.isMat = null;
       this.initReceive();
       // 选择房号后构建表格数据
       this.getDocumentList(value);
