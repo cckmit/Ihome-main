@@ -96,48 +96,27 @@
         class="ih-table"
         :data="resPageInfo.list"
         :default-sort="{ prop: 'id', order: 'descending' }"
-        :empty-text="emptyText"
-      >
-        <el-table-column
-          prop="custName"
-          label="客户姓名"
-          width="%10"
-        ></el-table-column>
-        <el-table-column
-          prop="custTel"
-          label="手机号码"
-          width="%10"
-        ></el-table-column>
-        <el-table-column prop="custOrg" label="客户来源" width="%10">
+        :empty-text="emptyText">
+        <el-table-column prop="custName" label="客户姓名" min-width="80px"></el-table-column>
+        <el-table-column prop="custTel" label="手机号码" min-width="90px"></el-table-column>
+        <el-table-column prop="custOrg" label="客户来源" min-width="80px">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.custOrg, "CustOrg")
           }}</template>
         </el-table-column>
-        <el-table-column prop="custType" label="客户类型" width="%10">
+        <el-table-column prop="custType" label="客户类型" min-width="80px">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.custType, "CustType")
           }}</template>
         </el-table-column>
-        <el-table-column prop="cardType" label="证件类型" width="%10">
+        <el-table-column prop="cardType" label="证件类型" min-width="90px">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.cardType, "CardType")
           }}</template>
         </el-table-column>
-        <el-table-column
-          prop="certificateNumber"
-          label="证件编号"
-          width="%10"
-        ></el-table-column>
-        <el-table-column
-          prop="email"
-          label="邮箱"
-          width="%10"
-        ></el-table-column>
-        <el-table-column
-          prop="createTime"
-          label="创建时间"
-          width="%10"
-        ></el-table-column>
+        <el-table-column prop="certificateNumber" label="证件编号" min-width="120px"></el-table-column>
+        <el-table-column prop="email" label="邮箱" min-width="100px"></el-table-column>
+        <el-table-column prop="createTime" label="创建时间" min-width="150px"></el-table-column>
       </el-table>
     </template>
     <template v-slot:pagination>
