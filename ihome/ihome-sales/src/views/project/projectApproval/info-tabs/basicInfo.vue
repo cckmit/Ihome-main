@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:17:06
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:47:06
+ * @LastEditTime: 2021-04-28 16:11:45
 -->
 <template>
   <div>
@@ -24,8 +24,7 @@
             <div class="word-break line-height">
               <el-link
                 type="primary"
-                :href="`/web-sales/projects/childInfo?id=${info.proId}`"
-                target="_blank"
+                @click.native.prevent="routeTo"
               >{{ info.proName }}</el-link>
             </div>
           </el-form-item>
@@ -485,7 +484,7 @@
       >保存</el-button>
       <el-button @click="viewApprovalDialogVisible = true">预览OA立项表单</el-button>
       <el-button @click="viewContractDialogVisible = true">预览OA合同表单</el-button>
-      <el-button @click="routeTo">关 闭</el-button>
+      <el-button @click="close">关 闭</el-button>
     </div>
     <ih-dialog :show="viewApprovalDialogVisible">
       <ViewApproval @cancel="() => (viewApprovalDialogVisible = false)" />
@@ -595,8 +594,16 @@ export default class FirstAgencyEdit extends Vue {
     this.getInfo();
   }
 
-  routeTo() {
+  close() {
     this.$goto({ path: "/projectApproval/list" });
+  }
+
+  routeTo() {
+    if (!this.info.exParent) {
+      window.open(`/web-sales/projects/childInfo?id=${this.info.proId}`);
+    } else {
+      window.open(`/web-sales/projects/parentInfo?id=${this.info.proId}`);
+    }
   }
 
   async getInfo() {
