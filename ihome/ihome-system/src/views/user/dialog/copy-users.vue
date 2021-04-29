@@ -14,7 +14,7 @@
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :before-close="cancel"
-    width="1000px"
+    width="1100px"
     style="text-align: left"
     class="dialog"
     top="50px"
@@ -34,15 +34,21 @@
       </el-col>
 
       <el-col :span="16" class="margin-left-20">
-        <el-card class="box-card" style="height: 500px; width: 695px">
+        <el-card class="box-card" style="height: 500px; width: 770px">
           <div slot="header" class="clearfix" style="height: 20px">
             <div class="float-left">
               <span>复制选项</span>
               <span class="margin-left-20">
                 <el-checkbox
-                  v-model="copyJobAndRole"
+                  v-model="copyJob"
                   size="small"
-                  label="岗位角色"
+                  label="岗位"
+                  border
+                ></el-checkbox>
+                <el-checkbox
+                  v-model="copyRole"
+                  size="small"
+                  label="角色"
                   border
                 ></el-checkbox>
                 <el-checkbox
@@ -51,6 +57,7 @@
                   label="组织权限"
                   border
                 ></el-checkbox>
+                <span> 将下方列表选中用户的权限复制给左侧的所有用户 </span>
               </span>
             </div>
           </div>
@@ -89,16 +96,12 @@
                   ></ih-table-radio>
                 </template>
               </el-table-column>
-              <el-table-column
-                prop="name"
-                label="姓名"
-                width="120"
-              ></el-table-column>
+              <el-table-column prop="name" label="姓名"></el-table-column>
               <el-table-column
                 prop="account"
                 label="登录账号"
               ></el-table-column>
-              <el-table-column prop="accountType" label="用户类型" width="120">
+              <el-table-column prop="accountType" label="用户类型">
                 <template slot-scope="scope">{{
                   $root.dictAllName(scope.row.accountType, "UserAccountType")
                 }}</template>
@@ -143,7 +146,8 @@ export default class CopyUsers extends Vue {
   }
   @Prop({ default: null }) data: any;
   dialogVisible = true;
-  copyJobAndRole = false;
+  copyRole = false;
+  copyJob = false;
   copyOrg = false;
 
   queryPageParameters: any = {
@@ -164,6 +168,7 @@ export default class CopyUsers extends Vue {
     permissionOrgId: null,
     status: null,
     workType: null,
+    userType: "Staff",
   };
 
   resPageInfo: any = {
@@ -183,7 +188,11 @@ export default class CopyUsers extends Vue {
 
   async finish() {
     if (this.currentItem.id) {
-      if (this.copyJobAndRole === false && this.copyOrg === false) {
+      if (
+        this.copyJob === false &&
+        this.copyOrg === false &&
+        this.copyRole == false
+      ) {
         this.$message.warning("请先勾选复制选项");
       } else {
         let userListId = (this.data || []).map((item: any) => {
@@ -193,7 +202,8 @@ export default class CopyUsers extends Vue {
           this.$message.warning("请勿勾选与左边列表相同的用户");
         } else {
           let p: any = {
-            copyJobAndRole: this.copyJobAndRole,
+            copyJob: this.copyJob,
+            copyRole: this.copyRole,
             copyOrg: this.copyOrg,
             targetUserId: this.currentItem.id,
             userIds: userListId,

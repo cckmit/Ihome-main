@@ -203,6 +203,14 @@
                   />
                 </el-form-item>
               </el-col>
+              <el-col :span="8">
+                <el-form-item label="岗位">
+                  <el-input
+                    v-model="queryPageParameters.jobName"
+                    placeholder="岗位"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
             </el-row>
           </div>
         </el-collapse-transition>
@@ -242,7 +250,12 @@
         @selection-change="handleSelectionChange"
         :empty-text="emptyText"
       >
-        <el-table-column fixed type="selection" width="50"></el-table-column>
+        <el-table-column
+          fixed
+          type="selection"
+          width="50"
+          :selectable="selectable"
+        ></el-table-column>
         <el-table-column
           fixed
           type="index"
@@ -253,7 +266,7 @@
           fixed
           prop="name"
           label="姓名"
-          width="90"
+          width="120"
         ></el-table-column>
         <el-table-column
           fixed
@@ -266,6 +279,7 @@
           label="手机号码"
           width="120"
         ></el-table-column>
+
         <el-table-column prop="accountType" label="账号类型" width="120">
           <template slot-scope="scope">{{
             $root.dictAllName(scope.row.accountType, "UserAccountType")
@@ -281,6 +295,12 @@
             {{ $root.dictAllName(scope.row.status, "ValidType") }}
           </template>
         </el-table-column>
+        <el-table-column
+          prop="jobName"
+          label="岗位"
+          width="150"
+        ></el-table-column>
+
         <el-table-column
           prop="orgName"
           label="归属组织"
@@ -506,6 +526,7 @@ export default class UserList extends Vue {
     permissionOrgId: null,
     status: null,
     workType: null,
+    jobName: null,
   };
   jobVisibleData: any = null;
   OrganizationJurisdictionData: any = null;
@@ -696,6 +717,13 @@ export default class UserList extends Vue {
   }
   finish() {
     this.getListMixin();
+  }
+  selectable(row: any) {
+    if (row.userType == "Staff") {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 </script>

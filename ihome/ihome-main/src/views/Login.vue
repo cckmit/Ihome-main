@@ -10,10 +10,10 @@
   <div class="main login-bg">
     <div class="login-wrapper">
       <div class="title margin-20">
-        <img src="../assets/img/login/title-zh.png">
+        <img src="../assets/img/login/title-zh.png" />
       </div>
       <div class="title margin-47">
-        <img src="../assets/img/login/title-en.png">
+        <img src="../assets/img/login/title-en.png" />
       </div>
       <div class="login-form">
         <div class="login-tip">
@@ -25,13 +25,16 @@
             :model="ruleForm"
             :rules="rules"
             ref="ruleForm"
-            label-width="100px">
+            label-width="100px"
+          >
             <el-form-item label="" prop="username" label-width="0">
               <el-input placeholder="请输入登录ID" v-model="ruleForm.username">
                 <img
                   slot="prefix"
                   src="../assets/img/login/user-icon.png"
-                  width="19px" height="19px">
+                  width="19px"
+                  height="19px"
+                />
               </el-input>
             </el-form-item>
             <el-form-item label="" prop="password" label-width="0">
@@ -40,11 +43,14 @@
                 v-model="ruleForm.password"
                 type="password"
                 show-password
-                @keyup.enter.native="submitForm('ruleForm')">
+                @keyup.enter.native="submitForm('ruleForm')"
+              >
                 <img
                   slot="prefix"
                   src="../assets/img/login/pwd-icon.png"
-                  width="19px" height="19px">
+                  width="19px"
+                  height="19px"
+                />
               </el-input>
             </el-form-item>
             <el-form-item label-width="0">
@@ -53,7 +59,8 @@
                 type="success"
                 @click="submitForm('ruleForm')"
                 :loading="loading"
-              >登录</el-button>
+                >登录</el-button
+              >
             </el-form-item>
           </el-form>
         </div>
@@ -70,6 +77,39 @@ import { defaultMountApp } from "../setting";
 import { get_sessionUser_getSystemParam } from "../api/system/index";
 import request from "ihome-common/util/api/http";
 import { setToken } from "../utils/cookies";
+function getChromeVersion() {
+  let arr = navigator.userAgent.split(" ");
+  let chromeVersion = "";
+  for (let i = 0; i < arr.length; i++) {
+    if (/chrome/i.test(arr[i])) chromeVersion = arr[i];
+  }
+  if (chromeVersion) {
+    return Number(chromeVersion.split("/")[1].split(".")[0]);
+  } else {
+    return false;
+  }
+}
+function isWeChat() {
+  let ua: any = window.navigator.userAgent.toLowerCase();
+  if (ua.match(/MicroMessenger/i) == "micromessenger") {
+    let system = {
+      win: false,
+      mac: false,
+    };
+    //检测平台
+    let p = navigator.platform;
+    system.win = p.indexOf("Win") == 0;
+    system.mac = p.indexOf("Mac") == 0;
+    if (system.win || system.mac) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
 @Component({
   components: {},
 })
@@ -134,7 +174,29 @@ export default class Login extends Vue {
     that.$refs[formName].resetFields();
   }
   async created() {
- 
+    if (isWeChat()) {
+      alert("微信内置浏览器无法访问系统，请使用谷歌浏览器访问");
+    } else {
+      if (navigator.userAgent.toLowerCase().indexOf("chrome") == -1) {
+        this.$alert("请使用谷歌浏览器", "提示消息", {
+          confirmButtonText: "确定",
+        });
+      } else {
+        if (getChromeVersion()) {
+          let version = getChromeVersion();
+          if (version < 70) {
+            this.$alert(
+              `您使用的谷歌浏览器内核版本v${version}过低，为了更好地体验请将浏览器升级到最新版本！`,
+              "提示消息",
+              {
+                confirmButtonText: "确定",
+              }
+            );
+          }
+        }
+      }
+    }
+
     const res: any = await get_sessionUser_getSystemParam();
     if (res?.env) {
       this.env = res.env;
@@ -145,7 +207,7 @@ export default class Login extends Vue {
 </script>
 <style lang="scss">
 .login-bg {
-  background: url('../assets/img/login/login-bg.jpg') center no-repeat ;
+  background: url("../assets/img/login/login-bg.jpg") center no-repeat;
   zoom: 1;
   //background-size: 100% 100%;
   background-size: cover;
@@ -190,7 +252,7 @@ export default class Login extends Vue {
       //width: 28.5%;
       width: 547px;
       height: 360px;
-      background-image: url('../assets/img/login/login-form-bg.png');
+      background-image: url("../assets/img/login/login-form-bg.png");
       zoom: 1;
       background-size: 100% 100%;
       background-position: center;
@@ -202,7 +264,7 @@ export default class Login extends Vue {
         font-size: 25px;
         font-family: Source Han Sans CN;
         font-weight: 400;
-        color: #85F2FB;
+        color: #85f2fb;
         line-height: 25px;
         text-align: center;
         box-sizing: border-box;
@@ -215,34 +277,34 @@ export default class Login extends Vue {
         margin-top: 32px;
         padding: 0px 9.18%;
 
-        .el-form .el-input{
-          background-color: #003B99 !important;
+        .el-form .el-input {
+          background-color: #003b99 !important;
         }
 
         .el-form .el-input {
           input::-webkit-input-placeholder {
             /* placeholder颜色 */
-            color: #85F2FB !important;
+            color: #85f2fb !important;
             /* placeholder字体大小 */
             font-size: 16px !important;
           }
 
           input:-webkit-autofill {
-            -webkit-box-shadow: 0 0 0px 1000px #003B99 inset !important;	/**通过边框阴影遮挡住背景*/
-            -webkit-text-fill-color: #85F2FB !important;
+            -webkit-box-shadow: 0 0 0px 1000px #003b99 inset !important; /**通过边框阴影遮挡住背景*/
+            -webkit-text-fill-color: #85f2fb !important;
           }
         }
 
         .el-form .el-input .el-input__inner {
           width: 100% !important;
           height: 46px !important;
-          background-color: #003B99 !important;
-          border: 1px solid #85F2FB !important;
+          background-color: #003b99 !important;
+          border: 1px solid #85f2fb !important;
           opacity: 0.7 !important;
           font-size: 16px !important;
           font-family: Source Han Sans CN;
           font-weight: 400 !important;
-          color: #85F2FB !important;
+          color: #85f2fb !important;
           line-height: 25px !important;
           padding-left: 51px !important;
         }
@@ -260,26 +322,25 @@ export default class Login extends Vue {
           font-size: 20px;
           font-family: Source Han Sans CN;
           font-weight: 400;
-          color: #FFFFFF;
+          color: #ffffff;
         }
       }
     }
-
   }
 
-  @media screen and(max-width: 1280px){
+  @media screen and(max-width: 1280px) {
     .login-wrapper .login-form {
       //width: 40% !important;
     }
   }
 
-  @media screen and(max-width: 1024px){
+  @media screen and(max-width: 1024px) {
     .login-wrapper .login-form {
       //width: 50% !important;
     }
   }
 
-  @media screen and(max-width: 768px){
+  @media screen and(max-width: 768px) {
     .login-wrapper .title {
       img {
         width: 100% !important;
@@ -291,7 +352,7 @@ export default class Login extends Vue {
     }
   }
 
-  @media screen and(max-width: 460px){
+  @media screen and(max-width: 460px) {
     .login-wrapper {
       .title {
         img {
@@ -331,7 +392,7 @@ export default class Login extends Vue {
         .el-form .el-input {
           input::-webkit-input-placeholder {
             /* placeholder颜色 */
-            color: #85F2FB !important;
+            color: #85f2fb !important;
             /* placeholder字体大小 */
             font-size: 14px !important;
           }
