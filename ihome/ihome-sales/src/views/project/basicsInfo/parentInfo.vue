@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 11:26:30
+ * @LastEditTime: 2021-04-29 09:21:38
 -->
 <template>
   <ih-page>
@@ -115,6 +115,15 @@
           >驳回</el-button>
         </div>
       </div>
+      <div
+        v-if="$route.name === 'projectParentRecall'"
+        class="margin-top-20"
+      >
+        <el-button
+          @click="recall()"
+          type="primary"
+        >撤回</el-button>
+      </div>
     </template>
   </ih-page>
 </template>
@@ -124,6 +133,7 @@ import {
   get_project_getParent__proId,
   post_project_audit,
   post_project_reject,
+  post_project_cancel__proId,
 } from "@/api/project/index";
 
 @Component({
@@ -176,6 +186,18 @@ export default class EditBasicInfo extends Vue {
       });
       this.form = { ...this.form, ...data };
       this.form.provinceOption = [data.province, data.city, data.district];
+    }
+  }
+
+  async recall() {
+    try {
+      await post_project_cancel__proId({
+        proId: this.form.proId,
+      });
+      this.$message.success("撤回成功!");
+      this.$goto({ path: "/projects/list" });
+    } catch (err) {
+      console.log(err);
     }
   }
 

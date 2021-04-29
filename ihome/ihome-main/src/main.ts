@@ -69,7 +69,26 @@ import { get_dict_getAll, get_area_getAll, post_sessionUser_getUserInfo } from '
 // }
 */
 
-
+function isWeChat() {
+  let ua: any = window.navigator.userAgent.toLowerCase();
+  if (ua.match(/MicroMessenger/i) == "micromessenger") {
+    let system = {
+      win: false,
+      mac: false,
+    };
+    //检测平台
+    let p = navigator.platform;
+    system.win = p.indexOf("Win") == 0;
+    system.mac = p.indexOf("Mac") == 0;
+    if (system.win || system.mac) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
 
 //window全局变量共享数据
 (window as any).polyihomeData = {
@@ -82,45 +101,52 @@ let salesToast = false;//提示一次
 let reportToast = false;//提示一次
 //全局异常捕获
 addGlobalUncaughtErrorHandler((event: any) => {
+  if (isWeChat()) {
+    alert("微信内置浏览器无法访问系统，请使用谷歌浏览器访问.");
 
-  let errMsg = event?.message;
-  if (errMsg) {
-    if (errMsg.includes("application 'ihome-web-sales' died in status LOADING_SOURCE_CODE")) {
-      if (!salesToast) {
-        ElementUI.Message({
-          message: 'sales模块加载失败',
-          type: 'error'
-        });
-        salesToast = true;
-        console.log('qiankun-sales全局异常捕获');
-        console.log(event);
-      }
-
-    } else if (errMsg.includes("application 'ihome-web-system' died in status LOADING_SOURCE_CODE")) {
-      if (!systemToast) {
-        ElementUI.Message({
-          message: 'system模块加载失败',
-          type: 'error'
-        });
-        systemToast = true;
-        console.log('qiankun-system全局异常捕获');
-        console.log(event);
-      }
-    }
-    else if (errMsg.includes("application 'ihome-web-report' died in status LOADING_SOURCE_CODE")) {
-      if (!reportToast) {
-        ElementUI.Message({
-          message: 'report模块加载失败',
-          type: 'error'
-        });
-        reportToast = true;
-        console.log('qiankun-report全局异常捕获');
-        console.log(event);
-      }
-    }
   } else {
-    console.log(event);
+    let errMsg = event?.message;
+    if (errMsg) {
+      if (errMsg.includes("application 'ihome-web-sales' died in status LOADING_SOURCE_CODE")) {
+        if (!salesToast) {
+          ElementUI.Message({
+            message: 'sales模块加载失败',
+            type: 'error'
+          });
+          salesToast = true;
+          console.log('qiankun-sales全局异常捕获');
+          console.log(event);
+        }
+
+      } else if (errMsg.includes("application 'ihome-web-system' died in status LOADING_SOURCE_CODE")) {
+        if (!systemToast) {
+          ElementUI.Message({
+            message: 'system模块加载失败',
+            type: 'error'
+          });
+          systemToast = true;
+          console.log('qiankun-system全局异常捕获');
+          console.log(event);
+        }
+      }
+      else if (errMsg.includes("application 'ihome-web-report' died in status LOADING_SOURCE_CODE")) {
+        if (!reportToast) {
+          ElementUI.Message({
+            message: 'report模块加载失败',
+            type: 'error'
+          });
+          reportToast = true;
+          console.log('qiankun-report全局异常捕获');
+          console.log(event);
+        }
+      }
+    } else {
+      console.log(event);
+    }
   }
+
+
+
 
 });
 

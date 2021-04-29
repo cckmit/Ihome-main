@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-22 14:45:15
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 10:38:04
+ * @LastEditTime: 2021-04-29 09:11:19
  */
 import { RouteConfig } from 'vue-router'
 
@@ -45,6 +45,12 @@ const projectRoutes: Array<RouteConfig> = [
         meta: { title: '项目基础信息父项目审核', icon: 'form' }
       },
       {
+        path: 'parentRecall',
+        name: 'projectParentRecall',
+        component: () => import('../views/project/basicsInfo/parentInfo.vue'),
+        meta: { title: '项目基础信息父项目撤回', icon: 'form' }
+      },
+      {
         path: 'childAdd',
         name: 'projectChildAdd',
         component: () => import('../views/project/basicsInfo/childEdit.vue'),
@@ -67,6 +73,12 @@ const projectRoutes: Array<RouteConfig> = [
         name: 'projectChildAudit',
         component: () => import('../views/project/basicsInfo/childInfo.vue'),
         meta: { title: '项目基础信息子项目审核', icon: 'form' }
+      },
+      {
+        path: 'childRecall',
+        name: 'projectChildRecall',
+        component: () => import('../views/project/basicsInfo/childInfo.vue'),
+        meta: { title: '项目基础信息子项目撤回', icon: 'form' }
       }
     ]
   },

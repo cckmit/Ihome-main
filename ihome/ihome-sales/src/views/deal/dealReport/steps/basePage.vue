@@ -2593,6 +2593,7 @@
       }
       // 清空一手代理合同
       this.postData.firstContNo = null;
+      this.firstAgencyIdsList = [];
       this.firstAgencyCompanyContList = [];
       // 获取一手代理合同
       if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
@@ -3011,6 +3012,7 @@
       this.brokerSearchName = null;
       this.postData.contNo = null;
       this.postData.isMat = null;
+      this.packageIdsList = [];
       // 初始化收派套餐
       this.initAllReceiveList();
       // 选择房号后构建表格数据
@@ -3119,6 +3121,7 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
+      this.firstAgencyIdsList = [];
       // this.postData.customerList = []; // 客户信息
       this.baseInfoInDeal.customerAddVOS = [];
       // this.postData.offerNoticeVO = []; // 优惠告知书
