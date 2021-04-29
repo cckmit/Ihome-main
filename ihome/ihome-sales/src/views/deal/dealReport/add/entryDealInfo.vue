@@ -2274,6 +2274,7 @@
                   L.fileId = L.fileNo;
                   L.exAuto = true;
                   L.isAddNoticeAnnex = true; // 用来判断是不是优惠告知书信息带出来的附件 - 后面用于重复删除
+                  L.notSave = true; // 后端不存数据的标识
                   vo.defaultFileList.push(L);
                 });
               }
