@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 16:57:09
+ * @LastEditTime: 2021-04-29 19:34:45
 -->
 <template>
   <IhPage class="text-left">
@@ -127,9 +127,19 @@
                     type="primary"
                     class="margin-left-10"
                     style="display: inline;"
+                    v-if="form.channelCompanyKind == 'ChannelCompany'"
                     :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
                     target="_blank"
                   >{{form.channelCompanyName}}</el-link>
+                  <el-link
+                    type="primary"
+                    class="margin-left-10"
+                    style="display: inline;"
+                    v-else-if="form.channelCompanyKind == 'AgencyCompany'"
+                    :href="`/web-sales/firstAgency/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >{{form.channelCompanyName}}</el-link>
+                  <span v-else>{{form.channelCompanyName}}</span>
                 </div>
               </template>
               <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
