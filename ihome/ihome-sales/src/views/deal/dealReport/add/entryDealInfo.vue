@@ -1582,6 +1582,7 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
+      this.firstAgencyIdsList = [];
       this.postData.customerVO = []; // 客户信息
       this.baseInfoInDeal.customerAddVOS = [];
       this.postData.offerNoticeVO = []; // 优惠告知书
@@ -1869,6 +1870,7 @@
       this.brokerSearchName = null;
       this.postData.contNo = null;
       this.postData.isMat = null;
+      this.packageIdsList = [];
       this.initReceive();
       // 选择房号后构建附件表格数据
       this.getDocumentList(value);
@@ -2017,6 +2019,7 @@
     // 改变一手代理公司
     changeOneAgent(value: any) {
       this.postData.firstContNo = null;
+      this.firstAgencyIdsList = [];
       this.firstAgencyCompanyContList = [];
       // 获取一手代理合同
       if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
