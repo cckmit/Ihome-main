@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:59:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:38:32
+ * @LastEditTime: 2021-04-29 20:44:38
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -373,6 +373,7 @@ export default class NotSalesApply extends Vue {
     this.setMealDialogData.padCommissionEnum = this.info.padCommissionEnum;
     this.setMealDialogData.id = this.info.termId;
     this.setMealDialogData.contractKind = "NoChannel";
+    this.setMealDialogData.commissionKind = this.info.commissionKind;
     this.setmealDialogVisible = true;
   }
 
