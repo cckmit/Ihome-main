@@ -2259,11 +2259,21 @@
         this.postData.documentVO.forEach((vo: any) => {
           // 只需要遍历上传附件类型为优惠告知书的类型
           if (vo.code === 'Notice') {
+            // 先删除之前带出来的isAddNoticeAnnex
+            if (vo.defaultFileList && vo.defaultFileList.length) {
+              vo.defaultFileList.filter((list: any) => {
+                return !list.isAddNoticeAnnex;
+              });
+            }
+            // 放入最新的
             addList.forEach((list: any) => {
               if (list.annexList && list.annexList.length) {
                 list.annexList.forEach((L: any) => {
                   L.fileType = 'Notice';
+                  L.fileName = L.attachmentSuffix;
+                  L.fileId = L.fileNo;
                   L.exAuto = true;
+                  L.isAddNoticeAnnex = true; // 用来判断是不是优惠告知书信息带出来的附件 - 后面用于重复删除
                   vo.defaultFileList.push(L);
                 });
               }
