@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-21 11:29:47
+ * @LastEditTime: 2021-04-29 19:34:26
 -->
 <template>
   <IhPage class="text-left">
@@ -43,9 +43,21 @@
             <el-form-item label="乙方公司">
               <el-link
                 type="primary"
+                class="margin-left-10"
+                style="display: inline;"
+                v-if="form.channelCompanyKind == 'ChannelCompany'"
                 :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
                 target="_blank"
               >{{form.channelCompanyName}}</el-link>
+              <el-link
+                type="primary"
+                class="margin-left-10"
+                style="display: inline;"
+                v-else-if="form.channelCompanyKind == 'AgencyCompany'"
+                :href="`/web-sales/firstAgency/info?id=${form.channelCompanyId}`"
+                target="_blank"
+              >{{form.channelCompanyName}}</el-link>
+              <span v-else>{{form.channelCompanyName}}</span>
             </el-form-item>
           </el-col>
         </el-row>
@@ -90,9 +102,19 @@
                     type="primary"
                     class="margin-left-10"
                     style="display: inline;"
+                    v-if="form.channelCompanyKind == 'ChannelCompany'"
                     :href="`/web-sales/channelBusiness/info?id=${form.channelCompanyId}`"
                     target="_blank"
                   >{{form.channelCompanyName}}</el-link>
+                  <el-link
+                    type="primary"
+                    class="margin-left-10"
+                    style="display: inline;"
+                    v-else-if="form.channelCompanyKind == 'AgencyCompany'"
+                    :href="`/web-sales/firstAgency/info?id=${form.channelCompanyId}`"
+                    target="_blank"
+                  >{{form.channelCompanyName}}</el-link>
+                  <span v-else>{{form.channelCompanyName}}</span>
                 </div>
               </template>
               <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
