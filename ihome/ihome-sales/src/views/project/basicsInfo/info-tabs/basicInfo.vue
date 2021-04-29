@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-29 09:18:32
+ * @LastEditTime: 2021-04-29 09:27:24
 -->
 <template>
   <div>
@@ -404,11 +404,11 @@
       <div class="margin-top-20">
         <el-button
           @click="auditPass()"
-          type="primary"
+          type="success"
         >通过</el-button>
         <el-button
           @click="auditReject()"
-          type="primary"
+          type="danger"
         >驳回</el-button>
       </div>
     </div>
@@ -418,7 +418,7 @@
     >
       <el-button
         @click="recall()"
-        type="primary"
+        type="danger"
       >撤回</el-button>
     </div>
   </div>
