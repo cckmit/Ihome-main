@@ -1031,7 +1031,14 @@
           sums[index] = '合计';
           return;
         }
-        if ([3, 5, 6].includes(index)) {
+        let indexList: any = [];
+        // 补充成交不显示比例合计
+        if (this.suppContType) {
+          indexList = [3, 5];
+        } else {
+          indexList =[3, 5, 6];
+        }
+        if (indexList.includes(index)) {
           const values = data.map((item: any) => Number(item[column.property]));
           if (!values.every((value: any) => isNaN(value))) {
             sums[index] = values.reduce((prev: any, curr: any) => {
