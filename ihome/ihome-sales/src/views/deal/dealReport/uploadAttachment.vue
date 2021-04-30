@@ -17,13 +17,13 @@
         <div class="text-left">
           <el-form @submit.native.prevent label-width="90px">
             <el-form-item label="录入人">{{infoFrom.entryPerson}}</el-form-item>
-            <el-form-item label="录入时间">{{infoFrom.entryDate}}</el-form-item>
+            <el-form-item label="录入日期">{{infoFrom.entryDate ? getDateStr(infoFrom.entryDate) : '-'}}</el-form-item>
           </el-form>
         </div>
         <div class="text-left">
           <el-form @submit.native.prevent label-width="100px">
             <el-form-item label="业绩分配人">{{infoFrom.alloter}}</el-form-item>
-            <el-form-item label="业绩分配时间">{{infoFrom.allotDate}}</el-form-item>
+            <el-form-item label="业绩分配日期">{{infoFrom.allotDate ? getDateStr(infoFrom.allotDate) : '-'}}</el-form-item>
           </el-form>
         </div>
         <div class="text-right">
@@ -95,6 +95,13 @@ export default class UploadAttachment extends Vue {
     this.infoFrom = await get_deal_get__id({id: this.dealId});
     // 初始化附件
     this.uploadList = this.initDocumentList(this.infoFrom.documentList);
+  }
+
+  // 获取日期年月日
+  getDateStr(value: any = '') {
+    if (value) {
+      return value.substring(0, 10);
+    }
   }
 
   // 构建附件信息
