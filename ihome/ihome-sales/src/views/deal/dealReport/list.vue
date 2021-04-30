@@ -601,6 +601,7 @@
     // 改变项目周期
     handleChangeCycle() {
       console.log(123)
+      this.queryPageParameters.proId = null;
       this.queryPageParameters.buildingId = null;
       this.queryPageParameters.roomNumberId = null;
       this.buildingRoomId = [];

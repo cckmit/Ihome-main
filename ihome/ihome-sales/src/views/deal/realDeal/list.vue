@@ -79,6 +79,7 @@
                 <el-form-item label="项目周期">
                   <IhSelectPageByCycle
                       clearable
+                      @change="handleChangeCycle"
                       @changeOption="
                   (data) => {
                     queryPageParameters.proId = data.proId;
@@ -467,6 +468,15 @@ export default class RealDealList extends Vue {
     return flag;
   }
 
+  // 改变项目周期
+  handleChangeCycle() {
+    console.log(123)
+    this.queryPageParameters.proId = null;
+    this.queryPageParameters.buildingId = null;
+    this.queryPageParameters.roomNumberId = null;
+    this.buildingRoom = [];
+  }
+
   // 改变公司类型
   changeAgencyType() {
     this.queryPageParameters.agencyId = null;
@@ -581,6 +591,7 @@ export default class RealDealList extends Vue {
     console.log(data);
     if (data && data.length == 1) {
       this.queryPageParameters.buildingId = data[0];
+      this.queryPageParameters.roomNumberId = null;
     } else if (data && data.length == 2) {
       this.queryPageParameters.buildingId = data[0];
       this.queryPageParameters.roomNumberId = data[1];
