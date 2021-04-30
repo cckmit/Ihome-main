@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-29 19:39:04
+ * @LastEditTime: 2021-04-30 15:29:35
 -->
 <template>
   <IhPage class="text-left">
@@ -181,7 +181,10 @@
                     :href="`/web-sales/firstAgency/info?id=${form.channelCompanyId}`"
                     target="_blank"
                   >{{form.channelCompanyName}}</el-link>
-                  <span v-else>{{form.channelCompanyName}}</span>
+                  <span
+                    v-else
+                    class="margin-left-10"
+                  >{{form.channelCompanyName}}</span>
                 </div>
               </template>
               <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 18:11:20
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-29 19:37:48
+ * @LastEditTime: 2021-04-30 15:31:01
 -->
 <template>
   <IhPage class="text-left">
@@ -174,7 +174,10 @@
                   <span v-else>{{form.channelCompanyName}}</span>
                 </div>
               </template>
-              <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
+              <span
+                v-else
+                class="margin-left-10"
+              >{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>

@@ -315,7 +315,10 @@
                   <span v-else>{{form.channelCompanyName}}</span>
                 </div>
               </template>
-              <span v-else>{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
+              <span
+                v-else
+                class="margin-left-10"
+              >{{$root.dictAllName(form.channelEnum, 'ChannelCustomer')}}</span>
             </el-form-item>
           </el-col>
         </el-row>
