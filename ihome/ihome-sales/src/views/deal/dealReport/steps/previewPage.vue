@@ -968,8 +968,8 @@
         });
         console.log('previewPage:', postData.customerVO);
       }
-      // 获取补发告知书页面附件信息
-      postData.documentVO = this.getDocumentVo(postData.documentVO);
+      // 获取补发告知书页面附件信息 --- 修复bug：2021-04-30 不放补充优惠告知书页面的附件
+      // postData.documentVO = this.getDocumentVo(postData.documentVO);
       try {
         this.btnLoading = true;
         // 补充成交类型
