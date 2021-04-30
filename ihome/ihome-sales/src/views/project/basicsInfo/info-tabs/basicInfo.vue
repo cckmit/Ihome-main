@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 14:41:54
+ * @LastEditTime: 2021-04-29 09:27:24
 -->
 <template>
   <div>
@@ -404,13 +404,22 @@
       <div class="margin-top-20">
         <el-button
           @click="auditPass()"
-          type="primary"
+          type="success"
         >通过</el-button>
         <el-button
           @click="auditReject()"
-          type="primary"
+          type="danger"
         >驳回</el-button>
       </div>
+    </div>
+    <div
+      v-if="$route.name === 'projectChildRecall'"
+      class="margin-top-20"
+    >
+      <el-button
+        @click="recall()"
+        type="danger"
+      >撤回</el-button>
     </div>
   </div>
 </template>
@@ -420,6 +429,7 @@ import {
   get_project_get__proId,
   post_project_audit,
   post_project_reject,
+  post_project_cancel__proId,
 } from "@/api/project/index";
 import BaiduMap from "vue-baidu-map/components/map/Map.vue";
 import BmView from "vue-baidu-map/components/map/MapView.vue";
@@ -584,6 +594,18 @@ export default class InfoBasicInfo extends Vue {
   handler({ BMap }: any) {
     this.BMap = BMap;
     this.zoom = 15;
+  }
+
+  async recall() {
+    try {
+      await post_project_cancel__proId({
+        proId: this.form.proId,
+      });
+      this.$message.success("撤回成功!");
+      this.$goto({ path: "/projects/list" });
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async auditPass() {

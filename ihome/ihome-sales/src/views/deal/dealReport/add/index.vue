@@ -308,6 +308,21 @@
         let noticeInfo: any = await post_notice_deal_details__noticeId(postData);
         if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
           noticeInfo.dealNotices.forEach((item: any) => {
+            // 存放优惠告知书带出的客户信息 - 后面提交/保存接口需要用到
+            item.customerInformationList = [];
+            if (item.notificationStatus === 'BecomeEffective' && item.notificationType === 'Notification') {
+              if (noticeInfo.customerConvertResponse && noticeInfo.customerConvertResponse.length) {
+                noticeInfo.customerConvertResponse.forEach((res: any) => {
+                  item.customerInformationList.push(
+                    {
+                      ownerCertificateNo: res.cardNo, // 业主证件号码
+                      ownerMobile: res.customerPhone, // 业主联系电话
+                      ownerName: res.customerName // 业主名字
+                    }
+                  )
+                });
+              }
+            }
             // 附件增加fileId
             if (item.annexList && item.annexList.length) {
               item.annexList.forEach((list: any) => {

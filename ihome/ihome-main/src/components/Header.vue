@@ -34,7 +34,15 @@
     <div class="right-item">
       <ul class="right-ul">
         <li class="right-li">
-          <span class="userinfo">欢迎你～ {{ userInfo.name }}</span>
+          <span class="userinfo"
+            >欢迎你～
+            <el-link :underline="false" @click="personal()">{{
+              userInfo.name
+            }}</el-link>
+          </span>
+
+          <span v-if="userInfo.jobName"> · {{ userInfo.jobName }}</span>
+          <span v-if="env !== 'prd'" style="color: red"> ({{ envName }})</span>
         </li>
         <!-- <li class="right-li right-li-icon">
           <el-badge
@@ -81,7 +89,10 @@ import { AppModule } from "../store/modules/app";
 import { headImg } from "../utils/base64-img";
 import { defaultIsCollapse } from "../setting";
 // import { allMenu } from "../api/users";
-import { get_sessionUser_logout } from "../api/system/index";
+import {
+  get_sessionUser_logout,
+  get_sessionUser_getSystemParam,
+} from "../api/system/index";
 import { removeToken } from "../utils/cookies";
 @Component({
   components: {},
@@ -91,6 +102,8 @@ export default class IhHeader extends Vue {
   //   required: true,
   // })
   // private isCollapse!: boolean;
+  env = "prd";
+  envName = "";
 
   breadcrumbList: any = [];
   circleUrl = headImg;
@@ -111,6 +124,15 @@ export default class IhHeader extends Vue {
       this.$router.push("/login");
     }
   }
+  personal() {
+    let userInfo = this.userInfo;
+    if (this.$route.path != "/web-system/user/info") {
+      this.$router.push({
+        path: "/web-system/user/info",
+        query: { id: userInfo.id },
+      });
+    }
+  }
   get userInfo() {
     return (this.$root as any).userInfo || {};
   }
@@ -119,6 +141,13 @@ export default class IhHeader extends Vue {
   }
   clickAside(): void {
     AppModule.toggleSideBar();
+  }
+  async created() {
+    const res: any = await get_sessionUser_getSystemParam();
+    if (res?.env) {
+      this.env = res.env;
+      this.envName = res.envName;
+    }
   }
 }
 </script>

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-25 18:04:38
+ * @LastEditTime: 2021-04-29 08:57:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -1007,7 +1007,7 @@ export default class DistributionList extends Vue {
           console.log(err);
         }
       } else {
-        this.$message.warning("请选择待审核状态的合同数据");
+        this.$message.warning("请选择待渠道管理岗审核状态的合同数据");
         return;
       }
     } else {

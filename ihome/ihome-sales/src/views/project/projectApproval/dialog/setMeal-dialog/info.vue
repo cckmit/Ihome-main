@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-07 14:32:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-15 16:46:49
+ * @LastEditTime: 2021-04-29 20:53:55
 -->
 <template>
   <el-dialog
@@ -227,7 +227,7 @@
                 align="center"
               >
                 <template v-slot="{ row }">
-                  <span>{{`金额:` + otherChannelAmount(row)}}</span>
+                  <span>{{`金额:` + row.otherChannelAmount}}</span>
                 </template>
               </el-table-column>
               <el-table-column
@@ -245,11 +245,6 @@
                 align="center"
                 prop="estimateComplateAmount"
               >
-                <template v-slot="{ row }">
-                  <span>
-                    {{estimateComplateAmount(row)}}
-                  </span>
-                </template>
               </el-table-column>
               <el-table-column
                 label="预计应收金额"
@@ -257,11 +252,6 @@
                 align="center"
                 prop="estimateReceiveAmount"
               >
-                <template v-slot="{ row }">
-                  <span>
-                    {{estimateReceiveAmount(row)}}
-                  </span>
-                </template>
               </el-table-column>
               <el-table-column
                 label="备注"
@@ -423,11 +413,11 @@
                 align="center"
                 prop="estimateComplateAmount"
               >
-                <template v-slot="{ row }">
+                <!-- <template v-slot="{ row }">
                   <span>
                     {{estimateComplateAmount(row)}}
                   </span>
-                </template>
+                </template> -->
               </el-table-column>
               <el-table-column
                 label="预计应收金额"
@@ -435,11 +425,11 @@
                 align="center"
                 prop="estimateReceiveAmount"
               >
-                <template v-slot="{ row }">
+                <!-- <template v-slot="{ row }">
                   <span>
                     {{estimateReceiveAmount(row)}}
                   </span>
-                </template>
+                </template> -->
               </el-table-column>
               <el-table-column
                 label="备注"
@@ -483,58 +473,6 @@ export default class SetMealEdit extends Vue {
     estimatedTransactionPrice: null,
     colletionandsendMxs: [],
   };
-
-  otherChannelAmount(row: any) {
-    let total =
-      Number(row.receivableAmout) +
-      Number(row.receivablePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
-    let num1 =
-      Number(row.sendAmount) +
-      Number(row.sendPoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
-    let num2 =
-      Number(row.sendInAmount) +
-      Number(row.sendInPoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
-    let num3 =
-      Number(row.generalAchieveAmount) +
-      Number(row.generalAchievePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
-    let num4 =
-      Number(row.distributeAchieveAmount) +
-      Number(row.distributeAchievePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
-    let computed = total - (num1 + num2 + num3 + num4);
-    row.otherChannelAmount = computed;
-    return isNaN(computed) ? 0 : this.$math.tofixed(computed, 2);
-  }
-
-  estimateComplateAmount(row: any) {
-    let total = 0;
-    total =
-      Number(this.info.estimatedTransactionPrice) *
-      10000 *
-      Number(row.estimateComplateNum);
-    row.estimateComplateAmount = total;
-    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
-  }
-
-  estimateReceiveAmount(row: any) {
-    let total = 0;
-    total =
-      Number(row.receivableAmout) +
-      Number(row.receivablePoint / 100) *
-        Number(this.info.estimatedTransactionPrice) *
-        10000;
-    row.estimateReceiveAmount = total;
-    return isNaN(total) ? 0 : this.$math.tofixed(total, 2);
-  }
 
   cancel() {
     this.$emit("cancel", false);

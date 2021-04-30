@@ -2593,6 +2593,7 @@
       }
       // 清空一手代理合同
       this.postData.firstContNo = null;
+      this.firstAgencyIdsList = [];
       this.firstAgencyCompanyContList = [];
       // 获取一手代理合同
       if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
@@ -3001,6 +3002,17 @@
       // }
       // console.log(this.tempContType);
       console.log(value);
+      // 清空渠道公司类型、渠道公司、经纪人、分销合同、是否垫佣字段
+      this.postData.companyKind = null;
+      this.postData.agencyId = null;
+      this.postData.agencyName = null;
+      this.agencySearchName = null;
+      this.postData.brokerId = null;
+      this.postData.brokerName = null;
+      this.brokerSearchName = null;
+      this.postData.contNo = null;
+      this.postData.isMat = null;
+      this.packageIdsList = [];
       // 初始化收派套餐
       this.initAllReceiveList();
       // 选择房号后构建表格数据
@@ -3109,6 +3121,7 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
+      this.firstAgencyIdsList = [];
       // this.postData.customerList = []; // 客户信息
       this.baseInfoInDeal.customerAddVOS = [];
       // this.postData.offerNoticeVO = []; // 优惠告知书
@@ -4108,7 +4121,8 @@
           stage: 'SignUp', // 2021-03-01 补充成交只有签约状态
           isMat: this.postData.contType === 'DistriDeal' ? this.postData.isMat : null, // 分销成交再传
           contNo: this.postData.contType === 'DistriDeal' ? this.postData.contNo : null, // 分销成交再传
-          noticeIds: [] // 优惠告知书Id
+          noticeIds: [], // 优惠告知书Ids
+          notices: [] // 优惠告知书
         }, // 成交基础信息
         documentVO: this.postData.uploadDocumentList && this.postData.uploadDocumentList.length ? this.getDocumentList(this.postData.uploadDocumentList) : null, // 成交附件信息
         houseVO: {
@@ -4182,9 +4196,23 @@
       if (this.postData.offerNoticeVO && this.postData.offerNoticeVO.length) {
         this.postData.offerNoticeVO.forEach((item: any) => {
           dataObj.dealVO.noticeIds.push(item.noticeId);
+          dataObj.dealVO.notices.push(
+            {
+              customerInformationList: item.customerInformationList,
+              dealId: item.dealId,
+              noticeId: item.noticeId,
+              noticeNo: item.noticeNo,
+              notificationStatus: item.notificationStatus,
+              notificationType: item.notificationType,
+              paymentAmount: item.paymentAmount,
+              templateId: item.templateId,
+              templateType: item.templateType
+            }
+          );
         });
       } else {
         dataObj.dealVO.noticeIds = null;
+        dataObj.dealVO.notices = null;
       }
       if (this.receiveAchieveVO && this.receiveAchieveVO.length && this.postData.receiveAchieveList && this.postData.receiveAchieveList.length) {
         if (this.btnType === "edit") {

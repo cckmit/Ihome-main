@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-24 17:39:27
+ * @LastEditTime: 2021-04-29 09:19:46
 -->
 <template>
   <IhPage label-width="110px">
@@ -287,7 +287,6 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_project_getList,
   post_project_del__proId,
-  post_project_cancel__proId,
 } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 @Component({
@@ -468,18 +467,12 @@ export default class ProjectList extends Vue {
   }
 
   async recall(row: any) {
-    try {
-      await post_project_cancel__proId({
-        proId: row.proId,
-      });
-      this.$message({
-        type: "success",
-        message: "撤回成功!",
-      });
-      this.getListMixin();
-    } catch (err) {
-      console.log(err);
-    }
+    this.$router.push({
+      path: row.exParent ? `/projects/parentRecall` : `/projects/childRecall`,
+      query: {
+        id: row.proId,
+      },
+    });
   }
 
   created() {

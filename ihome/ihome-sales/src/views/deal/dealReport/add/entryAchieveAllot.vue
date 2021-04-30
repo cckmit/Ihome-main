@@ -2070,6 +2070,7 @@
       }
       // 清空一手代理合同
       this.postData.firstContNo = null;
+      this.firstAgencyIdsList = [];
       this.firstAgencyCompanyContList = [];
       // 获取一手代理合同
       if (value) this.getOneAgentTeamContNo('oneAgent', value, this.postData.cycleId, 'AgencyCompany');
@@ -2411,6 +2412,7 @@
       this.tempSignPrice = null;
       this.contNoList = []; // 分销协议编号
       this.packageIdsList = []; // ids
+      this.firstAgencyIdsList = [];
       this.postData.customerVO = []; // 客户信息
       this.postData.offerNoticeVO = []; // 优惠告知书
       this.baseInfoInDeal.customerAddVOS = [];
@@ -2772,7 +2774,18 @@
       //   this.tempContType = value;
       // }
       // console.log(this.tempContType);
-      console.log(value);
+      // console.log(value);
+      // 清空渠道公司类型、渠道公司、经纪人、分销合同、是否垫佣字段
+      this.postData.companyKind = null;
+      this.postData.agencyId = null;
+      this.postData.agencyName = null;
+      this.agencySearchName = null;
+      this.postData.brokerId = null;
+      this.postData.brokerName = null;
+      this.brokerSearchName = null;
+      this.postData.contNo = null;
+      this.postData.isMat = null;
+      this.packageIdsList = [];
       this.initReceive();
       // 选择房号后构建表格数据
       this.getDocumentList(value);
@@ -3165,11 +3178,22 @@
         this.postData.documentVO.forEach((vo: any) => {
           // 只需要遍历上传附件类型为优惠告知书的类型
           if (vo.code === 'Notice') {
+            // 先删除之前带出来的isAddNoticeAnnex
+            if (vo.defaultFileList && vo.defaultFileList.length) {
+              vo.defaultFileList.filter((list: any) => {
+                return !list.isAddNoticeAnnex;
+              });
+            }
+            // 放入最新的
             addList.forEach((list: any) => {
               if (list.annexList && list.annexList.length) {
                 list.annexList.forEach((L: any) => {
                   L.fileType = 'Notice';
+                  L.fileName = L.attachmentSuffix;
+                  L.fileId = L.fileNo;
                   L.exAuto = true;
+                  L.isAddNoticeAnnex = true; // 用来判断是不是优惠告知书信息带出来的附件 - 后面用于重复删除
+                  L.notSave = true; // 后端不存数据的标识
                   vo.defaultFileList.push(L);
                 });
               }
@@ -3893,6 +3917,7 @@
           firstId = firstNoticeList[0].noticeId;
           obj.basic.dealVO.notices.push(
             {
+              customerInformationList: firstNoticeList[0].customerInformationList,
               dealId: firstNoticeList[0].dealId,
               noticeId: firstNoticeList[0].noticeId,
               noticeNo: firstNoticeList[0].noticeNo,
@@ -3908,6 +3933,7 @@
           if (vo.noticeId !== firstId) {
             obj.basic.dealVO.notices.push(
               {
+                customerInformationList: vo.customerInformationList,
                 dealId: vo.dealId,
                 noticeId: vo.noticeId,
                 noticeNo: vo.noticeNo,
