@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-01 11:34:52
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 14:10:12
+ * @LastEditTime: 2021-04-30 17:01:59
 -->
 <template>
   <el-dialog
@@ -128,7 +128,6 @@ export default class PartyABuding extends Vue {
         if (this.$route.name === "businessManagementEdit") {
           await post_partyAContract_busnissManage_addPartyABuildings(obj);
         } else {
-          debugger;
           await post_partyAContract_addPartyABuildings(obj);
         }
         this.finishLoading = false;
