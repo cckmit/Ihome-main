@@ -14,14 +14,6 @@ Vue.use(VueRouter)
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/Counter',
-    name: 'Counter',
-    component: () => import('../components/Counter.vue'),
-    meta: {
-      title: 'Counter'
-    }
-  },
-  {
     path: '/',
     name: 'Home',
     component: Home,
