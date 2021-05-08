@@ -521,7 +521,7 @@
     <el-row style="padding-left: 20px">
       <el-col>
         <div
-          v-if="!baseInfoInDeal.customerAddVOS.length"
+          v-if="canAddNoticeFlag"
           class="add-all-wrapper">
           <el-button type="success" @click="handleAddCustomer">添加客户</el-button>
         </div>
@@ -544,7 +544,7 @@
           <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
           <el-table-column prop="email" label="邮箱" min-width="120"></el-table-column>
           <el-table-column
-            v-if="!baseInfoInDeal.customerAddVOS.length"
+            v-if="canAddNoticeFlag"
             fixed="right" label="操作" width="100">
             <template slot-scope="scope">
               <el-link
@@ -1106,6 +1106,7 @@
   import EditDealAchieve from "@/views/deal/dealReport/dialog/editDealAchieve.vue";
   import {
     get_deal_get__id, // 编辑功能
+    post_pageData_getMingYuanData, // 编辑功能 - 根据项目周期及房号，查询明源数据
     post_pageData_initBasic, // 选择周期、房号后初始化页面
     post_pageData_initChannelComm, // 初始化对外拆佣表格数据
     post_pageData_initAchieve, // 初始化平台费用表格数据
@@ -1114,6 +1115,7 @@
     post_pageData_recalculateAchieve, // 重新计算平台费用部分
     post_pageData_recalculateAchieveComm, // 总包分销一致时，重新计算平台费用的拆佣金额及拆用比例
     post_pageData_calculateReceiveAmount, // 重算收派金额
+    post_pageData_calculateReceiveAmounts, // 编辑 - 重算收派金额
   } from "@/api/deal";
   import {
     get_org_get__id, // 通过组织id获取组织name
@@ -1523,7 +1525,7 @@
       this.editBaseInfo = res;
       console.log(res);
       await this.editBaseDealInfo(res.cycleId);
-      await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
+      // await this.editInitPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       await this.getInformation(id, res?.cycleId); // 优惠告知书
       // 获取一手代理合同的值
       if (res.oneAgentTeamId) {
@@ -1594,26 +1596,28 @@
         this.postData.contNo = res.contNo;
         this.postData.isMat = res.isMat;
         this.postData.recordStr = res.recordStr;
-        this.postData.recordState = res.recordState;
-        this.postData.area = res?.house?.area;
-        this.postData.room = res?.house?.room;
-        this.postData.hall = res?.house?.hall;
-        this.postData.toilet = res?.house?.toilet;
-        this.postData.propertyNo = res?.house?.propertyNo;
-        this.postData.sceneSales = res?.sceneSales;
-        this.postData.signType = res.signType;
-        this.postData.stage = res.stage;
-        this.postData.returnRatio = res.returnRatio;
-        this.postData.subscribePrice = res.subscribePrice;
-        this.postData.subscribeDate = res.subscribeDate;
-        this.postData.signPrice = res.signPrice;
-        this.postData.signDate = res.signDate;
+        this.postData.reportId = res.reportId;
+        // this.postData.recordState = res.recordState;
+        // this.postData.area = res?.house?.area;
+        // this.postData.room = res?.house?.room;
+        // this.postData.hall = res?.house?.hall;
+        // this.postData.toilet = res?.house?.toilet;
+        // this.postData.propertyNo = res?.house?.propertyNo;
+        // this.postData.sceneSales = res?.sceneSales;
+        // this.postData.signType = res.signType;
+        // this.postData.stage = res.stage;
+        // this.postData.returnRatio = res.returnRatio;
+        // this.postData.subscribePrice = res.subscribePrice;
+        // this.postData.subscribeDate = res.subscribeDate;
+        // this.postData.signPrice = res.signPrice;
+        // this.postData.signDate = res.signDate;
         this.postData.entryPerson = res.entryPerson;
         this.postData.entryDate = res.entryDate;
-        this.postData.dataSign = res.dataSign;
+        // this.postData.dataSign = res.dataSign;
         this.postData.status = res.status;
-        this.postData.customerVO = res.customerList;
-        this.postData.receiveVO = await this.initReceiveVO(res.receiveList);
+        // this.postData.customerVO = res.customerList;
+        // this.postData.receiveVO = await this.initReceiveVO(res.receiveList);
+        await this.editInitPageById(res);
         // 收派金额中的甲方
         this.commissionCustomerList = [];
         this.commissionCustomerList = await this.initCommissionCustomer(res.receiveList);
@@ -1714,18 +1718,19 @@
     }
 
     // 编辑 --- 通过房号、物业类型、周期获取分销协议编号
-    async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
-      if (!cycleId || !roomId || !propertyType || !refineModel) return;
+    // async editInitPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
+    async editInitPageById(res: any = {}) {
+      // if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
-        parentId: parentId, // 编辑要传主成交id
-        cycleId: cycleId,
-        roomId: roomId,
-        isMainDeal: true, // 是否主成交
-        property: propertyType, // 物业类型
-        refineModel: refineModel, // 细分业务模式
+        parentId: res?.parentId, // 编辑要传主成交id
+        cycleId: res?.cycleId,
+        roomId: res?.house?.roomId,
+        property: res?.house?.propertyType, // 物业类型
+        refineModel: res?.refineModel, // 细分业务模式
       };
-      let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
+      let baseInfo: any = await post_pageData_getMingYuanData(params);
+      // this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || {}));
+      this.baseInfoInDeal.myReturnVO  = baseInfo;
       // 判断是否可以添加优惠告知书逻辑
       switch (baseInfo.dealNoticeStatus) {
         case "NoneNotice":
@@ -1749,6 +1754,178 @@
       // } else {
       //   this.contNoList = [];
       // }
+      (this as any).$nextTick(() => {
+        // 编辑页面：自动更新明源数据
+        // 备案情况
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.recordState) {
+          this.postData.recordState = baseInfo?.myReturnVO?.dealVO?.recordState;
+        } else {
+          this.postData.recordState = res.recordState;
+        }
+        // 建筑面积
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.area) {
+          this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
+        } else {
+          this.postData.area = res?.house?.area;
+        }
+        // 户型
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.room) {
+          this.postData.room = baseInfo?.myReturnVO?.houseVO?.room;
+        } else {
+          this.postData.room = res?.house?.room;
+        }
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.hall) {
+          this.postData.hall = baseInfo?.myReturnVO?.houseVO?.hall;
+        } else {
+          this.postData.hall = res?.house?.hall;
+        }
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.toilet) {
+          this.postData.toilet = baseInfo?.myReturnVO?.houseVO?.toilet;
+        } else {
+          this.postData.toilet = res?.house?.toilet;
+        }
+        // 预售合同编号
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.houseVO && baseInfo.myReturnVO.houseVO.propertyNo) {
+          this.postData.propertyNo = baseInfo.myReturnVO.houseVO?.propertyNo;
+        } else {
+          this.postData.propertyNo = res?.house?.propertyNo;
+        }
+        // 签约类型
+        if (baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signType) {
+          this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
+        } else {
+          this.postData.signType = res.signType;
+        }
+        // 成交阶段
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.dealStage) {
+          this.postData.stage = baseInfo.myReturnVO.dealVO.dealStage;
+        } else {
+          this.postData.stage = res.stage;
+        }
+        // 现场销售
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.sceneSales) {
+          this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
+        } else {
+          this.postData.sceneSales = res?.sceneSales;
+        }
+        // 房款回笼比例(%)
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.returnRatio) {
+          this.postData.returnRatio = baseInfo.myReturnVO.dealVO?.returnRatio;
+        } else {
+          this.postData.returnRatio = res.returnRatio;
+        }
+        // 认购价格
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribePrice) {
+          this.postData.subscribePrice = baseInfo?.myReturnVO?.dealVO?.subscribePrice;
+        } else {
+          this.postData.subscribePrice = res.subscribePrice;
+        }
+        // 认购日期
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.subscribeDate) {
+          this.postData.subscribeDate = baseInfo?.myReturnVO?.dealVO?.subscribeDate;
+        } else {
+          this.postData.subscribeDate = res.subscribeDate;
+        }
+        // 签约价格
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signPrice) {
+          this.postData.signPrice = baseInfo?.myReturnVO?.dealVO?.signPrice;
+        } else {
+          this.postData.signPrice = res.signPrice;
+        }
+        // 签约日期
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dealVO && baseInfo.myReturnVO.dealVO.signDate) {
+          this.postData.signDate = baseInfo?.myReturnVO?.dealVO?.signDate;
+        } else {
+          this.postData.signDate = res.signDate;
+        }
+        // 数据标志
+        if (baseInfo && baseInfo.myReturnVO && baseInfo.myReturnVO.dataSign) {
+          this.postData.dataSign = baseInfo?.myReturnVO?.dataSign;
+        } else {
+          this.postData.dataSign = res.dataSign;
+        }
+        // 客户信息
+        if (baseInfo && baseInfo.customerAddVOS && baseInfo.customerAddVOS.length) {
+          this.postData.customerVO = baseInfo.customerAddVOS;
+        } else {
+          this.postData.customerVO = res.customerList;
+        }
+        // this.postData.recordState = res.recordState;
+        // this.postData.area = res?.house?.area;
+        // this.postData.room = res?.house?.room;
+        // this.postData.hall = res?.house?.hall;
+        // this.postData.toilet = res?.house?.toilet;
+        // this.postData.propertyNo = res?.house?.propertyNo;
+        // this.postData.sceneSales = res?.sceneSales;
+        // this.postData.signType = res.signType;
+        // this.postData.stage = res.stage;
+        // this.postData.returnRatio = res.returnRatio;
+        // this.postData.subscribePrice = res.subscribePrice;
+        // this.postData.subscribeDate = res.subscribeDate;
+        // this.postData.signPrice = res.signPrice;
+        // this.postData.signDate = res.signDate;
+        // this.postData.dataSign = res.dataSign;
+        // this.postData.customerVO = res.customerList;
+        // 收派信息
+        if (this.postData.subscribePrice === res.subscribePrice && this.postData.signPrice === res.signPrice) {
+          // 两个价格是否和之前的一样，一样直接回显收派信息
+          this.postData.receiveVO = this.initReceiveVO(res.receiveList);
+        } else {
+          // 不一样，重新计算
+          this.calculateReceiveAmounts(res.receiveList, this.postData.subscribePrice, this.postData.signPrice);
+        }
+      });
+    }
+
+    /*
+    * 编辑 --- 根据收派套餐，计算收派金额
+    * list：收派信息数组
+    * subscribePrice：认购价
+    * signPrice：签约价
+    * */
+    async calculateReceiveAmounts(list: any = [], subscribePrice: any = '', signPrice: any = '') {
+      if (list && list.length) {
+        let postData: any = {
+          vos: []
+        }
+        list.forEach((item: any) => {
+          postData.vos.push(
+            {
+              detail: item,
+              signPrice: signPrice,
+              subscribePrice: subscribePrice
+            }
+          )
+        });
+        let calculateList: any = await post_pageData_calculateReceiveAmounts(postData);
+        console.log('calculateReceiveAmounts:', calculateList);
+        this.postData.receiveVO = [];
+        if (calculateList && calculateList.length) {
+          calculateList.forEach((caList: any, caIndex: any) => {
+            list.forEach((listItem: any, listIndex: any) => {
+              if (caIndex === listIndex) {
+                this.postData.receiveVO.push(
+                  {
+                    ...listItem,
+                    showData: [
+                      {
+                        ...listItem.collectandsendDetailDealVO,
+                        typeName: (this as any).$root.dictAllName(listItem.type, 'FeeType')
+                      }
+                    ],
+                    receiveAmount: caList.receiveAmount,
+                    commAmount: caList.comm,
+                    rewardAmount: caList.reward,
+                    totalPackageAmount: caList.totalBag,
+                    distributionAmount: caList.distri,
+                    otherChannelFees: caList.other,
+                  }
+                )
+              }
+            });
+          });
+        }
+      }
     }
 
     // 编辑 --- 构建收派金额数据
@@ -2557,6 +2734,8 @@
       if (baseInfo.recordStr) {
         this.postData.recordStr = baseInfo.recordStr;
       }
+      // 报备信息id
+      this.postData.reportId = baseInfo.recordId;
       // 建筑面积
       this.postData.area = baseInfo?.myReturnVO?.houseVO?.area;
       // 户型
@@ -3950,7 +4129,8 @@
       obj.basic.dealVO.oneAgentTeamId = this.postData.oneAgentTeamId;
       obj.basic.dealVO.recordState = this.postData.recordState;
       obj.basic.dealVO.refineModel = this.postData.refineModel;
-      obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId;
+      // obj.basic.dealVO.reportId = this.baseInfoInDeal.recordId; // 2021-05-08
+      obj.basic.dealVO.reportId = this.postData.roomId ? this.postData.reportId : null;
       obj.basic.dealVO.returnRatio = this.postData.returnRatio;
       obj.basic.dealVO.sceneSales = this.postData.sceneSales;
       obj.basic.dealVO.signDate = this.postData.signDate;
