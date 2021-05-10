@@ -125,3 +125,32 @@
     opacity: 0.5;
     display: none;
   }
+
+  // 数据状态颜色
+.ih-status-dot {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  .dot {
+    display:block;
+    border-radius:50%;
+    width:8px;
+    height:8px;
+    box-sizing: border-box;
+    margin-right: 5px;
+  }
+
+  .warning {
+    background: #FF9900;
+  }
+
+  .primary {
+    background: #409EFF;
+  }
+
+  .success {
+    background: #19BE6B;
+  }
+}
