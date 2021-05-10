@@ -266,7 +266,7 @@
         ></el-table-column>
         <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">
-            <div class="deal-status-dot">
+            <div class="ih-status-dot">
               <span class="dot" :class="getStatusDot(scope.row.status)"></span>
               <span>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</span>
             </div>
@@ -613,34 +613,6 @@ export default class RealDealList extends Vue {
 
   .right {
     flex: 2;
-  }
-}
-
-.deal-status-dot {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-
-  .dot {
-    display:block;
-    border-radius:50%;
-    width:8px;
-    height:8px;
-    box-sizing: border-box;
-    margin-right: 5px;
-  }
-
-  .warning {
-    background: #e6a23c;
-  }
-
-  .primary {
-    background: #409eff;
-  }
-
-  .success {
-    background: #67c23a;
   }
 }
 

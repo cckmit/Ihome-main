@@ -15,55 +15,22 @@
       >
         <el-row>
           <el-col :span="8">
-            <el-form-item label="名称">
+            <el-form-item label="公司名称">
               <el-input
                 v-model="queryPageParameters.name"
-                placeholder="名称"
+                placeholder=""
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="统一社会信用代码"
+              label="信用代码"
               class="formItem"
             >
               <el-input
                 v-model="queryPageParameters.creditCode"
-                placeholder="统一社会信用代码"
+                placeholder=""
               ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="简称">
-              <el-input
-                v-model="queryPageParameters.shortName"
-                placeholder="简称"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader v-model="provinceList"></IhCascader>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道跟进人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.followUserId"
-                clearable
-              >
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span style="
-                      margin-left: 20px;
-                      float: right;
-                      color: #8492a6;
-                      font-size: 13px;
-                    ">{{ data.account }}</span>
-                </template>
-              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -81,6 +48,39 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+<!--          <el-col :span="8">-->
+<!--            <el-form-item label="简称">-->
+<!--              <el-input-->
+<!--                v-model="queryPageParameters.shortName"-->
+<!--                placeholder="简称"-->
+<!--              ></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item label="省市区">
+              <IhCascader v-model="provinceList"></IhCascader>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="跟进人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.followUserId"
+                clearable
+              >
+                <template v-slot="{ data }">
+                  <span style="float: left">{{ data.name }}</span>
+                  <span style="
+                      margin-left: 20px;
+                      float: right;
+                      color: #8492a6;
+                      font-size: 13px;
+                    ">{{ data.account }}</span>
+                </template>
+              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <!-- <el-col :span="8">
@@ -145,16 +145,24 @@
         <el-table-column
           fixed
           prop="name"
-          label="名称"
-          min-width="250"
+          label="公司名称"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           fixed
-          prop="shortName"
-          label="简称"
-          min-width="100"
+          prop="creditCode"
+          label="信用代码"
+          min-width="150"
         ></el-table-column>
         <el-table-column
+          prop="province"
+          label="省市区"
+          width="300">
+          <template v-slot="{ row }">
+            {{ $root.getAreaName(row.province) }}/{{ $root.getAreaName(row.city) }}/{{ $root.getAreaName(row.county) }}
+          </template>
+        </el-table-column>
+<!--        <el-table-column
           prop="province"
           label="省份"
           width="200"
@@ -180,26 +188,29 @@
           <template v-slot="{ row }">
             {{ $root.getAreaName(row.county) }}
           </template>
-        </el-table-column>
+        </el-table-column>-->
         <!-- <el-table-column
           prop="inputUser"
           label="录入人"
           width="150"
         ></el-table-column> -->
         <el-table-column
-          prop="followUserName"
-          label="渠道跟进人"
-          width="150"
-        ></el-table-column>
-        <el-table-column
           prop="status"
           label="状态"
-          width="150"
+          width="160"
         >
           <template v-slot="{ row }">
-            <span>{{ $root.dictAllName(row.status, "ChannelStatus") }}</span>
+            <div class="ih-status-dot">
+              <span class="dot" :class="getStatusDot(row.status)"></span>
+              <span>{{ $root.dictAllName(row.status, 'ChannelStatus') }}</span>
+            </div>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="followUserName"
+          label="跟进人"
+          width="160"
+        ></el-table-column>
         <el-table-column
           label="操作"
           width="120"
@@ -328,6 +339,17 @@ export default class List extends Vue {
   selectionData = [];
   isInput = true;
   private provinceList: any = [];
+
+  // 获取颜色
+  getStatusDot(status: any = '') {
+    if (status === 'DRAFT') {
+      return 'warning';
+    } else if (status === 'PASS') {
+      return 'success';
+    } else {
+      return 'primary';
+    }
+  }
 
   editChange(row: any) {
     const status = row.status === "DRAFT";
@@ -482,9 +504,4 @@ export default class List extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.formItem {
-  /deep/ .el-form-item__label {
-    line-height: 20px;
-  }
-}
 </style>

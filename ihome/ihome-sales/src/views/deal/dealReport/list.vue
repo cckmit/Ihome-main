@@ -273,7 +273,7 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">
-            <div class="deal-status-dot">
+            <div class="ih-status-dot">
               <span class="dot" :class="getStatusDot(scope.row.status)"></span>
               <span>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</span>
             </div>
