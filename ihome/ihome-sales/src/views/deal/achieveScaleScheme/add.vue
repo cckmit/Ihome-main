@@ -324,7 +324,7 @@
         }
         return total;
       }
-      if (!value) {
+      if (['', null, undefined].includes(value)) {
         return callback(new Error('拆分比例必填'));
       } else {
         if (this.tableModel.tableData.length > 0) {
