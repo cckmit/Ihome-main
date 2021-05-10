@@ -1360,8 +1360,8 @@
           this.postData.dataSign = res.dataSign;
         }
         // 客户信息
-        if (baseInfo && baseInfo.customerAddVOS && baseInfo.customerAddVOS.length) {
-          this.postData.customerVO = baseInfo.customerAddVOS;
+        if (baseInfo && baseInfo.customerVOS && baseInfo.customerVOS.length) {
+          this.postData.customerVO = baseInfo.customerVOS;
         } else {
           this.postData.customerVO = res.customerList;
         }
