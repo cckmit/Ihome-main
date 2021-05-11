@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-16 15:19:48
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 17:26:13
+ * @LastEditTime: 2021-05-11 17:17:59
  */
 import { RouteConfig } from 'vue-router'
 
@@ -39,7 +39,7 @@ const contractRoutes: Array<RouteConfig> = [
   },
   {
     path: '/distribution',
-    meta: { title: '渠道分销协议列表', icon: 'form' },
+    meta: { title: '乙方合同列表', icon: 'form' },
     redirect: '/distribution/list',
     component: Layout,
     children: [
@@ -47,37 +47,37 @@ const contractRoutes: Array<RouteConfig> = [
         path: 'list',
         name: 'DistributionList',
         component: () => import('@/views/contract/distribution/list.vue'),
-        meta: { title: '渠道分销协议列表(管理线)', icon: 'form', keepAlive: true }
+        meta: { title: '乙方合同列表(管理线)', icon: 'form', keepAlive: true }
       },
       {
         path: 'listByBusiness',
         name: 'DistributionListByBusiness',
         component: () => import('@/views/contract/distribution/list.vue'),
-        meta: { title: '渠道分销协议列表(业务线)', icon: 'form', keepAlive: true }
+        meta: { title: '乙方合同列表(业务线)', icon: 'form', keepAlive: true }
       },
       {
         path: 'listByBack',
         name: 'DistributionListByBack',
         component: () => import('@/views/contract/distribution/list.vue'),
-        meta: { title: '渠道分销协议列表(中后台)', icon: 'form', keepAlive: true }
+        meta: { title: '乙方合同列表(中后台)', icon: 'form', keepAlive: true }
       },
       {
         path: 'info',
         name: 'DistributionDetail',
         component: () => import( /* webpackChunkName: "DistributionDetail" */ '@/views/contract/distribution/info.vue'),
-        meta: { title: '渠道分销协议详情', icon: 'form' }
+        meta: { title: '乙方合同详情', icon: 'form' }
       },
       {
         path: 'duplicate',
         name: 'DistributionDuplicate',
         component: () => import( /* webpackChunkName: "DistributionDuplicate" */ '@/views/contract/distribution/info.vue'),
-        meta: { title: '渠道分销协议盖章版归档', icon: 'form' }
+        meta: { title: '乙方合同盖章版归档', icon: 'form' }
       },
       {
         path: 'original',
         name: 'DistributionOriginal',
         component: () => import(/* webpackChunkName: "DistributionOriginal" */ '@/views/contract/distribution/info.vue'),
-        meta: { title: '渠道分销协议原件归档', icon: 'form' }
+        meta: { title: '乙方合同原件归档', icon: 'form' }
       },
       {
         path: 'normalDistributionApply',
