@@ -272,7 +272,8 @@
                 this.dealRoleList.push(
                   {
                     ...L,
-                    roleAchieveCap: item.roleAchieveCap
+                    roleAchieveCap: item.roleAchieveCap,
+                    isZero: item.isZero,
                   }
                 );
               }
@@ -288,7 +289,8 @@
                 this.dealRoleList.push(
                   {
                     ...L,
-                    roleAchieveCap: item.roleAchieveCap
+                    roleAchieveCap: item.roleAchieveCap,
+                    isZero: item.isZero,
                   }
                 );
               }
