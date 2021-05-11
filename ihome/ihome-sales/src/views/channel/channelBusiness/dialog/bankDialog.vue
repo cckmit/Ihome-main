@@ -149,7 +149,7 @@ export default class BankDialog extends Vue {
     accountType: null,
     branchName: null,
     branchNo: null,
-    defaultAccount: false, // 是否默认账号
+    defaultFlag: 0, // 是否默认账号
   };
   private dialogFormVisible = false;
 
@@ -166,6 +166,7 @@ export default class BankDialog extends Vue {
   }
   @NoRepeatHttp()
   async submit(valid: any) {
+    console.log('this.Bankrule', this.Bankrule);
     if (valid) {
       switch (this.bankType) {
         case "new-add":

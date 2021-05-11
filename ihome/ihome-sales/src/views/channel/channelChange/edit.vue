@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-04-15 09:44:57
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-11 16:38:23
 -->
 <template>
   <IhPage>
@@ -20,13 +20,25 @@
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="名称"
+              label="公司名称"
               prop="name"
             >
               <el-input
                 v-model="info.name"
                 clearable
                 maxlength="64"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="公司简称"
+              prop="shortName"
+            >
+              <el-input
+                v-model="info.shortName"
+                clearable
+                maxlength="16"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -41,23 +53,11 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="简称"
-              prop="shortName"
-            >
-              <el-input
-                v-model="info.shortName"
-                clearable
-                maxlength="16"
-              ></el-input>
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="类型"
+              label="公司类型"
               prop="type"
             >
               <el-select
@@ -121,6 +121,7 @@
             >
               <el-input
                 v-model="info.capital"
+                placeholder="输入时请附上（单位）如：xx万元人民币"
                 clearable
               ></el-input>
             </el-form-item>
@@ -169,73 +170,21 @@
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="24">
+            <el-form-item label="企业概况">
+              <el-input
+                type="textarea"
+                style="box-sizing: border-box"
+                :autosize="{ minRows: 5, maxRows: 8 }"
+                maxlength="256"
+                placeholder="请输入企业概况"
+                v-model="info.remark">
+              </el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
       </el-form>
     </template>
-    <!-- 银行账号信息 -->
-    <p class="ih-info-title">
-      <span>银行账号信息</span>
-      <el-button
-        type="primary"
-        size="small"
-        class="add-account"
-        @click.native="addAccount()"
-      >添加</el-button>
-    </p>
-    <div class="padding-left-20">
-      <el-table
-        :data="info.channelBankChanges"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="accountName"
-          label="账户名称"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="accountNo"
-          label="账号"
-          width="200"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="branchName"
-          label="开户银行"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="branchNo"
-          label="联行号"
-          width="150"
-        ></el-table-column>
-        <el-table-column
-          prop="accountType"
-          label="账号类型"
-          width="150"
-        >
-          <template v-slot="{ row }">
-            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="120"
-        >
-          <template v-slot="{ row, $index }">
-            <el-link
-              type="primary"
-              class="margin-right-15"
-              @click="editBank(row, $index)"
-            >修改</el-link>
-            <el-link
-              type="danger"
-              @click="deleteBank(row, $index)"
-            >删除</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
     <p class="ih-info-title">负责人信息</p>
     <el-form
       :model="channelPersonsData"
@@ -284,7 +233,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            label="邮箱"
+            label="电子邮箱"
             prop="email"
           >
             <el-input
@@ -295,6 +244,90 @@
         </el-col>
       </el-row>
     </el-form>
+
+    <!-- 银行账号信息 -->
+    <p class="ih-info-title">
+      <span>银行账号信息</span>
+      <el-button
+        type="primary"
+        size="small"
+        class="add-account"
+        @click.native="addAccount()"
+      >添加银行账户</el-button>
+    </p>
+    <div class="padding-left-20">
+      <el-table
+        :data="info.channelBankChanges"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="accountName"
+          label="账户名称"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="accountNo"
+          label="银行账号"
+          width="200"
+        >
+        </el-table-column>
+        <el-table-column
+          prop="branchName"
+          label="开户银行"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="branchNo"
+          label="联行号"
+          width="150"
+        ></el-table-column>
+        <el-table-column
+          prop="accountType"
+          label="账号类型"
+          width="150"
+        >
+          <template v-slot="{ row }">
+            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="defaultFlag"
+          label="默认账号"
+          width="150">
+          <template slot="header">
+            <span>默认账号</span>
+            <el-tooltip class="item" effect="dark" placement="top-end">
+              <div slot="content">提示<br/>发起结佣时系统会优先选择默认账号。</div>
+              <i class="el-icon-question icon-color-tip"></i>
+            </el-tooltip>
+          </template>
+          <template v-slot="{ row, $index }">
+            <el-switch
+              active-value="1"
+              inactive-value="0"
+              v-model="row.defaultFlag"
+              @change="changeAccountDefaultAccount($event, $index)"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="120"
+        >
+          <template v-slot="{ row, $index }">
+            <el-link
+              type="primary"
+              class="margin-right-15"
+              @click="editBank(row, $index)"
+            >修改</el-link>
+            <el-link
+              type="danger"
+              @click="deleteBank(row, $index)"
+            >删除</el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <p class="ih-info-title">
       <span>附件信息</span>
@@ -342,18 +375,6 @@
         </el-table-column>
       </el-table>
     </div>
-
-    <p class="ih-info-title">企业概况</p>
-    <el-input
-      type="textarea"
-      style="box-sizing: border-box"
-      class="padding-left-20"
-      :autosize="{ minRows: 5, maxRows: 8 }"
-      maxlength="256"
-      placeholder="请输入企业概况"
-      v-model="info.remark"
-    >
-    </el-input>
 
     <p class="ih-info-title">变更原因</p>
     <el-input
@@ -524,6 +545,7 @@ export default class ModifyThe extends Vue {
       accountType: null,
       branchName: null,
       branchNo: null,
+      defaultFlag: 0, // 是否默认账号
     };
     this.bankType = "new-add";
     this.dialogFormVisible = true;
@@ -614,6 +636,10 @@ export default class ModifyThe extends Vue {
   private handlePushBank(value: any, type: string): void {
     switch (type) {
       case "new-add":
+        // this.info.channelBankChanges.push(value);
+        if (!this.info.channelBankChanges.length) {
+          value.defaultFlag = 1;
+        }
         this.info.channelBankChanges.push(value);
         break;
       case "new-edit":
@@ -622,6 +648,23 @@ export default class ModifyThe extends Vue {
         break;
     }
     this.dialogFormVisible = false;
+  }
+  /**
+   * @description: 银行账号信息改变默认账号
+   * @param {object} value
+   */
+  private changeAccountDefaultAccount(value: any, rowIndex: any) {
+    console.log(value);
+    console.log(rowIndex);
+    if (this.info && this.info.channelBankChanges && this.info.channelBankChanges.length) {
+      this.info.channelBankChanges.forEach((list: any, index: any) => {
+        if (rowIndex === index) {
+          list.defaultFlag = value;
+        } else {
+          list.defaultFlag = 0;
+        }
+      });
+    }
   }
   async getInfo() {
     let id = this.$route.query.id;
@@ -706,5 +749,10 @@ export default class ModifyThe extends Vue {
     left: 120px;
     transform: translate(0, -30%);
   }
+}
+.icon-color-tip {
+  color: #FF9900;
+  margin-left: 5px;
+  cursor: pointer;
 }
 </style>

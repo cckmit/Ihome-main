@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 14:34:52
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-11 16:10:33
 -->
 <template>
   <div class="text-left">
@@ -12,12 +12,15 @@
     <el-form label-width="120px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="名称">
+          <el-form-item label="公司名称">
             <span
               class="text-ellipsis"
               :title="info.name"
             >{{ info.name }}</span>
           </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="公司简称">{{ info.shortName }}</el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item label="信用代码">
@@ -27,14 +30,11 @@
             >{{ info.creditCode }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="简称">{{ info.shortName }}</el-form-item>
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item
-            label="类型"
+            label="公司类型"
             v-if="info.type"
           >
             <span
@@ -63,25 +63,21 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="省份">{{ $root.getAreaName(info.province) }}</el-form-item>
+          <el-form-item label="省市区">{{ $root.getAreaName(info.province) }}/{{ $root.getAreaName(info.city) }}/{{ $root.getAreaName(info.county) }}</el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="城市">{{ $root.getAreaName(info.city) }}</el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="行政区">{{ $root.getAreaName(info.county) }}</el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="16">
           <el-form-item label="住所">{{ info.address }}</el-form-item>
         </el-col>
-
-        <el-col :span="8">
-          <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
+      </el-row>
+      <el-row>
+        <el-col>
+          <el-form-item label="企业概况">{{info.remark}}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
+        <el-col :span="8">
+          <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
+        </el-col>
         <el-col :span="8">
           <el-form-item
             label="状态"
@@ -90,46 +86,6 @@
         </el-col>
       </el-row>
     </el-form>
-
-    <p class="ih-info-title">
-      <span>银行账号信息</span>
-    </p>
-    <div class="padding-left-20">
-      <el-table
-        :data="info.channelBankChanges"
-        style="100%"
-      >
-        <el-table-column
-          prop="accountName"
-          label="账户名称"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="accountNo"
-          label="账号"
-          min-width="200"
-        > </el-table-column>
-        <el-table-column
-          prop="branchName"
-          label="开户银行"
-          width="300"
-        ></el-table-column>
-        <el-table-column
-          prop="branchNo"
-          label="联行号"
-          width="150"
-        ></el-table-column>
-        <el-table-column
-          prop="accountType"
-          label="账号类型"
-          width="200"
-        >
-          <template v-slot="{row}">
-            {{$root.dictAllName(row.accountType, "Account")}}
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
 
     <p class="ih-info-title">负责人信息</p>
     <el-form label-width="120px">
@@ -150,6 +106,47 @@
         </el-col>
       </el-row>
     </el-form>
+
+    <p class="ih-info-title">
+      <span>银行账号信息</span>
+    </p>
+    <div class="padding-left-20">
+      <el-table
+        :data="info.channelBankChanges"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="accountName"
+          label="账户名称"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="accountNo"
+          label="银行账号"
+          min-width="180"
+        > </el-table-column>
+        <el-table-column
+          prop="branchName"
+          label="开户银行"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          prop="branchNo"
+          label="联行号"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="accountType"
+          label="账号类型"
+          width="200"
+        >
+          <template v-slot="{row}">
+            {{$root.dictAllName(row.accountType, "Account")}}
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
     <p class="ih-info-title">
       <span>附件信息</span>
       <el-link
@@ -195,10 +192,6 @@
       </el-table>
       <br />
     </div>
-
-    <p class="ih-info-title">企业概况</p>
-    <div class="padding-left-20">{{info.remark}}</div>
-    <br />
 
     <p class="ih-info-title">变更原因</p>
     <div class="padding-left-20">{{info.changeReason}}</div>

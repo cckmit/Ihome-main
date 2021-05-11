@@ -8,7 +8,7 @@
 -->
 <template>
   <div>
-    <p class="ih-info-title">渠道合同模板</p>
+    <p class="ih-info-title">乙方合同模板</p>
     <div class="padding-left-20">
       <el-table
         class="ih-table"

@@ -3505,7 +3505,8 @@
               tempArr.push(
                 {
                   code: roleItem,
-                  roleAchieveCap: totalItem.roleAchieveCap
+                  roleAchieveCap: totalItem.roleAchieveCap,
+                  isZero: totalItem.isZero, // 角色业绩比例是否为0：true--- 0
                 }
               )
             }

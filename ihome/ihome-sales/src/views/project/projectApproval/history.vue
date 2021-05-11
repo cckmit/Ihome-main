@@ -54,7 +54,7 @@
             />
           </el-tab-pane>
           <el-tab-pane
-            label="渠道合同/优惠告知书"
+            label="乙方合同/优惠告知书"
             name="Notification"
           >
             <Notification

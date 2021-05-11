@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-11 11:27:30
+ * @LastEditTime: 2021-05-11 15:40:22
 -->
 <template>
   <IhPage>
@@ -300,11 +300,22 @@
           </template>
         </el-table-column>
         <el-table-column
-          prop="defaultAccount"
+          prop="defaultFlag"
           label="默认账号"
           width="150">
+          <template slot="header">
+            <span>默认账号</span>
+            <el-tooltip class="item" effect="dark" placement="top-end">
+              <div slot="content">提示<br/>发起结佣时系统会优先选择默认账号。</div>
+              <i class="el-icon-question icon-color-tip"></i>
+            </el-tooltip>
+          </template>
           <template v-slot="{ row, $index }">
-            <el-switch v-model="row.defaultAccount" @change="changeAccountDefaultAccount($event, $index)"></el-switch>
+            <el-switch
+              active-value="1"
+              inactive-value="0"
+              v-model="row.defaultFlag"
+              @change="changeAccountDefaultAccount($event, $index)"></el-switch>
           </template>
         </el-table-column>
         <el-table-column
@@ -562,7 +573,7 @@ export default class ModifyThe extends Vue {
       accountType: null,
       branchName: null,
       branchNo: null,
-      defaultAccount: false, // 是否默认账号
+      defaultFlag: 0, // 是否默认账号
     };
     this.bankType = "new-add";
     this.dialogFormVisible = true;
@@ -702,7 +713,7 @@ export default class ModifyThe extends Vue {
       case "new-add":
         // this.info.channelBanks.push(value);
         if (!this.info.channelBanks.length) {
-          value.defaultAccount = true;
+          value.defaultFlag = 1;
         }
         this.info.channelBanks.push(value);
         break;
@@ -723,9 +734,9 @@ export default class ModifyThe extends Vue {
     if (this.info && this.info.channelBanks && this.info.channelBanks.length) {
       this.info.channelBanks.forEach((list: any, index: any) => {
         if (rowIndex === index) {
-          list.defaultAccount = value;
+          list.defaultFlag = value;
         } else {
-          list.defaultAccount = false;
+          list.defaultFlag = 0;
         }
       });
     }
@@ -807,5 +818,11 @@ export default class ModifyThe extends Vue {
   /deep/ .el-form-item__label {
     line-height: 20px;
   }
+}
+
+.icon-color-tip {
+  color: #FF9900;
+  margin-left: 5px;
+  cursor: pointer;
 }
 </style>

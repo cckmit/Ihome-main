@@ -4,12 +4,12 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:01:45
+ * @LastEditTime: 2021-05-11 17:17:11
 -->
 <template>
   <div>
     <div class="notification">
-      <p class="ih-info-title">渠道合同模板</p>
+      <p class="ih-info-title">乙方合同模板</p>
       <div class="notificationButton">
         <el-button
           size="small"

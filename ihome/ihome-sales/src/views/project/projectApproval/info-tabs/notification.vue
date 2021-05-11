@@ -9,7 +9,7 @@
 <template>
   <div>
     <div class="notification">
-      <p class="ih-info-title">渠道合同模板</p>
+      <p class="ih-info-title">乙方合同模板</p>
       <div
         class="notificationButton"
         v-if="contractApprovalChange"

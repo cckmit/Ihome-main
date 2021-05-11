@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 09:07:11
+ * @LastEditTime: 2021-05-11 16:28:49
 -->
 <template>
   <IhPage label-width="100px">
@@ -289,6 +289,10 @@
                   v-has="'B.SALES.PROJECT.TERMLIST.SZFQDHSLZT'"
                 >设置非启动函申领状态</el-dropdown-item>
                 <el-dropdown-item
+                  @click.native.prevent="copyTerm(row)"
+                  v-has="'B.SALES.PROJECT.TERMLIST.ADD'"
+                >复制周期</el-dropdown-item>
+                <el-dropdown-item
                   @click.native.prevent="remove(row)"
                   :class="{'ih-data-disabled': !delChange(row)}"
                   v-has="'B.SALES.PROJECT.TERMLIST.DELETE'"
@@ -334,6 +338,7 @@ import {
   get_term_applyTerm__termId,
   post_term_start__termId,
   post_term_stop__termId,
+  get_term_copyTerm__termId,
 } from "@/api/project/index";
 import PaginationMixin from "@/mixins/pagination";
 import Add from "./dialog/list-dialog/add.vue";
@@ -384,8 +389,18 @@ export default class ProjectApproval extends Vue {
 
   // 业管修改权限控制
   businessManagementChange(row: any) {
+    const TermAdopt = row.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractConduct = row.auditEnum === "ConstractConduct"; // 合同审核中
     const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
-    return ConstractAdopt;
+    const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
+    return (
+      TermAdopt ||
+      ConstractConduct ||
+      ConstractAdopt ||
+      ConstractReject ||
+      ConstractWait
+    );
   }
 
   // 启动周期权限控制
@@ -512,6 +527,24 @@ export default class ProjectApproval extends Vue {
         id: row.termId,
       },
     });
+  }
+
+  async copyTerm(row: any) {
+    const copyId = await get_term_copyTerm__termId({
+      termId: row.termId,
+    });
+    if (copyId) {
+      this.$message({
+        type: "success",
+        message: "周期复制成功!",
+      });
+      this.$router.push({
+        path: `/projectApproval/edit`,
+        query: {
+          id: copyId.toString(),
+        },
+      });
+    }
   }
 
   async remove(row: any) {
