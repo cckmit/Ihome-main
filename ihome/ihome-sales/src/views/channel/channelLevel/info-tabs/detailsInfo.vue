@@ -19,13 +19,11 @@
             label="渠道商"
             align="left"
           >
-            <span class="text-ellipsis">{{ resPageInfo.channelName
-              }}<el-link
-                style="margin-left: 5px"
-                :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
-                type="primary"
-                target="_blank"
-              >详情</el-link></span>
+            <el-link
+              style="margin-left: 5px"
+              :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
+              type="primary"
+              target="_blank">{{ resPageInfo.channelName }}</el-link>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -52,18 +50,10 @@
       <el-row>
         <el-col :span="8">
           <el-form-item
-            label="业务开展省份"
+            label="开展业务省市"
             align="left"
           >
-            <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="业务开展城市"
-            align="left"
-          >
-            <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
+            <span>{{ $root.getAreaName(resPageInfo.province) }}/{{ $root.getAreaName(resPageInfo.city) }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -94,7 +84,7 @@
             <span>{{ resPageInfo.storageNum }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+<!--        <el-col :span="8">
           <el-form-item
             label="状态"
             align="left"
@@ -103,7 +93,7 @@
               $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
             }}</span>
           </el-form-item>
-        </el-col>
+        </el-col>-->
       </el-row>
     </el-form>
 
@@ -266,31 +256,33 @@ import {
 })
 export default class Home extends Vue {
   @Prop() typeStr!: string;
+  @Prop() resPageInfo!: any; // 基础数据
 
   private get Id() {
     return this.$route.query.id;
   }
   private fileList = [];
-  private info = [];
   private remark = "";
 
-  resPageInfo: any = {
-    channelId: null,
-    channelGrade: null,
-    channelType: null,
-    province: null,
-    city: null,
-    cityGrade: null,
-    special: null,
-    storageNum: null,
-    status: null,
-    channelGradeItems: [],
-    channelGradeAttachments: [],
-  };
+  // resPageInfo: any = {
+  //   channelId: null,
+  //   channelGrade: null,
+  //   channelType: null,
+  //   province: null,
+  //   city: null,
+  //   cityGrade: null,
+  //   special: null,
+  //   storageNum: null,
+  //   status: null,
+  //   channelGradeItems: [],
+  //   channelGradeAttachments: [],
+  // };
   fileListType: any = [];
 
   async created() {
-    this.getInfo();
+    // this.getInfo();
+    // this.resPageInfo = this.$tool.deepClone(this.pageData);
+    await this.getFileListType(this.resPageInfo.channelGradeAttachments);
   }
   addDictList: any = [];
 
