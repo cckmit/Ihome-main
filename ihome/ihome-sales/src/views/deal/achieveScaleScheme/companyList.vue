@@ -11,13 +11,15 @@
     <template v-slot:form>
       <el-form ref="form" label-width="100px"  @submit.native.prevent>
         <el-row>
-          <el-col class="text-left">
+          <el-col :span="20" class="text-left">
             <el-input
               v-model="queryPageParameters.name"
               clearable
               class="input-wrapper"
               placeholder="请输入分公司名称"
             ></el-input>
+          </el-col>
+          <el-col :span="4" class="text-right">
             <el-button type="primary" class="margin-left-20" @click.native.prevent="getListMixin()">查询</el-button>
           </el-col>
         </el-row>
@@ -111,6 +113,6 @@
 </script>
 <style lang="scss" scoped>
   .input-wrapper {
-    width: 40%;
+    width: 230px;
   }
 </style>
