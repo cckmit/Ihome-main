@@ -67,10 +67,19 @@
           </el-form-item>
         </el-col>
         <el-col :span="8" v-if="data.currentEditItem.roleType !== 'BranchOffice'">
-          <el-form-item label="角色业绩比例（%）">
-<!--            <div class="div-disabled">{{form.roleAchieveRatio}}%</div>-->
-            <div class="div-disabled">
+          <el-form-item label="角色业绩比例" prop="roleAchieveRatio">
+            <div class="div-disabled" v-if="!isEditRoleRatio">
               {{getPercentage(form.corporateAchieve, form.roleAchieveCap)}}%
+            </div>
+            <div class="el-input el-input-group el-input-group--append" v-else>
+              <el-input-number
+                v-digits="2"
+                class="input-number-left"
+                v-model="form.roleAchieveRatio"
+                :min="0" :max="100"
+                :controls="false"
+                placeholder=""></el-input-number>
+              <div class="el-input-group__append">%</div>
             </div>
           </el-form-item>
         </el-col>
@@ -82,7 +91,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="拆佣比例（%）">
+          <el-form-item label="拆佣比例">
             <div class="div-disabled">
               {{getPercentage(form.commFees, data.totalAmount)}}%
             </div>
@@ -152,6 +161,15 @@
     constructor() {
       super();
     }
+    isEditRoleRatio: any = false;
+
+    private validateRoleAchieveRatio (rule: any, value: any, callback: any) {
+      if ([null, "", undefined].includes(value) && this.isEditRoleRatio) {
+        return callback(new Error('分配业绩比例不能为空'));
+      } else {
+        callback();
+      }
+    }
 
     private validateCorporateAchieve (rule: any, value: any, callback: any) {
       if ([null, "", undefined].includes(value) && this.data.currentEditItem.roleType !== 'BranchOffice') {
@@ -201,6 +219,9 @@
       ],
       roleAchieveCap: [
         {required: true, message: "角色业绩上限不能为空", trigger: "change"}
+      ],
+      roleAchieveRatio: [
+        {validator: this.validateRoleAchieveRatio, trigger: ["change", "blur"]}
       ],
       corporateAchieve: [
         {validator: this.validateCorporateAchieve, trigger: ["change", "blur"]}
@@ -374,6 +395,7 @@
         this.dealRoleList.forEach((list: any) => {
           if (list.code === value) {
             this.form.roleAchieveCap = list.roleAchieveCap;
+            this.isEditRoleRatio = list.isZero;
           }
         })
       }
@@ -437,6 +459,12 @@
     color: #f90;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .input-number-left {
+    /deep/ .el-input__inner {
+      text-align: left;
+    }
   }
 
   .input-select-wrapper {
