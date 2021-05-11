@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lgf
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-04-27 15:01:39
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-11 11:57:26
 -->
 <template>
   <div class="text-left">
@@ -12,7 +12,7 @@
     <el-form label-width="130px">
       <el-row>
         <el-col :span="8">
-          <el-form-item label="名称">
+          <el-form-item label="公司名称">
             <span
               class="text-ellipsis"
               :title="info.name"
@@ -20,16 +20,16 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="统一社会信用代码">{{ info.creditCode }}</el-form-item>
+          <el-form-item label="公司简称">{{ info.shortName }}</el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="简称">{{ info.shortName }}</el-form-item>
+          <el-form-item label="信用代码">{{ info.creditCode }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item
-            label="类型"
+            label="公司类型"
             v-if="info.type"
           >
             <span
@@ -58,6 +58,12 @@
       </el-row>
       <el-row>
         <el-col :span="8">
+          <el-form-item label="省市区">{{ $root.getAreaName(info.province) }}/{{ $root.getAreaName(info.city) }}/{{ $root.getAreaName(info.county) }}</el-form-item>
+        </el-col>
+        <el-col :span="16">
+          <el-form-item label="住所">{{ info.address }}</el-form-item>
+        </el-col>
+<!--        <el-col :span="8">
           <el-form-item label="省份">{{ $root.getAreaName(info.province) }}</el-form-item>
         </el-col>
         <el-col :span="8">
@@ -65,23 +71,42 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="行政区">{{ $root.getAreaName(info.county) }}</el-form-item>
+        </el-col>-->
+      </el-row>
+      <el-row>
+        <el-col :span="24">
+          <el-form-item label="企业概况">{{ info.remark }}</el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="16">
-          <el-form-item label="住所">{{ info.address }}</el-form-item>
-        </el-col>
-
         <el-col :span="8">
           <el-form-item label="跟进人">{{ info.followUserName }}</el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item
             label="状态"
             v-if="info.status"
           >{{ $root.dictAllName(info.status, 'ChannelStatus') }}</el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
+
+    <p class="ih-info-title">负责人信息</p>
+    <el-form label-width="120px">
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="姓名">{{ channelPersons.name }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="手机号码">{{ channelPersons.mobile }}</el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="身份证号码">{{ channelPersons.identityCode }}</el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="电子邮箱">{{ channelPersons.email }}</el-form-item>
         </el-col>
       </el-row>
     </el-form>
@@ -125,25 +150,6 @@
       </el-table>
     </div>
 
-    <p class="ih-info-title">负责人信息</p>
-    <el-form label-width="120px">
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="姓名">{{ channelPersons.name }}</el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="手机号码">{{ channelPersons.mobile }}</el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="身份证号码">{{ channelPersons.identityCode }}</el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item label="电子邮箱">{{ channelPersons.email }}</el-form-item>
-        </el-col>
-      </el-row>
-    </el-form>
     <p class="ih-info-title">
       <span>附件信息</span>
       <el-link
@@ -167,9 +173,9 @@
         >
           <template v-slot="{ row }">
             <div><span
-                style="color: red"
-                v-if="row.subType"
-              >*</span>{{row.name}}
+              style="color: red"
+              v-if="row.subType"
+            >*</span>{{row.name}}
             </div>
           </template>
         </el-table-column>
@@ -189,12 +195,6 @@
       </el-table>
       <br />
     </div>
-
-    <p class="ih-info-title">企业概况</p>
-    <div class="margin-left-20">
-      {{info.remark}}
-    </div>
-    <br />
 
     <template v-if="pageName === 'ConfirmChannel'">
       <p class="ih-info-title">确认意见</p>

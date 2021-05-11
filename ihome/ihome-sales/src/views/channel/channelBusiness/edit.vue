@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
- * @LastEditors: ywl
- * @LastEditTime: 2021-04-15 09:42:09
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-11 11:27:30
 -->
 <template>
   <IhPage>
@@ -20,7 +20,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="名称"
+              label="公司名称"
               prop="name"
             >
               <el-input
@@ -32,19 +32,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="统一社会信用代码"
-              prop="creditCode"
-              class="formItem"
-            >
-              <el-input
-                v-model="info.creditCode"
-                clearable
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="简称"
+              label="公司简称"
               prop="shortName"
             >
               <el-input
@@ -54,11 +42,22 @@
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="信用代码"
+              prop="creditCode"
+            >
+              <el-input
+                v-model="info.creditCode"
+                clearable
+              ></el-input>
+            </el-form-item>
+          </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="类型"
+              label="公司类型"
               prop="type"
             >
               <el-select
@@ -123,6 +122,7 @@
             >
               <el-input
                 v-model="info.capital"
+                placeholder="输入时请附上（单位）如：xx万元人民币"
                 clearable
               ></el-input>
             </el-form-item>
@@ -178,78 +178,29 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col>
+            <el-form-item
+              label="企业概况">
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 5, maxRows: 8 }"
+                maxlength="256"
+                placeholder="请输入企业概况(选填)"
+                v-model="info.remark">
+              </el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
     </template>
-    <!-- 银行账号信息 -->
-    <p class="ih-info-title">
-      <span>银行账号信息</span>
-      <el-button
-        type="primary"
-        class="add-account"
-        size="small"
-        @click.native="addAccount()"
-      >添加</el-button>
-    </p>
-    <div class="padding-left-20">
-      <el-table
-        :data="info.channelBanks"
-        style="width: 100%"
-      >
-        <el-table-column
-          prop="accountName"
-          label="账户名称"
-          min-width="200"
-        ></el-table-column>
-        <el-table-column
-          prop="accountNo"
-          label="账号"
-          min-width="200"
-        >
-        </el-table-column>
-        <el-table-column
-          prop="branchName"
-          label="开户银行"
-          min-width="200"
-        ></el-table-column>
-        <!-- <el-table-column
-          prop="branchNo"
-          label="联行号"
-          width="150"
-        ></el-table-column> -->
-        <el-table-column
-          prop="accountType"
-          label="账号类型"
-          width="150"
-        >
-          <template v-slot="{ row }">
-            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column
-          label="操作"
-          fixed="right"
-          width="120"
-        >
-          <template v-slot="{ row, $index }">
-            <el-link
-              type="primary"
-              class="margin-right-15"
-              @click="editBank(row, $index)"
-            >编辑</el-link>
-            <el-link
-              type="danger"
-              @click="deleteBank(row, $index)"
-            >删除</el-link>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
+
     <p class="ih-info-title">负责人信息</p>
     <el-form
       :model="channelPersonsData"
       :rules="rules"
       ref="personForm"
-      label-width="120px"
+      label-width="100px"
       class="demo-ruleForm"
     >
       <el-row>
@@ -292,17 +243,89 @@
         </el-col>
         <el-col :span="8">
           <el-form-item
-            label="邮箱"
+            label="电子邮箱"
             prop="email"
           >
             <el-input
               v-model="channelPersonsData.email"
+              placeholder="选填"
               clearable
             ></el-input>
           </el-form-item>
         </el-col>
       </el-row>
     </el-form>
+
+    <!-- 银行账号信息 -->
+    <p class="ih-info-title">
+      <span>银行账号信息</span>
+      <el-button
+        type="primary"
+        class="add-account"
+        size="small"
+        @click.native="addAccount()"
+      >添加银行账户</el-button>
+    </p>
+    <div class="padding-left-20">
+      <el-table
+        :data="info.channelBanks"
+        style="width: 100%"
+      >
+        <el-table-column
+          prop="accountName"
+          label="账户名称"
+          min-width="200"
+        ></el-table-column>
+        <el-table-column
+          prop="accountNo"
+          label="银行账号"
+          min-width="200">
+        </el-table-column>
+        <el-table-column
+          prop="branchName"
+          label="开户银行"
+          min-width="200"
+        ></el-table-column>
+        <!-- <el-table-column
+          prop="branchNo"
+          label="联行号"
+          width="150"
+        ></el-table-column> -->
+        <el-table-column
+          prop="accountType"
+          label="账号类型"
+          width="150">
+          <template v-slot="{ row }">
+            <span>{{ $root.dictAllName(row.accountType, "Account") }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="defaultAccount"
+          label="默认账号"
+          width="150">
+          <template v-slot="{ row, $index }">
+            <el-switch v-model="row.defaultAccount" @change="changeAccountDefaultAccount($event, $index)"></el-switch>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          fixed="right"
+          width="120"
+        >
+          <template v-slot="{ row, $index }">
+            <el-link
+              type="primary"
+              class="margin-right-15"
+              @click="editBank(row, $index)"
+            >编辑</el-link>
+            <el-link
+              type="danger"
+              @click="deleteBank(row, $index)"
+            >删除</el-link>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
     <p class="ih-info-title">
       <span>附件信息</span>
@@ -350,7 +373,7 @@
       </el-table>
     </div>
 
-    <p class="ih-info-title">企业概况</p>
+<!--    <p class="ih-info-title">企业概况</p>
     <div class="padding-left-20">
       <el-input
         type="textarea"
@@ -360,7 +383,7 @@
         v-model="info.remark"
       >
       </el-input>
-    </div>
+    </div>-->
 
     <template v-if="pageName === 'ChangeChannel'">
       <p class="ih-info-title">变更原因</p>
@@ -539,6 +562,7 @@ export default class ModifyThe extends Vue {
       accountType: null,
       branchName: null,
       branchNo: null,
+      defaultAccount: false, // 是否默认账号
     };
     this.bankType = "new-add";
     this.dialogFormVisible = true;
@@ -673,8 +697,13 @@ export default class ModifyThe extends Vue {
    * @param {string} type
    */
   private handlePushBank(value: any, type: string): void {
+    console.log(value);
     switch (type) {
       case "new-add":
+        // this.info.channelBanks.push(value);
+        if (!this.info.channelBanks.length) {
+          value.defaultAccount = true;
+        }
         this.info.channelBanks.push(value);
         break;
       case "new-edit":
@@ -683,6 +712,25 @@ export default class ModifyThe extends Vue {
     }
     this.dialogFormVisible = false;
   }
+
+  /**
+   * @description: 银行账号信息改变默认账号
+   * @param {object} value
+   */
+  private changeAccountDefaultAccount(value: any, rowIndex: any) {
+    console.log(value);
+    console.log(rowIndex);
+    if (this.info && this.info.channelBanks && this.info.channelBanks.length) {
+      this.info.channelBanks.forEach((list: any, index: any) => {
+        if (rowIndex === index) {
+          list.defaultAccount = value;
+        } else {
+          list.defaultAccount = false;
+        }
+      });
+    }
+  }
+
   async getInfo() {
     let id = this.$route.query.id;
     if (id) {
