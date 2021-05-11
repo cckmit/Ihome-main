@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-4-23 10:09:00 ├F10: AM┤
+//2021-5-11 3:39:26 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -183,6 +183,10 @@ return await request.post< CompanyBank[],CompanyBank[]> (basePath+'/company/getA
 export async function post_company_getFuzzyQuery (d?: any) {
 return await request.post< any,any> (basePath+'/company/getFuzzyQuery', d)
 }
+/**一手代理详情*/
+export async function post_company_getIds (d?: any) {
+return await request.post< CompanyItemListVO[],CompanyItemListVO[]> (basePath+'/company/getIds', d)
+}
 /**一手代理列表*/
 export async function post_company_getList (d?: any) {
 return await request.post< any,any> (basePath+'/company/getList', d)
@@ -330,6 +334,14 @@ return await request.post< any,any> (basePath+'/distributContract/getPreView', d
 /**中介分销合同-预览【外面】*/
 export async function post_distributContract_getPreViewOut__agencyContrictId (d?: any) {
 return await request.post< any,any> (basePath+'/distributContract/getPreViewOut/{agencyContrictId}', d)
+}
+/**重新分销生成模板*/
+export async function post_distributContract_reCreateTemplate (d?: any) {
+return await request.post< number,number> (basePath+'/distributContract/reCreateTemplate', d)
+}
+/**更新分销json*/
+export async function post_distributContract_reUpdteDistributContractMx (d?: any) {
+return await request.post< number,number> (basePath+'/distributContract/reUpdteDistributContractMx', d)
 }
 /**甲方合同OA呈批备注-save*/
 export async function post_distributContract_saveOaRemark (d?: any) {
@@ -935,7 +947,7 @@ return await request.post< TermRespVO,TermRespVO> (basePath+'/term/add', d)
 export async function post_term_addTermOtherChannelFees (d?: any) {
 return await request.post< any,any> (basePath+'/term/addTermOtherChannelFees', d)
 }
-/**补充协议-修改周期（新增覆盖周期方式）*/
+/**补充协议-修改周期（新增周期方式）*/
 export async function get_term_applyTerm__termId (d?: any) {
 return await request.get<number,number>(basePath+'/term/applyTerm/{termId}', { params: d })
 }
@@ -958,6 +970,10 @@ return await request.post< number,number> (basePath+'/term/constractAudit', d)
 /**合同呈批【附件上传】*/
 export async function post_term_contractApplyAttach (d?: any) {
 return await request.post< number,number> (basePath+'/term/contractApplyAttach', d)
+}
+/**复制周期*/
+export async function get_term_copyTerm__termId (d?: any) {
+return await request.get<number,number>(basePath+'/term/copyTerm/{termId}', { params: d })
 }
 /**项目周期-删除*/
 export async function post_term_del__termId (d?: any) {
@@ -1720,8 +1736,12 @@ pageNum: number;
 pageSize: number;
 /**项目名称ID*/
 proId: string;
+/**项目名称*/
+proName: string;
 /**周期名称ID*/
 termId: string;
+/**周期名称*/
+termName: string;
 /**类别 1:产生 2:使用*/
 type: number;
 /**使用类别(Samecycle-同周期使用、Interycle-跨周期使用、Interproject-跨项目使用)*/
@@ -1737,8 +1757,12 @@ createTimeBegin: string;
 createTimeEnd: string;
 /**项目名称ID*/
 proId: string;
+/**项目名称*/
+proName: string;
 /**周期名称ID*/
 termId: string;
+/**周期名称*/
+termName: string;
 /**类别 1:产生 2:使用*/
 type: number;
 /**使用类别(Samecycle-同周期使用、Interycle-跨周期使用、Interproject-跨项目使用)*/
@@ -1754,8 +1778,12 @@ pageNum: number;
 pageSize: number;
 /**项目名称*/
 proId: string;
+/**项目名称*/
+proName: string;
 /**周期名称*/
 termId: string;
+/**周期名称*/
+termName: string;
 }
 /**CapitalPoolFlowSummarySumQueryVO*/
 export interface CapitalPoolFlowSummarySumQueryVO {
@@ -1763,8 +1791,12 @@ export interface CapitalPoolFlowSummarySumQueryVO {
 org: string;
 /**项目名称*/
 proId: string;
+/**项目名称*/
+proName: string;
 /**周期名称*/
 termId: string;
+/**周期名称*/
+termName: string;
 }
 /**CapitalPoolFlowSummarySumVo*/
 export interface CapitalPoolFlowSummarySumVo {
@@ -2331,6 +2363,13 @@ companyId: number;
 /**甲方名称*/
 companyName: string;
 }
+/**CompanyItemListVO*/
+export interface CompanyItemListVO {
+/**一手代理ID*/
+id: number;
+/**公司名称*/
+name: string;
+}
 /**CompanyListVO*/
 export interface CompanyListVO {
 /**城市*/
@@ -2844,10 +2883,14 @@ conditionId: number;
 contrictMxId: number;
 /**佣金类型 ServiceFee("服务费"),AgencyFee("代理费")(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
+/**甲方公司ID*/
+partyCompanyId: number;
 /**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyEnum: string;
 /**派发佣金标准*/
 sendContext: string;
+/**排序*/
+sort: number;
 /**条件*/
 standardPay: string;
 }
@@ -3647,6 +3690,8 @@ contractStartTime: string;
 contractTitle: string;
 /**是否涉及佣金标准(Yes-是、No-否)*/
 exInvolvedCommiss: string;
+/**是否垫佣 (Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+padCommissionEnum: string;
 /**甲方公司[我司主体] 甲方合同-乙方*/
 partyCompany: string;
 /**甲方公司ID [我司主体ID]*/
@@ -3680,6 +3725,8 @@ contractStartTime: string;
 contractTitle: string;
 /**是否涉及佣金标准(Yes-是、No-否)*/
 exInvolvedCommiss: string;
+/**是否垫佣 (Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
+padCommissionEnum: string;
 /**甲方公司[我司主体] 甲方合同-乙方*/
 partyCompany: string;
 /**甲方公司ID [我司主体ID]*/
@@ -3905,6 +3952,8 @@ stage: string;
 export interface OtherVo {
 /**审核状态(Draft-草稿、TermConduct-立项审核中、TermAdopt-立项审核通过、TermReject-立项审核驳回、ConstractWait-合同待审核、ConstractConduct-合同审核中、ConstractAdopt-合同审核通过、ConstractReject-合同审核驳回)*/
 auditEnum: string;
+/**收费模式(Service-服务费、Agent-代理费、ServiAndAgen-服务费+代理费)*/
+chargeEnum: string;
 /**我司ID*/
 companyId: number;
 /**我司名称*/
@@ -4599,6 +4648,10 @@ proName: string;
 export interface ProjectQueryVO {
 /**审核状态   CONDUCT-审核中 ADOPT-审核通过 REJECT-审核驳回(Draft-草稿、Conduct-审核中、Adopt-审核通过、Reject-审核驳回)*/
 auditEnum: string;
+/**明源楼盘ID*/
+buildingGuid: string;
+/**明源楼盘父ID*/
+buildingParentGuid: string;
 /**市*/
 city: string;
 /**明源公司名称*/
@@ -5108,7 +5161,7 @@ designatedAgency: number[];
 designatedAgencyVos: DesignatedAgencyVo[];
 /**多选值*/
 mulitVal: number[];
-/**根据房款回笼比率*/
+/**根据房款回笼比率作废*/
 returnRateByHouse: number;
 /**单选值*/
 simpleVal: string;
@@ -5717,6 +5770,8 @@ firstAgencyCompanys: 一手公司代理[];
 groupId: number;
 /**店组名称*/
 groupName: string;
+/**项目地址*/
+proAddr: string;
 /**proId*/
 proId: number;
 /**项目名称*/
