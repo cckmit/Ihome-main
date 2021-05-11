@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-23 09:07:11
+ * @LastEditTime: 2021-05-11 14:20:08
 -->
 <template>
   <IhPage label-width="100px">
@@ -384,8 +384,18 @@ export default class ProjectApproval extends Vue {
 
   // 业管修改权限控制
   businessManagementChange(row: any) {
+    const TermAdopt = row.auditEnum === "TermAdopt"; // 立项审核通过
+    const ConstractConduct = row.auditEnum === "ConstractConduct"; // 合同审核中
     const ConstractAdopt = row.auditEnum === "ConstractAdopt"; // 合同审核通过
-    return ConstractAdopt;
+    const ConstractReject = row.auditEnum === "ConstractReject"; // 合同审核驳回
+    const ConstractWait = row.auditEnum === "ConstractWait"; // 合同待审核
+    return (
+      TermAdopt ||
+      ConstractConduct ||
+      ConstractAdopt ||
+      ConstractReject ||
+      ConstractWait
+    );
   }
 
   // 启动周期权限控制

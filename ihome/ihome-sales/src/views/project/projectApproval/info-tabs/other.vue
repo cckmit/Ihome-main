@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:28:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:57:13
+ * @LastEditTime: 2021-05-11 14:34:01
 -->
 <template>
   <div>
@@ -94,33 +94,35 @@
     </div>
     <br />
     <div>
-      <p class="ih-info-title">其他渠道费配置</p>
-      <div class="special">
-        <div>是否使用本周期的其他渠道费用</div>
-        <div class="special-icon">
-          <el-tooltip
-            class="item"
-            effect="dark"
-            placement="bottom-start"
-          >
-            <div slot="content">开启时该周期的成交报告优先使用本周期的其他渠道费用，
-              关闭时提交成交报告<br />不使用本周期的其他渠道费用
-            </div>
-            <i class="el-icon-question" />
-          </el-tooltip>
+      <div v-if="['ServiAndAgen', 'Service'].includes(this.info.chargeEnum)">
+        <p class="ih-info-title">其他渠道费配置</p>
+        <div class="special">
+          <div>是否使用本周期的其他渠道费用</div>
+          <div class="special-icon">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              placement="bottom-start"
+            >
+              <div slot="content">开启时该周期的成交报告优先使用本周期的其他渠道费用，
+                关闭时提交成交报告<br />不使用本周期的其他渠道费用
+              </div>
+              <i class="el-icon-question" />
+            </el-tooltip>
+          </div>
+          <div class="margin-left-20">
+            <el-switch
+              v-model="info.exUseThisChannelFee"
+              active-color="#ef9d39"
+              inactive-color="#7b7b7b"
+              :disabled="!businessManagementChange"
+              @change="exUseThisChannelFeeChange"
+            >
+            </el-switch>
+          </div>
         </div>
-        <div class="margin-left-20">
-          <el-switch
-            v-model="info.exUseThisChannelFee"
-            active-color="#ef9d39"
-            inactive-color="#7b7b7b"
-            :disabled="!businessManagementChange"
-            @change="exUseThisChannelFeeChange"
-          >
-          </el-switch>
-        </div>
+        <br />
       </div>
-      <br />
       <div class="special">
         <div>允许临时穿底</div>
         <div class="special-icon">
