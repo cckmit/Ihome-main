@@ -3,16 +3,15 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 11:01:29
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 11:14:29
 --> 
 <template>
   <IhPage label-width="100px">
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="100px"
-      >
+        label-width="100px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="渠道商名称">
@@ -27,8 +26,7 @@
             <el-form-item label="录入人">
               <IhSelectPageUser
                 v-model="queryPageParameters.inputUser"
-                clearable
-              >
+                clearable>
                 <template v-slot="{ data }">
                   <span style="float: left">{{ data.name }}</span>
                   <span style="
@@ -58,41 +56,56 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="入库编号">
-              <el-input
-                v-model="queryPageParameters.storageNum"
-                placeholder="入库编号"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="变更日期">
-              <el-date-picker
-                v-model="changeTime"
-                type="daterange"
-                align="left"
-                style="width: 100%"
-                value-format="yyyy-MM-dd"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="$root.pickerOptions"
-              >
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="事业部">
-              <IhSelectPageDivision
-                v-model="queryPageParameters.departmentOrgId"
-                clearable
-                placeholder="请选择事业部"
-              ></IhSelectPageDivision>
-            </el-form-item>
-          </el-col>
         </el-row>
+        <el-collapse-transition>
+          <div v-show="searchOpen">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="入库编号">
+                  <el-input
+                    v-model="queryPageParameters.storageNum"
+                    placeholder="入库编号"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="变更日期">
+                  <el-date-picker
+                    v-model="changeTime"
+                    type="daterange"
+                    align="left"
+                    style="width: 100%"
+                    value-format="yyyy-MM-dd"
+                    unlink-panels
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    :picker-options="$root.pickerOptions"
+                  >
+                  </el-date-picker>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="事业部">
+                  <IhSelectPageDivision
+                    v-model="queryPageParameters.departmentOrgId"
+                    clearable
+                    placeholder="请选择事业部"
+                  ></IhSelectPageDivision>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="呈批申请编号">
+                  <el-input
+                    clearable
+                    v-model="queryPageParameters.approvalNo"
+                    placeholder="呈批申请编号"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-collapse-transition>
       </el-form>
     </template>
 
@@ -110,6 +123,11 @@
           @click="handleOpen()"
           v-has="'B.SALES.CHANNEL.LEVELCHANGELIST.UPDATEENTRY'"
         >变更录入人</el-button>
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+        >{{searchOpen?'收起':'展开'}}</el-link>
       </el-row>
     </template>
 
@@ -131,48 +149,65 @@
           fixed
           label="渠道商名称"
           prop="channelName"
-          min-width="200"
+          min-width="220"
         ></el-table-column>
         <el-table-column
           prop="storageNum"
           label="入库编号"
-          min-width="170"
+          min-width="180"
         ></el-table-column>
+        <el-table-column
+          prop="status"
+          label="状态"
+          min-width="120">
+          <template v-slot="{ row }">
+            <IhStatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'DRAFT',
+                success: 'Approved'
+              }">
+              <div>{{ $root.dictAllName(row.status, "ChannelGradeStatus") }}</div>
+            </IhStatusComponent>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="approvalNo"
+          label="呈批申请编号"
+          min-width="220">
+          <template v-slot="{ row }">
+            <el-link
+              v-if="row.approvalNo"
+              type="primary"
+              class="font-weight-600" @click="gotoNew(row.approvalNo)">
+              {{ row.approvalNo }}</el-link>
+            <span v-else>-</span>
+          </template>
+        </el-table-column>
         <el-table-column
           prop="inputUserName"
           label="录入人"
-          width="170"
+          min-width="120"
         ></el-table-column>
         <el-table-column
           prop="changeTime"
           label="变更日期"
-          width="95"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          prop="changeReason"
+          label="变更原因"
+          min-width="220"
         ></el-table-column>
         <el-table-column
           prop="departmentName"
           label="事业部"
-          min-width="225"
-        >
+          min-width="230">
         </el-table-column>
-        <el-table-column
-          prop="status"
-          label="状态"
-          width="135"
-        >
-          <template v-slot="{ row }">
-            {{ $root.dictAllName(row.status, "ChannelGradeStatus") }}
-          </template>
-        </el-table-column>
-        <el-table-column
-          prop="changeReason"
-          label="变更原因"
-          min-width="200"
-        ></el-table-column>
         <el-table-column
           label="操作"
           fixed="right"
-          width="150"
-        >
+          width="120">
           <template v-slot="{ row }">
             <el-link
               type="primary"
@@ -183,7 +218,7 @@
               style="margin-left: 15px"
             >
               <span class="el-dropdown-link">
-                更多操作
+                更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">
@@ -265,6 +300,7 @@ import PaginationMixin from "../../../mixins/pagination";
   mixins: [PaginationMixin],
 })
 export default class LevelChangeList extends Vue {
+  private searchOpen = false;
   queryPageParameters: any = {
     channelId: null,
     inputUser: null,
@@ -273,6 +309,7 @@ export default class LevelChangeList extends Vue {
     departmentOrgId: null,
     changeTimeStart: null,
     changeTimeEnd: null,
+    approvalNo: null,
   };
   changeTime: any = null;
   resPageInfo: any = {
@@ -281,6 +318,19 @@ export default class LevelChangeList extends Vue {
   };
   dialogVisible = false;
   selectionData = [];
+
+  // 查询条件折叠/展开
+  private openToggle(): void {
+    this.searchOpen = !this.searchOpen;
+  }
+
+  // 呈批申请编号跳转
+  gotoNew(row: any) {
+    if (row.approvalId) {
+      console.log(row.approvalId);
+      window.open(`/web-sales/approval/info?id=${row.approvalId}`);
+    }
+  }
 
   editChange(row: any) {
     const DRAFT = row.status === "DRAFT";
@@ -328,6 +378,7 @@ export default class LevelChangeList extends Vue {
       departmentOrgId: null,
       changeTimeStart: null,
       changeTimeEnd: null,
+      approvalNo: null,
     });
     this.changeTime = null;
   }
@@ -378,7 +429,7 @@ export default class LevelChangeList extends Vue {
             ? (this.queryPageParameters.pageNum = 1)
             : this.queryPageParameters.pageNum--;
         }
-        this.getListMixin();
+        await this.getListMixin();
         this.$message.success("删除成功");
       })
       .catch(async () => {

@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:15:38
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 14:39:22
 -->
 <template>
   <div class="text-left">
@@ -38,7 +38,7 @@
             }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+<!--        <el-col :span="8">
           <el-form-item
             label="渠道类型"
             align="left"
@@ -47,25 +47,25 @@
               $root.dictAllName(resPageInfo.channelType, "ChannelType")
             }}</span>
           </el-form-item>
-        </el-col>
+        </el-col>-->
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item
-            label="业务开展省份"
+            label="开展业务省市"
             align="left"
           >
-            <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
+            <span>{{ $root.getAreaName(resPageInfo.province) }}/{{ $root.getAreaName(resPageInfo.city) }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+<!--        <el-col :span="8">
           <el-form-item
             label="业务开展城市"
             align="left"
           >
             <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
           </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="8">
           <el-form-item
             label="城市等级"
@@ -76,7 +76,15 @@
             }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
+          <el-form-item
+            label="事业部"
+            align="left"
+          >
+            <span>{{resPageInfo.departmentName}}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
           <el-form-item
             label="是否特批入库"
             align="left"
@@ -86,15 +94,22 @@
             }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
+          <el-form-item
+            label="呈批申请编号"
+            align="left">
+            <span>{{resPageInfo.approvalNo ? resPageInfo.approvalNo : '-'}}</span>
+          </el-form-item>
+        </el-col>
+<!--        <el-col :span="8">
           <el-form-item
             label="入库编号"
             align="left"
           >
             <span>{{ resPageInfo.storageNum }}</span>
           </el-form-item>
-        </el-col>
-        <el-col :span="8">
+        </el-col>-->
+<!--        <el-col :span="8">
           <el-form-item
             label="状态"
             align="left"
@@ -103,7 +118,7 @@
               $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
             }}</span>
           </el-form-item>
-        </el-col>
+        </el-col>-->
       </el-row>
     </el-form>
 
@@ -120,35 +135,32 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.channelGradeItemChanges"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+<!--        <el-table-column
           prop="cityGrade"
-          label="城市等级"
-        >
+          label="城市等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
         <el-table-column
           prop="channelGrade"
-          label="渠道等级"
-        >
+          label="渠道等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.channelGrade, "ChannelLevel")
           }}</template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column
           prop="gradeItem"
           label="评级项"
         ></el-table-column>
         <el-table-column
-          prop="inputValue"
-          label="录入信息"
-        ></el-table-column>
-        <el-table-column
           prop="gradeStandard"
           label="评级标准"
+        ></el-table-column>
+        <el-table-column
+          prop="inputValue"
+          label="填写信息"
         ></el-table-column>
       </el-table>
       <br />
@@ -253,7 +265,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 //引入请求数据的api
 import {
   get_channelGradeChange_get__id,
@@ -271,22 +283,8 @@ export default class Home extends Vue {
   }
 
   private fileList = [];
-  private info = [];
   private remark = "";
-
-  resPageInfo: any = {
-    channelId: null,
-    channelGrade: null,
-    channelType: null,
-    province: null,
-    city: null,
-    cityGrade: null,
-    special: null,
-    storageNum: null,
-    status: null,
-    channelGradeItemChanges: [],
-    channelGradeAttachmentChanges: [],
-  };
+  @Prop() resPageInfo!: any; // 基础数据
   fileListType: any = [];
 
   get dictsList() {
@@ -361,7 +359,9 @@ export default class Home extends Vue {
   }
 
   async created() {
-    this.getInfo();
+    // this.getInfo();
+    console.log(this.resPageInfo);
+    this.getFileListType(this.resPageInfo.channelGradeAttachmentChanges);
   }
 }
 </script>

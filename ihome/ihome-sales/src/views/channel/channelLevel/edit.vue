@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 14:47:35
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 14:31:28
 -->
 <template>
   <IhPage>
@@ -331,7 +331,7 @@ export default class ChannelRates extends Vue {
     channelId: "",
     channelName: "",
     channelGrade: "",
-    channelType: "Platform",
+    // channelType: "Platform",
     province: "",
     city: "",
     cityGrade: "",
