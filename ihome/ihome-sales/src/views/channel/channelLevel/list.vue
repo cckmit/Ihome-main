@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:39:54
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-11 17:29:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -24,53 +24,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道等级">
-              <el-select
-                v-model="queryPageParameters.channelGrade"
+            <el-form-item label="入库编号">
+              <el-input
                 clearable
-                placeholder="渠道等级"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('ChannelLevel')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="城市等级">
-              <el-select
-                v-model="queryPageParameters.cityGrade"
-                clearable
-                placeholder="城市等级"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('CityLevel')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="业务开展省市">
-              <IhCascader
-                :level="2"
-                v-model="provinceOption"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="事业部">
-              <IhSelectPageDivision v-model="queryPageParameters.departmentOrgId"></IhSelectPageDivision>
+                v-model="queryPageParameters.storageNum"
+                placeholder="入库编号"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -90,51 +49,107 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.inputUser"
-                clearable
-              >
-                <template v-slot="{ data }">
-                  <span style="float: left">{{ data.name }}</span>
-                  <span style="
+        </el-row>
+        <el-collapse-transition>
+          <div v-show="searchOpen">
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="渠道等级">
+                  <el-select
+                    v-model="queryPageParameters.channelGrade"
+                    clearable
+                    placeholder="渠道等级"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('ChannelLevel')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="开展业务省市">
+                  <IhCascader
+                    :level="2"
+                    v-model="provinceOption"
+                    clearable
+                    placeholder="请选择"
+                    class="width--100"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="城市等级">
+                  <el-select
+                    v-model="queryPageParameters.cityGrade"
+                    clearable
+                    placeholder="城市等级"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('CityLevel')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="事业部">
+                  <IhSelectPageDivision v-model="queryPageParameters.departmentOrgId"></IhSelectPageDivision>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="录入人">
+                  <IhSelectPageUser
+                    v-model="queryPageParameters.inputUser"
+                    clearable
+                  >
+                    <template v-slot="{ data }">
+                      <span style="float: left">{{ data.name }}</span>
+                      <span style="
                       margin-left: 20px;
                       float: right;
                       color: #8492a6;
                       font-size: 13px;
                     ">{{ data.account }}</span>
-                </template>
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="特批入库">
-              <el-select
-                v-model="queryPageParameters.special"
-                clearable
-                placeholder="特批入库"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('YesOrNoType')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="入库编号">
-              <el-input
-                clearable
-                v-model="queryPageParameters.storageNum"
-                placeholder="入库编号"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
+                    </template>
+                  </IhSelectPageUser>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="呈批申请编号">
+                  <el-input
+                    clearable
+                    v-model="queryPageParameters.approvalNo"
+                    placeholder="呈批申请编号"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="特批入库">
+                  <el-select
+                    v-model="queryPageParameters.special"
+                    clearable
+                    placeholder="特批入库"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in $root.dictAllList('YesOrNoType')"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-collapse-transition>
       </el-form>
     </template>
 
@@ -157,6 +172,11 @@
           @click="update()"
           v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEENTRY'"
         >变更录入人</el-button>
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+        >{{searchOpen?'收起':'展开'}}</el-link>
       </el-row>
     </template>
 
@@ -179,78 +199,99 @@
           fixed
           prop="storageNum"
           label="入库编号"
-          width="180"
+          min-width="180"
         ></el-table-column>
         <el-table-column
           fixed
           prop="channelName"
           label="渠道商名称"
-          width="100"
+          min-width="300"
         ></el-table-column>
         <el-table-column
-          prop="province"
-          label="业务开展省份"
-          width="120"
+          prop="channelGrade"
+          label="渠道等级"
+          min-width="120"
         >
           <template v-slot="{ row }">{{
-            $root.getAreaName(row.province)
-          }}</template>
+              $root.dictAllName(row.channelGrade, "ChannelLevel")
+            }}</template>
         </el-table-column>
         <el-table-column
-          prop="city"
-          label="业务开展城市"
-          width="120"
+          prop="province"
+          label="开展业务省市"
+          min-width="160"
         >
-          <template v-slot="{ row }">{{
-            $root.getAreaName(row.city)
-          }}</template>
+          <template v-slot="{ row }">
+            {{$root.getAreaName(row.province)}}/{{$root.getAreaName(row.city)}}</template>
         </el-table-column>
         <el-table-column
           prop="cityGrade"
           label="城市等级"
+          min-width="110"
         >
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
         <el-table-column
-          prop="channelGrade"
-          label="渠道等级"
-        >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.channelGrade, "ChannelLevel")
-          }}</template>
+          prop="status"
+          label="状态"
+          min-width="170">
+          <template v-slot="{ row }">
+            <IhStatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'DRAFT',
+                success: 'Approved'
+              }">
+              <div>{{$root.dictAllName(row.status, "ChannelGradeStatus")}}</div>
+            </IhStatusComponent>
+          </template>
+        </el-table-column>
+        <el-table-column
+          prop="approvalNo"
+          label="呈批申请编号"
+          min-width="220">
+          <template v-slot="{ row }">
+            <el-link
+              v-if="row.approvalNo"
+              type="primary"
+              class="font-weight-600" @click="gotoNew(row.approvalNo)">
+              {{ row.approvalNo }}</el-link>
+            <span v-else>-</span>
+          </template>
         </el-table-column>
         <el-table-column
           prop="special"
           label="特批入库"
-        >
+          min-width="90">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.special, "YesOrNoType")
           }}</template>
         </el-table-column>
         <el-table-column
-          prop="departmentName"
-          label="事业部"
-        ></el-table-column>
-        <el-table-column
           prop="inputUserName"
           label="录入人"
+          min-width="120"
         ></el-table-column>
         <el-table-column
-          prop="status"
-          label="状态"
-          width="125"
+          prop="createTime"
+          label="录入日期"
+          min-width="130"
         >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "ChannelGradeStatus")
-          }}</template>
+          <template slot-scope="scope">
+            <div>{{scope.row.createTime ? getDateStr(scope.row.createTime) : '-'}}</div>
+          </template>
         </el-table-column>
+        <el-table-column
+          prop="departmentName"
+          label="事业部"
+          min-width="250"
+        ></el-table-column>
         <el-table-column
           label="操作"
           width="120"
-          fixed="right"
-        >
+          fixed="right">
           <template v-slot="{ row }">
             <el-link
               type="primary"
@@ -267,33 +308,21 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'edit')"
-                  :class="{ 'ih-data-disabled': !editChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :class="{ 'ih-data-disabled': !editChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'recall')"
-                  :class="{ 'ih-data-disabled': !recallChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :class="{ 'ih-data-disabled': !auditChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="returnStatus(row)"
-                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !changeButton(row) }"
-                  @click.native.prevent="updateInfo(row)"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -346,6 +375,7 @@ import UpdateUser from "./dialog/updateUser.vue";
   mixins: [PaginationMixin],
 })
 export default class UserList extends Vue {
+  private searchOpen = false;
   queryPageParameters: any = {
     channelId: null,
     channelGrade: null,
@@ -357,6 +387,7 @@ export default class UserList extends Vue {
     inputUser: null,
     special: null,
     storageNum: null,
+    approvalNo: null,
   };
   provinceOption: any = [];
   selection: any = [];
@@ -366,6 +397,26 @@ export default class UserList extends Vue {
     total: null,
     list: [],
   };
+
+  // 查询条件折叠/展开
+  private openToggle(): void {
+    this.searchOpen = !this.searchOpen;
+  }
+
+  // 呈批申请编号跳转
+  gotoNew(row: any) {
+    if (row.approvalId) {
+      console.log(row.approvalId);
+      window.open(`/web-sales/approval/info?id=${row.approvalId}`);
+    }
+  }
+
+  // 获取日期年月日
+  getDateStr(value: any = '') {
+    if (value) {
+      return value.substring(0, 10);
+    }
+  }
 
   editChange(row: any) {
     const DRAFT = row.status === "DRAFT";
@@ -444,6 +495,7 @@ export default class UserList extends Vue {
       inputUser: null,
       special: null,
       storageNum: null,
+      approvalNo: null,
     });
     this.provinceOption = [];
   }

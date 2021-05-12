@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:14:57
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 10:50:38
 -->
 <template>
   <div class="text-left">
@@ -19,13 +19,11 @@
             label="渠道商"
             align="left"
           >
-            <span class="text-ellipsis">{{ resPageInfo.channelName
-              }}<el-link
-                style="margin-left: 5px"
-                :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
-                type="primary"
-                target="_blank"
-              >详情</el-link></span>
+            <el-link
+              style="margin-left: 5px"
+              :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
+              type="primary"
+              target="_blank">{{ resPageInfo.channelName }}</el-link>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -38,55 +36,7 @@
             }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="渠道类型"
-            align="left"
-          >
-            <span>{{
-              $root.dictAllName(resPageInfo.channelType, "ChannelType")
-            }}</span>
-          </el-form-item>
-        </el-col>
-      </el-row>
-      <el-row>
-        <el-col :span="8">
-          <el-form-item
-            label="业务开展省份"
-            align="left"
-          >
-            <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="业务开展城市"
-            align="left"
-          >
-            <span>{{ $root.getAreaName(resPageInfo.city) }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="城市等级"
-            align="left"
-          >
-            <span>{{
-              $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-            }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="是否特批入库"
-            align="left"
-          >
-            <span>{{
-              $root.dictAllName(resPageInfo.special, "YesOrNoType")
-            }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
+<!--        <el-col :span="8">
           <el-form-item
             label="入库编号"
             align="left"
@@ -100,8 +50,69 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
+                $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
+              }}</span>
+          </el-form-item>
+        </el-col>-->
+<!--        <el-col :span="8">
+          <el-form-item
+            label="渠道类型"
+            align="left"
+          >
+            <span>{{
+              $root.dictAllName(resPageInfo.channelType, "ChannelType")
             }}</span>
+          </el-form-item>
+        </el-col>-->
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item
+            label="开展业务省市"
+            align="left"
+          >
+            <span>{{ $root.getAreaName(resPageInfo.province) }}/{{ $root.getAreaName(resPageInfo.city) }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="城市等级"
+            align="left"
+          >
+            <span>{{
+                $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+              }}</span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item
+            label="事业部"
+            align="left"
+          >
+            <span>
+              {{resPageInfo.departmentName}}
+            </span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item
+            label="是否特批入库"
+            align="left"
+          >
+            <span>{{
+                $root.dictAllName(resPageInfo.special, "YesOrNoType")
+              }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item
+            label="呈批申请编号"
+            align="left">
+            <span>{{resPageInfo.approvalNo ? resPageInfo.approvalNo : '-'}}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -121,35 +132,32 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.channelGradeItems"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+<!--        <el-table-column
           prop="cityGrade"
-          label="城市等级"
-        >
+          label="城市等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
         <el-table-column
           prop="channelGrade"
-          label="渠道等级"
-        >
+          label="渠道等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.channelGrade, "ChannelLevel")
           }}</template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column
           prop="gradeItem"
           label="评级项"
         ></el-table-column>
         <el-table-column
-          prop="inputValue"
-          label="录入信息"
-        ></el-table-column>
-        <el-table-column
           prop="gradeStandard"
           label="评级标准"
+        ></el-table-column>
+        <el-table-column
+          prop="inputValue"
+          label="填写信息"
         ></el-table-column>
       </el-table>
     </div>
@@ -266,31 +274,33 @@ import {
 })
 export default class Home extends Vue {
   @Prop() typeStr!: string;
+  @Prop() resPageInfo!: any; // 基础数据
 
   private get Id() {
     return this.$route.query.id;
   }
   private fileList = [];
-  private info = [];
   private remark = "";
 
-  resPageInfo: any = {
-    channelId: null,
-    channelGrade: null,
-    channelType: null,
-    province: null,
-    city: null,
-    cityGrade: null,
-    special: null,
-    storageNum: null,
-    status: null,
-    channelGradeItems: [],
-    channelGradeAttachments: [],
-  };
+  // resPageInfo: any = {
+  //   channelId: null,
+  //   channelGrade: null,
+  //   channelType: null,
+  //   province: null,
+  //   city: null,
+  //   cityGrade: null,
+  //   special: null,
+  //   storageNum: null,
+  //   status: null,
+  //   channelGradeItems: [],
+  //   channelGradeAttachments: [],
+  // };
   fileListType: any = [];
 
   async created() {
-    this.getInfo();
+    // this.getInfo();
+    // this.resPageInfo = this.$tool.deepClone(this.pageData);
+    await this.getFileListType(this.resPageInfo.channelGradeAttachments);
   }
   addDictList: any = [];
 

@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
- * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 10:15:50
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-11 20:28:16
 --> 
 --> 
 <template>
@@ -12,6 +12,14 @@
     <template v-slot:form>
       <el-form ref="form" label-width="100px">
         <el-row>
+          <el-col :span="8">
+            <el-form-item label="申请编号">
+              <el-input
+                v-model="queryPageParameters.approvalNo"
+                placeholder="申请编号"
+              ></el-input>
+            </el-form-item>
+          </el-col>
           <el-col :span="8">
             <el-form-item label="事业部">
               <IhSelectPageDivision
@@ -36,41 +44,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="发起日期">
-              <el-date-picker
-                style="width: 100%"
-                v-model="queryPageParameters.inputTime"
-                type="daterange"
-                align="left"
-                unlink-panels
-                range-separator="至"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd"
-                @change="inputTimeChange"
-              ></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经办人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.approvalUser"
-                placeholder="经办人"
-                clearable
-              >
-              </IhSelectPageUser>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="申请编号">
-              <el-input
-                v-model="queryPageParameters.approvalNo"
-                placeholder="申请编号"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
             <el-form-item label="状态">
               <el-select
                 v-model="queryPageParameters.status"
@@ -85,6 +58,33 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="经办人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.approvalUser"
+                placeholder="经办人"
+                clearable
+              >
+              </IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="发起日期">
+              <el-date-picker
+                style="width: 100%"
+                v-model="queryPageParameters.inputTime"
+                type="daterange"
+                align="left"
+                unlink-panels
+                range-separator="至"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="$root.pickerOptions"
+                value-format="yyyy-MM-dd"
+                @change="inputTimeChange"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
           <!-- <el-col :span="8">
@@ -154,11 +154,18 @@
           prop="approvalUserName"
           label="经办人"
         ></el-table-column>
-
         <el-table-column label="状态" width="120">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
-          }}</template>
+          <template slot-scope="scope">
+            <IhStatusComponent
+              :status="scope.row.status"
+              :status-obj="{
+                warning: 'Draft',
+                success: 'Approved',
+                error: 'ApprovalFailed',
+              }">
+              <div>{{scope.row.status ? $root.dictAllName(scope.row.status, "ChannelApprovalStatus") : '-'}}</div>
+            </IhStatusComponent>
+          </template>
         </el-table-column>
         <!-- <el-table-column
           prop="oaNo"

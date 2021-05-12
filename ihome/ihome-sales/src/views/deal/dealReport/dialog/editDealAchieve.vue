@@ -62,7 +62,7 @@
           <el-form-item label="角色人业绩" prop="corporateAchieve">
             <el-input
               @input="calculatePercentage($event, 'roleAchieveRatio')"
-              :disabled="data.currentEditItem.roleType === 'BranchOffice'"
+              :disabled="data.currentEditItem.roleType === 'BranchOffice' || isEditRoleRatio"
               v-model="form.corporateAchieve" v-digits="2" placeholder="" />
           </el-form-item>
         </el-col>
@@ -71,7 +71,7 @@
             <div class="div-disabled" v-if="!isEditRoleRatio">
               {{getPercentage(form.corporateAchieve, form.roleAchieveCap)}}%
             </div>
-            <div class="el-input el-input-group el-input-group--append" v-else>
+            <div class="el-input el-input-group el-input-group--append input-width" v-else>
               <el-input-number
                 v-digits="2"
                 class="input-number-left"
@@ -196,6 +196,7 @@
     @Prop({default: null}) data: any;
     dialogVisible = true;
     form: any = {
+      isZero: false, // 角色业绩比例是否为0
       commFees: 0, // 拆佣金额
       commFeesRatio: 0, // 拆佣金额比例
       corporateAchieve: 0, // 角色人业绩
@@ -247,6 +248,7 @@
         this.achieveTitle = '新增角色业绩';
       } else if (this.data.btnType === 'edit') {
         this.form = (this as any).$tool.deepClone(this.data.currentEditItem);
+        this.isEditRoleRatio = this.form.isZero; // 是否可以手动输入业绩比例
         if (this.form.rolerId === 0) {
           this.form.rolerId = null;
         }
@@ -272,7 +274,8 @@
                 this.dealRoleList.push(
                   {
                     ...L,
-                    roleAchieveCap: item.roleAchieveCap
+                    roleAchieveCap: item.roleAchieveCap,
+                    isZero: item.isZero,
                   }
                 );
               }
@@ -288,7 +291,8 @@
                 this.dealRoleList.push(
                   {
                     ...L,
-                    roleAchieveCap: item.roleAchieveCap
+                    roleAchieveCap: item.roleAchieveCap,
+                    isZero: item.isZero,
                   }
                 );
               }
@@ -459,6 +463,12 @@
     color: #f90;
     box-sizing: border-box;
     margin-bottom: 10px;
+  }
+
+  .input-width {
+    /deep/ .el-input-number {
+      width: 116px;
+    }
   }
 
   .input-number-left {
