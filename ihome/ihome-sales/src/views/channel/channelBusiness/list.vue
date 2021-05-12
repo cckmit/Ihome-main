@@ -200,10 +200,14 @@
           width="160"
         >
           <template v-slot="{ row }">
-            <div class="ih-status-dot">
-              <span class="dot" :class="getStatusDot(row.status)"></span>
-              <span>{{ $root.dictAllName(row.status, 'ChannelStatus') }}</span>
-            </div>
+            <StatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'DRAFT',
+                success: 'PASS'
+              }">
+              <div>{{ $root.dictAllName(row.status, 'ChannelStatus') }}</div>
+            </StatusComponent>
           </template>
         </el-table-column>
         <el-table-column
@@ -339,17 +343,6 @@ export default class List extends Vue {
   selectionData = [];
   isInput = true;
   private provinceList: any = [];
-
-  // 获取颜色
-  getStatusDot(status: any = '') {
-    if (status === 'DRAFT') {
-      return 'warning';
-    } else if (status === 'PASS') {
-      return 'success';
-    } else {
-      return 'primary';
-    }
-  }
 
   editChange(row: any) {
     const status = row.status === "DRAFT";

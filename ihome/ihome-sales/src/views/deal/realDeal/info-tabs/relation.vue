@@ -26,10 +26,14 @@
           <el-table-column prop="commAmount" label="本单应付" width="180"></el-table-column>
           <el-table-column prop="status" label="状态" width="200">
             <template slot-scope="scope">
-              <div class="deal-status-dot">
-                <span class="dot" :class="getStatusDot(scope.row.status)"></span>
-                <span>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</span>
-              </div>
+              <StatusComponent
+                :status="scope.row.status"
+                :status-obj="{
+                warning: 'Draft',
+                success: 'ReviewPassed'
+              }">
+                <div>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
+              </StatusComponent>
             </template>
           </el-table-column>
           <el-table-column prop="approveTime" label="审核通过时间" width="180">
@@ -72,16 +76,6 @@ export default class Relation extends Vue {
   }
   gotoNew(row: any) {
     window.open(`/web-sales/dealReport/info?id=${row.id}&type=ID`);
-  }
-  // 获取颜色
-  getStatusDot(status: any = '') {
-    if (status === 'Draft') {
-      return 'warning';
-    } else if (status === 'ReviewPassed') {
-      return 'success';
-    } else {
-      return 'primary';
-    }
   }
   // 获取日期年月日
   getDateStr(value: any = '') {

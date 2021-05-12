@@ -154,11 +154,18 @@
           prop="approvalUserName"
           label="经办人"
         ></el-table-column>
-
         <el-table-column label="状态" width="120">
-          <template slot-scope="scope">{{
-            $root.dictAllName(scope.row.status, "ChannelApprovalStatus")
-          }}</template>
+          <template slot-scope="scope">
+            <StatusComponent
+              :status="scope.row.status"
+              :status-obj="{
+                warning: 'Draft',
+                success: 'Approved',
+                error: 'ApprovalFailed',
+              }">
+              <div>{{$root.dictAllName(scope.row.status, "ChannelApprovalStatus") }}</div>
+            </StatusComponent>
+          </template>
         </el-table-column>
         <!-- <el-table-column
           prop="oaNo"

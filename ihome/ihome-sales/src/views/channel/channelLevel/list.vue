@@ -238,10 +238,14 @@
           label="状态"
           min-width="170">
           <template v-slot="{ row }">
-            <div class="ih-status-dot">
-              <span class="dot" :class="getStatusDot(row.status)"></span>
-              <span>{{$root.dictAllName(row.status, "ChannelGradeStatus")}}</span>
-            </div>
+            <StatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'DRAFT',
+                success: 'Approved'
+              }">
+              <div>{{$root.dictAllName(row.status, "ChannelGradeStatus")}}</div>
+            </StatusComponent>
           </template>
         </el-table-column>
         <el-table-column
@@ -416,17 +420,6 @@ export default class UserList extends Vue {
     if (row.approvalId) {
       console.log(row.approvalId);
       window.open(`/web-sales/approval/info?id=${row.approvalId}`);
-    }
-  }
-
-  // 获取颜色
-  getStatusDot(status: any = '') {
-    if (status === 'DRAFT') {
-      return 'warning';
-    } else if (status === 'Approved') {
-      return 'success';
-    } else {
-      return 'primary';
     }
   }
 

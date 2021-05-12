@@ -266,10 +266,14 @@
         ></el-table-column>
         <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">
-            <div class="ih-status-dot">
-              <span class="dot" :class="getStatusDot(scope.row.status)"></span>
-              <span>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</span>
-            </div>
+            <StatusComponent
+              :status="scope.row.status"
+              :status-obj="{
+                warning: 'Draft',
+                success: 'ReviewPassed'
+              }">
+              <div>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
+            </StatusComponent>
           </template>
         </el-table-column>
         <el-table-column
@@ -489,17 +493,6 @@ export default class RealDealList extends Vue {
       type:"CompanyKind",
       valid:"Valid",
     });
-  }
-
-  // 获取颜色
-  getStatusDot(status: any = '') {
-    if (status === 'Draft') {
-      return 'warning';
-    } else if (status === 'ReviewPassed') {
-      return 'success';
-    } else {
-      return 'primary';
-    }
   }
 
   // 改变查询时间
