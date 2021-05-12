@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-14 09:23:40
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-11 20:28:16
+ * @LastEditTime: 2021-05-12 15:05:22
 --> 
 --> 
 <template>
@@ -127,34 +127,28 @@
         :empty-text="emptyText"
       >
         <el-table-column type="selection" width="55"> </el-table-column>
-        <el-table-column
+<!--        <el-table-column
           fixed
           type="index"
           label="序号"
           width="50"
-        ></el-table-column>
+        ></el-table-column>-->
         <el-table-column
           prop="approvalNo"
           label="申请编号"
-          width="160"
+          min-width="120"
           fixed
         ></el-table-column>
         <el-table-column
           prop="approvalTitle"
           label="标题"
-          fixed
-        ></el-table-column>
-        <el-table-column prop="departmentName" label="事业部"></el-table-column>
-        <el-table-column
-          prop="inputTime"
-          label="发起日期"
-          width="100"
-        ></el-table-column>
-        <el-table-column
-          prop="approvalUserName"
-          label="经办人"
-        ></el-table-column>
-        <el-table-column label="状态" width="120">
+          min-width="320"
+          fixed>
+          <template slot-scope="scope">
+            <div>{{scope.row.approvalTitle ? scope.row.approvalTitle : '-'}}</div>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" min-width="120">
           <template slot-scope="scope">
             <IhStatusComponent
               :status="scope.row.status"
@@ -167,6 +161,17 @@
             </IhStatusComponent>
           </template>
         </el-table-column>
+        <el-table-column
+          prop="approvalUserName"
+          label="经办人"
+          min-width="100"
+        ></el-table-column>
+        <el-table-column prop="departmentName" label="事业部" min-width="220"></el-table-column>
+        <el-table-column
+          prop="inputTime"
+          label="发起日期"
+          min-width="80"
+        ></el-table-column>
         <!-- <el-table-column
           prop="oaNo"
           label="OA发文文号"

@@ -1,19 +1,10 @@
 <!--
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-11-24 10:49:09
- * @LastEditors: wwq
- * @LastEditTime: 2020-12-30 19:08:18
--->
-
-<!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
- * @LastEditors: zyc
- * @LastEditTime: 2020-12-11 16:36:15
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 16:44:38
 -->
 <template>
   <el-dialog
@@ -160,7 +151,7 @@
       <el-table-column
         prop="channelName"
         label="渠道商名称"
-        width="180"
+        width="250"
       ></el-table-column>
       <!-- <el-table-column
         prop="creditCode"
@@ -175,8 +166,7 @@
       <el-table-column
         prop="province"
         label="业务开展省份"
-        width="180"
-      >
+        width="130">
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.province) }}
         </template>
@@ -184,8 +174,7 @@
       <el-table-column
         prop="city"
         label="业务开展城市"
-        width="180"
-      >
+        width="180">
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.city) }}
         </template>
@@ -211,7 +200,7 @@
       <el-table-column
         prop="special"
         label="特批入库"
-        width="180"
+        width="90"
       >
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
@@ -224,15 +213,22 @@
         width="180"
       ></el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="handleSizeChangeMixin"
-      @current-change="handleCurrentChangeMixin"
-      :current-page.sync="queryPageParameters.pageNum"
-      :page-sizes="$root.pageSizes"
-      :page-size="queryPageParameters.pageSize"
-      :layout="$root.paginationLayout"
-      :total="resPageInfo.total"
-    ></el-pagination>
+    <div class="page-check-wrapper">
+      <div class="check">
+        <el-checkbox v-model="queryPageParameters.showFlag">仅展示可申请呈批信息</el-checkbox>
+      </div>
+      <div class="page">
+        <el-pagination
+          @size-change="handleSizeChangeMixin"
+          @current-change="handleCurrentChangeMixin"
+          :current-page.sync="queryPageParameters.pageNum"
+          :page-sizes="$root.pageSizes"
+          :page-size="queryPageParameters.pageSize"
+          :layout="$root.paginationLayout"
+          :total="resPageInfo.total"
+        ></el-pagination>
+      </div>
+    </div>
 
     <span
       slot="footer"
@@ -265,7 +261,7 @@ export default class ChannelApprovalGradesList extends Vue {
   @Prop({ default: null }) data: any;
   @Prop({ default: null }) departmentOrgId: any;
   dialogVisible = true;
-  title = "渠道合作信息列表";
+  title = "选择申请呈批信息";
   resPageInfo: any = {
     total: 0,
     list: [],
@@ -286,10 +282,12 @@ export default class ChannelApprovalGradesList extends Vue {
     status: "PASS",
     storageNum: null,
     provinceCity: null,
+
+    showFlag: true,
   };
 
   cancel() {
-    this.$emit("finish", false);
+    this.$emit("cancel", false);
   }
   reset() {
     Object.assign(this.queryPageParameters, {
@@ -317,9 +315,9 @@ export default class ChannelApprovalGradesList extends Vue {
 
   created() {
     console.log(this.data);
-    if (this.data == "Change") {
-      this.title = "渠道合作信息列表(变更信息)";
-    }
+    // if (this.data == "Change") {
+    //   this.title = "渠道合作信息列表(变更信息)";
+    // }
     this.getListMixin();
   }
   handleSelectionChange(val: any) {
@@ -356,4 +354,21 @@ export default class ChannelApprovalGradesList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.page-check-wrapper {
+  width: 96%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+
+  .check {
+    //flex: 1;
+    text-align: left;
+  }
+
+  .page {
+    text-align: right;
+  }
+}
 </style>
