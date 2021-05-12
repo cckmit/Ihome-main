@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 14:39:22
+ * @LastEditTime: 2021-05-12 19:41:12
 -->
 <template>
   <div class="text-left">
@@ -98,7 +98,12 @@
           <el-form-item
             label="呈批申请编号"
             align="left">
-            <span>{{resPageInfo.approvalNo ? resPageInfo.approvalNo : '-'}}</span>
+            <el-link
+              v-if="resPageInfo.approvalNo"
+              type="primary"
+              class="font-weight-600" @click="gotoNew(resPageInfo.approvalNo)">
+              {{ resPageInfo.approvalNo }}</el-link>
+            <span v-else>-</span>
           </el-form-item>
         </el-col>
 <!--        <el-col :span="8">
@@ -268,6 +273,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 //引入请求数据的api
 import {
+  get_channelApproval_getIdByCode__approvalNo,
   get_channelGradeChange_get__id,
   post_channelGradeChange_approveRecord,
 } from "../../../../api/channel/index";
@@ -285,13 +291,45 @@ export default class Home extends Vue {
   private fileList = [];
   private remark = "";
   @Prop() resPageInfo!: any; // 基础数据
-  fileListType: any = [];
+  // fileListType: any = [];
 
   get dictsList() {
     const list = (this.$root as any).dictAllList(
       "ChannelLevelStandardAttachment"
     );
     return list.filter((i: any) => i.tag.includes("ChannelGradeAttachment"));
+  }
+
+  get fileListType () {
+    let tempList: any = [];
+    const channelLevelDict = (this.$root as any)
+      .dictAllList("ChannelLevelStandardAttachment")
+      .filter((v: any) => v.tag.includes("ChannelLevelStandardAttachment"));
+    const newDict: any = channelLevelDict.filter((j: any) => {
+      return this.resPageInfo.channelGradeAttachmentChanges.map((i: any) => i.type).includes(j.code);
+    });
+    let list = (this.$root as any).dictAllList(
+      "ChannelLevelStandardAttachment"
+    );
+    list = list.filter((i: any) => i.tag.includes("ChannelGradeAttachment"));
+    const dictList = newDict.concat(list);
+    tempList = dictList.map((v: any) => {
+      let arr: any = [];
+      this.resPageInfo.channelGradeAttachmentChanges
+        .filter((j: any) => j.type === v.code)
+        .forEach((h: any) => {
+          if (h.fileId) {
+            arr.push(h);
+          } else {
+            arr = [];
+          }
+        });
+      return {
+        ...v,
+        fileList: arr,
+      };
+    });
+    return tempList;
   }
 
   async pass(val: any) {
@@ -360,8 +398,23 @@ export default class Home extends Vue {
 
   async created() {
     // this.getInfo();
-    console.log(this.resPageInfo);
-    this.getFileListType(this.resPageInfo.channelGradeAttachmentChanges);
+    // console.log(this.resPageInfo);
+    // this.getFileListType(this.resPageInfo.channelGradeAttachmentChanges);
+  }
+
+  // 呈批申请编号跳转
+  async gotoNew(approvalNo: any) {
+    if (approvalNo) {
+      console.log(approvalNo);
+      let id: any = await get_channelApproval_getIdByCode__approvalNo({
+        approvalNo: approvalNo,
+      });
+      if (id) {
+        window.open(`/web-sales/approval/info?id=${id}`);
+      } else {
+        this.$message.warning("没获取到对应的呈批id");
+      }
+    }
   }
 }
 </script>

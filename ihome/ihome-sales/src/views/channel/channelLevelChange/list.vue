@@ -290,7 +290,7 @@ import { Component, Vue } from "vue-property-decorator";
 import {
   post_channelGradeChange_getList,
   post_channelGradeChange_delete__id,
-  post_channelGradeChange_backToDraft__id,
+  post_channelGradeChange_backToDraft__id, get_channelApproval_getIdByCode__approvalNo,
 } from "@/api/channel/index";
 import UpdateUser from "./dialog/updateUser.vue";
 import PaginationMixin from "../../../mixins/pagination";
@@ -325,10 +325,17 @@ export default class LevelChangeList extends Vue {
   }
 
   // 呈批申请编号跳转
-  gotoNew(row: any) {
-    if (row.approvalId) {
-      console.log(row.approvalId);
-      window.open(`/web-sales/approval/info?id=${row.approvalId}`);
+  async gotoNew(approvalNo: any) {
+    if (approvalNo) {
+      console.log(approvalNo);
+      let id: any = await get_channelApproval_getIdByCode__approvalNo({
+        approvalNo: approvalNo,
+      });
+      if (id) {
+        window.open(`/web-sales/approval/info?id=${id}`);
+      } else {
+        this.$message.warning("没获取到对应的呈批id");
+      }
     }
   }
 

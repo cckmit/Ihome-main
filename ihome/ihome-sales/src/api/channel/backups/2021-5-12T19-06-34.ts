@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-5-12 19:06:34
+//2021-4-20 11:10:08 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/
@@ -59,10 +59,6 @@ return await request.post< any,any> (basePath+'/channel/getListByCityAndDeptWith
 export async function post_channel_getListByName (d?: any) {
 return await request.post< any,any> (basePath+'/channel/getListByName', d)
 }
-/**根据渠道商id集合批量返回渠道商名称*/
-export async function post_channel_getNameByIds (d?: any) {
-return await request.post< IdNameResultVO[],IdNameResultVO[]> (basePath+'/channel/getNameByIds', d)
-}
 /**渠道信息变更跟进人*/
 export async function post_channel_modifyFollowUser (d?: any) {
 return await request.post< number,number> (basePath+'/channel/modifyFollowUser', d)
@@ -78,10 +74,6 @@ return await request.post< string,string> (basePath+'/channelAgent/add', d)
 /**批量删除*/
 export async function post_channelAgent_batchDelete (d?: any) {
 return await request.post< number,number> (basePath+'/channelAgent/batchDelete', d)
-}
-/**检查哪些渠道商没有经纪人并批量执行插入*/
-export async function post_channelAgent_checkAndAdd (d?: any) {
-return await request.post< number,number> (basePath+'/channelAgent/checkAndAdd', d)
 }
 /**删除渠道经纪人信息*/
 export async function post_channelAgent_delete__id (d?: any) {
@@ -123,7 +115,7 @@ return await request.post< any,any> (basePath+'/channelAgent/getChannelAgentAndC
 export async function get_channelAgent_getChannelIdByUSerId__userId (d?: any) {
 return await request.get<number,number>(basePath+'/channelAgent/getChannelIdByUSerId/{userId}', { params: d })
 }
-/**根据渠道商id获取经纪人负责人列表数据*/
+/**根据渠道经纪人名称，渠道商id查询渠道经纪人列表*/
 export async function post_channelAgent_getDealChannelAgentList (d?: any) {
 return await request.post< any,any> (basePath+'/channelAgent/getDealChannelAgentList', d)
 }
@@ -178,10 +170,6 @@ return await request.post< ChannelApprovalRecord[],ChannelApprovalRecord[]> (bas
 /**查询当前OA审批状态*/
 export async function post_channelApproval_getFlowState__id (d?: any) {
 return await request.post< string,string> (basePath+'/channelApproval/getFlowState/{id}', d)
-}
-/**根据渠道呈批编号获取对应ID*/
-export async function get_channelApproval_getIdByCode__approvalNo (d?: any) {
-return await request.get<number,number>(basePath+'/channelApproval/getIdByCode/{approvalNo}', { params: d })
 }
 /**查询渠道呈批列表*/
 export async function post_channelApproval_getList (d?: any) {
@@ -522,7 +510,7 @@ total: number;
 }
 /**AllChannelNameQueryVO*/
 export interface AllChannelNameQueryVO {
-/**分销协议渠道类型(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**分销协议渠道类型(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**周期城市编码*/
 cycleCity: string;
@@ -761,8 +749,6 @@ userId: number;
 export interface ChannelApprovalAttachment {
 /**渠道呈批ID*/
 approvalId: number;
-/**渠道等级ID*/
-channelGradeId: number;
 /**渠道商ID*/
 channelId: number;
 /**城市*/
@@ -855,8 +841,6 @@ gradeType: string;
 export interface ChannelApprovalGradeDetail {
 /**渠道呈批ID*/
 approvalId: number;
-/**附件信息*/
-channelApprovalAttachments: ChannelApprovalAttachment[];
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
@@ -871,8 +855,6 @@ cityGrade: string;
 gradeId: number;
 /**渠道等级类型(Basic-Basic、Change-Change)*/
 gradeType: string;
-/**业务开展省份*/
-province: string;
 /**是否特批入库(Yes-是、No-否)*/
 special: string;
 /**入库编号*/
@@ -1713,8 +1695,6 @@ updateUser: number;
 }
 /**ChannelGrade*/
 export interface ChannelGrade {
-/**呈批申请编号*/
-approvalNo: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
@@ -1767,8 +1747,6 @@ pageSize: number;
 }
 /**ChannelGradeAndChannelVO*/
 export interface ChannelGradeAndChannelVO {
-/**呈批申请编号*/
-approvalNo: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道等级ID*/
@@ -1946,8 +1924,6 @@ storageNum: string;
 }
 /**ChannelGradeChangeDetail*/
 export interface ChannelGradeChangeDetail {
-/**呈批申请编号*/
-approvalNo: string;
 /**变更原因*/
 changeReason: string;
 /**变更时间(yyyy-MM-dd)*/
@@ -2070,8 +2046,6 @@ storageNum: string;
 }
 /**ChannelGradeChangeVO*/
 export interface ChannelGradeChangeVO {
-/**呈批申请编号*/
-approvalNo: string;
 /**变更原因*/
 changeReason: string;
 /**变更时间(yyyy-MM-dd)*/
@@ -2123,8 +2097,6 @@ updateUser: number;
 }
 /**ChannelGradeDetail*/
 export interface ChannelGradeDetail {
-/**呈批申请编号*/
-approvalNo: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**附件信息*/
@@ -2147,8 +2119,6 @@ createTime: string;
 createUser: number;
 /**已删除*/
 deleted: number;
-/**事业部名称*/
-departmentName: string;
 /**事业部*/
 departmentOrgId: number;
 /**ID*/
@@ -2179,8 +2149,6 @@ departmentOrgId: number;
 }
 /**ChannelGradeGetOneVO*/
 export interface ChannelGradeGetOneVO {
-/**呈批申请编号*/
-approvalNo: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
@@ -2297,8 +2265,6 @@ userId: number;
 }
 /**ChannelGradeQueryVO*/
 export interface ChannelGradeQueryVO {
-/**呈批申请编号*/
-approvalNo: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
@@ -2524,8 +2490,6 @@ storageNum: string;
 }
 /**ChannelGradeVO*/
 export interface ChannelGradeVO {
-/**呈批申请编号*/
-approvalNo: string;
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/
@@ -2665,7 +2629,7 @@ name: string;
 }
 /**ChannelNameQueryVO*/
 export interface ChannelNameQueryVO {
-/**分销协议渠道类型(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
+/**分销协议渠道类型(BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
 /**周期城市编码*/
 cycleCity: string;
@@ -3085,6 +3049,27 @@ pageSize: number;
 /**状态(Valid-有效、Invalid-无效)*/
 status: string;
 }
+/**DealChannelAgentVO*/
+export interface DealChannelAgentVO {
+/**渠道商ID*/
+channelId: number;
+/**渠道商名称*/
+channelName: string;
+/**邮箱*/
+email: string;
+/**ID*/
+id: number;
+/**手机号码*/
+mobile: string;
+/**姓名*/
+name: string;
+/**是否结佣(Has-有、No-无)*/
+settlementFlag: string;
+/**状态(Valid-有效、Invalid-无效)*/
+status: string;
+/**用户ID*/
+userId: number;
+}
 /**FlowComment*/
 export interface FlowComment {
 /**事项id*/
@@ -3127,18 +3112,6 @@ postId: number;
 postName: string;
 /**流程id*/
 summaryId: number;
-}
-/**IdListVO*/
-export interface IdListVO {
-/**ID集合*/
-ids: number[];
-}
-/**IdNameResultVO*/
-export interface IdNameResultVO {
-/**id*/
-id: number;
-/**名称*/
-name: string;
 }
 /**OaAttachmentVO*/
 export interface OaAttachmentVO {
