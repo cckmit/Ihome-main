@@ -273,14 +273,14 @@
         </el-table-column>
         <el-table-column prop="status" label="状态" min-width="190">
           <template slot-scope="scope">
-            <StatusComponent
+            <IhStatusComponent
               :status="scope.row.status"
               :status-obj="{
                 warning: 'Draft',
                 success: 'ReviewPassed'
               }">
               <div>{{ $root.dictAllName(scope.row.status, 'DealStatus') }}</div>
-            </StatusComponent>
+            </IhStatusComponent>
           </template>
         </el-table-column>
         <el-table-column prop="dealOrg" label="组织信息" min-width="280"></el-table-column>

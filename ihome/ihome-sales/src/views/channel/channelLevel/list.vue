@@ -238,14 +238,14 @@
           label="状态"
           min-width="170">
           <template v-slot="{ row }">
-            <StatusComponent
+            <IhStatusComponent
               :status="row.status"
               :status-obj="{
                 warning: 'DRAFT',
                 success: 'Approved'
               }">
               <div>{{$root.dictAllName(row.status, "ChannelGradeStatus")}}</div>
-            </StatusComponent>
+            </IhStatusComponent>
           </template>
         </el-table-column>
         <el-table-column

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-05-12 08:35:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 09:08:22
+ * @LastEditTime: 2021-05-12 09:58:33
 -->
 <template>
   <div class="ih-status-dot">
@@ -17,7 +17,7 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 @Component({
   components: {},
 })
-export default class StatusComponent extends Vue {
+export default class IhStatusComponent extends Vue {
   @Prop() status!: string; // 状态值
   @Prop({
     default: () => {
@@ -31,11 +31,13 @@ export default class StatusComponent extends Vue {
   statusObj?: any; // 状态对象: key是样式名，value是状态值
 
   get getStatusClassName() {
-    let className: any = 'primary'; // 默认显示primary类名
+    let className: any = '';
     if (this.status) {
       for (let key in this.statusObj) {
         if (this.statusObj[key] === this.status) {
           className = key;
+        } else {
+          className = 'primary'; // 其他状态默认显示primary类名
         }
       }
     }

@@ -4,10 +4,10 @@
  * @Author: lsj
  * @Date: 2021-05-12 09:02:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 09:02:11
+ * @LastEditTime: 2021-05-12 09:58:56
  */
-import StatusComponent from "./src/statusComponent.vue";
+import IhStatusComponent from "./src/statusComponent.vue";
 
 export {
-    StatusComponent
+    IhStatusComponent
 };

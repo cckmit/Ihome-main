@@ -200,14 +200,14 @@
           width="160"
         >
           <template v-slot="{ row }">
-            <StatusComponent
+            <IhStatusComponent
               :status="row.status"
               :status-obj="{
                 warning: 'DRAFT',
                 success: 'PASS'
               }">
               <div>{{ $root.dictAllName(row.status, 'ChannelStatus') }}</div>
-            </StatusComponent>
+            </IhStatusComponent>
           </template>
         </el-table-column>
         <el-table-column

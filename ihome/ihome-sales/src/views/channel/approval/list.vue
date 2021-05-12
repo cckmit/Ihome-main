@@ -156,15 +156,15 @@
         ></el-table-column>
         <el-table-column label="状态" width="120">
           <template slot-scope="scope">
-            <StatusComponent
+            <IhStatusComponent
               :status="scope.row.status"
               :status-obj="{
                 warning: 'Draft',
                 success: 'Approved',
                 error: 'ApprovalFailed',
               }">
-              <div>{{$root.dictAllName(scope.row.status, "ChannelApprovalStatus") }}</div>
-            </StatusComponent>
+              <div>{{scope.row.status ? $root.dictAllName(scope.row.status, "ChannelApprovalStatus") : '-'}}</div>
+            </IhStatusComponent>
           </template>
         </el-table-column>
         <!-- <el-table-column

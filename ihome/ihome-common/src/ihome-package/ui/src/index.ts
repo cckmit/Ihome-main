@@ -43,7 +43,7 @@ import {
 // import { IhSelectPageDivision } from '../packages/select-page';
 import { IhTableCheckBox } from '../packages/table-checkbox'
 import { IhLeftRightContainer } from '../packages/left-right-container'
-import { StatusComponent } from '../packages/status-component'
+import { IhStatusComponent } from '../packages/status-component'
 export default (Vue: any) => {
   Vue.component("IhTree", IhTree);
   Vue.component("IhTableRadio", IhTableRadio);
@@ -79,6 +79,6 @@ export default (Vue: any) => {
   Vue.component("IhSelectPageByChannelCompany", IhSelectPageByChannelCompany);
   Vue.component("IhSelectPageByChannelBroker", IhSelectPageByChannelBroker);
   Vue.component("IhSelectPageByAgency", IhSelectPageByAgency);
-  Vue.component("StatusComponent", StatusComponent);
+  Vue.component("IhStatusComponent", IhStatusComponent);
 
 };
