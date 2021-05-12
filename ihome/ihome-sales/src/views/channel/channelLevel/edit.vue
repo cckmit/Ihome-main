@@ -8,283 +8,298 @@
 -->
 <template>
   <IhPage>
-    <template v-slot:form>
-      <div class="text-left">
-        <p class="ih-info-title">基础信息</p>
-        <el-form
-          ref="form"
-          :model="resPageInfo"
-          :rules="rules"
-          label-width="120px"
-        >
+    <div v-if="Id">
+      <el-row class="ih-info-line">
+        <el-col class="text-left">
+          <h3>入库编号：{{ resPageInfo.storageNum }}</h3>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="18">
           <el-row>
-            <el-col :span="8">
-              <el-form-item
-                label="渠道商"
-                align="left"
-                prop="channelId"
-              >
-                <div style="display: flex; justify-contant: flex-start">
-                  <IhSelectPageByChannel
-                    :disabled="$route.name === 'channelLevelChange'"
-                    :search-name="resPageInfo.channelName"
-                    v-model="resPageInfo.channelId"
-                    clearable
-                    placeholder="请选择渠道商"
-                  ></IhSelectPageByChannel>
-                  <el-link
-                    style="margin-left: 10px; text-align: center; width: 50px"
-                    :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
-                    type="primary"
-                    target="_blank"
-                    :disabled="!resPageInfo.channelId"
-                  >详情</el-link>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item
-                label="渠道等级"
-                prop="channelGrade"
-              >
-                <el-select
-                  v-model="resPageInfo.channelGrade"
-                  clearable
-                  placeholder="渠道等级"
-                  class="width--100"
-                  @change="getTableData"
-                >
-                  <el-option
-                    v-for="item in $root.dictAllList('ChannelLevel')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item
-                label="渠道类型"
-                align="left"
-              >
-                <span>{{
-                  $root.dictAllName(resPageInfo.channelType, "ChannelType")
-                }}</span>
-              </el-form-item>
+            <el-col class="ih-info-item-right item-padding-left-0">录入人：{{resPageInfo.inputUser }}</el-col>
+          </el-row>
+        </el-col>
+        <el-col :span="6" class="text-right">
+          <el-row>
+            <el-col class="text-right">当前状态</el-col>
+          </el-row>
+        </el-col>
+      </el-row>
+      <el-row class="ih-info-line">
+        <el-col :span="18">
+          <el-row>
+            <el-col class="ih-info-item-right item-padding-left-0">录入时间：{{resPageInfo.createTime }}</el-col>
+          </el-row>
+        </el-col>
+        <el-col
+          :span="6"
+          class="text-right"
+          style="font-weight: 700; font-size: 20px">
+          <el-row>
+            <el-col class="text-right">
+              <div class="ih-status-dot flex-content" v-if="resPageInfo.status">
+                <span class="dot" :class="getStatusDot(resPageInfo.status)"></span>
+                <span>{{ $root.dictAllName(resPageInfo.status, "ChannelGradeStatus") }}</span>
+              </div>
+              <div v-else>-</div>
             </el-col>
           </el-row>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item
-                label="业务开展省市"
-                prop="provinceOption"
-              >
-                <IhCascader
-                  :level="2"
-                  :checkStrictly="false"
-                  @change="getTableData"
-                  v-model="resPageInfo.provinceOption"
+        </el-col>
+      </el-row>
+    </div>
+    <div class="text-left">
+      <p class="ih-info-title">基础信息</p>
+      <el-form
+        ref="form"
+        :model="resPageInfo"
+        :rules="rules"
+        label-width="120px">
+        <el-row>
+          <el-col :span="8">
+            <el-form-item
+              label="渠道商"
+              align="left"
+              prop="channelId">
+              <div style="display: flex; justify-contant: flex-start">
+                <IhSelectPageByChannel
+                  :disabled="$route.name === 'channelLevelChange'"
+                  :search-name="resPageInfo.channelName"
+                  v-model="resPageInfo.channelId"
                   clearable
-                  placeholder="请选择"
-                  class="width--100"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item
-                label="城市等级"
-                align="left"
-              >
-                <span>{{
-                  resPageInfo.cityGrade
-                    ? $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-                    : ""
-                }}</span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item
-                label="是否特批入库"
-                prop="special"
-              >
-                <el-select
-                  v-model="resPageInfo.special"
-                  clearable
-                  placeholder="特批入库"
-                  class="width--100"
-                >
-                  <el-option
-                    v-for="item in $root.dictAllList('YesOrNoType')"
-                    :key="item.code"
-                    :label="item.name"
-                    :value="item.code"
-                  ></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item
-                label="入库编号"
-                align="left"
-              >
-                <el-input
-                  clearable
-                  v-model="resPageInfo.storageNum"
-                  placeholder="系统自动创建"
-                  disabled
-                  maxlength="32"
-                />
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item
-                label="事业部"
-                align="left"
-              >
-                <IhSelectPageDivision v-model="resPageInfo.departmentOrgId"></IhSelectPageDivision>
-              </el-form-item>
-            </el-col>
-          </el-row>
-        </el-form>
-
-        <p class="ih-info-title">
-          评级信息
-          <span style="font-size: 15px; margin-left: 10px">以下标准任填一项</span>
-          <el-link
-            class="margin-left-15"
-            href="/web-sales/channelRatings/list"
-            type="success"
-            target="_blank"
-          >查看所有标准</el-link>
-          <!-- <el-link
-            style="margin-left: 15px; font-size: 15px"
-            @click="copy"
-            type="primary"
-            >复制评级信息</el-link
-          > -->
-        </p>
-        <br />
-        <el-form
-          ref="dynamicValidateForm"
-          class="padding-left-20"
-        >
-          <el-table
-            class="ih-table"
-            :data="resPageInfo.channelGradeItems"
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="cityGrade"
+                  placeholder="请选择渠道商"
+                ></IhSelectPageByChannel>
+                <el-link
+                  style="margin-left: 10px; text-align: center; width: 50px"
+                  :href="`/web-sales/channelBusiness/info?id=${resPageInfo.channelId}`"
+                  type="primary"
+                  target="_blank"
+                  :disabled="!resPageInfo.channelId"
+                >详情</el-link>
+              </div>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="渠道等级"
+              prop="channelGrade">
+              <el-select
+                v-model="resPageInfo.channelGrade"
+                clearable
+                placeholder="渠道等级"
+                class="width--100"
+                @change="getTableData">
+                <el-option
+                  v-for="item in $root.dictAllList('ChannelLevel')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+<!--          <el-col :span="8">-->
+<!--            <el-form-item-->
+<!--              label="渠道类型"-->
+<!--              align="left">-->
+<!--                <span>{{-->
+<!--                    $root.dictAllName(resPageInfo.channelType, "ChannelType")-->
+<!--                  }}</span>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item
+              label="开展业务省市"
+              prop="provinceOption">
+              <IhCascader
+                :level="2"
+                :checkStrictly="false"
+                @change="getTableData"
+                v-model="resPageInfo.provinceOption"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
               label="城市等级"
-            >
-              <template v-slot="{ row }">{{
+              align="left">
+                <span>{{
+                    resPageInfo.cityGrade
+                      ? $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+                      : ""
+                  }}</span>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="8">
+            <el-form-item
+              label="事业部"
+              align="left">
+              <IhSelectPageDivision v-model="resPageInfo.departmentOrgId"></IhSelectPageDivision>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item
+              label="是否特批入库"
+              prop="special">
+              <el-select
+                v-model="resPageInfo.special"
+                clearable
+                placeholder="特批入库"
+                style="width: 28%">
+                <el-option
+                  v-for="item in $root.dictAllList('YesOrNoType')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+      </el-form>
+
+      <p class="ih-info-title">
+        评级信息
+        <span style="font-size: 15px; margin-left: 10px">以下标准任填一项</span>
+        <el-link
+          class="margin-left-15"
+          href="/web-sales/channelRatings/list"
+          type="success"
+          target="_blank"
+        >查看所有标准</el-link>
+        <!-- <el-link
+          style="margin-left: 15px; font-size: 15px"
+          @click="copy"
+          type="primary"
+          >复制评级信息</el-link
+        > -->
+      </p>
+      <br />
+      <el-form
+        ref="dynamicValidateForm"
+        class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="resPageInfo.channelGradeItems"
+          style="width: 100%">
+<!--          <el-table-column
+            prop="cityGrade"
+            label="城市等级">
+            <template v-slot="{ row }">{{
                 $root.dictAllName(row.cityGrade, "CityLevel")
               }}</template>
-            </el-table-column>
-            <el-table-column
-              prop="channelGrade"
-              label="渠道等级"
-            >
-              <template v-slot="{ row }">{{
+          </el-table-column>
+          <el-table-column
+            prop="channelGrade"
+            label="渠道等级">
+            <template v-slot="{ row }">{{
                 $root.dictAllName(row.channelGrade, "ChannelLevel")
               }}</template>
-            </el-table-column>
-            <el-table-column
-              prop="gradeItem"
-              label="评级项"
-            ></el-table-column>
-            <el-table-column
-              prop="inputValue"
-              label="录入信息"
-            >
-              <template v-slot="{ row }">
-                <el-form-item>
-                  <el-input
-                    clearable
-                    :maxlength="8"
-                    v-model="row.inputValue"
-                  ></el-input>
-                </el-form-item>
-              </template>
-            </el-table-column>
-            <el-table-column
-              prop="gradeStandard"
-              label="评级标准"
-            ></el-table-column>
-          </el-table>
-        </el-form>
-        <br />
-        <p class="ih-info-title">
-          附件信息
-          <el-link
-            class="margin-left-15"
-            href="http://zxgk.court.gov.cn/zhzxgk/"
-            type="success"
-            target="_blank"
-          >综合查询被执行人</el-link>
-        </p>
-        <div class="padding-left-20">
-          <el-table
-            class="ih-table"
-            :data="fileListType"
-            style="width: 100%"
-          >
-            <el-table-column
-              prop="type"
-              width="180"
-              label="类型"
-              align="center"
-            >
-              <template v-slot="{ row }">
-                <div><span
-                    style="color: red"
-                    v-if="row.subType"
-                  >*</span>{{row.name}}
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column label="附件">
-              <template v-slot="{ row }">
-                <IhUpload
-                  v-model="row.fileList"
-                  :file-size="10"
-                  :file-type="row.code"
-                  size="100px"
-                  @newFileList="queryNew"
-                ></IhUpload>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div
-          v-if="$route.name === 'channelLevelChange'"
-          class="text-left"
+          </el-table-column>-->
+          <el-table-column
+            prop="gradeItem"
+            label="评级项"
+          ></el-table-column>
+          <el-table-column
+            prop="gradeStandard"
+            label="评级标准"
+          ></el-table-column>
+          <el-table-column
+            prop="inputValue"
+            label="填写信息">
+            <template v-slot="{ row }">
+              <el-form-item>
+                <el-input
+                  clearable
+                  :maxlength="8"
+                  v-model="row.inputValue"
+                ></el-input>
+              </el-form-item>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-form>
+      <br />
+      <p class="ih-info-title">
+        附件信息
+        <el-link
+          class="margin-left-15"
+          href="http://zxgk.court.gov.cn/zhzxgk/"
+          type="success"
+          target="_blank"
+        >综合查询被执行人</el-link>
+        <span
+          class="margin-left-10"
+          style="font-size: 12px; color: #909399"
+        >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
+      </p>
+      <div class="padding-left-20">
+        <el-table
+          class="ih-table"
+          :data="fileListType"
+          style="width: 100%"
         >
-          <br />
-          <p class="ih-info-title">变更原因</p>
-          <el-input
-            class="padding-left-20"
-            style="box-sizing: border-box"
-            type="textarea"
-            :autosize="{ minRows: 5, maxRows: 10 }"
-            placeholder="请输入内容"
-            v-model="changeReason"
+          <el-table-column
+            prop="type"
+            width="180"
+            label="类型"
+            align="center"
           >
-          </el-input>
-        </div>
-        <div class="margin-top-30 text-center">
-          <el-button
-            @click="pass('1')"
-            type="primary"
-          >保存</el-button>
-          <el-button
-            @click="pass('2')"
-            type="success"
-          >提交</el-button>
-        </div>
+            <template v-slot="{ row }">
+              <div><span
+                style="color: red"
+                v-if="row.subType"
+              >*</span>{{row.name}}
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column label="附件">
+            <template v-slot="{ row }">
+              <IhUpload
+                v-model="row.fileList"
+                :file-size="10"
+                :file-type="row.code"
+                size="100px"
+                @newFileList="queryNew"
+              ></IhUpload>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
-    </template>
+      <div
+        v-if="$route.name === 'channelLevelChange'"
+        class="text-left"
+      >
+        <br />
+        <p class="ih-info-title">变更原因</p>
+        <el-input
+          class="padding-left-20"
+          style="box-sizing: border-box"
+          type="textarea"
+          :autosize="{ minRows: 5, maxRows: 10 }"
+          placeholder="请输入内容"
+          v-model="changeReason"
+        >
+        </el-input>
+      </div>
+      <div class="margin-top-30 text-center">
+        <el-button
+          @click="pass('1')"
+          type="primary"
+        >保存</el-button>
+        <el-button
+          @click="pass('2')"
+          type="success"
+        >提交</el-button>
+      </div>
+    </div>
   </IhPage>
 </template>
 
@@ -342,12 +357,23 @@ export default class ChannelRates extends Vue {
   };
 
   async created() {
-    this.getInfo();
+    await this.getInfo();
     let paramsJson: any = sessionStorage.getItem("channelData");
     let params = JSON.parse(paramsJson);
     if (params) {
       this.resPageInfo.channelId = params.id;
       this.resPageInfo.channelName = params.name;
+    }
+  }
+
+  // 获取颜色
+  getStatusDot(status: any = '') {
+    if (status === 'DRAFT') {
+      return 'warning';
+    } else if (status === 'Approved') {
+      return 'success';
+    } else {
+      return 'primary';
     }
   }
 
@@ -568,5 +594,20 @@ export default class ChannelRates extends Vue {
 .msg-title {
   text-align: left;
   margin-left: 25px;
+}
+.ih-page {
+  overflow: hidden;
+}
+.item-padding-left-0 {
+  padding-left: 0px;
+}
+/deep/ .ih-info-line {
+  padding: 0 10px 10px 10px;
+}
+/deep/ .el-card__header {
+  background: #f9f9f9;
+}
+.flex-content {
+  justify-content: flex-end;
 }
 </style>

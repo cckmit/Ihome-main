@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-25 17:14:57
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 10:50:38
 -->
 <template>
   <div class="text-left">
@@ -36,7 +36,25 @@
             }}</span>
           </el-form-item>
         </el-col>
+<!--        <el-col :span="8">
+          <el-form-item
+            label="入库编号"
+            align="left"
+          >
+            <span>{{ resPageInfo.storageNum }}</span>
+          </el-form-item>
+        </el-col>
         <el-col :span="8">
+          <el-form-item
+            label="状态"
+            align="left"
+          >
+            <span>{{
+                $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
+              }}</span>
+          </el-form-item>
+        </el-col>-->
+<!--        <el-col :span="8">
           <el-form-item
             label="渠道类型"
             align="left"
@@ -45,7 +63,7 @@
               $root.dictAllName(resPageInfo.channelType, "ChannelType")
             }}</span>
           </el-form-item>
-        </el-col>
+        </el-col>-->
       </el-row>
       <el-row>
         <el-col :span="8">
@@ -62,38 +80,41 @@
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
-            }}</span>
+                $root.dictAllName(resPageInfo.cityGrade, "CityLevel")
+              }}</span>
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item
+            label="事业部"
+            align="left"
+          >
+            <span>
+              {{resPageInfo.departmentName}}
+            </span>
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8">
           <el-form-item
             label="是否特批入库"
             align="left"
           >
             <span>{{
-              $root.dictAllName(resPageInfo.special, "YesOrNoType")
-            }}</span>
+                $root.dictAllName(resPageInfo.special, "YesOrNoType")
+              }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="24">
           <el-form-item
-            label="入库编号"
-            align="left"
-          >
-            <span>{{ resPageInfo.storageNum }}</span>
+            label="呈批申请编号"
+            align="left">
+            <span>{{resPageInfo.approvalNo ? resPageInfo.approvalNo : '-'}}</span>
           </el-form-item>
         </el-col>
-<!--        <el-col :span="8">
-          <el-form-item
-            label="状态"
-            align="left"
-          >
-            <span>{{
-              $root.dictAllName(resPageInfo.status, "ChannelGradeStatus")
-            }}</span>
-          </el-form-item>
-        </el-col>-->
       </el-row>
     </el-form>
 
@@ -111,35 +132,32 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.channelGradeItems"
-        style="width: 100%"
-      >
-        <el-table-column
+        style="width: 100%">
+<!--        <el-table-column
           prop="cityGrade"
-          label="城市等级"
-        >
+          label="城市等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.cityGrade, "CityLevel")
           }}</template>
         </el-table-column>
         <el-table-column
           prop="channelGrade"
-          label="渠道等级"
-        >
+          label="渠道等级">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.channelGrade, "ChannelLevel")
           }}</template>
-        </el-table-column>
+        </el-table-column>-->
         <el-table-column
           prop="gradeItem"
           label="评级项"
         ></el-table-column>
         <el-table-column
-          prop="inputValue"
-          label="录入信息"
-        ></el-table-column>
-        <el-table-column
           prop="gradeStandard"
           label="评级标准"
+        ></el-table-column>
+        <el-table-column
+          prop="inputValue"
+          label="填写信息"
         ></el-table-column>
       </el-table>
     </div>

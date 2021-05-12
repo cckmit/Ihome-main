@@ -308,33 +308,21 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'edit')"
-                  :class="{ 'ih-data-disabled': !editChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
-                  :class="{ 'ih-data-disabled': !editChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'recall')"
-                  :class="{ 'ih-data-disabled': !recallChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
-                  :class="{ 'ih-data-disabled': !auditChange(row) }"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="returnStatus(row)"
-                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !changeButton(row) }"
-                  @click.native.prevent="updateInfo(row)"
-                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
