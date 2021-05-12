@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 10:03:46
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:38:45
+ * @LastEditTime: 2021-05-12 16:20:14
 -->
 <template>
   <ih-page class="text-left notSale">
@@ -46,13 +46,13 @@
           </el-col>
           <el-col :span="12">
             <el-form-item
-              label="佣金类型"
+              label="乙方类型"
               prop="commissionKind"
             >
               <el-select
                 v-model="info.commissionKind"
                 disabled
-                placeholder="请选择佣金类型"
+                placeholder="请选择乙方类型"
                 style="max-width: 350px; width: 100%"
               >
                 <el-option

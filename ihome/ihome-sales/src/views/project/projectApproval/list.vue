@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-27 17:11:14
  * @LastEditors: wwq
- * @LastEditTime: 2021-05-11 16:28:49
+ * @LastEditTime: 2021-05-12 15:43:56
 -->
 <template>
   <IhPage label-width="100px">
@@ -280,14 +280,9 @@
                 >作废周期</el-dropdown-item>
                 <el-dropdown-item
                   :class="{'ih-data-disabled': !setStartChange(row)}"
-                  @click.native.prevent="setStart(row, 'start')"
+                  @click.native.prevent="setStart(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.SZQDHSLZT'"
-                >设置启动函申领状态</el-dropdown-item>
-                <el-dropdown-item
-                  :class="{'ih-data-disabled': !setNoStartChange(row)}"
-                  @click.native.prevent="setStart(row, 'noStart')"
-                  v-has="'B.SALES.PROJECT.TERMLIST.SZFQDHSLZT'"
-                >设置非启动函申领状态</el-dropdown-item>
+                >设置乙方合同申领状态</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="copyTerm(row)"
                   v-has="'B.SALES.PROJECT.TERMLIST.ADD'"
@@ -589,8 +584,7 @@ export default class ProjectApproval extends Vue {
     });
   }
 
-  setStart(data: any, type: any) {
-    this.setData.type = type;
+  setStart(data: any) {
     this.setData.id = data.termId;
     this.setDialogVisible = true;
   }

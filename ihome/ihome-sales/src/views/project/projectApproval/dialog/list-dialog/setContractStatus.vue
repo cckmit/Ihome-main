@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-01 16:51:36
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 15:14:43
+ * @LastEditTime: 2021-05-12 15:50:02
 -->
 <template>
   <el-dialog
@@ -108,12 +108,12 @@
         size="small"
         type="success"
         @click="setStatus('Business')"
-      >批量设置业务线申领</el-button>
+      >批量设置业务线可见</el-button>
       <el-button
         size="small"
         type="success"
         @click="setStatus('MiddleAndBack')"
-      >批量设置中后台申领</el-button>
+      >批量设置业务线不可见</el-button>
       <el-button
         size="small"
         type="danger"
@@ -137,9 +137,7 @@
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
   post_distributContract_getLinkDistractList__termId,
-  post_distributContract_getChannelDistractList__termId,
   post_distributContract_setLinkDistractStatus,
-  post_distributContract_setChannelDistractStatus,
 } from "@/api/project/index";
 
 @Component({})
@@ -151,23 +149,12 @@ export default class SetContractStatusDialog extends Vue {
 
   async created() {
     if (this.data.id) {
-      if (this.data.type === "start") {
-        this.getStartInfo();
-      } else {
-        this.getNoStartInfo();
-      }
+      this.getStartInfo();
     }
   }
 
   async getStartInfo() {
     const res = await post_distributContract_getLinkDistractList__termId({
-      termId: this.data.id,
-    });
-    this.tableData = res;
-  }
-
-  async getNoStartInfo() {
-    const res = await post_distributContract_getChannelDistractList__termId({
       termId: this.data.id,
     });
     this.tableData = res;
@@ -224,20 +211,11 @@ export default class SetContractStatusDialog extends Vue {
         exClaim: v.exClaim,
         claimPower: v.claimPower,
       }));
-      if (this.data.type === "start") {
-        try {
-          await post_distributContract_setLinkDistractStatus(arr);
-          this.$emit("finish");
-        } catch (err) {
-          console.log(err);
-        }
-      } else {
-        try {
-          await post_distributContract_setChannelDistractStatus(arr);
-          this.$emit("finish");
-        } catch (err) {
-          console.log(err);
-        }
+      try {
+        await post_distributContract_setLinkDistractStatus(arr);
+        this.$emit("finish");
+      } catch (err) {
+        console.log(err);
       }
     } else {
       this.$message.warning("请先勾选表格数据");
