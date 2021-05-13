@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 16:05:21
+ * @LastEditTime: 2021-05-13 16:28:28
 -->
 <template>
   <el-dialog
@@ -291,20 +291,15 @@ export default class Obligation extends Vue {
       minWidth: 180,
     },
     {
+      slot: "contType",
+    },
+    {
       label: "周期名称",
       prop: "cycleName",
       minWidth: 150,
     },
     {
       slot: "busModel",
-    },
-    {
-      label: "渠道商",
-      prop: "agencyName",
-      minWidth: 150,
-    },
-    {
-      slot: "contType",
     },
     {
       slot: "serReceive",
@@ -394,6 +389,7 @@ export default class Obligation extends Vue {
   private async getList() {
     this.resPageInfo = await post_payDeal_getList({
       ...this.info,
+      companyKind: this.data.companyKind,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
