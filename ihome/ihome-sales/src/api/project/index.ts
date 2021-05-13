@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-5-11 3:39:26 ├F10: PM┤
+//2021-5-13 3:51:19 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -323,7 +323,7 @@ return await request.get<DistributContractVO,DistributContractVO>(basePath+'/dis
 export async function post_distributContract_getItemByCondition (d?: any) {
 return await request.post< CollectandsendDetailVO,CollectandsendDetailVO> (basePath+'/distributContract/getItemByCondition', d)
 }
-/**设置启动函申领状态*/
+/**设置乙方合同申领状态所加载数据列表*/
 export async function post_distributContract_getLinkDistractList__termId (d?: any) {
 return await request.post< DistributContractByTermVO[],DistributContractByTermVO[]> (basePath+'/distributContract/getLinkDistractList/{termId}', d)
 }
@@ -1143,7 +1143,7 @@ agencySettleCondtion: string;
 attachItemVOS: AttachTerm[];
 /**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**公司种类(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
 companyKind: string;
@@ -1172,7 +1172,7 @@ titleOrRemark: string;
 }
 /**ApplyDistractQueryVo*/
 export interface ApplyDistractQueryVo {
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
@@ -1511,6 +1511,23 @@ termCalcVo: TermCalcVo;
 /**(必填)周期ID*/
 termId: number;
 }
+/**CalcComplateExcelVO_1*/
+export interface CalcComplateExcelVO_1 {
+/**项目代理费成交情况*/
+agencyCalcComplateModelVOS: CalcComplateModelVO_1[];
+/**项目代理费合计项*/
+agencySum: CalcComplateMxTotalVO_1;
+/**文件ID*/
+fileId: string;
+/**项目服务费成交情况*/
+serviceCalcComplateModelVOS: CalcComplateModelVO_1[];
+/**项目服务费合计项*/
+serviceSum: CalcComplateMxTotalVO_1;
+/**(必填)测算指标[表头]*/
+termCalcVo: TermCalcVo;
+/**(必填)周期ID*/
+termId: number;
+}
 /**CalcComplateModelVO*/
 export interface CalcComplateModelVO {
 /**项目成交明细*/
@@ -1518,8 +1535,52 @@ calcComplateMxVOS: object;
 /**项目成交表头*/
 calcComplateVO: CalcComplateVO;
 }
+/**CalcComplateModelVO_1*/
+export interface CalcComplateModelVO_1 {
+/**项目成交明细*/
+calcComplateMxVOS: object;
+/**项目成交表头*/
+calcComplateVO: CalcComplateVO_1;
+}
 /**CalcComplateMxTotalVO*/
 export interface CalcComplateMxTotalVO {
+/**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
+costTypeEnum: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**分销业绩金额*/
+distributeAchieveAmount: number;
+/**预计成交套数*/
+estimateComplateNum: number;
+/**预计支付渠道佣金总额*/
+estimatePayChannelAmount: number;
+/**预计应收金额*/
+estimateReceiveAmount: number;
+/**总包业绩金额*/
+generalAchieveAmount: number;
+/**其它渠道费用金额*/
+otherChannelAmount: number;
+/**其它外拆*/
+otherDemolition: number;
+/**平台留存率*/
+plateRate: number;
+/**备注*/
+remark: string;
+/**立项周期ID*/
+termId: number;
+/**汇总ID*/
+totalId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**CalcComplateMxTotalVO_1*/
+export interface CalcComplateMxTotalVO_1 {
 /**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
 costTypeEnum: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1600,8 +1661,90 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**CalcComplateMxVO_1*/
+export interface CalcComplateMxVO_1 {
+/**成交ID*/
+complateId: number;
+/**成交明细ID*/
+complateMxId: number;
+/**成交客户ID*/
+consumerId: number;
+/**客户名称*/
+consumerName: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**分销业绩*/
+distributeAchieveAmount: number;
+/**成交套数*/
+estimateComplateNum: number;
+/**预计支付渠道佣金总额*/
+estimatePayChannelAmount: number;
+/**预计应收金额*/
+estimateReceiveAmount: number;
+/**总包业绩*/
+generalAchieveAmount: number;
+/**其它渠道费用金额*/
+otherChannelAmount: number;
+/**其它外拆*/
+otherDemolition: number;
+/**平台留存率*/
+plateRate: number;
+/**备注*/
+remark: string;
+/**细分业务(All-总包、District-分销)*/
+subdivideEnum: string;
+/**立项周期ID*/
+termId: number;
+/**客户类型(成交方式) NATIONALMARKET-全民营销 NATURAL-自然到访 SELF-自行成交 SELFCHANNEL-自渠 BIG-一级大行 MIDDLE-二级中行 SMALL-三级小行  APPOINT-指定中介行(NationalMarket-全民营销、Natural-自然到访、Self-自行成交、SelfChannel-自渠、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方、InfieldCompany-内部公司)*/
+transactionEnum: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**CalcComplateVO*/
 export interface CalcComplateVO {
+/**成交ID*/
+complateId: number;
+/**成交总套数*/
+complateNum: number;
+/**费用类型 SERVICE-服务、AGENT-代理(ServiceFee-服务费、AgencyFee-代理费)*/
+costTypeEnum: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**预计渠道派发*/
+estimatedChannelSend: number;
+/**垫佣金额预估*/
+estimatedPadCommission: number;
+/**垫佣预估比率*/
+estimatedPadCommissionRate: number;
+/**预计总收款*/
+estimatedTotalReceipt: number;
+/**假定成交价*/
+estimatedTransactionPrice: number;
+/**营销留存*/
+marketingRetention: number;
+/**其它渠道费用金额*/
+otherChannelAmount: number;
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
+propertyEnum: string;
+/**立项周期ID*/
+termId: number;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
+/**CalcComplateVO_1*/
+export interface CalcComplateVO_1 {
 /**成交ID*/
 complateId: number;
 /**成交总套数*/
@@ -2733,7 +2876,7 @@ agencyContrictId: number;
 agencySettleCondtion: string;
 /**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
 contractKind: string;
@@ -2902,7 +3045,7 @@ agencyContrictId: number;
 attachTerms: AttachTerm[];
 /**渠道类型 BIG-大行/大平台 MIDDLE-中行/中平台 SMALL-小行/小平台(InfieldCompany-内部公司、BigPlatform-大平台、Big-大型中介/一级平台、Middle-中型中介/二级平台、Small-小型中介、Appoint-指定中介行、Strategic-战略合作方)*/
 channelEnum: string;
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**公司种类(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
 companyKind: string;
@@ -2941,6 +3084,8 @@ agencyContrictId: number;
 agencyCostCondition: string;
 /**代理费结算方式*/
 agencyCostSettleWay: string;
+/**代理费计付标准条款*/
+agencyFeeCalculation: string;
 /**代理费计付标准备注*/
 agencyFeeRemark: string;
 /**房屋未成交乙方退回代理费比例*/
@@ -2955,7 +3100,7 @@ attachTermItemVOS: AttachTerm[];
 channelEnum: string;
 /**市*/
 city: string;
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
 commissionKind: string;
@@ -2997,6 +3142,10 @@ exInvolvedCommiss: string;
 fileId: string;
 /**店组ID*/
 groupId: number;
+/**发票开具条款*/
+invoiceConditions: string;
+/**发票开具条款类型(OrdinaryInvoice-增值税普通发票、SpecialInvoice-增值税专用发票)*/
+invoiceConditionsType: string;
 /**是否垫佣  Veto("否"),LessOrEqualOne("回款周期≤1个月"),Between1To3("1个月＜回款周期≤3个月"),Between3To6("3个月＜回款周期≤6个月"),Between6To9("6个月＜回款周期≤9个月"),Between9To12("9个月＜回款周期≤12个月");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
 /**甲方公司 甲方合同-乙方*/
@@ -3036,6 +3185,8 @@ agencyContrictId: number;
 agencyCostCondition: string;
 /**代理费结算方式*/
 agencyCostSettleWay: string;
+/**代理费计付标准条款*/
+agencyFeeCalculation: string;
 /**代理费计付标准备注*/
 agencyFeeRemark: string;
 /**房屋未成交乙方退回代理费比例*/
@@ -3050,7 +3201,7 @@ attachTermItemVOS: AttachTerm[];
 channelEnum: string;
 /**市*/
 city: string;
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**佣金类型(Channel-渠道佣金、Infield-内场佣金)*/
 commissionKind: string;
@@ -3092,6 +3243,10 @@ exInvolvedCommiss: string;
 fileId: string;
 /**店组ID*/
 groupId: number;
+/**发票开具条款*/
+invoiceConditions: string;
+/**发票开具条款类型(OrdinaryInvoice-增值税普通发票、SpecialInvoice-增值税专用发票)*/
+invoiceConditionsType: string;
 /**是否垫佣  Veto("否"),LessOrEqualOne("回款周期≤1个月"),Between1To3("1个月＜回款周期≤3个月"),Between3To6("3个月＜回款周期≤6个月"),Between6To9("6个月＜回款周期≤9个月"),Between9To12("9个月＜回款周期≤12个月");(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
 /**甲方公司 甲方合同-乙方*/
@@ -3362,6 +3517,8 @@ province: string;
 provinceName: string;
 /**简称*/
 shortName: string;
+/**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+status: string;
 }
 /**FlowComment*/
 export interface FlowComment {
@@ -4058,6 +4215,10 @@ proRecord: string;
 province: string;
 /**省名称*/
 provinceName: string;
+/**子项目集合,保存不用传值*/
+sonProjec: Project[];
+/**子项目集合ID*/
+sonProjecIds: string;
 }
 /**PartAInfoByDealDto*/
 export interface PartAInfoByDealDto {
@@ -4408,6 +4569,67 @@ termId: number;
 /**周期名称*/
 termName: string;
 }
+/**Project*/
+export interface Project {
+/**审核状态   CONDUCT-审核中 ADOPT-审核通过 REJECT-审核驳回(Draft-草稿、Conduct-审核中、Adopt-审核通过、Reject-审核驳回)*/
+auditEnum: string;
+/**审核时间(yyyy-MM-dd HH:mm:ss)*/
+auditTime: string;
+/**项目均价*/
+averagePrice: number;
+/**明源楼盘ID*/
+buildingGuid: string;
+/**明源楼盘父ID*/
+buildingParentGuid: string;
+/**市*/
+city: string;
+/**明源公司名称*/
+companyName: string;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**开发商ID*/
+developerId: number;
+/**区*/
+district: string;
+/**是否市场化*/
+exMarket: number;
+/**是否明远源*/
+exMinyuan: number;
+/**是否同步明源房间*/
+exSyncRoom: number;
+/**纬度*/
+lat: number;
+/**经度*/
+lng: number;
+/**明源楼盘名称*/
+myName: string;
+/**父项目ID*/
+parentId: number;
+/**预关联父项目ID*/
+preParentId: number;
+/**项目地址*/
+proAddr: string;
+/**id*/
+proId: number;
+/**项目推广名*/
+proName: string;
+/**项目编号*/
+proNo: string;
+/**项目备案名*/
+proRecord: string;
+/**省*/
+province: string;
+/**搜索地址*/
+searchAddr: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
+}
 /**ProjectAddArgs*/
 export interface ProjectAddArgs {
 /**附件图片*/
@@ -4668,6 +4890,8 @@ exParent: number;
 myName: string;
 /**父项目ID*/
 parentId: number;
+/**预关联父项目ID，如果字段有值代表关联在审核中，那么需要提示不能再次关联父项目*/
+preParentId: number;
 /**项目地址*/
 proAddr: string;
 /**id*/
@@ -4864,6 +5088,8 @@ companyName: string;
 id: number;
 /**一手代理简称*/
 shortName: string;
+/**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+status: string;
 }
 /**QueryCompanyNameVO*/
 export interface QueryCompanyNameVO {
@@ -5092,7 +5318,7 @@ toilet: number;
 export interface SetDistractStatus {
 /**(必填)中介分销合同ID*/
 agencyContrictId: number;
-/**申领权限(Business-业务线申领、MiddleAndBack-中后台申领)*/
+/**申领权限(Business-业务线可见、MiddleAndBack-业务线不可见)*/
 claimPower: string;
 /**(必填)是否可申领(Yes-是、No-否)*/
 exClaim: string;
@@ -5387,6 +5613,8 @@ agencyContrictId: number;
 agencyCostCondition: string;
 /**7（2）代理费结算方式*/
 agencyCostSettleWay: string;
+/**代理费计付标准条款*/
+agencyFeeCalculation: string;
 /**备注*/
 agencyFeeRemark: string;
 /**房屋未成交乙方退回代理费比例*/
@@ -5419,6 +5647,10 @@ designatedAgency: string;
 designatedAgencyId: number;
 /**文件地址*/
 fileId: string;
+/**7.3描述：发票开具条款*/
+invoiceConditions: string;
+/**7.3枚举：发票开具条款类型(OrdinaryInvoice-增值税普通发票、SpecialInvoice-增值税专用发票)*/
+invoiceConditionsType: string;
 /**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
 /**甲方公司[我司主体] 甲方合同-乙方*/
@@ -5454,6 +5686,8 @@ agencyContrictId: number;
 agencyCostCondition: string;
 /**7（2）代理费结算方式*/
 agencyCostSettleWay: string;
+/**代理费计付标准条款*/
+agencyFeeCalculation: string;
 /**备注*/
 agencyFeeRemark: string;
 /**房屋未成交乙方退回代理费比例*/
@@ -5486,6 +5720,10 @@ designatedAgency: string;
 designatedAgencyId: number;
 /**文件地址*/
 fileId: string;
+/**7.3描述：发票开具条款*/
+invoiceConditions: string;
+/**7.3枚举：发票开具条款类型(OrdinaryInvoice-增值税普通发票、SpecialInvoice-增值税专用发票)*/
+invoiceConditionsType: string;
 /**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 padCommissionEnum: string;
 /**甲方公司[我司主体] 甲方合同-乙方*/
@@ -6525,4 +6763,6 @@ province: string;
 provinceName: string;
 /**简称*/
 shortName: string;
+/**状态(Draft-起草、WaitAuditByBranchHead-待分公司业管审核、Audited-已审核)*/
+status: string;
 }

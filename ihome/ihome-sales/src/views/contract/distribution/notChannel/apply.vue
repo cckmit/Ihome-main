@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 16:34:44
+ * @LastEditTime: 2021-05-13 15:35:28
 -->
 <template>
   <IhPage class="text-left">
@@ -300,6 +300,7 @@ export default class NotChannelApply extends Vue {
     unContractLiability: null,
     titleOrRemark: null,
     channelAccountData: null,
+    claimPower: null,
   };
   private channelForm: any = {
     channelCompanyId: null,
@@ -498,6 +499,7 @@ export default class NotChannelApply extends Vue {
           agencyFeeReturnRate: res.agencyFeeReturnRate,
           agencyFeeReturnTime: res.agencyFeeReturnTime,
           agencyId: res.agencyContrictId,
+          claimPower: res.claimPower,
           annexList: res.attachTermItemVOS.map((i: any) => ({
             attachmentSuffix: i.fileName,
             fileNo: i.originalPdfId,
