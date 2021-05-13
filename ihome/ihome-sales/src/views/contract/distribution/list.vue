@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-13 15:46:39
+ * @LastEditTime: 2021-05-13 17:11:19
 -->
 <template>
   <IhPage label-width="100px">
@@ -884,6 +884,10 @@ export default class DistributionList extends Vue {
   }
   private handleExport() {
     const token: any = getToken();
+    let params = { ...this.queryPageParameters };
+    if (this.$route.name === "DistributionListByBusiness") {
+      params.claimPower = "Business";
+    }
     axios({
       method: "POST",
       url: `/sales-api/contract/export/distribution/list`,
@@ -893,7 +897,7 @@ export default class DistributionList extends Vue {
         "Content-Type": "application/json",
         Authorization: "bearer " + token,
       },
-      data: { ...this.queryPageParameters },
+      data: params,
     }).then((res: any) => {
       if (res.data.type === "application/json") {
         let reader = new FileReader();
