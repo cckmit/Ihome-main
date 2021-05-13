@@ -44,7 +44,7 @@
               <el-table-column prop="channelApprovalAttachments" label="特批入库材料" min-width="200">
                 <template slot-scope="scope">
                   <div
-                    class="margin-right-10"
+                    class="file-width"
                     v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments" :key="cIndex">
                     <IhFilePreview :data="cItem"></IhFilePreview>
                   </div>
@@ -264,6 +264,11 @@ export default class InvitationCodeDetails extends Vue {
   /deep/ .el-textarea__inner {
     background-color: white;
     color: black;
+  }
+}
+.file-width {
+  /deep/ .el-image {
+    width: 60px !important;
   }
 }
 </style>

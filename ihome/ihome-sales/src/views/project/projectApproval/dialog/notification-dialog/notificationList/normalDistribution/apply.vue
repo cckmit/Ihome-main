@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 19:30:18
+ * @LastEditTime: 2021-05-13 09:08:46
 -->
 <template>
   <ih-page class="text-left">
@@ -114,8 +114,7 @@
           <div>3.1 甲方权利与义务</div>
           <div class="margin-left-20">
             <div>3.1.1 乙方介绍的客户前来参观了解现场时，甲方应当尽力配合乙方的工作，协助促成交易。</div>
-            <div>3.1.2 甲方负责收取乙方推荐客户支付的相关费用，并指导乙方推荐客户与项目发展商签订买卖合同。</div>
-            <div>3.1.3 甲方应该按照本协议约定的费用标准和时间向乙方支付代理费。</div>
+            <div>3.1.2 甲方应该按照本协议约定的费用标准和时间向乙方支付代理费。</div>
           </div>
           <br />
           <div>3.2 乙方权利与义务</div>
@@ -146,11 +145,25 @@
             </el-date-picker>
           </el-form-item>
           ，到期后除双方另行续约外，本协议终止。服务期限内甲方可因销售情况单方终止本协议，
-          甲方提前3日书面通知乙方终止本协议的，通知书送达乙方之日为协议终止日。
+          甲方书面通知乙方终止本协议的，通知书送达乙方之日为协议终止日。
         </div>
         <div class="font-weight">五、代理费计付标准</div>
-        <div>5.1 甲方按乙方实际完成的销售金额或销售套数计付代理费，
-          实际完成的销售金额或销售套数指乙方在代理期内客户签订《商品房买卖合同》的签约总金额或签约总套数：</div>
+        <div>
+          <el-form-item
+            label="5.1"
+            label-width="30px"
+          >
+            <el-input
+              show-word-limit
+              class="textareaClass"
+              maxlength="2000"
+              type="textarea"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入代理费计付标准"
+              v-model="info.agencyFeeCalculation"
+            />
+          </el-form-item>
+        </div>
         <br />
         <div>代理费计提标准</div>
         <br />
@@ -403,7 +416,41 @@
             />
           </el-form-item>
         </div>
-        <div>7.3 结算代理费前乙方需提供增值税专用发票，如乙方仅能提供增值税普通发票需扣除6%或3%税费。</div>
+        <div>
+          <el-form-item
+            label="7.3"
+            prop='invoiceConditionsType'
+            label-width="35px"
+          >
+            <el-select
+              v-model="info.invoiceConditionsType"
+              clearable
+              placeholder="请选择"
+              @change="invoiceConditionsTypeChange"
+            >
+              <el-option
+                v-for="item in $root.dictAllList('InvoiceConditionsType')"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label=" "
+            label-width="0"
+          >
+            <el-input
+              class="textareaClass"
+              maxlength="2000"
+              show-word-limit
+              type="textarea"
+              :autosize="{ minRows: 4, maxRows: 8 }"
+              placeholder="请输入代理费结算条件"
+              v-model="info.invoiceConditions"
+            />
+          </el-form-item>
+        </div>
         <br />
         <div>7.4 无论出现任何原因导致客户无法成交或客户发生退房、挞定情形的或发生投诉、诉讼导致甲方需退回
           <u style="font-weight: 600">{{ $root.dictAllName(info.costSettleType, 'CostSettleType')}}</u>
@@ -593,7 +640,7 @@ export default class NormalSalesApply extends Vue {
     contractTitle: null,
     contractSubtitle: null,
     agencyFeeRemark:
-      "成交时间节点判断以客户签订《认购书》为准。（根据实际情况添加）",
+      "1、如不同的时间段存在不同的代理费计提标准，则最终的代理费计提标准以客户签订《认购书》的时间为准",
     timeList: [],
     channelEnum: null,
     designatedAgencyId: null,
@@ -622,6 +669,10 @@ export default class NormalSalesApply extends Vue {
       8.1.8 其他有损害甲方及其关联公司合法权益和声誉的行为。`,
     supplementary: null,
     titleOrRemark: null,
+    agencyFeeCalculation:
+      "甲方按乙方实际完成的销售金额或销售套数计付代理费，实际完成的销售金额或销售套数指乙方在代理期内客户签订《商品房买卖合同》的签约总金额或签约总套数：",
+    invoiceConditionsType: null,
+    invoiceConditions: null,
   };
   isShow: any = false;
   padCommissionEnumOptions: any = [];
@@ -722,6 +773,13 @@ export default class NormalSalesApply extends Vue {
       {
         required: true,
         message: "请填写违约金比例",
+        trigger: "change",
+      },
+    ],
+    invoiceConditionsType: [
+      {
+        required: true,
+        message: "请选择增值税发票",
         trigger: "change",
       },
     ],
@@ -968,6 +1026,16 @@ export default class NormalSalesApply extends Vue {
       this.info.agencyCostCondition = `乙方引荐客户支付首期房款，签订《商品房买卖合同》及其相关配套的法律文书（须要修改），且开发商完成结算明细确认（即项目开发商总经理书面签字确认）后，乙方提交齐备的代理费核算文件（。。。。。。）及增值税发票的前提下，具备代理费结算条件。`;
     } else {
       this.info.agencyCostCondition = "";
+    }
+  }
+
+  invoiceConditionsTypeChange(val: any) {
+    if (val === "OrdinaryInvoice") {
+      this.info.invoiceConditions = `结算代理费前乙方需提供增值税普通发票。`;
+    } else if (val === "SpecialInvoice") {
+      this.info.invoiceConditions = `结算代理费前乙方需提供增值税专用发票，如乙方仅能提供增值税普通发票需扣除6%或3%税费。`;
+    } else {
+      this.info.invoiceConditions = "";
     }
   }
 

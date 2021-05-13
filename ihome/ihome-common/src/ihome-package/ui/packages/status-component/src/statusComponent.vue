@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-05-12 08:35:11
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 09:58:33
+ * @LastEditTime: 2021-05-13 14:34:22
 -->
 <template>
   <div class="ih-status-dot">
@@ -33,11 +33,10 @@ export default class IhStatusComponent extends Vue {
   get getStatusClassName() {
     let className: any = '';
     if (this.status) {
+      className = 'primary'; // 默认显示primary类名 - 主要是其他状态
       for (let key in this.statusObj) {
         if (this.statusObj[key] === this.status) {
           className = key;
-        } else {
-          className = 'primary'; // 其他状态默认显示primary类名
         }
       }
     }
