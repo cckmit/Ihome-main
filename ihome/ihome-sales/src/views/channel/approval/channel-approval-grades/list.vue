@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-13 15:36:29
+ * @LastEditTime: 2021-05-13 17:21:33
 -->
 <template>
   <el-dialog
@@ -354,6 +354,8 @@ export default class ChannelApprovalGradesList extends Vue {
     console.log(row);
     if (row.status !== 'PASS') {
       return false;
+    } else {
+      return true;
     }
   }
   handleSelectionChange(val: any) {
