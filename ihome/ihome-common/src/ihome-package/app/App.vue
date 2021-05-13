@@ -3,23 +3,19 @@
  * @version: 
  * @Author: zyc
  * @Date: 2020-06-29 16:35:32
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-14 17:14:13
---> 
-<!--
- * @Descripttion: 
- * @version: 
- * @Author: zyc
- * @Date: 2020-06-29 16:35:32
- * @LastEditors: zyc
- * @LastEditTime: 2020-09-29 15:18:06
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-13 15:13:19
 --> 
 <template>
-  <div id="app" class="root">
+  <div
+    id="app"
+    class="root"
+  >
     <keep-alive>
       <router-view
         class="router-view keep-alive"
         v-if="$route.meta.keepAlive"
+        :key="$route.path"
       ></router-view>
     </keep-alive>
     <router-view
@@ -141,12 +137,10 @@ export default class App extends Vue {
     }
 
     try {
-       (this as any).$qiankun?.appRoutes(crumbs, routes);
+      (this as any).$qiankun?.appRoutes(crumbs, routes);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-
-   
   }
 }
 </script>
