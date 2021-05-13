@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-26 11:33:10
+ * @LastEditTime: 2021-05-13 17:10:28
 -->
 <template>
   <IhPage label-width="120px">
@@ -24,6 +24,23 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="收款方类型">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.companyKind"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('CompanyKind')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
             <el-form-item label="渠道商">
               <IhSelectPageByChannel
                 clearable
@@ -33,39 +50,13 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="组织">
+            <el-form-item label="归属组织">
               <IhSelectPageDivision
                 v-model="queryPageParameters.belongOrgId"
-                placeholder="请选择组织"
+                placeholder="请选择归属组织"
                 clearable
               ></IhSelectPageDivision>
               <!-- <IhSelectOrgTree v-model="queryPageParameters.belongOrgId"></IhSelectOrgTree> -->
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="结算方式">
-              <el-select
-                style="width: 100%"
-                v-model="queryPageParameters.settlementMethod"
-                clearable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('SettlementMethod')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="制单人">
-              <IhSelectPageUser
-                v-model="queryPageParameters.makerId"
-                clearable
-              >
-              </IhSelectPageUser>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -86,20 +77,20 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="制单日期">
-              <el-date-picker
+            <el-form-item label="结算方式">
+              <el-select
                 style="width: 100%"
-                v-model="timeList"
-                type="daterange"
-                align="left"
-                unlink-panels
-                range-separator="到"
-                start-placeholder="开始日期"
-                end-placeholder="结束日期"
-                :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                :default-time="['00:00:00', '23:59:59']"
-              ></el-date-picker>
+                v-model="queryPageParameters.settlementMethod"
+                clearable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('SettlementMethod')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -117,6 +108,32 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="制单人">
+              <IhSelectPageUser
+                v-model="queryPageParameters.makerId"
+                clearable
+              >
+              </IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="制单日期">
+              <el-date-picker
+                style="width: 100%"
+                v-model="timeList"
+                type="daterange"
+                align="left"
+                unlink-panels
+                range-separator="到"
+                start-placeholder="开始日期"
+                end-placeholder="结束日期"
+                :picker-options="$root.pickerOptions"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                :default-time="['00:00:00', '23:59:59']"
+              ></el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
@@ -138,11 +155,24 @@
           @click="exportMsg()"
           v-has="'B.SALES.PAYOFF.PAYOFFLIST.DCLB'"
         >导出</el-button>
-        <el-button
-          type="success"
-          @click="add()"
-          v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
-        >发起支付申请</el-button>
+        <el-dropdown
+          trigger="click"
+          style="margin: 0 10px 0 10px"
+        >
+          <el-button
+            type="primary"
+            v-has="'B.SALES.PAYOFF.PAYOFFLIST.FFZFSQ'"
+          >发起申请<i class="el-icon-arrow-down el-icon--right"></i>
+          </el-button>
+          <el-dropdown-menu slot="dropdown">
+            <template v-for="(item, i) in $root.dictAllList('CompanyKind')">
+              <el-dropdown-item
+                :key="i"
+                @click.native.prevent="add(item.code)"
+              >{{item.name}}</el-dropdown-item>
+            </template>
+          </el-dropdown-menu>
+        </el-dropdown>
         <el-button
           type="danger"
           @click="remove(null, 'duo')"
@@ -170,12 +200,16 @@
           width="180"
         ></el-table-column>
         <el-table-column
-          label="所属组织"
-          prop="belongOrgName"
-          width="180"
-        ></el-table-column>
+          label="收款方类型"
+          prop="companyKind"
+          width="150"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.companyKind, "CompanyKind")
+          }}</template>
+        </el-table-column>
         <el-table-column
-          label="渠道商"
+          label="收款方名称"
           prop="agencyName"
           width="150"
         ></el-table-column>
@@ -201,11 +235,25 @@
           align="center"
         >
           <template v-slot="{ row }">
-            <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes' }">
+            <!-- <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes' }">
               {{$root.dictAllName(row.status, "PayoffStatus")}}
-            </div>
+            </div> -->
+            <IhStatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'Unconfirm',
+                success: 'PaymentSuccessful',
+              }"
+            >
+              <div>{{row.status ? $root.dictAllName(row.status, "PayoffStatus") : '-'}}</div>
+            </IhStatusComponent>
           </template>
         </el-table-column>
+        <el-table-column
+          label="所属组织"
+          prop="belongOrgName"
+          width="180"
+        ></el-table-column>
         <el-table-column
           label="结算方式"
           prop="settlementMethod"
@@ -368,6 +416,7 @@ export default class PayoffList extends Vue {
     beginMakerTime: null,
     endMakerTime: null,
     paymentMethod: null,
+    companyKind: null,
   };
   timeList: any = [];
   prodialogVisible: any = false;
@@ -429,6 +478,7 @@ export default class PayoffList extends Vue {
       beginMakerTime: null,
       endMakerTime: null,
       paymentMethod: null,
+      companyKind: null,
     });
     this.timeList = [];
   }
@@ -542,8 +592,13 @@ export default class PayoffList extends Vue {
     }
   }
 
-  add() {
-    this.$router.push("/payoff/add");
+  add(type: any) {
+    this.$router.push({
+      path: `/payoff/add`,
+      query: {
+        type: type,
+      },
+    });
   }
 
   handleSelectionChange(selection: any) {

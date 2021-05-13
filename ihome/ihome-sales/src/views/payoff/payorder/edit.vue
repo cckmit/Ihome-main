@@ -4,28 +4,69 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-20 09:15:35
+ * @LastEditTime: 2021-05-13 17:08:57
 -->
 <template>
   <IhPage>
     <template v-slot:form>
-      <p class="ih-info-title">付款申请单信息</p>
       <el-form
         ref="form"
         label-width="120px"
         :model="info"
         :rules="rules"
       >
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="付款单编号">
-              <el-input
-                disabled
-                v-model="info.applyCode"
-                placeholder="保存后生成"
-              ></el-input>
-            </el-form-item>
+        <h3 class="text-left padding-left-30">付款单编号：保存后自动生成</h3>
+        <el-row class="ih-info-line">
+          <el-col :span="9">
+            <el-row>
+              <el-col class="ih-info-item-right item-padding-left-0">制单人：{{ $root.userInfo.name }}</el-col>
+            </el-row>
           </el-col>
+          <el-col :span="9">
+            <el-row>
+              <el-col class="ih-info-item-right item-padding-left-0">收款方类型：{{ $root.dictAllName(info.companyKind, 'CompanyKind') }}</el-col>
+            </el-row>
+          </el-col>
+          <el-col
+            :span="6"
+            class="text-right"
+          >
+            <el-row>
+              <el-col class="text-right">当前状态</el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <el-row class="ih-info-line">
+          <el-col :span="18">
+            <el-row>
+              <el-col class="ih-info-item-right item-padding-left-0">制单日期：{{$tool.todayStr()}}</el-col>
+            </el-row>
+          </el-col>
+          <el-col
+            :span="6"
+            class="text-right"
+            style="font-weight: 700; font-size: 20px"
+          >
+            <el-row>
+              <el-col class="text-right">
+                <div
+                  class="ih-status-dot flex-content"
+                  v-if="info.status"
+                >
+                  <span
+                    class="dot"
+                    :class="getStatusDot(info.status)"
+                  ></span>
+                  <span>{{ $root.dictAllName(info.status, "PayoffStatus") }}</span>
+                </div>
+                <div v-else>-</div>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+        <p class="ih-info-title">付款申请单信息</p>
+        <el-row>
+          <h4 class="text-left padding-left-30">项目信息</h4>
           <el-col :span="8">
             <el-form-item
               label="结佣项目"
@@ -72,24 +113,41 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          <h4 class="text-left padding-left-30">收款方信息</h4>
           <el-col :span="8">
             <el-form-item
-              label="渠道商"
+              label="收款方名称"
               prop="agencyId"
             >
               <IhSelectPageByChannel
                 clearable
-                placeholder="请选择渠道商"
+                v-if="info.companyKind === 'ChannelCompany'"
+                placeholder="请选择收款方名称"
                 v-model="info.agencyId"
-                :search-name="info.agencyName"
                 :params="channelSearch"
                 @changeOption="getChannelInfo"
               ></IhSelectPageByChannel>
+              <IhSelectPageByCompany
+                clearable
+                v-if="info.companyKind === 'InfieldCompany'"
+                placeholder="请选择内部公司"
+                v-model="info.agencyId"
+                @changeOption="getChannelInfo"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByAgency
+                clearable
+                v-if="info.companyKind === 'AgencyCompany'"
+                placeholder="请选择一手代理公司"
+                v-model="info.agencyId"
+                @changeOption="getChannelInfo"
+              ></IhSelectPageByAgency>
             </el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item
-              label="渠道收款账号"
+              label="收款方账号"
               prop="receiveAccount"
             >
               <el-select
@@ -108,6 +166,54 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
+          <h4 class="text-left padding-left-30">付款方信息</h4>
+          <el-col :span="8">
+            <el-form-item
+              label="付款方名称"
+              prop="payerId"
+            >
+              <el-select
+                v-model="info.payerId"
+                clearable
+                placeholder="付款方名称"
+                class="width--100"
+                @change="companyChange"
+              >
+                <el-option
+                  v-for="item in accountOptins"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="付款方帐号"
+              prop="paymentAccount"
+            >
+              <el-select
+                v-model="info.paymentAccount"
+                clearable
+                placeholder="付款方帐号"
+                class="width--100"
+                @change="accountNoChange"
+              >
+                <el-option
+                  v-for="item in payerAccountOptions"
+                  :key="item.id"
+                  :label="item.accountNo"
+                  :value="item.accountNo"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <h4 class="text-left padding-left-30">开票信息</h4>
           <el-col :span="8">
             <el-form-item
               label="发票类型"
@@ -147,89 +253,6 @@
                   :value="item.name"
                 ></el-option>
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="当前状态">
-              <el-select
-                style="width: 100%"
-                v-model="info.status"
-                disabled
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('PayoffStatus')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="付款方"
-              prop="payerId"
-            >
-              <el-select
-                v-model="info.payerId"
-                clearable
-                placeholder="付款方"
-                class="width--100"
-                @change="companyChange"
-              >
-                <el-option
-                  v-for="item in accountOptins"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="付款帐号"
-              prop="paymentAccount"
-            >
-              <el-select
-                v-model="info.paymentAccount"
-                clearable
-                placeholder="付款帐号"
-                class="width--100"
-                @change="accountNoChange"
-              >
-                <el-option
-                  v-for="item in payerAccountOptions"
-                  :key="item.id"
-                  :label="item.accountNo"
-                  :value="item.accountNo"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="制单人"
-              prop="maker"
-            >
-              <el-input
-                disabled
-                v-model="info.maker"
-                placeholder="制单人"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="制单日期"
-              prop="makerTime"
-            >
-              <el-input
-                disabled
-                v-model="info.makerTime"
-                placeholder="制单日期"
-              ></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -992,7 +1015,10 @@ import {
   get_org_getUserDepartmentList,
   post_company_getAll,
 } from "@/api/system/index";
-import { post_project_getList } from "@/api/project/index";
+import {
+  post_project_getList,
+  post_company_getAccountById,
+} from "@/api/project/index";
 import { Form as ElForm } from "element-ui";
 import Obligation from "./dialog/obligation.vue";
 import axios from "axios";
@@ -1034,6 +1060,7 @@ export default class PayoffEdit extends Vue {
     maker: null,
     makerId: null,
     makerTime: null,
+    companyKind: null,
     payApplyDetailList: [],
     payDeductDetailResponseList: [],
     otherDeductionDetailResponseList: [
@@ -1625,6 +1652,7 @@ export default class PayoffEdit extends Vue {
       this.info.maker = (this.$root as any).userInfo.name;
       this.info.makerId = (this.$root as any).userInfo.id;
       this.info.makerTime = (this.$tool as any).todayStr();
+      this.info.companyKind = this.$route.query.type;
       this.info.status = "Unconfirm";
       this.getFileListType([]);
     }
@@ -1671,6 +1699,7 @@ export default class PayoffEdit extends Vue {
     obj.agencyName = this.info.agencyName;
     obj.taxRate = Number(this.info.taxRate);
     obj.applyId = Number(this.payoffId);
+    obj.companyKind = this.info.companyKind;
     obj.payApplyDetailList = this.info.payApplyDetailList.map((v: any) => ({
       ...v,
       serThisCommFees: v.serThisCommFees ? v.serThisCommFees : 0,
@@ -1923,6 +1952,7 @@ export default class PayoffEdit extends Vue {
         agencyId: this.info.agencyId,
         hasCheckedData: this.info.payApplyDetailList,
         projectId: this.info.projectId,
+        companyKind: this.info.companyKind,
       };
     } else {
       this.$message.warning("请选择结佣项目、渠道商");
@@ -2027,7 +2057,30 @@ export default class PayoffEdit extends Vue {
   async getChannelInfo(item: any, type: any) {
     if (this.info.projectId && this.info.belongOrgId) {
       this.info.agencyName = item.name;
-      let res = await get_channelBank_getAll__channelId({ channelId: item.id });
+      let res: any = [];
+      switch (this.info.companyKind) {
+        case "ChannelCompany":
+          res = await get_channelBank_getAll__channelId({
+            channelId: item.id,
+          });
+          break;
+        case "AgencyCompany":
+          res = await post_company_getAccountById({
+            id: item.id,
+          });
+          res = res.map((v: any) => ({
+            branchName: v.bank, //开户银行
+            accountName: v.name, // 账户名称
+            accountNo: v.number, // 账户号码
+            branchNo: v.branchNo, // 联行号
+          }));
+          break;
+        case "InfieldCompany":
+          res = await post_bankAccount_getByOrgId__orgId({
+            orgId: item.id,
+          });
+          break;
+      }
       this.channelAccountOptions = res;
       if (!type) {
         this.info.receiveAccount = null;
@@ -2059,6 +2112,7 @@ export default class PayoffEdit extends Vue {
     const res = await post_payDeductDetail_deduct_details({
       channelId,
       projectId,
+      companyKind: this.info.companyKind,
     });
     this.info.payDeductDetailResponseList = res
       ? res.map((v: any) => ({
@@ -2104,6 +2158,7 @@ export default class PayoffEdit extends Vue {
           obj.payApplyVO.receiveAccount = this.info.receiveAccount;
           obj.payApplyVO.status = val;
           obj.payApplyVO.tax = this.info.tax;
+          obj.payApplyVO.companyKind = this.info.companyKind;
           obj.payApplyVO.taxRate = Number(this.info.taxRate);
           obj.payApplyDetailList = this.info.payApplyDetailList.map(
             (v: any) => ({
@@ -2204,6 +2259,16 @@ export default class PayoffEdit extends Vue {
       this.$message.warning("请点击计算结佣统计数据及成本归属明细");
     }
   }
+  // 获取颜色
+  getStatusDot(status: any = "") {
+    if (status === "DRAFT") {
+      return "warning";
+    } else if (status === "Approved") {
+      return "success";
+    } else {
+      return "primary";
+    }
+  }
 }
 </script>
 <style lang="scss" scoped>
@@ -2250,5 +2315,8 @@ export default class PayoffEdit extends Vue {
     width: 100px;
     margin-top: 10px;
   }
+}
+.flex-content {
+  justify-content: flex-end;
 }
 </style>
