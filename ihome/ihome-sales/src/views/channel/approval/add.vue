@@ -1,23 +1,63 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-29 16:04:51
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 16:46:28
 --> 
 <template>
   <ih-page>
+    <el-row class="ih-info-line">
+      <el-col class="text-left">
+        <h3>入库编号：{{ id ? postData.approvalNo : '保存后自动生成' }}</h3>
+      </el-col>
+    </el-row>
+    <el-row class="ih-info-line">
+      <el-col :span="18">
+        <el-row>
+          <el-col class="ih-info-item-right item-padding-left-0">
+            发起人：{{id ? postData.inputTime : $root.userInfo.name}}
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col :span="6" class="text-right">
+        <el-row>
+          <el-col class="text-right">当前状态</el-col>
+        </el-row>
+      </el-col>
+    </el-row>
+    <el-row class="ih-info-line">
+      <el-col :span="18">
+        <el-row>
+          <el-col class="ih-info-item-right item-padding-left-0">
+            发起日期：{{id ? postData.createTime : $tool.todayStr()}}
+          </el-col>
+        </el-row>
+      </el-col>
+      <el-col
+        :span="6"
+        class="text-right"
+        style="font-weight: 700; font-size: 20px">
+        <el-row>
+          <el-col class="text-right">
+            <div class="ih-status-dot flex-content" v-if="id ? postData.status : 'Draft'">
+              <span class="dot" :class="getStatusDot(id ? postData.status : 'Draft')"></span>
+              <span>{{ $root.dictAllName(id ? postData.status : 'Draft', "ChannelApprovalStatus") }}</span>
+            </div>
+          </el-col>
+        </el-row>
+      </el-col>
+    </el-row>
     <el-form
       :model="postData"
       :rules="rules"
       ref="ruleForm"
       label-width="110px"
-      class="demo-ruleForm"
-    >
-      <p class="ih-info-title">基础信息</p>
+      class="demo-ruleForm">
+<!--      <p class="ih-info-title">基础信息</p>-->
       <el-row class="ih-info-line">
-        <el-col :span="8">
+<!--        <el-col :span="8">
           <el-row>
             <el-col :span="6" class="ih-info-item-left">申请编号</el-col>
             <el-col :span="18" class="ih-info-item-right">
@@ -35,7 +75,7 @@
         </el-col>
         <el-col :span="8">
           <el-row>
-            <!-- <el-col :span="6" class="ih-info-item-left">事业部</el-col> -->
+            &lt;!&ndash; <el-col :span="6" class="ih-info-item-left">事业部</el-col> &ndash;&gt;
             <el-col
               :span="24"
               class="ih-info-item-right"
@@ -44,14 +84,14 @@
               <el-form-item
                 label="事业部"
                 prop="departmentOrgId"
-                class="width--100"
+                class="width&#45;&#45;100"
               >
                 <el-select
                   v-model="postData.departmentOrgId"
                   @change="changeDepartment()"
                   filterable
                   placeholder="请选择事业部"
-                  class="width--100"
+                  class="width&#45;&#45;100"
                 >
                   <el-option
                     v-for="item in departmentList"
@@ -61,19 +101,151 @@
                   >
                   </el-option>
                 </el-select>
-                <!-- <IhSelectPageDivision
+                &lt;!&ndash; <IhSelectPageDivision
                   v-model="postData.departmentOrgId"
                   :searchName="postData.departmentName"
                   clearable
                   value-key="id"
                 >
-                </IhSelectPageDivision> -->
+                </IhSelectPageDivision> &ndash;&gt;
               </el-form-item>
             </el-col>
           </el-row>
+        </el-col>-->
+        <el-col
+          :span="8"
+          class="ih-info-item-right"
+          style="margin-left: 0px">
+          <el-form-item
+            label="事业部"
+            prop="departmentOrgId"
+            class="width--100"
+          >
+            <el-select
+              v-model="postData.departmentOrgId"
+              @change="changeDepartment()"
+              filterable
+              placeholder="请选择事业部"
+              class="width--100"
+            >
+              <el-option
+                v-for="item in departmentList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+            <!-- <IhSelectPageDivision
+              v-model="postData.departmentOrgId"
+              :searchName="postData.departmentName"
+              clearable
+              value-key="id"
+            >
+            </IhSelectPageDivision> -->
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="24"
+          class="ih-info-item-right"
+          style="margin-left: 0px">
+          <el-form-item
+            label="待呈批列表"
+            class="width--100">
+            <div style="margin-bottom: 5px">
+              <el-button
+                size="small"
+                type="primary"
+                @click="addChannelApprovalGrades()"
+              >添加新增信息</el-button>
+              <el-button
+                size="small"
+                type="success"
+                @click="addChannelApprovalGradesChange()"
+              >添加变更信息</el-button>
+              <span v-if="false" class="padding-left-20" @click="preFileName()">
+            <el-link type="success">预览供应商名录</el-link>
+          </span>
+            </div>
+            <el-table
+              :data="showChannelApprovalGrades"
+              style="width: 100%">
+              <el-table-column prop="storageNum" label="入库编号" width="180">
+                <template slot-scope="scope">
+                  <el-link
+                    class="margin-right-10"
+                    type="primary"
+                    @click.native.prevent="goInfo(scope)"
+                  >{{ scope.row.storageNum }}</el-link>
+                </template>
+              </el-table-column>
+              <el-table-column prop="channelName" label="渠道商名称" min-width="130">
+              </el-table-column>
+              <el-table-column prop="channelGrade" label="渠道等级" min-width="120">
+                <template slot-scope="scope">
+                  {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="city" label="业务开展城市" min-width="140">
+                <template slot-scope="scope">
+                  {{ $root.getAreaName(scope.row.city) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="cityGrade" label="城市等级" min-width="110">
+                <template slot-scope="scope">
+                  {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="special" label="特批入库" width="90">
+                <template slot-scope="scope">
+                  {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="attachmentDetails" label="特批入库材料" min-width="200">
+                <template slot-scope="scope">
+                  <span
+                    class="margin-right-10"
+                    v-for="(cItem, cIndex) in scope.row.attachmentDetails"
+                    :key="cIndex">
+                    <IhFilePreview :data="cItem"></IhFilePreview>
+                  </span>
+                </template>
+              </el-table-column>
+              <el-table-column prop="" label="操作">
+                <template slot-scope="scope">
+                  <el-link
+                    style="color: #409eff"
+                    class="margin-right-10"
+                    type="primary"
+                    @click.native.prevent="remove(scope)"
+                  >移除</el-link
+                  >
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+        </el-col>
+        <el-col
+          :span="24"
+          class="ih-info-item-right"
+          style="margin-left: 0px">
+          <el-form-item
+            label="经办部门意见"
+            class="width--100">
+            <el-input
+              type="textarea"
+              :rows="10"
+              placeholder="经办部门意见"
+              v-model="postData.approvalDesc"
+              maxlength="512"
+              show-word-limit>
+            </el-input>
+          </el-form-item>
         </el-col>
       </el-row>
-      <div class="ih-info-title">
+
+
+<!--      <div class="ih-info-title">
         <div>渠道等级信息列表</div>
         <div class="info-btn-list">
           <el-button
@@ -93,7 +265,6 @@
           </span>
         </div>
       </div>
-
       <el-table
         :data="showChannelApprovalGrades"
         style="width: 100%; padding: 20px"
@@ -110,8 +281,8 @@
         </el-table-column>
         <el-table-column prop="channelName" label="渠道商名称" width="180">
         </el-table-column>
-        <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
-      <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
+        &lt;!&ndash; <el-table-column prop="name" label="信用代码"> </el-table-column>
+      <el-table-column prop="name" label="法定代表人"> </el-table-column> &ndash;&gt;
         <el-table-column prop="special" label="特批入库">
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
@@ -149,8 +320,8 @@
         :data="showChannelApprovalAttachments"
         style="width: 100%; padding: 20px"
       >
-        <!-- <el-table-column prop="storageNum" label="编号" width="180">
-        </el-table-column> -->
+        &lt;!&ndash; <el-table-column prop="storageNum" label="编号" width="180">
+        </el-table-column> &ndash;&gt;
         <el-table-column prop="type" label="类型" width="180">
           <template slot-scope="scope">
             {{ $root.dictAllName(scope.row.type, "ChannelGradeAttachment") }}
@@ -188,7 +359,7 @@
           ></el-input>
         </el-form-item>
 
-        <!-- <span style="padding: 10px; line-height: 40px" prop="approvalDesc">
+        &lt;!&ndash; <span style="padding: 10px; line-height: 40px" prop="approvalDesc">
           经办部门意见
         </span>
         <span>
@@ -201,8 +372,8 @@
             show-word-limit
           >
           </el-input>
-        </span> -->
-      </el-row>
+        </span> &ndash;&gt;
+      </el-row>-->
       <div>
         <el-button type="primary" @click="save()" :disabled="infoFinish"
           >保存为草稿</el-button
@@ -211,7 +382,7 @@
           >提交呈批</el-button
         >
       </div>
-      <ih-dialog :show="dialogAdd" desc="渠道合作信息列表">
+      <ih-dialog :show="dialogAdd" desc="选择申请呈批信息">
         <ChannelApprovalGradesList
           :data="dialogAddGradeType"
           :departmentOrgId="postData.departmentOrgId"
@@ -305,13 +476,25 @@ export default class ApprovalAdd extends Vue {
 
         res.channelApprovalGrades.forEach((item: any) => {
           this.showChannelApprovalGrades.push(item);
-          this.loadAttachments(item, item.gradeType);
+          // this.loadAttachments(item, item.gradeType);
         });
       } catch (error) {
         this.infoFinish = false;
       }
     } else {
       this.infoFinish = false;
+    }
+  }
+  // 获取颜色
+  getStatusDot(status: any = '') {
+    if (status === 'Draft') {
+      return 'warning';
+    } else if (status === 'Approved') {
+      return 'success';
+    } else if (status === 'ApprovalFailed') {
+      return 'error';
+    } else {
+      return 'primary';
     }
   }
   changeDepartment() {
@@ -332,7 +515,7 @@ export default class ApprovalAdd extends Vue {
   }
 
   async finishAdd(list: any, gradeType: string) {
-    list.forEach(async (item: any) => {
+    list.forEach((item: any) => {
       item.gradeId = item.id;
       item.gradeType = gradeType;
       if (!this.isExis(this.postData.channelApprovalGrades, item)) {
@@ -341,7 +524,7 @@ export default class ApprovalAdd extends Vue {
           gradeType: gradeType,
         });
         this.showChannelApprovalGrades.push(item);
-        this.loadAttachments(item, gradeType);
+        // this.loadAttachments(item, gradeType);
       }
     });
   }
@@ -487,5 +670,20 @@ export default class ApprovalAdd extends Vue {
   float: left;
   margin-left: 150px;
   margin-top: -25px;
+}
+.ih-page {
+  overflow: hidden;
+}
+.item-padding-left-0 {
+  padding-left: 0px;
+}
+/deep/ .ih-info-line {
+  padding: 0 10px 10px 10px;
+}
+/deep/ .el-card__header {
+  background: #f9f9f9;
+}
+.flex-content {
+  justify-content: flex-end;
 }
 </style>

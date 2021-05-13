@@ -3,8 +3,8 @@
  * @version: 
  * @Author: ywl
  * @Date: 2020-06-30 09:21:17
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:35:51
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 18:58:22
 --> 
 <template>
   <IhPage label-width="100px">
@@ -42,24 +42,7 @@
             </el-form-item>
           </el-col> -->
           <el-col :span="8">
-            <el-form-item label="状态">
-              <el-select
-                v-model="queryPageParameters.status"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in $root.dictAllList('ChannelChangeStatus')"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道跟进人">
+            <el-form-item label="跟进人">
               <IhSelectPageUser
                 v-model="queryPageParameters.followUserId"
                 clearable
@@ -74,6 +57,23 @@
                     ">{{ data.account }}</span>
                 </template>
               </IhSelectPageUser>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="状态">
+              <el-select
+                v-model="queryPageParameters.status"
+                clearable
+                placeholder="请选择"
+                class="width--100"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('ChannelChangeStatus')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -114,7 +114,7 @@
         ></el-table-column>
         <el-table-column
           prop="followUserName"
-          label="渠道跟进人"
+          label="跟进人"
           width="120"
         ></el-table-column>
         <!-- <el-table-column
@@ -125,7 +125,7 @@
         <el-table-column
           prop="changeTime"
           label="变更日期"
-          width="95"
+          width="100"
         ></el-table-column>
         <el-table-column
           prop="status"
@@ -133,7 +133,14 @@
           width="145"
         >
           <template v-slot="{ row }">
-            {{ $root.dictAllName(row.status, "ChannelChangeStatus") }}
+            <IhStatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'DRAFT',
+                success: 'PASS'
+              }">
+              <div>{{ $root.dictAllName(row.status, "ChannelChangeStatus") }}</div>
+            </IhStatusComponent>
           </template>
         </el-table-column>
         <el-table-column
@@ -144,7 +151,7 @@
 
         <el-table-column
           label="操作"
-          width="150"
+          width="120"
           fixed="right"
         >
           <template v-slot="{ row }">
@@ -157,7 +164,7 @@
               class="margin-left-15"
             >
               <span class="el-dropdown-link">
-                更多操作
+                更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
               </span>
               <el-dropdown-menu slot="dropdown">

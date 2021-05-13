@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-11 17:29:11
+ * @LastEditTime: 2021-05-12 19:30:18
 -->
 <template>
   <IhPage label-width="100px">
@@ -308,21 +308,33 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'edit')"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATE'"
                 >修改</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="remove(row)"
+                  :class="{ 'ih-data-disabled': !editChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.DELETE'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'recall')"
+                  :class="{ 'ih-data-disabled': !recallChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKE'"
                 >撤回</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
+                  :class="{ 'ih-data-disabled': !auditChange(row) }"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.VERIFY'"
                 >审核</el-dropdown-item>
                 <el-dropdown-item
                   @click.native.prevent="returnStatus(row)"
+                  :class="{'ih-data-disabled': row.status !== 'PASS'}"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.REVOKEDRAFT'"
                 >退回起草</el-dropdown-item>
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !changeButton(row) }"
+                  @click.native.prevent="updateInfo(row)"
+                  v-has="'B.SALES.CHANNEL.LEVELLIST.UPDATEINFO'"
                 >变更信息</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -366,6 +378,7 @@ import {
   post_channelGrade_delete__id,
   post_channelGrade_backToDraft__id,
   get_channelGradeChange_changeCheck__oldGradeId,
+  get_channelApproval_getIdByCode__approvalNo
 } from "../../../api/channel/index";
 import PaginationMixin from "../../../mixins/pagination";
 import UpdateUser from "./dialog/updateUser.vue";
@@ -404,10 +417,17 @@ export default class UserList extends Vue {
   }
 
   // 呈批申请编号跳转
-  gotoNew(row: any) {
-    if (row.approvalId) {
-      console.log(row.approvalId);
-      window.open(`/web-sales/approval/info?id=${row.approvalId}`);
+  async gotoNew(approvalNo: any) {
+    if (approvalNo) {
+      console.log(approvalNo);
+      let id: any = await get_channelApproval_getIdByCode__approvalNo({
+        approvalNo: approvalNo,
+      });
+      if (id) {
+        window.open(`/web-sales/approval/info?id=${id}`);
+      } else {
+        this.$message.warning("没获取到对应的呈批id");
+      }
     }
   }
 
@@ -528,7 +548,7 @@ export default class UserList extends Vue {
         type: "success",
         message: "删除成功!",
       });
-      this.getListMixin();
+      await this.getListMixin();
     } catch (error) {
       console.log(error);
     }
@@ -541,7 +561,7 @@ export default class UserList extends Vue {
       type: "success",
       message: "退回起草成功!",
     });
-    this.getListMixin();
+    await this.getListMixin();
   }
 
   created() {

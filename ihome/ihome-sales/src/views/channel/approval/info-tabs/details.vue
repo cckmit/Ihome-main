@@ -1,15 +1,89 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
- * @LastEditors: zyc
- * @LastEditTime: 2021-01-13 15:42:59
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-12 15:15:10
 --> 
 <template>
   <div>
-    <p class="ih-info-title">基础信息</p>
+    <el-form ref="form" label-width="130px">
+      <el-row>
+        <el-col>
+          <el-form-item label="事业部" style="text-align: left">
+            {{info.departmentName}}
+          </el-form-item>
+        </el-col>
+        <el-col>
+          <el-form-item label="待呈批列表">
+            <el-table
+              :data="info.channelApprovalGrades"
+              style="width: 100%">
+              <el-table-column prop="storageNum" label="入库编号" width="180">
+              </el-table-column>
+              <el-table-column prop="channelName" label="渠道商名称" min-width="130">
+              </el-table-column>
+              <el-table-column prop="channelGrade" label="渠道等级" width="120">
+                <template slot-scope="scope">
+                  {{$root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}</template>
+              </el-table-column>
+              <el-table-column prop="city" label="业务开展省市" min-width="140">
+                <template v-slot="{ row }">
+                  {{ $root.getAreaName(row.city) }}/{{ $root.getAreaName(row.province) }}
+                </template>
+              </el-table-column>
+              <el-table-column prop="cityGrade" label="城市等级" min-width="110">
+                <template slot-scope="scope">
+                  {{$root.dictAllName(scope.row.cityGrade, "CityLevel") }}</template>
+              </el-table-column>
+              <el-table-column prop="special" label="特批入库" width="90">
+                <template slot-scope="scope">
+                  {{$root.dictAllName(scope.row.special, "YesOrNoType") }}</template>
+              </el-table-column>
+              <el-table-column prop="channelApprovalAttachments" label="特批入库材料" min-width="200">
+                <template slot-scope="scope">
+                  <div
+                    class="margin-right-10"
+                    v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments" :key="cIndex">
+                    <IhFilePreview :data="cItem"></IhFilePreview>
+                  </div>
+                </template>
+              </el-table-column>
+            </el-table>
+          </el-form-item>
+        </el-col>
+        <el-col>
+          <el-form-item label="经办部门意见">
+            <el-input
+              class="textarea-bg"
+              style="box-sizing: border-box"
+              type="textarea"
+              disabled
+              :autosize="{ minRows: 5, maxRows: 10 }"
+              placeholder="请输入内容"
+              v-model="info.approvalDesc">
+            </el-input>
+          </el-form-item>
+        </el-col>
+        <el-col>
+          <el-form-item label="推送OA附件清单">
+            <div class="text-left" style="color: #999">
+              {{ info.oaAttachmentVOs && info.oaAttachmentVOs.length > 0 ? "" : "无" }}
+            </div>
+            <div
+              class="text-left"
+              v-for="(item, index) in info.oaAttachmentVOs"
+              :key="index"
+              @click="down(item)">
+              <el-link>{{ item.fileName }}</el-link>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+    </el-form>
 
+<!--    <p class="ih-info-title">基础信息</p>
     <el-row class="ih-info-line">
       <el-col :span="8">
         <el-row>
@@ -53,12 +127,12 @@
           </el-col>
         </el-row>
       </el-col>
-      <!-- <el-col :span="8">
+      &lt;!&ndash; <el-col :span="8">
         <el-row>
           <el-col :span="6" class="ih-info-item-left">OA发文文号</el-col>
           <el-col :span="18" class="ih-info-item-right">{{ info.oaNo }}</el-col>
         </el-row>
-      </el-col> -->
+      </el-col> &ndash;&gt;
     </el-row>
     <p class="ih-info-title">渠道等级信息列表</p>
     <el-table
@@ -69,8 +143,8 @@
       </el-table-column>
       <el-table-column prop="channelName" label="渠道商名称" width="180">
       </el-table-column>
-      <!-- <el-table-column prop="name" label="信用代码"> </el-table-column>
-      <el-table-column prop="name" label="法定代表人"> </el-table-column> -->
+      &lt;!&ndash; <el-table-column prop="name" label="信用代码"> </el-table-column>
+      <el-table-column prop="name" label="法定代表人"> </el-table-column> &ndash;&gt;
       <el-table-column prop="special" label="特批入库">
         <template slot-scope="scope">{{
           $root.dictAllName(scope.row.special, "YesOrNoType")
@@ -97,8 +171,8 @@
       :data="showChannelApprovalAttachments"
       style="width: 100%; padding: 20px"
     >
-      <!-- <el-table-column prop="storageNum" label="编号" width="180">
-        </el-table-column> -->
+      &lt;!&ndash; <el-table-column prop="storageNum" label="编号" width="180">
+        </el-table-column> &ndash;&gt;
       <el-table-column prop="type" label="类型" width="180">
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.type, "ChannelGradeAttachment") }}
@@ -134,32 +208,27 @@
       @click="down(item)"
     >
       <el-link>{{ item.fileName }}</el-link>
-    </div>
+    </div>-->
     <!-- <div class="text-left margin-left-30">
       <el-link>广州链家宝业房地产经纪有限公司_广州市_特批入库补充材料.rar</el-link>
     </div> -->
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  get_channelApproval_get__id,
-  post_channelGrade_getChannelGradeAttachmentByType,
+  post_channelGrade_getChannelGradeAttachmentByType
 } from "../../../../api/channel/index";
 @Component({
   components: {},
 })
 export default class InvitationCodeDetails extends Vue {
-  info: any = {
-    channelApprovalAttachments: [],
-    channelApprovalGrades: [],
-    oaAttachmentVOs: [],
-  };
+  @Prop() info!: any; // 基础数据
   showChannelApprovalAttachments: any[] = [];
 
   async created() {
-    let id = this.$route.query.id;
-    this.info = await get_channelApproval_get__id({ id: id });
+    // let id = this.$route.query.id;
+    // this.info = await get_channelApproval_get__id({ id: id });
     this.showChannelApprovalAttachments = [];
     (this.info.channelApprovalGrades || []).forEach((item: any) => {
       this.loadAttachments(item, item.gradeType);
@@ -190,5 +259,11 @@ export default class InvitationCodeDetails extends Vue {
 <style lang="scss" scoped>
 .el-row {
   line-height: 30px;
+}
+.textarea-bg {
+  /deep/ .el-textarea__inner {
+    background-color: white;
+    color: black;
+  }
 }
 </style>

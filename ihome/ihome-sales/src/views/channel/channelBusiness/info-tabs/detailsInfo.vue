@@ -126,7 +126,7 @@
         ></el-table-column>
         <el-table-column
           prop="accountNo"
-          label="账号"
+          label="银行账号"
           min-width="200"
         > </el-table-column>
         <el-table-column

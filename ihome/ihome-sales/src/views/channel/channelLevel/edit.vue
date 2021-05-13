@@ -4,20 +4,22 @@
  * @Author: wwq
  * @Date: 2020-10-15 16:02:03
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 14:31:28
+ * @LastEditTime: 2021-05-12 18:40:33
 -->
 <template>
   <IhPage>
-    <div v-if="Id">
+    <div>
       <el-row class="ih-info-line">
         <el-col class="text-left">
-          <h3>入库编号：{{ resPageInfo.storageNum }}</h3>
+          <h3>入库编号：{{ Id ? resPageInfo.storageNum : '保存后自动生成' }}</h3>
         </el-col>
       </el-row>
       <el-row class="ih-info-line">
         <el-col :span="18">
           <el-row>
-            <el-col class="ih-info-item-right item-padding-left-0">录入人：{{resPageInfo.inputUser }}</el-col>
+            <el-col class="ih-info-item-right item-padding-left-0">
+              录入人：{{Id ? resPageInfo.inputUser : $root.userInfo.name}}
+            </el-col>
           </el-row>
         </el-col>
         <el-col :span="6" class="text-right">
@@ -29,7 +31,9 @@
       <el-row class="ih-info-line">
         <el-col :span="18">
           <el-row>
-            <el-col class="ih-info-item-right item-padding-left-0">录入时间：{{resPageInfo.createTime }}</el-col>
+            <el-col class="ih-info-item-right item-padding-left-0">
+              录入时间：{{Id ? resPageInfo.createTime : $tool.todayStr()}}
+            </el-col>
           </el-row>
         </el-col>
         <el-col
@@ -38,9 +42,9 @@
           style="font-weight: 700; font-size: 20px">
           <el-row>
             <el-col class="text-right">
-              <div class="ih-status-dot flex-content" v-if="resPageInfo.status">
-                <span class="dot" :class="getStatusDot(resPageInfo.status)"></span>
-                <span>{{ $root.dictAllName(resPageInfo.status, "ChannelGradeStatus") }}</span>
+              <div class="ih-status-dot flex-content" v-if="Id ? resPageInfo.status : 'DRAFT'">
+                <span class="dot" :class="getStatusDot(Id ? resPageInfo.status : 'DRAFT')"></span>
+                <span>{{ $root.dictAllName(Id ? resPageInfo.status : 'DRAFT', "ChannelGradeStatus") }}</span>
               </div>
               <div v-else>-</div>
             </el-col>
