@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: wwq
- * @LastEditTime: 2021-05-13 17:08:57
+ * @LastEditTime: 2021-05-13 18:13:53
 -->
 <template>
   <IhPage>
@@ -128,6 +128,12 @@
                 v-model="info.agencyId"
                 :params="channelSearch"
                 @changeOption="getChannelInfo"
+                @clear="() => {
+                  info.receiveAccount = null;
+                  channelAccountOptions = [];
+                  form.branchName1 = null;
+                  form.branchNo1 = null;
+                }"
               ></IhSelectPageByChannel>
               <IhSelectPageByCompany
                 clearable
@@ -135,6 +141,12 @@
                 placeholder="请选择内部公司"
                 v-model="info.agencyId"
                 @changeOption="getChannelInfo"
+                @clear="() => {
+                  info.receiveAccount = null;
+                  channelAccountOptions = [];
+                  form.branchName1 = null;
+                  form.branchNo1 = null;
+                }"
               ></IhSelectPageByCompany>
               <IhSelectPageByAgency
                 clearable
@@ -142,6 +154,12 @@
                 placeholder="请选择一手代理公司"
                 v-model="info.agencyId"
                 @changeOption="getChannelInfo"
+                @clear="() => {
+                  info.receiveAccount = null;
+                  channelAccountOptions = [];
+                  form.branchName1 = null;
+                  form.branchNo1 = null;
+                }"
               ></IhSelectPageByAgency>
             </el-form-item>
           </el-col>
@@ -165,6 +183,19 @@
                 ></el-option>
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            v-if="info.receiveAccount"
+          >
+            <div
+              class="text-left"
+              style="color: #409EFF; font-size: 12px"
+            >收款账户开户行：{{form.branchName1}}</div>
+            <div
+              class="text-left"
+              style="color: #409EFF; font-size: 12px"
+            >收款账户联行号：{{form.branchNo1}}</div>
           </el-col>
         </el-row>
         <el-row>
@@ -210,6 +241,19 @@
                 ></el-option>
               </el-select>
             </el-form-item>
+          </el-col>
+          <el-col
+            :span="8"
+            v-if="info.paymentAccount"
+          >
+            <div
+              class="text-left"
+              style="color: #409EFF; font-size: 12px"
+            >收款账户开户行：{{form.branchName2}}</div>
+            <div
+              class="text-left"
+              style="color: #409EFF; font-size: 12px"
+            >收款账户联行号：{{form.branchNo2}}</div>
           </el-col>
         </el-row>
         <el-row>
@@ -1085,6 +1129,12 @@ export default class PayoffEdit extends Vue {
     description: null,
     documentList: [],
   };
+  form: any = {
+    branchName1: null,
+    branchNo1: null,
+    branchName2: null,
+    branchNo2: null,
+  };
   agencyDialogVisible: any = false;
   agencyData: any = [];
   channelAccountOptions: any = [];
@@ -1282,6 +1332,8 @@ export default class PayoffEdit extends Vue {
       );
       this.info.payerAccountBank = item.branchName;
       // this.info.paymentAccount = item.accountNo;
+      this.form.branchName2 = item.branchName;
+      this.form.branchNo2 = item.branchNo;
     } else {
       this.info.payerAccountBank = null;
       this.info.paymentAccount = null;
@@ -1647,6 +1699,7 @@ export default class PayoffEdit extends Vue {
       });
       this.projectCity = projectItem?.list[0]?.city;
       this.belongOrgIdChange(res.belongOrgId);
+      this.receiveAccountChange(res.receiveAccount);
       this.filterTabs(this.info.payApplyDetailList);
     } else {
       this.info.maker = (this.$root as any).userInfo.name;
@@ -1954,8 +2007,10 @@ export default class PayoffEdit extends Vue {
         projectId: this.info.projectId,
         companyKind: this.info.companyKind,
       };
+      // 获取本期需抵扣金额明细
+      this.queryDeductionData(this.info.agencyId, this.info.projectId);
     } else {
-      this.$message.warning("请选择结佣项目、渠道商");
+      this.$message.warning("请选择结佣项目、收款方名称");
     }
   }
 
@@ -2055,57 +2110,62 @@ export default class PayoffEdit extends Vue {
   }
 
   async getChannelInfo(item: any, type: any) {
-    if (this.info.projectId && this.info.belongOrgId) {
-      this.info.agencyName = item.name;
-      let res: any = [];
-      switch (this.info.companyKind) {
-        case "ChannelCompany":
+    this.info.agencyName = item.name;
+    let res: any = [];
+    switch (this.info.companyKind) {
+      case "ChannelCompany":
+        if (this.info.projectId && this.info.belongOrgId) {
           res = await get_channelBank_getAll__channelId({
             channelId: item.id,
           });
-          break;
-        case "AgencyCompany":
-          res = await post_company_getAccountById({
-            id: item.id,
-          });
-          res = res.map((v: any) => ({
-            branchName: v.bank, //开户银行
-            accountName: v.name, // 账户名称
-            accountNo: v.number, // 账户号码
-            branchNo: v.branchNo, // 联行号
-          }));
-          break;
-        case "InfieldCompany":
-          res = await post_bankAccount_getByOrgId__orgId({
-            orgId: item.id,
-          });
-          break;
-      }
-      this.channelAccountOptions = res;
-      if (!type) {
-        this.info.receiveAccount = null;
-        this.showTable = [];
-        this.info.payApplyDetailList = [];
-        // 获取本期需抵扣金额明细
-        this.queryDeductionData(item.id, this.info.projectId);
-      }
-      if (res.length === 1) {
-        this.info.receiveAccount = res[0].accountNo;
-        this.info.agencyAccountBank = res[0].branchName;
-      }
-    } else {
-      this.$message.warning("请先选择结佣项目、事业部");
-      this.info.agencyId = null;
-      this.info.agencyName = null;
-      return;
+        } else {
+          this.$message.warning("请先选择结佣项目、事业部");
+          this.info.agencyId = null;
+          this.info.agencyName = null;
+          return;
+        }
+        break;
+      case "AgencyCompany":
+        res = await post_company_getAccountById({
+          id: item.id,
+        });
+        res = res.map((v: any) => ({
+          branchName: v.bank, //开户银行
+          accountName: v.name, // 账户名称
+          accountNo: v.number, // 账户号码
+          branchNo: v.branchNo, // 联行号
+        }));
+        break;
+      case "InfieldCompany":
+        res = await post_bankAccount_getByOrgId__orgId({
+          orgId: item.id,
+        });
+        break;
+    }
+    this.channelAccountOptions = res;
+    if (!type) {
+      this.info.receiveAccount = null;
+      this.showTable = [];
+      this.info.payApplyDetailList = [];
+    }
+    if (res.length === 1) {
+      this.info.receiveAccount = res[0].accountNo;
+      this.info.agencyAccountBank = res[0].branchName;
+      this.receiveAccountChange(this.info.receiveAccount);
     }
   }
 
   receiveAccountChange(data: any) {
-    const item = this.channelAccountOptions.find(
-      (v: any) => v.accountNo === data
-    );
-    this.info.agencyAccountBank = item.branchName;
+    if (data) {
+      const item = this.channelAccountOptions.find(
+        (v: any) => v.accountNo === data
+      );
+      this.info.agencyAccountBank = item.branchName;
+      this.form.branchName1 = item.branchName;
+      this.form.branchNo1 = item.branchNo;
+    } else {
+      this.info.agencyAccountBank = null;
+    }
   }
 
   async queryDeductionData(channelId: any, projectId: any) {
