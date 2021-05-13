@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 16:46:28
+ * @LastEditTime: 2021-05-13 15:26:50
 --> 
 <template>
   <ih-page>
@@ -201,11 +201,11 @@
                   {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
                 </template>
               </el-table-column>
-              <el-table-column prop="attachmentDetails" label="特批入库材料" min-width="200">
+              <el-table-column prop="channelApprovalAttachments" label="特批入库材料" min-width="200">
                 <template slot-scope="scope">
                   <div
                     class="file-width"
-                    v-for="(cItem, cIndex) in scope.row.attachmentDetails"
+                    v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments"
                     :key="cIndex">
                     <IhFilePreview :data="cItem"></IhFilePreview>
                   </div>
