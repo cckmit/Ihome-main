@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-09 15:59:30
+ * @LastEditTime: 2021-05-13 15:43:42
 -->
 <template>
   <ih-page class="text-left">
@@ -67,7 +67,6 @@
               <el-select
                 v-model="postData.refineModel"
                 placeholder="请选择细分业务模式"
-                @change="changeRefineModel"
                 class="width--100">
                 <el-option
                   v-for="item in refineModelList"
@@ -3554,7 +3553,7 @@
         costTypeEnum: scope.row.type, // 费用类型
         partyAId: scope.row.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
-        subdivide: this.postData.refineModel, // 细分业务模式
+        // subdivide: this.postData.refineModel, // 细分业务模式
       };
       console.log(params);
       this.receivePackageData = params;

@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-09 15:54:22
+ * @LastEditTime: 2021-05-13 15:42:18
 -->
 <template>
   <ih-page class="text-left">
@@ -54,7 +54,6 @@
               v-model="postData.refineModel"
               :disabled="['TotalBagModel', 'DistriModel'].includes(postData.modelCode)"
               placeholder="请选择细分业务模式"
-              @change="changeRefineModel"
               class="width--100">
               <el-option
                 v-for="item in refineModelList"
@@ -3237,7 +3236,7 @@
         costTypeEnum: scope.row.type, // 费用类型
         partyAId: scope.row.partyACustomer, // 甲方或客户
         property: this.postData.propertyType, // 物业类型
-        subdivide: this.postData.refineModel, // 细分业务模式
+        // subdivide: this.postData.refineModel, // 细分业务模式
       };
       (this as any).$parent.selectPackage(params);
     }

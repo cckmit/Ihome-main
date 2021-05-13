@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 17:49:15
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-30 15:31:24
+ * @LastEditTime: 2021-05-13 15:36:36
 -->
 <template>
   <IhPage class="text-left">
@@ -233,6 +233,7 @@ export default class NotSalesApply extends Vue {
     supplementary: null,
     unContractLiability: null,
     titleOrRemark: null,
+    claimPower: null,
   };
   private channelForm: any = {
     channelCompanyId: null,
@@ -349,6 +350,7 @@ export default class NotSalesApply extends Vue {
             fileNo: i.originalPdfId,
             type: "OriginalChannelContractElectronicAnnex",
           })),
+          claimPower: res.claimPower,
           channelCompanyId: res.designatedAgencyId,
           channelCompanyName: res.designatedAgency,
           channelEnum: res.channelEnum,

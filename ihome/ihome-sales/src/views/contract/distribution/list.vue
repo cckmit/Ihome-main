@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-29 08:57:56
+ * @LastEditTime: 2021-05-13 15:46:39
 -->
 <template>
   <IhPage label-width="100px">
@@ -1168,7 +1168,11 @@ export default class DistributionList extends Vue {
     }
   }
   public async getListMixin(): Promise<void> {
-    this.resPageInfo = await post_distribution_list(this.queryPageParameters);
+    let params = { ...this.queryPageParameters };
+    if (this.$route.name === "DistributionListByBusiness") {
+      params.claimPower = "Business";
+    }
+    this.resPageInfo = await post_distribution_list(params);
   }
 
   created() {

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 16:44:38
+ * @LastEditTime: 2021-05-13 15:36:29
 -->
 <template>
   <el-dialog
@@ -141,8 +141,8 @@
       <el-table-column
         type="selection"
         width="55"
+        :selectable="selectEnable"
       > </el-table-column>
-
       <el-table-column
         prop="storageNum"
         label="入库编号"
@@ -165,7 +165,15 @@
       ></el-table-column> -->
       <el-table-column
         prop="province"
-        label="业务开展省份"
+        label="开展业务省市"
+        width="150">
+        <template slot-scope="scope">
+          {{ $root.getAreaName(scope.row.province) }}/{{ $root.getAreaName(scope.row.city) }}
+        </template>
+      </el-table-column>
+<!--      <el-table-column
+        prop="province"
+        label="开展业务省份"
         width="130">
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.province) }}
@@ -178,11 +186,11 @@
         <template slot-scope="scope">
           {{ $root.getAreaName(scope.row.city) }}
         </template>
-      </el-table-column>
+      </el-table-column>-->
       <el-table-column
         prop="cityGrade"
         label="城市等级"
-        width="180"
+        width="120"
       >
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.cityGrade, "CityLevel") }}
@@ -191,7 +199,7 @@
       <el-table-column
         prop="channelGrade"
         label="渠道等级"
-        width="180"
+        width="130"
       >
         <template slot-scope="scope">
           {{ $root.dictAllName(scope.row.channelGrade, "ChannelLevel") }}
@@ -206,7 +214,21 @@
           {{ $root.dictAllName(scope.row.special, "YesOrNoType") }}
         </template>
       </el-table-column>
-
+      <el-table-column
+        prop="special"
+        label="状态"
+        width="110">
+        <template slot-scope="scope">
+          <IhStatusComponent
+            :status="scope.row.status"
+            :status-obj="{
+                warning: 'DRAFT',
+                success: 'PASS'
+              }">
+            <div>{{$root.dictAllName(scope.row.status, "ChannelGradeStatus")}}</div>
+          </IhStatusComponent>
+        </template>
+      </el-table-column>
       <el-table-column
         prop="inputUserName"
         label="录入人"
@@ -215,7 +237,7 @@
     </el-table>
     <div class="page-check-wrapper">
       <div class="check">
-        <el-checkbox v-model="queryPageParameters.showFlag">仅展示可申请呈批信息</el-checkbox>
+        <el-checkbox v-model="showFlag" @change="changeStatus">仅展示可申请呈批信息</el-checkbox>
       </div>
       <div class="page">
         <el-pagination
@@ -282,9 +304,8 @@ export default class ChannelApprovalGradesList extends Vue {
     status: "PASS",
     storageNum: null,
     provinceCity: null,
-
-    showFlag: true,
   };
+  showFlag: any = true
 
   cancel() {
     this.$emit("cancel", false);
@@ -305,6 +326,14 @@ export default class ChannelApprovalGradesList extends Vue {
     });
   }
 
+  changeStatus(value: any) {
+    console.log(value);
+    this.queryPageParameters.pageNum = 1;
+    this.$nextTick(async () => {
+      await this.getListMixin();
+    });
+  }
+
   async finish() {
     if (this.selectList && this.selectList.length > 0) {
       this.$emit("finish", this.selectList, this.data);
@@ -320,12 +349,20 @@ export default class ChannelApprovalGradesList extends Vue {
     // }
     this.getListMixin();
   }
+  // 禁用多选框函数
+  selectEnable(row: any) {
+    console.log(row);
+    if (row.status !== 'PASS') {
+      return false;
+    }
+  }
   handleSelectionChange(val: any) {
     console.log(val);
     this.selectList = val;
   }
   async getListMixin() {
     this.queryPageParameters.departmentOrgId = this.departmentOrgId;
+    this.queryPageParameters.status = this.showFlag ? 'PASS' : null;
     if (this.data == "Change") {
       this.resPageInfo = await post_channelGradeChange_getList(
         this.queryPageParameters

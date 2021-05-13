@@ -189,6 +189,21 @@
         <el-row>
           <el-col :span="24">
             <el-form-item
+              label="代理费计付标准条款"
+              class="formItem"
+            >
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 3, maxRows: 3}"
+                v-model="form.agencyFeeCalculation"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item
               label="代理费计付标准备注"
               class="formItem"
             >
@@ -241,6 +256,21 @@
                 type="textarea"
                 :autosize="{ minRows: 3, maxRows: 3}"
                 v-model="form.agencyCostSettleWay"
+                disabled
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
+          <el-col :span="24">
+            <el-form-item
+              label="发票开具条款"
+              class="formItem"
+            >
+              <el-input
+                type="textarea"
+                :autosize="{ minRows: 3, maxRows: 3}"
+                v-model="form.invoiceConditions"
                 disabled
               ></el-input>
             </el-form-item>
@@ -403,6 +433,7 @@ import {
 export default class DistributionApply extends Vue {
   private fileList: any[] = [];
   private form: any = {
+    agencyFeeCalculation: null,
     agencyCostCondition: null,
     agencyCostSettleWay: null,
     agencyFeeRemark: null,
@@ -447,6 +478,8 @@ export default class DistributionApply extends Vue {
     unContractLiability: null,
     titleOrRemark: null,
     channelAccountData: null,
+    invoiceConditions: null,
+    claimPower: null,
   };
   private channelForm: any = {
     channelCompanyId: null,
@@ -644,12 +677,14 @@ export default class DistributionApply extends Vue {
           agencyContrictId,
         });
         Object.assign(this.form, {
+          agencyFeeCalculation: res.agencyFeeCalculation,
           agencyCostCondition: res.agencyCostCondition,
           agencyCostSettleWay: res.agencyCostSettleWay,
           agencyFeeRemark: res.agencyFeeRemark,
           agencyFeeReturnRate: res.agencyFeeReturnRate,
           agencyFeeReturnTime: res.agencyFeeReturnTime,
           agencyId: res.agencyContrictId,
+          claimPower: res.claimPower,
           // annexList
           // archiveStatus
           // channelAccount:
@@ -694,6 +729,7 @@ export default class DistributionApply extends Vue {
           unContractLiability: res.unContractLiability,
           titleOrRemark: res.titleOrRemark,
           projectName: res.proName,
+          invoiceConditions: res.invoiceConditions,
         });
         this.startDivisionId = res.startDivisionId;
         this.cityCode = res.city;

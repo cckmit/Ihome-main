@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-01 16:53:25
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-30 15:29:22
+ * @LastEditTime: 2021-05-13 15:34:53
 -->
 <template>
   <IhPage class="text-left">
@@ -355,6 +355,7 @@ export default class SalesApply extends Vue {
     supplementary: null,
     titleOrRemark: null,
     unContractLiability: null,
+    claimPower: null,
   };
   private channelForm: any = {
     channelCompanyId: null,
@@ -517,6 +518,7 @@ export default class SalesApply extends Vue {
           agencyFeeReturnRate: res.agencyFeeReturnRate,
           agencyFeeReturnTime: res.agencyFeeReturnTime,
           agencyId: res.agencyContrictId,
+          claimPower: res.claimPower,
           // annexList
           // archiveStatus
           // channelAccount:
