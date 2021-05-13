@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-13 17:10:28
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-13 18:21:56
 -->
 <template>
   <IhPage label-width="120px">
@@ -41,10 +41,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道商">
+            <el-form-item label="收款方名称">
               <IhSelectPageByChannel
                 clearable
-                placeholder="请选择渠道商"
+                placeholder="请选择收款方"
                 v-model="queryPageParameters.agencyId"
               ></IhSelectPageByChannel>
             </el-form-item>
