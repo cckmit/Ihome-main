@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-13 15:35:28
+ * @LastEditTime: 2021-05-13 16:14:43
 -->
 <template>
   <IhPage class="text-left">
@@ -46,7 +46,7 @@
             :span="12"
             v-if="form.exInvolvedCommiss === 'Yes'"
           >
-            <el-form-item label="佣金类型">{{$root.dictAllName(form.commissionKind, 'CommissionKind')}}</el-form-item>
+            <el-form-item label="乙方类型">{{$root.dictAllName(form.commissionKind, 'CommissionKind')}}</el-form-item>
           </el-col>
         </el-row>
         <el-row>

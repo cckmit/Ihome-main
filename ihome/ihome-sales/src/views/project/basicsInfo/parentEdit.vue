@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-16 11:25:47
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-13 17:17:49
 -->
 <template>
   <ih-page>
@@ -150,6 +150,13 @@
           </el-col>
         </el-row>
       </el-form>
+      <div class="info-title">
+        <h4>子项目清单</h4>
+        <el-button
+          type="primary"
+          size="mini"
+        >添加</el-button>
+      </div>
       <div class="margin-top-20">
         <el-button
           type="primary"
@@ -306,4 +313,10 @@ export default class EditBasicInfo extends Vue {
 }
 </script>
 <style lang="scss">
+.info-title {
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
 </style>
