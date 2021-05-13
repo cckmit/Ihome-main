@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 19:27:33
+ * @LastEditTime: 2021-05-13 08:42:13
 -->
 <template>
   <div class="text-left">
@@ -350,10 +350,10 @@ export default class Home extends Vue {
     let id = this.$route.query.id;
     if (id) {
       this.resPageInfo = await get_channelGrade_get__id({ id: id });
-      this.getFileListType(this.resPageInfo.channelGradeAttachments);
+      // this.getFileListType(this.resPageInfo.channelGradeAttachments);
     }
   }
-  getFileListType(data: any) {
+  /*getFileListType(data: any) {
     const channelLevelDict = (this.$root as any)
       .dictAllList("ChannelLevelStandardAttachment")
       .filter((v: any) => v.tag.includes("ChannelLevelStandardAttachment"));
@@ -377,7 +377,7 @@ export default class Home extends Vue {
         fileList: arr,
       };
     });
-  }
+  }*/
   async pass(val: any) {
     if (this.remark) {
       await post_channelGrade_approveRecord({
