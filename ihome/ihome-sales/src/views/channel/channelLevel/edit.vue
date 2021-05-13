@@ -259,7 +259,7 @@
             <template v-slot="{ row }">
               <div><span
                 style="color: red"
-                v-if="row.subType"
+                v-if="row.subType || (row.code === 'Specially' && resPageInfo.special === 'Yes')"
               >*</span>{{row.name}}
               </div>
             </template>
@@ -441,6 +441,7 @@ export default class ChannelRates extends Vue {
       obj[h.code] = h.fileList;
     });
     this.submitFile = { ...obj };
+    console.log(this.fileListType);
   }
 
   queryNew(data: any, type?: any) {
