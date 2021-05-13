@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-07-08 14:23:16
  * @LastEditors: wwq
- * @LastEditTime: 2021-03-19 16:32:58
+ * @LastEditTime: 2021-05-13 18:25:31
 --> 
 <template>
   <el-dialog
@@ -155,6 +155,7 @@ export default class UserAdd extends Vue {
     name: null,
     number: null,
     type: null,
+    bankId: null,
   };
   private rules: object = {
     name: [
@@ -173,6 +174,7 @@ export default class UserAdd extends Vue {
   handleFinish(data: any) {
     this.dialogFormVisible = false;
     this.info.bank = data.branchName;
+    this.info.bankId = data.id;
   }
 
   cancel() {
