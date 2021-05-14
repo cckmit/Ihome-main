@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-09 16:05:00
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 10:29:22
+ * @LastEditTime: 2021-05-14 16:03:11
 -->
 <template>
   <div class="ih-table-checkBox">
@@ -80,7 +80,7 @@
         ></el-pagination>
       </el-tab-pane>
       <el-tab-pane
-        label="已选项"
+        :label="checkedData.length ? `已选项(${checkedData.length})条` : '已选项'"
         name="2"
         v-if="isSelection"
       >
@@ -113,13 +113,12 @@
               <el-link
                 class="margin-right-10"
                 type="primary"
-                @click.native.prevent="remove(scope)"
-              >删除
+                @click.native.prevent="remove(scope)">移除
               </el-link>
             </template>
           </el-table-column>
         </el-table>
-        <div class="el-pagination__total text-align">已选{{checkedData.length}}条</div>
+<!--        <div class="el-pagination__total text-align">已选{{checkedData.length}}条</div>-->
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -266,36 +265,31 @@ export default class IhTableCheckBox extends Vue {
   // 删除选择项
   async remove(scope: any) {
     // console.log('scope', scope);
-    try {
-      await this.$confirm("是否确定删除?", "提示");
-      // 取消选择项中对应的项
-      if (this.isSingle) {
-        // 单选
-        this.$nextTick(() => {
-          this.data.forEach((item: any) => {
-            if (item[this.valueKey] === scope.row[this.valueKey]) {
-              item.checked = false;
-            }
-          });
+    // 取消选择项中对应的项
+    if (this.isSingle) {
+      // 单选
+      this.$nextTick(() => {
+        this.data.forEach((item: any) => {
+          if (item[this.valueKey] === scope.row[this.valueKey]) {
+            item.checked = false;
+          }
         });
-        this.checkedData = [];
-        this.$emit("selection-change", this.checkedData);
-      } else {
-        // 多选
-        this.checkedData = this.checkedData.filter((data: any) => {
-          return data[this.valueKey] !== scope.row[this.valueKey];
-        });
-        this.$nextTick(() => {
-          (this as any).$refs.checkTable.toggleRowSelection(scope.row);
-        });
-      }
-      this.$message({
-        type: "success",
-        message: "删除成功!",
       });
-    } catch (error) {
-      console.log(error);
+      this.checkedData = [];
+      this.$emit("selection-change", this.checkedData);
+    } else {
+      // 多选
+      this.checkedData = this.checkedData.filter((data: any) => {
+        return data[this.valueKey] !== scope.row[this.valueKey];
+      });
+      this.$nextTick(() => {
+        (this as any).$refs.checkTable.toggleRowSelection(scope.row);
+      });
     }
+    /*this.$message({
+      type: "success",
+      message: "删除成功!",
+    });*/
   }
 
   // 单选模式，改变选项
