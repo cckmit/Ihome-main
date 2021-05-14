@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-02-06 18:54:46
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-14 16:30:22
+ * @LastEditTime: 2021-05-14 17:01:24
 -->
 <template>
   <IhPage>
@@ -115,7 +115,7 @@
                 :search-name="info.agencyName"
               ></IhSelectPageByCompany>
               <IhSelectPageByAgency
-                clearable
+                disabled
                 v-if="info.companyKind === 'AgencyCompany'"
                 placeholder="请选择一手代理公司"
                 v-model="info.agencyId"

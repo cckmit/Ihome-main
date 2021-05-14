@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-14 16:50:21
+ * @LastEditTime: 2021-05-14 16:53:05
 -->
 <template>
   <el-dialog
@@ -394,7 +394,6 @@ export default class Obligation extends Vue {
     this.getList();
   }
   private selectEnable(row: any) {
-    console.log(row);
     let sum = this.$math.add(
       Number(row.serCanCommFees),
       Number(row.ageCanCommFees)

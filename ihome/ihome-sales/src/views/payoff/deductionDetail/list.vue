@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-13 14:44:01
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-18 15:02:52
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-14 17:20:11
 -->
 <template>
   <IhPage label-width="100px">
@@ -12,11 +12,47 @@
       <el-form label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="渠道公司名称">
-              <el-input
-                v-model="queryPageParameters.agencyName"
-                placeholder="请输入渠道公司名称"
+            <el-form-item label="公司类型">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.companyKind"
                 clearable
+                placeholder="请选择"
+                @change="() => { queryPageParameters.agencyId = null}"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('CompanyKind')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="公司名称">
+              <IhSelectPageByChannel
+                clearable
+                v-if="queryPageParameters.companyKind === 'ChannelCompany'"
+                placeholder="请选择渠道商"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByChannel>
+              <IhSelectPageByCompany
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'InfieldCompany'"
+                placeholder="请选择内部公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByAgency
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'AgencyCompany'"
+                placeholder="请选择代理公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByAgency>
+              <el-input
+                disabled
+                v-else
+                placeholder="请先选择公司类型"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -29,6 +65,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="冲正单号">
               <el-input
@@ -38,8 +76,6 @@
               ></el-input>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="冲正状态">
               <el-select
@@ -74,6 +110,8 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="产生时间">
               <el-date-picker
@@ -91,8 +129,6 @@
               ></el-date-picker>
             </el-form-item>
           </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="8">
             <el-form-item label="冲正时间">
               <el-date-picker
@@ -270,6 +306,8 @@ export default class DeductList extends Vue {
     generateEndTime: null,
     agencyName: null,
     dealCode: null,
+    companyKind: null,
+    agencyId: null,
   };
   resPageInfo: any = {
     total: null,
@@ -307,6 +345,8 @@ export default class DeductList extends Vue {
       generateEndTime: null,
       agencyName: null,
       dealCode: null,
+      companyKind: null,
+      agencyId: null,
     });
     this.cteationTime = [];
     this.deductionTime = [];

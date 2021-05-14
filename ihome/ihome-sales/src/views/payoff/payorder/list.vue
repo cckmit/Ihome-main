@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-13 18:21:56
+ * @LastEditTime: 2021-05-14 17:05:28
 -->
 <template>
   <IhPage label-width="120px">
@@ -30,6 +30,7 @@
                 v-model="queryPageParameters.companyKind"
                 clearable
                 placeholder="请选择"
+                @change="() => { queryPageParameters.agencyId = null}"
               >
                 <el-option
                   v-for="item in $root.dictAllList('CompanyKind')"
@@ -44,9 +45,27 @@
             <el-form-item label="收款方名称">
               <IhSelectPageByChannel
                 clearable
-                placeholder="请选择收款方"
+                v-if="queryPageParameters.companyKind === 'ChannelCompany'"
+                placeholder="请选择渠道商"
                 v-model="queryPageParameters.agencyId"
               ></IhSelectPageByChannel>
+              <IhSelectPageByCompany
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'InfieldCompany'"
+                placeholder="请选择内部公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByAgency
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'AgencyCompany'"
+                placeholder="请选择代理公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByAgency>
+              <el-input
+                disabled
+                v-else
+                placeholder="请先选择收款方类型"
+              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">

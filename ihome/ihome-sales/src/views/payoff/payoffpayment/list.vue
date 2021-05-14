@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-15 10:45:53
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-17 15:56:24
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-14 17:35:44
 -->
 <template>
   <IhPage label-width="100px">
@@ -12,14 +12,61 @@
       <el-form label-width="100px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="渠道商">
+            <el-form-item label="付款申请单号">
               <el-input
-                v-model="queryPageParameters.agencyName"
-                placeholder="请输入渠道商"
+                v-model="queryPageParameters.applyCode"
+                placeholder="请输入付款申请单号"
                 clearable
               ></el-input>
             </el-form-item>
           </el-col>
+          <el-col :span="8">
+            <el-form-item label="收款方类型">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.companyKind"
+                clearable
+                placeholder="请选择"
+                @change="() => { queryPageParameters.agencyId = null}"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('CompanyKind')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="收款方名称">
+              <IhSelectPageByChannel
+                clearable
+                v-if="queryPageParameters.companyKind === 'ChannelCompany'"
+                placeholder="请选择渠道商"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByChannel>
+              <IhSelectPageByCompany
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'InfieldCompany'"
+                placeholder="请选择内部公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByAgency
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'AgencyCompany'"
+                placeholder="请选择代理公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByAgency>
+              <el-input
+                disabled
+                v-else
+                placeholder="请先选择收款方类型"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="结算方式">
               <el-select
@@ -51,15 +98,6 @@
                   :value="item.code"
                 ></el-option>
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="付款申请单号">
-              <el-input
-                v-model="queryPageParameters.applyCode"
-                placeholder="请输入付款申请单号"
-                clearable
-              ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -206,6 +244,15 @@
                 width="120"
               ></el-table-column>
               <el-table-column
+                label="收款方类型"
+                prop="companyKind"
+                width="100"
+              >
+                <template v-slot="{ row }">{{
+                  $root.dictAllName(row.companyKind, "CompanyKind")
+                }}</template>
+              </el-table-column>
+              <el-table-column
                 label="收款方信息"
                 width="300"
               >
@@ -213,11 +260,11 @@
                   <div
                     class="text-ellipsis"
                     :title="row.agencyName"
-                  >{{`渠道公司：${row.agencyName}`}}</div>
+                  >{{`收款方公司：${row.agencyName}`}}</div>
                   <div
                     class="text-ellipsis"
                     :title="row.receiveAccount"
-                  >{{`收款帐号：${row.receiveAccount}`}}</div>
+                  >{{`收款方帐号：${row.receiveAccount}`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -228,11 +275,11 @@
                   <div
                     class="text-ellipsis"
                     :title="row.companyName"
-                  >{{`公司名称：${row.companyName}`}}</div>
+                  >{{`付款方名称：${row.companyName}`}}</div>
                   <div
                     class="text-ellipsis"
                     :title="row.paymentAccount"
-                  >{{`付款账户：${row.paymentAccount}`}}</div>
+                  >{{`付款方账户：${row.paymentAccount}`}}</div>
                 </template>
               </el-table-column>
               <el-table-column
@@ -414,7 +461,8 @@ import { getToken } from "ihome-common/util/cookies";
 })
 export default class ReturnConfirmList extends Vue {
   queryPageParameters: any = {
-    agencyName: null,
+    companyKind: null,
+    agencyId: null,
     settlementMethod: null,
     paymentMethod: null,
     applyCode: null,
@@ -509,7 +557,8 @@ export default class ReturnConfirmList extends Vue {
 
   reset() {
     Object.assign(this.queryPageParameters, {
-      agencyName: null,
+      companyKind: null,
+      agencyId: null,
       settlementMethod: null,
       paymentMethod: null,
       applyCode: null,

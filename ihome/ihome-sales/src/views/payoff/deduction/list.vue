@@ -3,33 +3,75 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-05 17:28:37
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-14 17:24:44
 -->
 <template>
   <IhPage label-width="100px">
     <template #form>
-      <div>
+      <el-form label-width="100px">
         <el-row>
+          <el-col :span="8">
+            <el-form-item label="公司类型">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.companyKind"
+                clearable
+                placeholder="请选择"
+                @change="() => { queryPageParameters.agencyId = null}"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('CompanyKind')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="公司名称">
+              <IhSelectPageByChannel
+                clearable
+                v-if="queryPageParameters.companyKind === 'ChannelCompany'"
+                placeholder="请选择渠道商"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByChannel>
+              <IhSelectPageByCompany
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'InfieldCompany'"
+                placeholder="请选择内部公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByAgency
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'AgencyCompany'"
+                placeholder="请选择代理公司"
+                v-model="queryPageParameters.agencyId"
+              ></IhSelectPageByAgency>
+              <el-input
+                disabled
+                v-else
+                placeholder="请先选择公司类型"
+              ></el-input>
+            </el-form-item>
+          </el-col>
           <el-col
-            :span="24"
+            :span="8"
             class="text-right"
           >
-            <el-input
-              v-model="queryPageParameters.agencyName"
-              placeholder="渠道公司名称"
-              class="width-250"
-              @keyup.enter.native="search"
-              clearable
-            ></el-input>
             <el-button
               type="primary"
               class="margin-left-20"
               @click="search()"
             >查询</el-button>
+            <el-button
+              type="info"
+              @click="reset()"
+            >重置</el-button>
           </el-col>
         </el-row>
-      </div>
+      </el-form>
     </template>
     <template #table>
       <br />
@@ -107,7 +149,8 @@ import { post_payDeductDetail_summary_list } from "@/api/payoff/index";
 })
 export default class DeductSumList extends Vue {
   queryPageParameters: any = {
-    agencyName: null,
+    companyKind: null,
+    agencyId: null,
   };
   resPageInfo: any = {
     total: null,
@@ -117,6 +160,12 @@ export default class DeductSumList extends Vue {
   private search() {
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
+  }
+  private reset() {
+    Object.assign(this.queryPageParameters, {
+      companyKind: null,
+      agencyId: null,
+    });
   }
   private typeIndex(index: number) {
     return (

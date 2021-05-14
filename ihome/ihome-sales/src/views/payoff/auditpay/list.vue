@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-24 15:17:12
+ * @LastEditTime: 2021-05-14 17:13:31
 -->
 <template>
   <IhPage label-width="120px">
@@ -24,17 +24,55 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="渠道商">
-              <IhSelectPageByChannel
-                placeholder="请选择渠道商"
+            <el-form-item label="收款方类型">
+              <el-select
+                style="width: 100%"
+                v-model="queryPageParameters.companyKind"
                 clearable
-                v-model="queryPageParameters.agencyId"
-                @changeOption="(data) => {queryPageParameters.agencyName = data.name}"
-              ></IhSelectPageByChannel>
+                placeholder="请选择"
+                @change="() => { queryPageParameters.agencyId = null}"
+              >
+                <el-option
+                  v-for="item in $root.dictAllList('CompanyKind')"
+                  :key="item.code"
+                  :label="item.name"
+                  :value="item.code"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="组织">
+            <el-form-item label="收款方名称">
+              <IhSelectPageByChannel
+                placeholder="请选择渠道商"
+                clearable
+                v-if="queryPageParameters.companyKind === 'ChannelCompany'"
+                v-model="queryPageParameters.agencyId"
+                @changeOption="(data) => {queryPageParameters.agencyName = data.name}"
+              ></IhSelectPageByChannel>
+              <IhSelectPageByCompany
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'InfieldCompany'"
+                placeholder="请选择内部公司"
+                v-model="queryPageParameters.agencyId"
+                @changeOption="(data) => {queryPageParameters.agencyName = data.name}"
+              ></IhSelectPageByCompany>
+              <IhSelectPageByAgency
+                clearable
+                v-else-if="queryPageParameters.companyKind === 'AgencyCompany'"
+                placeholder="请选择代理公司"
+                v-model="queryPageParameters.agencyId"
+                @changeOption="(data) => {queryPageParameters.agencyName = data.name}"
+              ></IhSelectPageByAgency>
+              <el-input
+                disabled
+                v-else
+                placeholder="请先选择收款方类型"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="归属组织">
               <IhSelectPageDivision
                 v-model="queryPageParameters.belongOrgId"
                 placeholder="请选择组织"
@@ -152,14 +190,23 @@
           width="180"
         ></el-table-column>
         <el-table-column
+          label="收款方类型"
+          prop="companyKind"
+          width="150"
+        >
+          <template v-slot="{ row }">{{
+            $root.dictAllName(row.companyKind, "CompanyKind")
+          }}</template>
+        </el-table-column>
+        <el-table-column
+          label="收款方名称"
+          prop="agencyName"
+          width="150"
+        ></el-table-column>
+        <el-table-column
           label="所属组织"
           prop="belongOrgName"
           width="180"
-        ></el-table-column>
-        <el-table-column
-          label="渠道商"
-          prop="agencyName"
-          width="150"
         ></el-table-column>
         <el-table-column
           label="申请支付金额"
@@ -291,6 +338,7 @@ export default class PayoffList extends Vue {
     beginMakerTime: null,
     endMakerTime: null,
     paymentMethod: null,
+    companyKind: null,
   };
   timeList: any = [];
   prodialogVisible: any = false;
@@ -392,6 +440,7 @@ export default class PayoffList extends Vue {
       beginMakerTime: null,
       endMakerTime: null,
       paymentMethod: null,
+      companyKind: null,
     });
     this.timeList = [];
   }
