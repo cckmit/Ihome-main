@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-13 19:06:12
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-13 17:21:33
+ * @LastEditTime: 2021-05-14 09:07:12
 -->
 <template>
   <el-dialog
@@ -344,9 +344,9 @@ export default class ChannelApprovalGradesList extends Vue {
 
   created() {
     console.log(this.data);
-    // if (this.data == "Change") {
-    //   this.title = "渠道合作信息列表(变更信息)";
-    // }
+    if (this.data == "Change") {
+      this.title = "选择申请呈批信息(变更信息)";
+    }
     this.getListMixin();
   }
   // 禁用多选框函数

@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-16 14:05:21
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-11 15:40:22
+ * @LastEditTime: 2021-05-14 09:30:33
 -->
 <template>
   <IhPage>
@@ -312,8 +312,9 @@
           </template>
           <template v-slot="{ row, $index }">
             <el-switch
-              active-value="1"
-              inactive-value="0"
+              :active-value="1"
+              :inactive-value="0"
+              :disabled="row.defaultFlag ? true : false"
               v-model="row.defaultFlag"
               @change="changeAccountDefaultAccount($event, $index)"></el-switch>
           </template>
@@ -500,6 +501,7 @@ export default class ModifyThe extends Vue {
     accountType: null,
     branchName: null,
     branchNo: null,
+    defaultFlag: 0
   };
   bankType: any = "new-add";
   channelPersonsData: any = {
@@ -713,6 +715,7 @@ export default class ModifyThe extends Vue {
       case "new-add":
         // this.info.channelBanks.push(value);
         if (!this.info.channelBanks.length) {
+          console.log(1);
           value.defaultFlag = 1;
         }
         this.info.channelBanks.push(value);
@@ -824,5 +827,8 @@ export default class ModifyThe extends Vue {
   color: #FF9900;
   margin-left: 5px;
   cursor: pointer;
+}
+.padding-left-20 .cell .el-switch.is-disabled {
+  opacity: 1 !important;
 }
 </style>

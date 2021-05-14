@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-13 15:26:50
+ * @LastEditTime: 2021-05-14 09:01:35
 --> 
 <template>
   <ih-page>
@@ -180,6 +180,11 @@
                 </template>
               </el-table-column>
               <el-table-column prop="channelName" label="渠道商名称" min-width="130">
+              </el-table-column>
+              <el-table-column prop="gradeType" label="申请类型" min-width="120">
+                <template slot-scope="scope">
+                  {{ $root.dictAllName(scope.row.gradeType, "ChannelGradeChangeType") }}
+                </template>
               </el-table-column>
               <el-table-column prop="channelGrade" label="渠道等级" min-width="120">
                 <template slot-scope="scope">

@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 15:15:10
+ * @LastEditTime: 2021-05-14 09:04:18
 --> 
 <template>
   <div>
@@ -20,9 +20,12 @@
             <el-table
               :data="info.channelApprovalGrades"
               style="width: 100%">
-              <el-table-column prop="storageNum" label="入库编号" width="180">
-              </el-table-column>
-              <el-table-column prop="channelName" label="渠道商名称" min-width="130">
+              <el-table-column prop="storageNum" label="入库编号" width="180"></el-table-column>
+              <el-table-column prop="channelName" label="渠道商名称" min-width="130"></el-table-column>
+              <el-table-column prop="gradeType" label="申请类型" min-width="120">
+                <template slot-scope="scope">
+                  {{ $root.dictAllName(scope.row.gradeType, "ChannelGradeChangeType") }}
+                </template>
               </el-table-column>
               <el-table-column prop="channelGrade" label="渠道等级" width="120">
                 <template slot-scope="scope">
