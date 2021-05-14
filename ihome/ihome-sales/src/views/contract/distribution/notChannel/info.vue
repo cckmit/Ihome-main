@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-04-23 18:11:20
+ * @LastEditTime: 2021-05-14 10:20:49
 -->
 <template>
   <IhPage class="text-left">
@@ -249,6 +249,7 @@ import {
   post_distribution_original_archive,
   post_distribution_review,
   post_distribution_disallowance,
+  get_distribution_deal_detail__contractNo,
 } from "@/api/contract/index";
 
 @Component({})
@@ -342,30 +343,40 @@ export default class NotChannelInfo extends Vue {
   }
   private async getInfo() {
     let id = this.$route.query.id;
+    let contractNo = this.$route.query.contractNo;
+    let res: any = {
+      archiveNo: null,
+      annexList: [],
+    };
     if (id) {
-      let res = await get_distribution_detail__id({ id: id });
-      this.form = { ...res };
-      this.archiveStatus = res.archiveStatus;
-      // 路由名称包含Duplicate -- 盖章版
-      if (this.$route.name?.includes("Duplicate")) {
-        this.archiveStatus = "ScansAreArchived";
-      }
-      this.archiveNo = res.archiveNo;
-      this.electronicFile = res.annexList
-        .filter((i: any) => i.type === "ChannelContractElectronicAnnex")
-        .map((i: any) => ({
-          fileName: i.attachmentSuffix,
-          fileId: i.fileNo,
-          exAuto: 1,
-        }));
-      this.fileList = res.annexList
-        .filter((i: any) => i.type === "ArchiveAnnex")
-        .map((i: any) => ({
-          fileName: i.attachmentSuffix,
-          fileId: i.fileNo,
-          exAuto: 1,
-        }));
+      res = await get_distribution_detail__id({ id: id });
+    } else if (contractNo) {
+      res = await get_distribution_deal_detail__contractNo({ contractNo });
+    } else {
+      this.$message.warning("id或编号不能为空");
+      return;
     }
+    this.form = { ...res };
+    this.archiveStatus = res.archiveStatus;
+    // 路由名称包含Duplicate -- 盖章版
+    if (this.$route.name?.includes("Duplicate")) {
+      this.archiveStatus = "ScansAreArchived";
+    }
+    this.archiveNo = res.archiveNo;
+    this.electronicFile = res.annexList
+      .filter((i: any) => i.type === "ChannelContractElectronicAnnex")
+      .map((i: any) => ({
+        fileName: i.attachmentSuffix,
+        fileId: i.fileNo,
+        exAuto: 1,
+      }));
+    this.fileList = res.annexList
+      .filter((i: any) => i.type === "ArchiveAnnex")
+      .map((i: any) => ({
+        fileName: i.attachmentSuffix,
+        fileId: i.fileNo,
+        exAuto: 1,
+      }));
   }
 
   created(): void {

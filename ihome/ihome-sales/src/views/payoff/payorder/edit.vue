@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-13 18:13:53
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-14 12:05:36
 -->
 <template>
   <IhPage>
@@ -249,11 +249,11 @@
             <div
               class="text-left"
               style="color: #409EFF; font-size: 12px"
-            >收款账户开户行：{{form.branchName2}}</div>
+            >付款账户开户行：{{form.branchName2}}</div>
             <div
               class="text-left"
               style="color: #409EFF; font-size: 12px"
-            >收款账户联行号：{{form.branchNo2}}</div>
+            >付款账户联行号：{{form.branchNo2}}</div>
           </el-col>
         </el-row>
         <el-row>
@@ -371,16 +371,14 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="300"
+            width="250"
           >
             <template v-slot="{ row }">
-              <div :title="row.contNo">分销协议编号:
-                <!-- <el-link
+              <div :title="row.contTitle">合同名称:
+                <el-link
                   type="primary"
                   @click="routeToDistribution(row)"
-                >{{row.contNo}}
-                </el-link> -->
-                <div>{{row.contNo}}</div>
+                >{{row.contTitle}}</el-link>
               </div>
               <div class="text-ellipsis">是否垫佣: {{$root.dictAllName(row.isMat, 'PadCommission')}}</div>
             </template>
@@ -1437,12 +1435,54 @@ export default class PayoffEdit extends Vue {
   }
 
   routeToDistribution(row: any) {
-    let router = this.$router.resolve({
-      path: `/distribution/info`,
-      query: {
-        contractNo: row.contNo,
-      },
-    });
+    let router: any;
+    switch (row.contKind) {
+      case "StandKindSaleConfirm":
+        // 标准联动销售确认书
+        router = this.$router.resolve({
+          path: `/distribution/normalSalesInfo`,
+          query: {
+            contractNo: row.contNo,
+          },
+        });
+        break;
+      case "NoStandKindSaleConfirm":
+        // 非标准联动销售确认书
+        router = this.$router.resolve({
+          path: `/distribution/notSalesInfo`,
+          query: {
+            contractNo: row.contNo,
+          },
+        });
+        break;
+      case "StandChannel":
+        // 标准渠道分销合同
+        router = this.$router.resolve({
+          path: `/distribution/normalDistributionInfo`,
+          query: {
+            contractNo: row.contNo,
+          },
+        });
+        break;
+      case "NoStandChannel":
+        // 非标准渠道分销合同
+        router = this.$router.resolve({
+          path: `/distribution/notDistributionInfo`,
+          query: {
+            contractNo: row.contNo,
+          },
+        });
+        break;
+      case "NoChannel":
+        // 非渠道类合同
+        router = this.$router.resolve({
+          path: `/distribution/notChannelInfo`,
+          query: {
+            contractNo: row.contNo,
+          },
+        });
+        break;
+    }
     window.open(router.href, "_blank");
   }
 

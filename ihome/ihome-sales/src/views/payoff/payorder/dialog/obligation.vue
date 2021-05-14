@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-13 16:28:28
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-14 16:50:21
 -->
 <template>
   <el-dialog
@@ -49,7 +49,7 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8">
+        <!-- <el-col :span="8">
           <el-form-item label="是否可结佣">
             <el-select
               v-model="info.isComm"
@@ -65,7 +65,7 @@
               ></el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col :span="8">
           <el-form-item label="业务模式">
             <el-select
@@ -100,8 +100,6 @@
             </el-select>
           </el-form-item>
         </el-col>
-      </el-row>
-      <el-row>
         <el-col :span="8">
           <el-form-item label="录入时间">
             <el-date-picker
@@ -124,7 +122,7 @@
     <div class="padding-left-100">
       <el-button
         type="primary"
-        @click="search()"
+        @click="search(isCheck)"
       >查询</el-button>
       <el-button
         type="info"
@@ -138,6 +136,7 @@
       :rowKey="rowKey"
       :column="tableColumn"
       :maxHeight="tableMaxHeight"
+      :columnSelectable="selectEnable"
       @selection-change="selectionChange"
       :pageSize="pageSize"
       :pageCurrent="pageNum"
@@ -238,6 +237,10 @@
         </el-table-column>
       </template>
     </IhTableCheckBox>
+    <el-checkbox
+      v-model="isCheck"
+      @change="search"
+    >仅展示可结佣成交</el-checkbox>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
       <el-button
@@ -279,11 +282,12 @@ export default class Obligation extends Vue {
   };
   hasCheckedData: any = [];
   selection: any = [];
+  isCheck = true;
   private dialogVisible = true;
   private pageSize = 10;
   private pageNum = 1;
   private rowKey: any = "id";
-  private tableMaxHeight: any = 350;
+  private tableMaxHeight: any = 320;
   private tableColumn = [
     {
       label: "成交报告编号",
@@ -367,10 +371,13 @@ export default class Obligation extends Vue {
       timeList: [],
     });
   }
-  private search() {
+  private search(isCheck: boolean) {
     let flag = this.info.timeList && this.info.timeList.length;
     this.info.beginTime = flag ? this.info.timeList[0] : null;
     this.info.endTime = flag ? this.info.timeList[1] : null;
+    console.log(isCheck);
+
+    isCheck ? (this.info.isComm = "Yes") : (this.info.isComm = "No");
     this.pageNum = 1;
     this.getList();
   }
@@ -385,6 +392,18 @@ export default class Obligation extends Vue {
   private sizeChange(val: any) {
     this.pageSize = val;
     this.getList();
+  }
+  private selectEnable(row: any) {
+    console.log(row);
+    let sum = this.$math.add(
+      Number(row.serCanCommFees),
+      Number(row.ageCanCommFees)
+    );
+    if (this.$math.tofixed(sum, 2) > 0) {
+      return true;
+    } else {
+      return false;
+    }
   }
   private async getList() {
     this.resPageInfo = await post_payDeal_getList({

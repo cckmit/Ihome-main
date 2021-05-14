@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-5-12 19:06:34
+//2021-5-13 6:48:07 ├F10: PM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/channel"
 /**添加渠道*/
@@ -2076,6 +2076,8 @@ approvalNo: string;
 changeReason: string;
 /**变更时间(yyyy-MM-dd)*/
 changeTime: string;
+/**渠道呈批附件集合*/
+channelApprovalAttachments: ChannelApprovalAttachment[];
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**公司名称*/
@@ -2526,6 +2528,8 @@ storageNum: string;
 export interface ChannelGradeVO {
 /**呈批申请编号*/
 approvalNo: string;
+/**渠道呈批附件集合*/
+channelApprovalAttachments: ChannelApprovalAttachment[];
 /**渠道等级(BigPlatform-大平台、LargeIntermediary-大型中介、FirstPlatform-一级平台、MediumIntermediary-中型中介、SecondPlatform-二级平台、SmallIntermediary-小型中介)*/
 channelGrade: string;
 /**渠道ID*/

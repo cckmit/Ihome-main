@@ -1,11 +1,15 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-3-9 9:02:07 ├F10: AM┤
+//2021-5-14 11:49:55 ├F10: AM┤
 import { request } from '@/api/base'
 const basePath = "/sales-api/payoff"
 /**限额模版*/
 export async function get_file_download_quota_stencil (d?: any) {
 return await request.get<any,any>(basePath+'/file/download/quota/stencil', { params: d })
+}
+/**付款列表导出*/
+export async function post_file_excel_detail_list (d?: any) {
+return await request.post< any,any> (basePath+'/file/excel/detail/list', d)
 }
 /**导出列表*/
 export async function post_file_excel_list (d?: any) {
@@ -18,6 +22,10 @@ return await request.post< any,any> (basePath+'/file/excel/review/list', d)
 /**计算结佣统计数据*/
 export async function post_payApply_calculation_results (d?: any) {
 return await request.post< CalculationResultsResponse,CalculationResultsResponse> (basePath+'/payApply/calculation/results', d)
+}
+/**成交：通过成交编号，查询正在结佣的付款单*/
+export async function get_payApply_deal_apply_details__dealCode (d?: any) {
+return await request.get<DealApplyResponse,DealApplyResponse>(basePath+'/payApply/deal/apply/details/{dealCode}', { params: d })
 }
 /**通过成交编号查询是否有未完结的付款申请单*/
 export async function post_payApply_deal_apply_status__dealCode (d?: any) {
@@ -261,12 +269,14 @@ payDeductDetailResponseList: PayDeductDetailResponse[];
 }
 /**CalculationResultsRequest*/
 export interface CalculationResultsRequest {
-/**渠道商ID*/
+/**付款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**付款申请单ID*/
 applyId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**发票税率*/
 taxRate: number;
 /**其他扣除项*/
@@ -290,7 +300,7 @@ deductionCategory: string;
 finedAmount: number;
 /**不含税金额*/
 noTaxAmount: number;
-/**渠道公司周期结佣汇总*/
+/**付款方公司周期结佣汇总*/
 paySummaryDetailsResponses: PaySummaryDetailsResponse[];
 /**税额*/
 tax: number;
@@ -306,12 +316,16 @@ paymentDate: string;
 }
 /**ChannelWechatListRequest*/
 export interface ChannelWechatListRequest {
-/**渠道商ID*/
+/**收款方Id*/
 agencyId: number;
 /**状态*/
 appletsChannelInquiryList: string[];
 /**付款单编号*/
 applyCode: string;
+/**经纪人ID*/
+brokerId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -379,6 +393,8 @@ deleted: number;
 entryDate: string;
 /**录入人ID*/
 entryPersonId: number;
+/**一手代理合同编号*/
+firstContNo: string;
 /**ID*/
 id: number;
 /**是否代销(Yes-是、No-否)*/
@@ -387,12 +403,16 @@ isConsign: string;
 isMarketProject: string;
 /**是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 isMat: string;
+/**周期ID*/
+mainId: number;
 /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 modelCode: string;
 /**一手代理团队ID*/
 oneAgentTeamId: number;
 /**主成交ID*/
 parentId: number;
+/**项目id*/
+proId: number;
 /**备案情况(Has-有、No-无)*/
 recordState: string;
 /**细分业务模式(All-总包、District-分销)*/
@@ -426,6 +446,40 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**DealApplyDetailsResponse*/
+export interface DealApplyDetailsResponse {
+/**收款方Id*/
+agencyId: number;
+/**收款方名称*/
+agencyName: string;
+/**收款金额*/
+applyAmount: number;
+/**付款申请单编号*/
+applyCode: string;
+/**ID*/
+applyId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**制单人*/
+makerId: number;
+/**制单人名字*/
+makerName: string;
+/**甲方ID*/
+partyA: number;
+/**甲方名字*/
+partyAName: string;
+/**付款时间(yyyy-MM-dd)*/
+paymentDate: string;
+/**付款状态(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功)*/
+status: string;
+}
+/**DealApplyResponse*/
+export interface DealApplyResponse {
+/**代理费*/
+dealAgeApplyDetailsResponseList: DealApplyDetailsResponse[];
+/**服务费*/
+dealSerApplyDetailsResponseList: DealApplyDetailsResponse[];
+}
 /**DealDetailResponse*/
 export interface DealDetailResponse {
 /**房号*/
@@ -438,7 +492,7 @@ customerName: string;
 customerPhone: string;
 /**楼盘名称*/
 proName: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyType: string;
 /**房号*/
 roomNo: string;
@@ -455,15 +509,23 @@ totalUnsetCommFees: number;
 export interface DealHouseResponseVO {
 /**渠道商ID*/
 channelId: number;
+/**周期id*/
+cycleId: number;
 /**主成家报告*/
 deal: Deal;
 /**成交房产*/
 house: House;
+/**成交套数*/
+houseCount: number;
+/**总签约价*/
+totalSignPrice: number;
 }
 /**DeductDetailsRequest*/
 export interface DeductDetailsRequest {
-/**渠道ID*/
+/**收款方ID*/
 channelId: number;
+/**(必填)收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**项目ID*/
 projectId: number;
 }
@@ -606,7 +668,7 @@ id: number;
 kitchen: number;
 /**房产证/预售合同编号*/
 propertyNo: string;
-/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、Other-其他)*/
+/**物业类型(Residence-住宅、WorkShop-厂房、Apartment-公寓、Villa-别墅、Shop-商铺、Office-写字楼、Parking-车位、Warehouse-仓库、LinkIndustryUseType-工业、Other-其他)*/
 propertyType: string;
 /**室*/
 room: number;
@@ -704,11 +766,11 @@ updateUser: number;
 export interface PayApplyAddVO {
 /**本期实际支付金额*/
 actualAmount: number;
-/**渠道收款账号开户行*/
+/**付款方收款账号开户行*/
 agencyAccountBank: string;
-/**渠道商ID*/
+/**付款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**本期申请支付金额*/
 applyAmount: number;
@@ -716,15 +778,17 @@ applyAmount: number;
 belongOrgId: number;
 /**所属组织*/
 belongOrgName: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**本期扣除金额*/
 deductAmount: number;
 /**(必填)扣除类别项*/
 deductionCategory: string;
-/**(必填)申请说明*/
+/**(必填)经办部门意见*/
 description: string;
 /**本期扣罚金额*/
 finedAmount: number;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
+/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、DEDICATED_ZZ-增值税专用发票（纸质）、DEDICATED_DZ-增值税专用发票（电子）)*/
 invoiceType: string;
 /**制单人ID*/
 makerId: number;
@@ -732,11 +796,19 @@ makerId: number;
 makerTime: string;
 /**本期实际付款金额（不含税）*/
 noTaxAmount: number;
+/**付款方账户开户行*/
+payerAccountBank: string;
+/**付款方ID*/
+payerId: number;
+/**付款方名字*/
+payerName: string;
+/**付款方账号*/
+paymentAccount: string;
 /**项目ID*/
 projectId: number;
 /**项目*/
 projectName: string;
-/**渠道收款账号*/
+/**付款方收款账号*/
 receiveAccount: string;
 /**当前状态： 保存 = Unconfirm ；提交 = PlatformClerkUnreview(Unconfirm-附件待确认、PlatformClerkUnreview-待平台文员审核、BranchBusinessManageUnreview-待分公司业管审核、BranchFinanceUnreview-待分公司财务审核、OAReviewing-OA流程审批中、ReviewPass-终审通过、ConfirmingPay-支付确认中、PaymentSuccessful-支付成功)*/
 status: string;
@@ -777,8 +849,12 @@ busModel: string;
 canCommFeesList: PayApplyDetailCommCreateRequest[];
 /**拆佣代理费列表*/
 commFeesList: PayApplyDetailCommCreateRequest[];
-/**分销协议编号*/
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
+/**合同编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**客户*/
 customer: string;
 /**周期ID*/
@@ -900,8 +976,12 @@ busModel: string;
 canCommFeesList: PayApplyDetailCommResponse[];
 /**拆佣代理费列表*/
 commFeesList: PayApplyDetailCommResponse[];
+/**合同类型(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**分销协议编号*/
 contNo: string;
+/**合同标题*/
+contTitle: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -978,14 +1058,16 @@ postscript: string;
 }
 /**PayApplyExcelRequest*/
 export interface PayApplyExcelRequest {
-/**渠道商名称*/
-agencyName: string;
+/**收款方名称*/
+agencyId: string;
 /**付款单编号*/
 applyCode: string;
 /**制单日期起(yyyy-MM-dd HH:mm:ss)*/
 beginMakerTime: string;
 /**组织*/
 belongOrgId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**制单日期止(yyyy-MM-dd HH:mm:ss)*/
 endMakerTime: string;
 /**制单人*/
@@ -1003,7 +1085,7 @@ status: string;
 export interface PayApplyListVO {
 /**实际支付金额*/
 actualAmount: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**申请支付金额*/
 applyAmount: number;
@@ -1015,6 +1097,8 @@ belongOrgName: string;
 belongOrgid: number;
 /**结算单*/
 billForm: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**扣除金额*/
 deductAmount: number;
 /**付款单ID*/
@@ -1040,7 +1124,7 @@ status: string;
 }
 /**PayApplyQueryVO*/
 export interface PayApplyQueryVO {
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
 /**付款单编号*/
 applyCode: string;
@@ -1048,6 +1132,8 @@ applyCode: string;
 beginMakerTime: string;
 /**组织*/
 belongOrgId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**制单日期止(yyyy-MM-dd HH:mm:ss)*/
 endMakerTime: string;
 /**制单人*/
@@ -1067,12 +1153,14 @@ status: string;
 }
 /**PayApplyReviewExcelRequest*/
 export interface PayApplyReviewExcelRequest {
-/**渠道商ID*/
+/**付款方ID*/
 agencyId: number;
 /**付款单编号*/
 applyCode: string;
 /**所属组织*/
 belongOrgId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**制单开始时间(yyyy-MM-dd)*/
 makerBeginDate: string;
 /**制单结束时间(yyyy-MM-dd)*/
@@ -1104,16 +1192,22 @@ ageSettledCommFees: number;
 ageUnpaidFees: number;
 /**(必填)代理费未结佣*/
 ageUnsetCommFees: number;
-/**(必填)渠道商ID*/
+/**(必填)收款方ID*/
 agencyId: number;
-/**(必填)渠道商名称*/
+/**(必填)收款方名称*/
 agencyName: string;
 /**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busModel: string;
 /**代理费信息*/
 commFeesList: PayDealCommCreateRequest[];
-/**(必填)分销协议编号*/
+/**(必填)收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**渠道合同编号种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
+/**(必填)渠道合同编号*/
 contNo: string;
+/**渠道合同编号主标题*/
+contTitle: string;
 /**(必填)合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**(必填)客户*/
@@ -1132,6 +1226,8 @@ dealInfoResults: DealHouseResponseVO[];
 dealStage: string;
 /**(必填)录入日期(yyyy-MM-dd HH:mm:ss)*/
 entryDate: string;
+/**成交套数*/
+houseCount: number;
 /**(必填)是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 isMat: string;
 /**结算状态(AlreadyNotSettlement-已结算、NotSettlement-未结算)*/
@@ -1156,6 +1252,8 @@ signDate: string;
 signPrice: number;
 /**(必填)认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
+/**总签约价*/
+totalSignPrice: number;
 }
 /**PayDealCommCreateRequest*/
 export interface PayDealCommCreateRequest {
@@ -1215,9 +1313,9 @@ ageSettledCommFees: number;
 ageUnpaidFees: number;
 /**代理费未结佣*/
 ageUnsetCommFees: number;
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busModel: string;
@@ -1225,8 +1323,14 @@ busModel: string;
 canCommFeesList: PayDealCommVO[];
 /**拆佣代理费*/
 commFeesList: PayDealCommVO[];
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**分销协议编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1292,14 +1396,16 @@ updateUser: number;
 }
 /**PayDealQueryVO*/
 export interface PayDealQueryVO {
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**开始时间(yyyy-MM-dd HH:mm:ss)*/
 beginTime: string;
 /**业务模式*/
 busModel: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**客户*/
@@ -1337,16 +1443,22 @@ ageSettledCommFees: number;
 ageUnpaidFees: number;
 /**(必填)代理费未结佣*/
 ageUnsetCommFees: number;
-/**(必填)渠道商ID*/
+/**(必填)收款方ID*/
 agencyId: number;
-/**(必填)渠道商名称*/
+/**(必填)收款方名称*/
 agencyName: string;
 /**(必填)业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busModel: string;
 /**代理费信息*/
 commFeesList: PayDealCommCreateRequest[];
+/**(必填)收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**渠道合同编号种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**(必填)分销协议编号*/
 contNo: string;
+/**渠道合同编号主标题*/
+contTitle: string;
 /**(必填)合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**(必填)客户*/
@@ -1365,6 +1477,8 @@ dealInfoResults: DealHouseResponseVO[];
 dealStage: string;
 /**(必填)录入日期(yyyy-MM-dd HH:mm:ss)*/
 entryDate: string;
+/**成交套数*/
+houseCount: number;
 /**(必填)是否垫佣(Veto-否、One-1个月、Two-2个月、Three-3个月、FOUR-4个月、Five-5个月、Six-6个月、Seven-7个月、Eight-8个月、Nine-9个月、Ten-10个月、Eleven-11个月、Twelve-12个月)*/
 isMat: string;
 /**结算状态(AlreadyNotSettlement-已结算、NotSettlement-未结算)*/
@@ -1389,6 +1503,8 @@ signDate: string;
 signPrice: number;
 /**(必填)认购日期(yyyy-MM-dd)*/
 subscribeDate: string;
+/**总签约价*/
+totalSignPrice: number;
 }
 /**PayDealVO*/
 export interface PayDealVO {
@@ -1410,9 +1526,9 @@ ageSettledCommFees: number;
 ageUnpaidFees: number;
 /**代理费未结佣*/
 ageUnsetCommFees: number;
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busModel: string;
@@ -1420,8 +1536,14 @@ busModel: string;
 canCommFeesList: PayDealCommVO[];
 /**拆佣代理费*/
 commFeesList: PayDealCommVO[];
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**分销协议编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1487,12 +1609,18 @@ updateUser: number;
 }
 /**PayDeductDetailAddVO*/
 export interface PayDeductDetailAddVO {
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**合同编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**周期ID*/
@@ -1518,8 +1646,12 @@ type: string;
 }
 /**PayDeductDetailCalculationRequest*/
 export interface PayDeductDetailCalculationRequest {
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**合同编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**周期ID*/
 cycleId: number;
 /**周期名称*/
@@ -1539,8 +1671,12 @@ tax: number;
 }
 /**PayDeductDetailInfo*/
 export interface PayDeductDetailInfo {
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**合同编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**周期Id*/
 cycleId: number;
 /**周期名称*/
@@ -1556,13 +1692,15 @@ id: number;
 }
 /**PayDeductDetailQueryVO*/
 export interface PayDeductDetailQueryVO {
-/**渠道商名称*/
-agencyName: string;
+/**收款方ID*/
+agencyId: string;
+/**(必填)收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**成交报告编号*/
 dealCode: string;
-/**抵扣开始时间(yyyy-MM-dd HH:mm:ss)*/
+/**冲正开始时间(yyyy-MM-dd HH:mm:ss)*/
 deductionBeginTime: string;
-/**抵扣结束时间(yyyy-MM-dd HH:mm:ss)*/
+/**冲正结束时间(yyyy-MM-dd HH:mm:ss)*/
 deductionEndTime: string;
 /**抵扣单号*/
 deductionNo: string;
@@ -1581,8 +1719,12 @@ type: string;
 }
 /**PayDeductDetailResponse*/
 export interface PayDeductDetailResponse {
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**合同编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**周期Id*/
 cycleId: number;
 /**周期名称*/
@@ -1602,8 +1744,10 @@ tax: number;
 }
 /**PayDeductDetailSummaryRequest*/
 export interface PayDeductDetailSummaryRequest {
-/**渠道商名称*/
-agencyName: string;
+/**收款方ID*/
+agencyId: number;
+/**(必填)收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**(必填)当前页*/
 pageNum: number;
 /**(必填)每页条数*/
@@ -1611,8 +1755,10 @@ pageSize: number;
 }
 /**PayDeductDetailSummaryResponse*/
 export interface PayDeductDetailSummaryResponse {
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**已抵扣项费用*/
 deductedAmount: number;
 /**抵扣中抵扣项费用*/
@@ -1626,9 +1772,9 @@ undeductionAmount: number;
 }
 /**PayDeductDetailVO*/
 export interface PayDeductDetailVO {
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**变更后应结佣金额*/
 amount: number;
@@ -1636,8 +1782,14 @@ amount: number;
 applyCode: string;
 /**抵扣的付款单ID*/
 applyId: number;
+/**(必填)收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**合同编号不能为空*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -1685,6 +1837,31 @@ updateTime: string;
 /**更新用户*/
 updateUser: number;
 }
+/**PayDetailExcelRequest*/
+export interface PayDetailExcelRequest {
+/**收款方ID*/
+agencyId: string;
+/**付款单编号*/
+applyCode: string;
+/**开始日期(yyyy-MM-dd)*/
+beginDate: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**结束日期(yyyy-MM-dd)*/
+endDate: string;
+/**事业部ID*/
+orgIds: number[];
+/**日期类型(ApplicationDate-申请日期、PushDate-推送日期、PaymentDate-付款日期)*/
+payDateType: string;
+/**支付编码*/
+paymentCode: string;
+/**付款方式(Cash-现金、Other-其他)*/
+paymentMethod: string;
+/**状态*/
+paymentStatusList: string[];
+/**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
+settlementMethod: string;
+}
 /**PayDetailPushResponse*/
 export interface PayDetailPushResponse {
 /**原因*/
@@ -1696,11 +1873,11 @@ status: boolean;
 export interface PayDetailQueryResponse {
 /**本期实际支付金额*/
 actualAmount: number;
-/**渠道商账户开户行*/
+/**收款方账户开户行*/
 agencyAccountBank: string;
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**申请日期(yyyy-MM-dd)*/
 applicationDate: string;
@@ -1710,6 +1887,8 @@ applyCode: string;
 belongOrgId: number;
 /**公司ID*/
 companyId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**公司名称*/
 companyName: string;
 /**ID*/
@@ -1728,7 +1907,7 @@ paymentCode: string;
 paymentDate: string;
 /**付款方式(Cash-现金、Other-其他)*/
 paymentMethod: string;
-/**状态(PendingPayment-待付款、Paying-付款中、PaymentSuccess-付款成功、TicketRefunded-已退票)*/
+/**状态(PendingPayment-待付款、Paying-付款中、PaymentSuccess-付款成功)*/
 paymentStatus: string;
 /**推送日期(yyyy-MM-dd)*/
 pushDate: string;
@@ -1740,15 +1919,19 @@ receiveAccount: string;
 settlementCode: string;
 /**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
 settlementMethod: string;
+/**摘要*/
+summary: string;
 }
 /**PayDetailQueryVO*/
 export interface PayDetailQueryVO {
-/**渠道商ID*/
-agencyId: number;
+/**收款方ID*/
+agencyId: string;
 /**付款单编号*/
 applyCode: string;
 /**开始日期(yyyy-MM-dd)*/
 beginDate: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**结束日期(yyyy-MM-dd)*/
 endDate: string;
 /**事业部ID*/
@@ -1783,9 +1966,9 @@ export interface PayDetailUpdateRequest {
 actualAmount: number;
 /**渠道收款账号开户行*/
 agencyAccountBank: string;
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**付款单编号*/
 applyCode: string;
@@ -1810,6 +1993,8 @@ settlementMethod: string;
 }
 /**PaySummaryContractInfo*/
 export interface PaySummaryContractInfo {
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**编号*/
 contNo: string;
 /**标题*/
@@ -1969,7 +2154,7 @@ operaterName: string;
 preStatus: string;
 /**备注*/
 remark: string;
-/**处理结果(Through-通过、Overrule-驳回、consent-同意、Update-更新、Create-创建)*/
+/**处理结果(Through-通过、Overrule-驳回、consent-同意、Update-更新、Create-创建、TemporaryStorage-暂存)*/
 result: string;
 /**系统(Business-业务系统、OA-OA)*/
 system: string;
@@ -1989,12 +2174,14 @@ refundItemId: number;
 }
 /**ReviewListRequest*/
 export interface ReviewListRequest {
-/**渠道商ID*/
+/**付款方ID*/
 agencyId: number;
 /**付款单编号*/
 applyCode: string;
 /**所属组织*/
 belongOrgId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**制单开始时间(yyyy-MM-dd)*/
 makerBeginDate: string;
 /**制单结束时间(yyyy-MM-dd)*/
@@ -2016,7 +2203,7 @@ settlementMethod: string;
 export interface ReviewListResponse {
 /**本期实际支付金额*/
 actualAmount: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**本期申请支付金额*/
 applyAmount: number;
@@ -2024,6 +2211,8 @@ applyAmount: number;
 applyCode: string;
 /**事业部名字*/
 belongOrgName: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**本期应扣*/
 deductAmount: number;
 /**undefined*/
@@ -2045,11 +2234,11 @@ status: string;
 export interface ReviewUpdateMainBody {
 /**本期实际支付金额*/
 actualAmount: number;
-/**渠道收款账号开户行*/
+/**付款方收款账号开户行*/
 agencyAccountBank: string;
-/**渠道商ID*/
+/**付款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**本期申请支付金额*/
 applyAmount: number;
@@ -2061,6 +2250,8 @@ applyId: number;
 belongOrgId: number;
 /**所属组织*/
 belongOrgName: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**本期扣除金额*/
 deductAmount: number;
 /**(必填)扣除类别项*/
@@ -2069,7 +2260,7 @@ deductionCategory: string;
 description: string;
 /**本期扣罚金额*/
 finedAmount: number;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
+/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、DEDICATED_ZZ-增值税专用发票（纸质）、DEDICATED_DZ-增值税专用发票（电子）)*/
 invoiceType: string;
 /**制单人ID*/
 makerId: number;
@@ -2091,7 +2282,7 @@ paymentMethod: string;
 projectId: number;
 /**项目*/
 projectName: string;
-/**渠道收款账号*/
+/**付款方收款账号*/
 receiveAccount: string;
 /**结算方式(Centralization-集中支付、OnlineBanking-网银支付)*/
 settlementMethod: string;
@@ -2122,6 +2313,10 @@ belongOrgId: number;
 belongOrgName: string;
 /**结算单*/
 billForm: string;
+/**经纪人ID*/
+brokerId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
 createTime: string;
 /**创建用户*/
@@ -2138,7 +2333,7 @@ description: string;
 finedAmount: number;
 /**id*/
 id: number;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
+/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、DEDICATED_ZZ-增值税专用发票（纸质）、DEDICATED_DZ-增值税专用发票（电子）)*/
 invoiceType: string;
 /**制单人*/
 maker: string;
@@ -2162,6 +2357,8 @@ payerId: number;
 payerName: string;
 /**付款方账号*/
 paymentAccount: string;
+/**付款日期(yyyy-MM-dd)*/
+paymentDate: string;
 /**付款方式(Cash-现金、Other-其他)*/
 paymentMethod: string;
 /**项目ID*/
@@ -2209,7 +2406,7 @@ operaterJob: string;
 operaterName: string;
 /**备注*/
 remark: string;
-/**处理结果(Through-通过、Overrule-驳回、consent-同意、Update-更新、Create-创建)*/
+/**处理结果(Through-通过、Overrule-驳回、consent-同意、Update-更新、Create-创建、TemporaryStorage-暂存)*/
 result: string;
 /**系统(Business-业务系统、OA-OA)*/
 system: string;
@@ -2248,10 +2445,12 @@ head: PaymentHeadVo;
 }
 /**StaffWechatCalculationRequest*/
 export interface StaffWechatCalculationRequest {
-/**渠道商ID*/
+/**付款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**发票税率*/
 taxRate: number;
 /**待付款列表信息*/
@@ -2319,7 +2518,7 @@ totalAmount: number;
 export interface StaffWechatDetailsResponse {
 /**本期实际支付金额*/
 actualAmount: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**本期申请支付金额*/
 applyAmount: number;
@@ -2327,17 +2526,19 @@ applyAmount: number;
 applyCode: string;
 /**结算单*/
 billForm: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**本期应扣*/
 deductAmount: number;
 /**申请说明*/
 description: string;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
+/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、DEDICATED_ZZ-增值税专用发票（纸质）、DEDICATED_DZ-增值税专用发票（电子）)*/
 invoiceType: string;
 /**不含税金额*/
 noTaxAmount: number;
 /**项目*/
 projectName: string;
-/**渠道收款账号*/
+/**收款方账号*/
 receiveAccount: string;
 /**请款单*/
 requestForm: string;
@@ -2354,10 +2555,12 @@ documentList: DocumentResponse[];
 }
 /**StaffWechatListRequest*/
 export interface StaffWechatListRequest {
-/**渠道商Id*/
+/**收款方Id*/
 agencyId: number;
 /**付款单编号*/
 applyCode: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**制单人*/
 makerId: number;
 /**事业部ID*/
@@ -2373,12 +2576,14 @@ statusList: string[];
 export interface StaffWechatListResponse {
 /**实际支付金额*/
 actualAmount: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**申请支付金额*/
 applyAmount: number;
 /**付款单编号*/
 applyCode: string;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**扣除金额*/
 deductAmount: number;
 /**付款单ID*/
@@ -2398,21 +2603,23 @@ status: string;
 }
 /**WechatPayApply*/
 export interface WechatPayApply {
-/**渠道收款账号开户行*/
+/**收款方收款账号开户行*/
 agencyAccountBank: string;
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
-/**(必填)申请说明*/
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**(必填)经办部门意见*/
 description: string;
-/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）)*/
+/**发票类型(General_ZZ-增值税普通发票（纸质）、General_DZ-增值税普通发票（电子）、DEDICATED_ZZ-增值税专用发票（纸质）、DEDICATED_DZ-增值税专用发票（电子）)*/
 invoiceType: string;
 /**项目ID*/
 projectId: number;
 /**项目*/
 projectName: string;
-/**渠道收款账号*/
+/**收款方收款账号*/
 receiveAccount: string;
 /**发票税率*/
 taxRate: number;
@@ -2437,9 +2644,9 @@ ageSettledCommFees: number;
 ageUnpaidFees: number;
 /**代理费未结佣*/
 ageUnsetCommFees: number;
-/**渠道商ID*/
+/**收款方ID*/
 agencyId: number;
-/**渠道商名称*/
+/**收款方名称*/
 agencyName: string;
 /**业务模式(TotalBagModel-纯总包模式、DistriModel-纯分销模式、TotalBagDistrModel-总包+分销下的分销模式)*/
 busModel: string;
@@ -2447,8 +2654,14 @@ busModel: string;
 canCommFeesList: PayDealCommVO[];
 /**拆佣代理费*/
 commFeesList: PayDealCommVO[];
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
+/**合同种类(StandKindSaleConfirm-标准联动销售确认书(启动函)、NoStandKindSaleConfirm-非标联动销售确认书(启动函)、StandChannel-标准渠道分销合同、NoStandChannel-非标渠道分销合同、NoChannel-非渠道类合同)*/
+contKind: string;
 /**分销协议编号*/
 contNo: string;
+/**合同主标题*/
+contTitle: string;
 /**合同类型(DistriDeal-分销成交、NaturalVisitDeal-自然来访成交、SelfChannelDeal-自渠成交)*/
 contType: string;
 /**创建时间(yyyy-MM-dd HH:mm:ss)*/
@@ -2516,6 +2729,8 @@ updateUser: number;
 export interface WechatStaffPayDealQueryVO {
 /**渠道商ID*/
 agencyId: number;
+/**收款方类型(ChannelCompany-外部渠道公司、InfieldCompany-内部公司、AgencyCompany-代理公司)*/
+companyKind: string;
 /**立项周期*/
 cycleId: number;
 /**成交报告编号*/
