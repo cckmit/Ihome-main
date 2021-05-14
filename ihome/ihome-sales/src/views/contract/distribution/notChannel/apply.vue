@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-04-02 09:24:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-13 16:14:43
+ * @LastEditTime: 2021-05-14 17:44:28
 -->
 <template>
   <IhPage class="text-left">
@@ -104,6 +104,9 @@
                     style="flex: 1;max-width: 250px;"
                     v-model="form.channelCompanyId"
                     @changeOption="getAgencyCompany"
+                    :params="{
+                      'proId': form.proId
+                    }"
                   ></IhSelectPageByAgency>
                   <el-link
                     class="margin-left-10"
@@ -256,6 +259,7 @@ import {
 export default class NotChannelApply extends Vue {
   private fileList: any[] = [];
   private form: any = {
+    proId: null,
     agencyCostCondition: null,
     agencyCostSettleWay: null,
     agencyFeeRemark: null,
@@ -493,6 +497,7 @@ export default class NotChannelApply extends Vue {
           agencyContrictId,
         });
         Object.assign(this.form, {
+          proId: res.proId,
           agencyCostCondition: res.agencyCostCondition,
           agencyCostSettleWay: res.agencyCostSettleWay,
           agencyFeeRemark: res.agencyFeeRemark,
