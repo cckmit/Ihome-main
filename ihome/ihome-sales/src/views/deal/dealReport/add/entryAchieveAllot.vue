@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-23 14:20:30
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 15:15:42
+ * @LastEditTime: 2021-05-14 17:00:32
 -->
 <template>
   <ih-page class="text-left">
@@ -1874,7 +1874,10 @@
         list.forEach((item: any) => {
           postData.vos.push(
             {
-              detail: item,
+              detail: {
+                ...item,
+                ...item.collectandsendDetailDealVO
+              },
               signPrice: signPrice,
               subscribePrice: subscribePrice
             }
