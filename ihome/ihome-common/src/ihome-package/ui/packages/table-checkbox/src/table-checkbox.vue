@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-09 16:05:00
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-08 18:41:15
+ * @LastEditTime: 2021-05-14 10:29:22
 -->
 <template>
   <div class="ih-table-checkBox">
@@ -48,6 +48,7 @@
               width="50"
               min-width="50"
               type="selection"
+              :selectable="columnSelectable"
               align="center"
             ></el-table-column>
             <template v-for="(item, index) in column">
@@ -174,6 +175,7 @@ export default class IhTableCheckBox extends Vue {
     default: 10,
   })
   pageSize!: number;
+  @Prop() columnSelectable?: any; // 仅对 type=selection 的列有效，返回值用来决定这一行的 CheckBox 是否可以勾选
 
   private tabActive: any = null;
   private checkedData: any = [];

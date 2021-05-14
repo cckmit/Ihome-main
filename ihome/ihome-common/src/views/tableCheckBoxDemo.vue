@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-09 16:35:00
  * @LastEditors: lsj
- * @LastEditTime: 2021-01-08 18:39:20
+ * @LastEditTime: 2021-05-14 10:32:45
 -->
 <template>
   <div class="table-checkbox-demo">
@@ -27,6 +27,7 @@
       :pageTotal="pageTotal"
       @page-change="pageChange"
       @size-change="sizeChange"
+      :columnSelectable="selectEnable"
     >
       <template #city>
         <el-table-column
@@ -39,8 +40,13 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import {
+  IhTableCheckBox
+} from "../ihome-package/ui/packages/table-checkbox/index";
 
-@Component({})
+@Component({
+  components: {IhTableCheckBox}
+})
 export default class TableDemo extends Vue {
   private tableData: any = [];
   private hasCheckedData: any = []; // 已选数据
@@ -83,6 +89,15 @@ export default class TableDemo extends Vue {
   // 获取选中项 --- 最后需要获取的数据
   private selectionChange(selection: any) {
     console.log(selection, "selectionChange");
+  }
+
+  private selectEnable(row: any, index: any) {
+    console.log(row);
+    if ([2,4,6].includes(index)) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   private pageChange(index: number) {
