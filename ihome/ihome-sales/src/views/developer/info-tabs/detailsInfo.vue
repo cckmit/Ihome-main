@@ -1,25 +1,31 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-10-15 12:33:25
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-08 14:39:32
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-14 14:57:13
 -->
 <template>
   <div class="text-left">
     <p class="ih-info-title">基础信息</p>
     <el-form
       ref="form"
-      label-width="130px"
-    >
+      label-width="130px">
       <el-row>
         <el-col :span="8">
           <el-form-item
-            label="名称"
+            label="公司名称"
+            align="left">
+            <span class="text-ellipsis">{{ resPageInfo.name }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="公司简称"
             align="left"
           >
-            <span class="text-ellipsis">{{ resPageInfo.name }}</span>
+            <span>{{ resPageInfo.shortName }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -30,19 +36,11 @@
             <span>{{ resPageInfo.creditCode }}</span>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="简称"
-            align="left"
-          >
-            <span>{{ resPageInfo.shortName }}</span>
-          </el-form-item>
-        </el-col>
       </el-row>
       <el-row>
         <el-col :span="8">
           <el-form-item
-            label="类型"
+            label="公司类型"
             align="left"
           >
             <span>{{
@@ -92,6 +90,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="省市区">
+            <span>{{ $root.getAreaName(resPageInfo.province) }}/{{ $root.getAreaName(resPageInfo.city) }}/{{ $root.getAreaName(resPageInfo.county) }}</span>
+          </el-form-item>
+        </el-col>
+<!--        <el-col :span="8">
           <el-form-item label="省份">
             <span>{{ $root.getAreaName(resPageInfo.province) }}</span>
           </el-form-item>
@@ -105,47 +108,49 @@
           <el-form-item label="行政区">
             <span>{{ $root.getAreaName(resPageInfo.county) }}</span>
           </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item
-            label="住所"
-            align="left"
-          >
-            <span>{{ resPageInfo.address }}</span>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item
-            label="电话"
-            align="left"
-          >
-            <span>{{ resPageInfo.phone }}</span>
-          </el-form-item>
-        </el-col>
+        </el-col>-->
         <el-col :span="8">
           <el-form-item
             label="保利系统内开发商"
-            align="left"
-          >
+            align="left">
             <span>{{ resPageInfo.isPolyDeveloper ? '是' : '否' }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item
-            label="状态"
-            align="left"
-          >
-            <span>{{
-              $root.dictAllName(resPageInfo.status, "CompanyStatus")
-            }}</span>
+            label="电话"
+            align="left">
+            <span>{{ resPageInfo.phone }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item
+            label="住所"
+            align="left">
+            <span>{{ resPageInfo.address }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <el-form-item
+            label="企业概况"
+            align="left">
+            <span>{{ resPageInfo.remark }}</span>
           </el-form-item>
         </el-col>
         <el-col :span="8">
           <el-form-item
             label="录入人"
-            align="left"
-          >
+            align="left">
             <span>{{ resPageInfo.inputUserName }}</span>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item
+            label="状态"
+            align="left">
+            <span>{{
+              $root.dictAllName(resPageInfo.status, "CompanyStatus")
+            }}</span>
           </el-form-item>
         </el-col>
       </el-row>
@@ -156,15 +161,14 @@
       <el-table
         class="ih-table"
         :data="resPageInfo.contactList"
-        style="width: 100%"
-      >
+        style="width: 100%">
         <el-table-column
           prop="contactName"
           label="姓名"
         ></el-table-column>
         <el-table-column
           prop="contactNum"
-          label="手机号"
+          label="手机号码"
         ></el-table-column>
         <el-table-column
           prop="email"
@@ -186,7 +190,7 @@
         ></el-table-column>
         <el-table-column
           prop="number"
-          label="账号"
+          label="银行账号"
         ></el-table-column>
         <el-table-column
           prop="bank"
@@ -242,10 +246,10 @@
     </div>
     <br />
 
-    <p class="ih-info-title">企业概况</p>
+<!--    <p class="ih-info-title">企业概况</p>
     <div style="padding: 20px">
       {{ resPageInfo.remark }}
-    </div>
+    </div>-->
 
     <div
       v-if="typeStr === 'developerRevocation'"

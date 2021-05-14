@@ -1,10 +1,10 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-14 11:57:37
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-14 14:38:26
 -->
 <template>
   <ih-page>
@@ -14,19 +14,30 @@
         ref="form"
         label-width="135px"
         :model="resPageInfo"
-        :rules="rules"
-      >
+        :rules="rules">
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="名称"
-              prop="name"
-            >
+              label="公司名称"
+              prop="name">
               <el-input
                 clearable
                 maxlength="64"
                 v-model="resPageInfo.name"
                 placeholder="名称"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item
+              label="公司简称"
+              prop="shortName"
+            >
+              <el-input
+                clearable
+                maxlength="16"
+                v-model="resPageInfo.shortName"
+                placeholder="简称"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -42,24 +53,11 @@
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item
-              label="简称"
-              prop="shortName"
-            >
-              <el-input
-                clearable
-                maxlength="16"
-                v-model="resPageInfo.shortName"
-                placeholder="简称"
-              ></el-input>
-            </el-form-item>
-          </el-col>
         </el-row>
         <el-row>
           <el-col :span="8">
             <el-form-item
-              label="类型"
+              label="公司类型"
               prop="type"
             >
               <el-select
@@ -144,28 +142,6 @@
               ></IhCascader>
             </el-form-item>
           </el-col>
-          <el-col :span="16">
-            <el-form-item
-              label="住所"
-              prop="address"
-            >
-              <el-input
-                clearable
-                maxlength="64"
-                v-model="resPageInfo.address"
-                placeholder="住所"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="电话">
-              <el-input
-                clearable
-                v-model="resPageInfo.phone"
-                placeholder="电话"
-              ></el-input>
-            </el-form-item>
-          </el-col>
           <el-col :span='8'>
             <el-form-item
               label="保利系统内开发商"
@@ -189,6 +165,43 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
+            <el-form-item label="电话">
+              <el-input
+                clearable
+                v-model="resPageInfo.phone"
+                placeholder="电话"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="16">
+            <el-form-item
+              label="住所"
+              prop="address"
+            >
+              <el-input
+                clearable
+                maxlength="64"
+                v-model="resPageInfo.address"
+                placeholder="住所"
+              ></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item
+              label="企业概况"
+              prop="address"
+            >
+              <el-input
+                style="box-sizing: border-box"
+                maxlength="256"
+                type="textarea"
+                :autosize="{ minRows: 5, maxRows: 10 }"
+                placeholder="请输入企业概况(选填)"
+                v-model="resPageInfo.remark">
+              </el-input>
+            </el-form-item>
+          </el-col>
+<!--          <el-col :span="8">
             <el-form-item label="录入人">
               <el-input
                 clearable
@@ -197,7 +210,7 @@
                 placeholder="录入人"
               ></el-input>
             </el-form-item>
-          </el-col>
+          </el-col>-->
         </el-row>
       </el-form>
     </template>
@@ -209,7 +222,7 @@
           @click="addContacts()"
           type="primary"
           size="small"
-        >添加</el-button>
+        >添加联系人</el-button>
       </div>
       <div class="padding-left-20">
         <el-table
@@ -253,12 +266,12 @@
       </div>
       <br />
       <div class="content">
-        <p class="ih-info-title">账户信息</p>
+        <p class="ih-info-title">银行账户信息</p>
         <el-button
           @click="addAccount()"
           type="primary"
           size="small"
-        >添加</el-button>
+        >添加银行账户</el-button>
       </div>
       <div class="padding-left-20">
         <el-table
@@ -309,7 +322,19 @@
         </el-table>
       </div>
       <br />
-      <p class="ih-info-title">附件信息</p>
+      <p class="ih-info-title">
+        附件信息
+        <el-link
+          class="margin-left-15"
+          href="http://zxgk.court.gov.cn/zhzxgk/"
+          type="success"
+          target="_blank"
+        >综合查询被执行人</el-link>
+        <span
+          class="margin-left-10"
+          style="font-size: 12px; color: #909399"
+        >附件类型支持jpg、png、bmp、tif、tiff等图片格式，以及pdf、word、excel文档，单个文件不能超过10M</span>
+      </p>
       <div class="padding-left-20">
         <el-table
           class="ih-table"
@@ -345,7 +370,7 @@
       </div>
       <br />
       <div v-if="$route.name !== 'developerChange'">
-        <p class="ih-info-title">企业概况</p>
+<!--        <p class="ih-info-title">企业概况</p>
         <el-input
           class="padding-left-20"
           style="box-sizing: border-box"
@@ -355,7 +380,7 @@
           placeholder="请输入企业概况"
           v-model="resPageInfo.remark"
         >
-        </el-input>
+        </el-input>-->
         <div class="bottom">
           <el-button
             @click="submit('Draft')"
@@ -369,7 +394,7 @@
       </div>
 
       <div v-if="$route.name === 'developerChange'">
-        <p class="ih-info-title">企业概括</p>
+<!--        <p class="ih-info-title">企业概括</p>
         <el-input
           class="padding-left-20"
           style="box-sizing: border-box"
@@ -378,7 +403,7 @@
           placeholder="请输入内容"
           v-model="resPageInfo.remark"
         >
-        </el-input>
+        </el-input>-->
         <p class="ih-info-title">变更原因</p>
         <p class="msg-title"><span style="color: red">* </span>变更信息</p>
         <el-input

@@ -1,21 +1,20 @@
 <!--
- * @Descripttion: 
+ * @Description:
  * @version: 
  * @Author: wwq
  * @Date: 2020-09-25 17:59:09
- * @LastEditors: wwq
- * @LastEditTime: 2021-01-27 10:25:19
+ * @LastEditors: lsj
+ * @LastEditTime: 2021-05-14 14:16:22
 -->
 <template>
   <ih-page>
     <template v-slot:form>
       <el-form
         ref="form"
-        label-width="80px"
-      >
+        label-width="80px">
         <el-row>
           <el-col :span="8">
-            <el-form-item label="名称">
+            <el-form-item label="公司名称">
               <el-input
                 v-model="queryPageParameters.name"
                 clearable
@@ -36,8 +35,7 @@
                 style="width: 100%"
                 v-model="queryPageParameters.status"
                 clearable
-                placeholder="请选择"
-              >
+                placeholder="请选择">
                 <el-option
                   v-for="item in $root.dictAllList('CompanyStatus')"
                   :key="item.code"
@@ -113,15 +111,23 @@
         ></el-table-column>
         <el-table-column
           prop="name"
-          label="名称"
-          width="250"
+          label="公司名称"
+          min-width="280"
         ></el-table-column>
         <el-table-column
           prop="creditCode"
           label="信用代码"
-          width="180"
+          min-width="200"
         ></el-table-column>
         <el-table-column
+          prop="creditCode"
+          label="省市区"
+          min-width="180"
+        >
+          <template v-slot="{ row }">
+            {{$root.getAreaName(row.province)}}/{{$root.getAreaName(row.city)}}/{{$root.getAreaName(row.county)}}</template>
+        </el-table-column>
+<!--        <el-table-column
           prop="province"
           label="省份"
         >
@@ -144,20 +150,27 @@
           <template v-slot="{ row }">{{
             $root.getAreaName(row.county)
           }}</template>
+        </el-table-column>-->
+        <el-table-column
+          prop="status"
+          label="状态"
+          min-width="120">
+          <template v-slot="{ row }">
+            <IhStatusComponent
+              :status="row.status"
+              :status-obj="{
+                warning: 'Draft',
+                success: 'Audited'
+              }">
+              <div>{{$root.dictAllName(row.status, "CompanyStatus")}}</div>
+            </IhStatusComponent>
+          </template>
         </el-table-column>
         <el-table-column
           prop="inputUserName"
           label="录入人"
+          min-width="120"
         ></el-table-column>
-        <el-table-column
-          prop="status"
-          label="状态"
-          width="150"
-        >
-          <template v-slot="{ row }">{{
-            $root.dictAllName(row.status, "CompanyStatus")
-          }}</template>
-        </el-table-column>
         <el-table-column
           fixed="right"
           label="操作"
