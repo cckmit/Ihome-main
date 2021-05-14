@@ -335,7 +335,7 @@ export default class ChannelRates extends Vue {
     channelId: "",
     channelName: "",
     channelGrade: "",
-    // channelType: "Platform",
+    channelType: "Platform",
     province: "",
     city: "",
     cityGrade: "",
