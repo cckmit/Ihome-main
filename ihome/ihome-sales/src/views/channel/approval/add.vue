@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 09:01:35
+ * @LastEditTime: 2021-05-15 09:22:11
 --> 
 <template>
   <ih-page>
@@ -653,7 +653,14 @@ export default class ApprovalAdd extends Vue {
     }
   }
   goInfo(scope: any) {
-    window.open(`/web-sales/channelLevel/info?id=${scope.row.id}`);
+    // 判断跳转的页面
+    if (scope.row.gradeType === 'Basic') {
+      // 需要跳转到渠道等级信息详情
+      window.open(`/web-sales/channelLevel/info?id=${scope.row.id || scope.row.gradeId}`);
+    } else if (scope.row.gradeType === 'Change') {
+      // 需要跳转到渠道等级信息变更详情
+      window.open(`/web-sales/channelLevelChange/info?id=${scope.row.id || scope.row.gradeId}`);
+    }
   }
   async preFileName() {
     const res: any = await post_channelApproval_previewDirectoryFile(

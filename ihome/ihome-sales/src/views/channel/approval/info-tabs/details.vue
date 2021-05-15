@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 09:04:18
+ * @LastEditTime: 2021-05-15 09:20:02
 --> 
 <template>
   <div>
@@ -20,7 +20,15 @@
             <el-table
               :data="info.channelApprovalGrades"
               style="width: 100%">
-              <el-table-column prop="storageNum" label="入库编号" width="180"></el-table-column>
+              <el-table-column prop="storageNum" label="入库编号" width="180">
+                <template slot-scope="scope">
+                  <el-link
+                    class="margin-right-10"
+                    type="primary"
+                    @click.native.prevent="goInfo(scope)"
+                  >{{ scope.row.storageNum }}</el-link>
+                </template>
+              </el-table-column>
               <el-table-column prop="channelName" label="渠道商名称" min-width="130"></el-table-column>
               <el-table-column prop="gradeType" label="申请类型" min-width="120">
                 <template slot-scope="scope">
@@ -256,6 +264,16 @@ export default class InvitationCodeDetails extends Vue {
     let url = this.$tool.downloadLongFileUrl(item.fileId, item);
     console.log(url);
     (window as any).open(url);
+  }
+  goInfo(scope: any) {
+    // 判断跳转的页面
+    if (scope.row.gradeType === 'Basic') {
+      // 需要跳转到渠道等级信息详情
+      window.open(`/web-sales/channelLevel/info?id=${scope.row.id || scope.row.gradeId}`);
+    } else if (scope.row.gradeType === 'Change') {
+      // 需要跳转到渠道等级信息变更详情
+      window.open(`/web-sales/channelLevelChange/info?id=${scope.row.id || scope.row.gradeId}`);
+    }
   }
 }
 </script>
