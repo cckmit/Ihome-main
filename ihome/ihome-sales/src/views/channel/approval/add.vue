@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-15 09:22:11
+ * @LastEditTime: 2021-05-15 09:41:36
 --> 
 <template>
   <ih-page>
@@ -208,11 +208,13 @@
               </el-table-column>
               <el-table-column prop="channelApprovalAttachments" label="特批入库材料" min-width="200">
                 <template slot-scope="scope">
-                  <div
-                    class="file-width"
-                    v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments"
-                    :key="cIndex">
-                    <IhFilePreview :data="cItem"></IhFilePreview>
+                  <div class="attach-file-wrapper">
+                    <div
+                      class="file-width"
+                      v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments"
+                      :key="cIndex">
+                      <IhFilePreview :data="cItem"></IhFilePreview>
+                    </div>
                   </div>
                 </template>
               </el-table-column>
@@ -702,5 +704,9 @@ export default class ApprovalAdd extends Vue {
   /deep/ .el-image {
     width: 60px !important;
   }
+}
+.attach-file-wrapper {
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>

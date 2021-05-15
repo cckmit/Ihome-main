@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-07-09 14:31:23
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-15 09:20:02
+ * @LastEditTime: 2021-05-15 09:39:20
 --> 
 <template>
   <div>
@@ -54,10 +54,12 @@
               </el-table-column>
               <el-table-column prop="channelApprovalAttachments" label="特批入库材料" min-width="200">
                 <template slot-scope="scope">
-                  <div
-                    class="file-width"
-                    v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments" :key="cIndex">
-                    <IhFilePreview :data="cItem"></IhFilePreview>
+                  <div class="attach-file-wrapper">
+                    <div
+                      class="file-width"
+                      v-for="(cItem, cIndex) in scope.row.channelApprovalAttachments" :key="cIndex">
+                      <IhFilePreview :data="cItem"></IhFilePreview>
+                    </div>
                   </div>
                 </template>
               </el-table-column>
@@ -291,5 +293,9 @@ export default class InvitationCodeDetails extends Vue {
   /deep/ .el-image {
     width: 60px !important;
   }
+}
+.attach-file-wrapper {
+  display: flex;
+  flex-wrap: wrap;
 }
 </style>
