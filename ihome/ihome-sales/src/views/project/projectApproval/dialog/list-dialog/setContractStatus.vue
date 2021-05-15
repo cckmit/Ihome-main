@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-04-01 16:51:36
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-12 15:50:02
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-15 14:50:11
 -->
 <template>
   <el-dialog
@@ -16,6 +16,7 @@
     width="85%"
     title="设置合同申领状态"
     class="text-left"
+    top="5vh"
   >
     <el-table
       :data="tableData"
@@ -26,6 +27,7 @@
         type="selection"
         width="50"
         align="center"
+        fixed
       ></el-table-column>
       <el-table-column
         prop="contractKind"
@@ -74,6 +76,7 @@
       <el-table-column
         label="是否可申领"
         prop="exClaim"
+        width="100"
       >
         <template v-slot="{ row }">{{
           $root.dictAllName(row.exClaim, "YesOrNoType")
