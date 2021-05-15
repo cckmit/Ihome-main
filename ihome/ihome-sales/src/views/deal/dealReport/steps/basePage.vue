@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-12-10 16:45:20
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-13 15:43:42
+ * @LastEditTime: 2021-05-15 15:28:36
 -->
 <template>
   <ih-page class="text-left">
@@ -1349,6 +1349,8 @@
     post_suppDeal_previewUpdateBasicInfChange, // 预览修改基础信息变更
     post_suppDeal_previewUpdateRetreatRoom, // 预览修改退房
     post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
+    post_pageData_getMingYuanData, // 获取明源数据
+    post_pageData_calculateReceiveAmounts, // 编辑 - 重算收派金额
   } from "@/api/deal";
   import {
     get_org_get__id,
@@ -1986,24 +1988,161 @@
       // 初始化附件信息
       await this.initDocumentList(res.charge, res.contType, res.documentShowList, res.documentList);
       // 根据项目周期和房号初始化页面数据
-      await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
+      // await this.getPageById(res.cycleId, res.house.roomId, res.house.propertyType, res.parentId, res.refineModel);
       // 获取平台费用中新增、修改弹窗中角色类型和角色业绩上限
       await this.initAchieveRole();
+      // 自动更新明源数据 --- 除了内部员工业绩变更外其他补充类型都要调用该方法
+      if (this.changeType !== 'ChangeInternalAchieveInf') {
+        await this.autoGetMingYuanData(res);
+      }
     }
 
-    // 根据项目周期和房号初始化页面数据
-    async getPageById(cycleId: any, roomId: any, propertyType: any = '', parentId: any = '', refineModel: any = '') {
-      if (!cycleId || !roomId || !propertyType || !refineModel) return;
+    // 自动更新明源数据
+    async autoGetMingYuanData(res: any) {
+      // if (!cycleId || !roomId || !propertyType || !refineModel) return;
       let params: any = {
-        parentId: parentId, // 补充成交要加parentId
-        cycleId: cycleId,
-        roomId: roomId,
-        isMainDeal: false, // 是否主成交
-        property: propertyType, // 物业类型
-        refineModel: refineModel, // 细分业务模式
+        // parentId: res.parentId, // 补充成交要加parentId
+        cycleId: res.cycleId,
+        roomId: res.house.roomId,
+        // isMainDeal: false, // 是否主成交
+        property: res.house.propertyType, // 物业类型
+        refineModel: res.refineModel, // 细分业务模式
       };
-      let baseInfo: any = await post_pageData_initBasic(params);
-      this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      let baseInfo: any = await post_pageData_getMingYuanData(params);
+      // this.baseInfoInDeal = JSON.parse(JSON.stringify(baseInfo || '{}'));
+      this.baseInfoInDeal.myReturnVO  = baseInfo;
+      (this as any).$nextTick(() => {
+        // 编辑页面：自动更新明源数据
+        // 备案情况
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.recordState) {
+          this.postData.recordState = baseInfo?.dealVO?.recordState;
+        }
+        // 建筑面积
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.area) {
+          this.postData.area = baseInfo?.houseVO?.area;
+        }
+        // 户型
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.room) {
+          this.postData.room = baseInfo?.houseVO?.room;
+        }
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.hall) {
+          this.postData.hall = baseInfo?.houseVO?.hall;
+        }
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.toilet) {
+          this.postData.toilet = baseInfo?.houseVO?.toilet;
+        }
+        // 预售合同编号
+        if (baseInfo && baseInfo.houseVO && baseInfo.houseVO.propertyNo) {
+          this.postData.propertyNo = baseInfo?.houseVO?.propertyNo;
+        }
+        // 签约类型
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.signType) {
+          this.postData.signType = baseInfo?.dealVO?.signType;
+        }
+        // 成交阶段
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.dealStage) {
+          this.postData.stage = baseInfo.dealVO.dealStage;
+        }
+        // 现场销售
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.sceneSales) {
+          this.postData.sceneSales = baseInfo.dealVO?.sceneSales;
+        }
+        // 房款回笼比例(%)
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.returnRatio) {
+          this.postData.returnRatio = baseInfo.dealVO?.returnRatio;
+        }
+        // 认购价格
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.subscribePrice) {
+          this.postData.subscribePrice = baseInfo?.dealVO?.subscribePrice;
+        }
+        // 认购日期
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.subscribeDate) {
+          this.postData.subscribeDate = baseInfo?.dealVO?.subscribeDate;
+        }
+        // 签约价格
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.signPrice) {
+          this.postData.signPrice = baseInfo?.dealVO?.signPrice;
+        }
+        // 签约日期
+        if (baseInfo && baseInfo.dealVO && baseInfo.dealVO.signDate) {
+          this.postData.signDate = baseInfo?.dealVO?.signDate;
+        }
+        // 数据标志
+        if (baseInfo && baseInfo.dataSign) {
+          this.postData.dataSign = baseInfo?.dataSign;
+        }
+        // 客户信息
+        if (baseInfo && baseInfo.customerVOS && baseInfo.customerVOS.length) {
+          this.postData.customerList = baseInfo.customerVOS;
+          this.postData.customerList.forEach((list: any) => {
+            list.addId = list.id;
+          });
+          // 记录初始化时客户的类型 --- 用于告知书补发页面判断类型选择
+          this.postData.originalCustType = this.postData?.customerList[0]?.customerType;
+          console.log('originalCustType-autoGetMin', this.postData.originalCustType);
+        }
+        // 收派信息
+        if (this.postData.subscribePrice !== res.subscribePrice || this.postData.signPrice !== res.signPrice) {
+          // 不一样，重新计算 --- 变更业绩信息、退房的时候才重算
+          if (['ChangeAchieveInf', 'RetreatRoom'].includes(this.changeType)) {
+            this.calculateReceiveAmounts(res.receiveList, this.postData.subscribePrice, this.postData.signPrice);
+          }
+        }
+      });
+    }
+
+    /*
+    * 编辑 --- 根据收派套餐，计算收派金额
+    * list：收派信息数组
+    * subscribePrice：认购价
+    * signPrice：签约价
+    * */
+    async calculateReceiveAmounts(list: any = [], subscribePrice: any = '', signPrice: any = '') {
+      if (list && list.length) {
+        let postData: any = {
+          vos: []
+        }
+        list.forEach((item: any) => {
+          postData.vos.push(
+            {
+              detail: {
+                ...item,
+                ...item.collectandsendDetailDealVO
+              },
+              signPrice: signPrice,
+              subscribePrice: subscribePrice
+            }
+          )
+        });
+        let calculateInfo: any = await post_pageData_calculateReceiveAmounts(postData);
+        console.log('calculateReceiveAmounts:', calculateInfo);
+        this.postData.receiveList = [];
+        if (calculateInfo && calculateInfo.vos && calculateInfo.vos.length) {
+          calculateInfo.vos.forEach((caList: any, caIndex: any) => {
+            list.forEach((listItem: any, listIndex: any) => {
+              if (caIndex === listIndex) {
+                this.postData.receiveList.push(
+                  {
+                    ...listItem,
+                    showData: [
+                      {
+                        ...listItem.collectandsendDetailDealVO,
+                        typeName: (this as any).$root.dictAllName(listItem.type, 'FeeType')
+                      }
+                    ],
+                    receiveAmount: caList.receiveAmount,
+                    commAmount: caList.comm,
+                    rewardAmount: caList.reward,
+                    totalPackageAmount: caList.totalBag,
+                    distributionAmount: caList.distri,
+                    otherChannelFees: caList.other,
+                  }
+                )
+              }
+            });
+          });
+        }
+      }
     }
 
     // 获取角色类型和角色业绩上限
