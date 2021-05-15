@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-14 17:05:28
+ * @LastEditTime: 2021-05-15 15:50:40
 -->
 <template>
   <IhPage label-width="120px">
@@ -344,7 +344,7 @@
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.SCLB'"
                 >删除</el-dropdown-item>
                 <el-dropdown-item
-                  :class="{'ih-data-disabled': !recallChange(row)}"
+                  :class="{ 'ih-data-disabled': !row.jump }"
                   @click.native.prevent="routeTo(row, 'recall')"
                   v-has="'B.SALES.PAYOFF.PAYOFFLIST.CHLB'"
                 >撤回
