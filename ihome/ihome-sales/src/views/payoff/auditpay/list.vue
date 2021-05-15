@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-14 17:13:31
+ * @LastEditTime: 2021-05-15 10:49:19
 -->
 <template>
   <IhPage label-width="120px">
@@ -71,6 +71,8 @@
               ></el-input>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="归属组织">
               <IhSelectPageDivision
@@ -80,15 +82,14 @@
               ></IhSelectPageDivision>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <!-- <el-col :span="8">
             <el-form-item label="审核人">
               <IhSelectPageUser
                 v-model="queryPageParameters.reviewerId"
                 clearable
-              >
-              </IhSelectPageUser>
+              ></IhSelectPageUser>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :span="8">
             <el-form-item label="结算方式">
               <el-select
@@ -111,10 +112,11 @@
               <IhSelectPageUser
                 v-model="queryPageParameters.makerId"
                 clearable
-              >
-              </IhSelectPageUser>
+              ></IhSelectPageUser>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="8">
             <el-form-item label="制单日期">
               <el-date-picker
@@ -335,8 +337,8 @@ export default class PayoffList extends Vue {
     settlementMethod: null,
     makerId: null,
     status: null,
-    beginMakerTime: null,
-    endMakerTime: null,
+    makerBeginDate: null,
+    makerEndDate: null,
     paymentMethod: null,
     companyKind: null,
   };
@@ -437,8 +439,8 @@ export default class PayoffList extends Vue {
       settlementMethod: null,
       makerId: null,
       status: null,
-      beginMakerTime: null,
-      endMakerTime: null,
+      makerBeginDate: null,
+      makerEndDate: null,
       paymentMethod: null,
       companyKind: null,
     });
@@ -478,8 +480,8 @@ export default class PayoffList extends Vue {
 
   search() {
     let flag = this.timeList && this.timeList.length;
-    this.queryPageParameters.beginMakerTime = flag ? this.timeList[0] : null;
-    this.queryPageParameters.endMakerTime = flag ? this.timeList[1] : null;
+    this.queryPageParameters.makerBeginDate = flag ? this.timeList[0] : null;
+    this.queryPageParameters.makerEndDate = flag ? this.timeList[1] : null;
     this.queryPageParameters.pageNum = 1;
     this.getListMixin();
   }
