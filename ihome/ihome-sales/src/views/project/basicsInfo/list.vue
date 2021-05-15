@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-15 09:45:27
+ * @LastEditTime: 2021-05-15 11:50:22
 -->
 <template>
   <IhPage label-width="110px">
@@ -224,7 +224,10 @@
                   v-has="'B.SALES.PROJECT.BASICLIST.YGUPDATE'"
                   >业管修改</el-dropdown-item
                 >
-                <el-dropdown-item @click.native.prevent="changeSon(row)"
+                <el-dropdown-item
+                  @click.native.prevent="changeSon(row)"
+                  :class="{ 'ih-data-disabled': !editParentChange(row) }"
+                  v-has="'B.SALES.PROJECT.BASICLIST.PROCHANGE'"
                   >变更子项目关联</el-dropdown-item
                 >
                 <el-dropdown-item
@@ -313,6 +316,10 @@ export default class ProjectList extends Vue {
 
   editChange(row: any) {
     const Adopt = row.auditEnum === "Adopt";
+    return Adopt;
+  }
+  editParentChange(row: any) {
+    const Adopt = row.auditEnum === "Adopt" && row.exParent == 1;
     return Adopt;
   }
 
