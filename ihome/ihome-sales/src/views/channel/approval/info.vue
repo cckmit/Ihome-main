@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-10-14 20:10:35
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 15:11:33
+ * @LastEditTime: 2021-05-125 10:03:22
 -->
 <template>
   <ih-page>
@@ -16,7 +16,7 @@
     <el-row class="ih-info-line">
       <el-col :span="18">
         <el-row>
-          <el-col class="ih-info-item-right item-padding-left-0">发起人：{{info.inputTime }}</el-col>
+          <el-col class="ih-info-item-right item-padding-left-0">发起人：{{info.approvalUserName}}</el-col>
         </el-row>
       </el-col>
       <el-col :span="6" class="text-right">
@@ -97,10 +97,12 @@ export default class ApprovalInfo extends Vue {
   }
   // 获取颜色
   getStatusDot(status: any = '') {
-    if (status === 'DRAFT') {
+    if (status === 'Draft') {
       return 'warning';
     } else if (status === 'Approved') {
       return 'success';
+    } else if (status === 'ApprovalFailed') {
+      return 'error';
     } else {
       return 'primary';
     }
