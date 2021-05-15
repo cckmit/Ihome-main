@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-11 17:15:37
+ * @LastEditTime: 2021-05-15 15:10:00
 -->
 <template>
   <el-dialog
@@ -97,7 +97,10 @@
         width="50"
         align="center"
       ></el-table-column>
-      <el-table-column label="合同类型">
+      <el-table-column
+        label="合同类型"
+        width="210"
+      >
         <template v-slot="{ row }">
           {{$root.dictAllName(row.contractKind, 'ContractKind')}}
         </template>
@@ -105,14 +108,17 @@
       <el-table-column
         label="合同主标题"
         prop="contractTitle"
+        min-width="230"
       ></el-table-column>
       <el-table-column
         label="标题备注"
         prop="titleOrRemark"
+        min-width="130"
       ></el-table-column>
       <el-table-column
         label="甲方公司"
         prop="partyCompany"
+        min-width="190"
       ></el-table-column>
       <el-table-column
         label="是否垫佣"
@@ -124,7 +130,7 @@
       </el-table-column>
       <el-table-column
         label="渠道类型"
-        min-width="135"
+        width="135"
       >
         <template v-slot="{ row }">
           <template v-if="row.channelEnum">
