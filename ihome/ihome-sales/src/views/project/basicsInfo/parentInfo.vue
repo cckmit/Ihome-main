@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-15 10:10:45
+ * @LastEditTime: 2021-05-15 14:09:44
 -->
 <template>
   <ih-page>
@@ -157,7 +157,7 @@
         </el-input>
         <div class="margin-top-20">
           <el-button @click="auditPass()" type="primary">通过</el-button>
-          <el-button @click="auditReject()" type="primary">驳回</el-button>
+          <el-button @click="auditReject()" type="danger">驳回</el-button>
         </div>
       </div>
       <div v-if="$route.name === 'projectParentRecall'" class="margin-top-20">

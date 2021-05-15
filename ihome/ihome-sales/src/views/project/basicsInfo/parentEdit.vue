@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-15 10:04:39
+ * @LastEditTime: 2021-05-15 14:21:19
 -->
 <template>
   <ih-page>
@@ -321,14 +321,16 @@ export default class EditBasicInfo extends Vue {
         item.preParentId != this.$route.query.id
       ) {
         textList.push(
-          `[${item.proName}] 正在调整关联至[${item.parentName||''}]项目的过程中`
+          `【${item.proName}】 正在调整关联至【${
+            item.parentName || ""
+          }】项目的过程中`
         );
       }
     });
     if (textList.length > 0) {
       let text = textList.join("、");
       // A项目-二期（子项目）正在调整关联至B项目（父项目）的过程中，请先审核B项目信息再修改A项目-二期的关联关系
-      this.$message.warning(`[${text}] 请先审核其他项目信息再修改`);
+      this.$message.warning(`${text} ，请先审核其他项目信息再修改`);
     } else {
       this.selectVisible = false;
       this.form.sonProjec = list;
@@ -373,6 +375,9 @@ export default class EditBasicInfo extends Vue {
         this.form.provinceOption[2]
       );
       obj.proId = this.projectId;
+      obj.sonProjecIds = this.form.sonProjec.map((item: any) => {
+        return item.proId;
+      });
 
       //修改，业管修改，并更子项目
       // post_project_auditWait,
@@ -382,7 +387,9 @@ export default class EditBasicInfo extends Vue {
         //并更子项目
         let postData = {
           proId: obj.proId,
-          sonProjecIds: this.form.sonProjec.map((item: any) => item.proId),
+          sonProjecIds: this.form.sonProjec.map((item: any) => {
+            return item.proId;
+          }),
         };
         await post_project_updateParentAndSonProject(postData);
       } else if (this.$route.query.type == "edit") {
