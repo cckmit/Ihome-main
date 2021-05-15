@@ -1398,11 +1398,11 @@
             }
           )
         });
-        let calculateList: any = await post_pageData_calculateReceiveAmounts(postData);
-        console.log('calculateReceiveAmounts:', calculateList);
+        let calculateInfo: any = await post_pageData_calculateReceiveAmounts(postData);
+        console.log('calculateReceiveAmounts:', calculateInfo);
         this.postData.receiveVO = [];
-        if (calculateList && calculateList.length) {
-          calculateList.forEach((caList: any, caIndex: any) => {
+        if (calculateInfo && calculateInfo.vos && calculateInfo.vos.length) {
+          calculateInfo.vos.forEach((caList: any, caIndex: any) => {
             list.forEach((listItem: any, listIndex: any) => {
               if (caIndex === listIndex) {
                 this.postData.receiveVO.push(
