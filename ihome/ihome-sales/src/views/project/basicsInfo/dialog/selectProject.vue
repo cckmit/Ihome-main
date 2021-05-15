@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2021-05-14 14:09:50
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-15 10:35:55
+ * @LastEditTime: 2021-05-15 10:58:57
 -->
 <template>
   <el-dialog
@@ -236,7 +236,7 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { post_project_getList } from "../../../../api/project/index";
+import { post_project_getSonProjectList } from "../../../../api/project/index";
 @Component({})
 export default class SelectProject extends Vue {
   @Prop({
@@ -391,7 +391,7 @@ export default class SelectProject extends Vue {
     this.getList();
   }
   private async getList() {
-    let res = await post_project_getList({
+    let res = await post_project_getSonProjectList({
       ...this.queryPageParameters,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
