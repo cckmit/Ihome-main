@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-15 10:49:19
+ * @LastEditTime: 2021-05-15 11:14:10
 -->
 <template>
   <IhPage label-width="120px">
@@ -129,8 +129,7 @@
                 start-placeholder="开始日期"
                 end-placeholder="结束日期"
                 :picker-options="$root.pickerOptions"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                :default-time="['00:00:00', '23:59:59']"
+                value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
           </el-col>
