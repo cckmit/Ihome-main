@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-29 09:21:38
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-05-15 10:10:45
 -->
 <template>
   <ih-page>
@@ -19,10 +19,7 @@
         <el-row>
           <el-col :span="8">
             <el-form-item label="盘编">
-              <span
-                class="text-ellipsis"
-                :title="form.proNo"
-              >{{
+              <span class="text-ellipsis" :title="form.proNo">{{
                 form.proNo
               }}</span>
             </el-form-item>
@@ -90,10 +87,64 @@
           </el-col>
         </el-row>
       </el-form>
-      <div
-        class="margin-top-20"
-        v-if="$route.name === 'projectParentAudit'"
-      >
+
+      <p class="ih-info-title">
+        <span>子项目清单</span>
+      </p>
+
+      <div style="margin: 0 20px">
+        <el-table :data="form.sonProjec" style="width: 100%">
+          <el-table-column prop="proNo" label="盘编" width="180">
+          </el-table-column>
+          <el-table-column prop="" label="项目名称" width="300">
+            <template v-slot="{ row }">
+              <div>推广名：{{ row.proName }}</div>
+              <div>备案名：{{ row.proRecord }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column
+            prop="address"
+            label="市场化项目/关联明源"
+            width="100"
+          >
+            <template v-slot="{ row }">
+              <div>
+                <span>{{ row.exMarket ? "是" : "否" }}</span
+                >/<span>{{ row.exMinyuan ? "是" : "否" }}</span>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="date" label="明源信息" width="180">
+            <template v-slot="{ row }">
+              <div>所属父项目：{{ row.parentName }}</div>
+              <div>楼盘名：{{ row.myName }}</div>
+              <div>区域公司：{{ row.companyName }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="date" label="省市区" width="100">
+            <template v-slot="{ row }">
+              <div>{{ $root.getAreaName(row.province) }}</div>
+              <div>{{ $root.getAreaName(row.city) }}</div>
+              <div>{{ $root.getAreaName(row.district) }}</div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="proAddr" label="项目地址"> </el-table-column>
+          <el-table-column prop="auditEnum" label="项目审核状态" width="180">
+            <template v-slot="{ row }">{{
+              $root.dictAllName(row.auditEnum, "ProAudit")
+            }}</template>
+          </el-table-column>
+          <el-table-column fixed="right" prop="" label="操作" width="120">
+            <template v-slot="{ row }">
+              <el-link type="primary" @click.native.prevent="goInfo(row)"
+                >详情</el-link
+              >
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
+      <div class="margin-top-20" v-if="$route.name === 'projectParentAudit'">
         <p class="ih-info-title">审核意见</p>
         <el-input
           class="padding-left-20"
@@ -105,24 +156,12 @@
         >
         </el-input>
         <div class="margin-top-20">
-          <el-button
-            @click="auditPass()"
-            type="primary"
-          >通过</el-button>
-          <el-button
-            @click="auditReject()"
-            type="primary"
-          >驳回</el-button>
+          <el-button @click="auditPass()" type="primary">通过</el-button>
+          <el-button @click="auditReject()" type="primary">驳回</el-button>
         </div>
       </div>
-      <div
-        v-if="$route.name === 'projectParentRecall'"
-        class="margin-top-20"
-      >
-        <el-button
-          @click="recall()"
-          type="primary"
-        >撤回</el-button>
+      <div v-if="$route.name === 'projectParentRecall'" class="margin-top-20">
+        <el-button @click="recall()" type="primary">撤回</el-button>
       </div>
     </template>
   </ih-page>
@@ -172,6 +211,9 @@ export default class EditBasicInfo extends Vue {
 
   created() {
     this.getInfo();
+  }
+  goInfo(item: any) {
+    window.open(`/web-sales/projects/childInfo?id=${item.proId}`);
   }
 
   private filterExMarket(type: any) {
