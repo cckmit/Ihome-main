@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 16:09:18
+ * @LastEditTime: 2021-05-17 16:29:12
 -->
 <template>
   <IhPage label-width="120px">
@@ -184,7 +184,7 @@
           >发起申请<i class="el-icon-arrow-down el-icon--right"></i>
           </el-button>
           <el-dropdown-menu slot="dropdown">
-            <template v-for="(item, i) in $root.dictAllList('CompanyKind')">
+            <template v-for="(item, i) in companyKindList">
               <el-dropdown-item
                 :key="i"
                 @click.native.prevent="add(item.code)"
@@ -452,6 +452,11 @@ export default class PayoffList extends Vue {
     list: [],
   };
   dialogVisible = false;
+  companyKindList: any[] = [
+    { name: "渠道结佣申请", code: "ChannelCompany" },
+    { name: "一手代理结佣申请", code: "AgencyCompany" },
+    { name: "内部公司结佣申请", code: "InfieldCompany" },
+  ];
 
   controlChange(row: any) {
     const ReviewPass = row.status === "ReviewPass"; // 终审通过
