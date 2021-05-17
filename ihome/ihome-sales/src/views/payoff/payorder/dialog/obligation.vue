@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-14 16:53:05
+ * @LastEditTime: 2021-05-17 16:49:04
 -->
 <template>
   <el-dialog
@@ -377,7 +377,7 @@ export default class Obligation extends Vue {
     this.info.endTime = flag ? this.info.timeList[1] : null;
     console.log(isCheck);
 
-    isCheck ? (this.info.isComm = "Yes") : (this.info.isComm = "No");
+    isCheck ? (this.info.isComm = "Yes") : (this.info.isComm = null);
     this.pageNum = 1;
     this.getList();
   }
