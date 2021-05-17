@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-03 11:10:24
  * @LastEditors: ywl
- * @LastEditTime: 2021-03-26 10:12:54
+ * @LastEditTime: 2021-05-17 17:17:22
 -->
 <template>
   <section>
@@ -153,6 +153,9 @@
                 v-model="form.formList[1].buyUnit"
                 :proId="form.formList[1].proId"
                 placeholder="请选择栋座"
+                @change="() => {
+                  form.formList[1].roomNumberId = null;
+                }"
               ></IhSelectPageByBuild>
             </el-form-item>
           </el-col>
