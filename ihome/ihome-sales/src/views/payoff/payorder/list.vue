@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 15:00:14
+ * @LastEditTime: 2021-05-17 16:09:18
 -->
 <template>
   <IhPage label-width="120px">
@@ -250,7 +250,7 @@
         <el-table-column
           label="状态"
           prop="status"
-          width="155"
+          width="190"
           class-name="status-class"
         >
           <template v-slot="{ row }">
@@ -263,9 +263,14 @@
                 warning: 'Unconfirm',
                 success: 'PaymentSuccessful',
               }"
-              :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes' }"
             >
-              <div>{{row.status ? $root.dictAllName(row.status, "PayoffStatus") : '-'}}</div>
+              <div>
+                {{row.status ? $root.dictAllName(row.status, "PayoffStatus") : '-'}}
+                <span
+                  v-if="['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes'"
+                  style="color: red;"
+                >(驳回)</span>
+              </div>
             </IhStatusComponent>
           </template>
         </el-table-column>
