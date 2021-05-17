@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:01:55
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-17 14:45:31
 -->
 <template>
   <div>
@@ -39,6 +39,7 @@
         <el-table-column
           prop="contractTitle"
           label="合同主标题"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           prop="titleOrRemark"
@@ -128,6 +129,10 @@
                   v-if="row.state === 'Start' &&  businessManagementChange"
                   @click.native.prevent="stop(row)"
                 >禁用</el-dropdown-item>
+                <el-dropdown-item
+                  v-if="contractApprovalChange && ['StandChannel', 'NoStandChannel', 'NoChannel'].includes(row.contractKind)"
+                  @click.native.prevent="delContract(row)"
+                >删除</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -349,6 +354,7 @@ import {
   post_distributContract_cancel__agencyContrictId,
   post_preferential_start__preferentialMxId,
   post_preferential_cancel__preferentialMxId,
+  post_distributContract_delete,
 } from "@/api/project/index.ts";
 import PartyADialog from "../dialog/partyA-dialog/partyADialog.vue";
 import TemplateSelect from "../dialog/notification-dialog/templateSelect.vue";
@@ -735,6 +741,23 @@ export default class Notification extends Vue {
     });
     this.$message.success("禁用成功");
     this.getInfo();
+  }
+
+  async delContract(data: any) {
+    try {
+      await this.$confirm("是否确定删除?", "提示");
+      await post_distributContract_delete({
+        termId: data.termId,
+        agencyContrictId: data.agencyContrictId,
+      });
+      this.getInfo();
+      this.$message({
+        type: "success",
+        message: "删除成功!",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
 </script>

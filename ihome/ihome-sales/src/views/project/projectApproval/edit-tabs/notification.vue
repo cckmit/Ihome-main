@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-27 17:27:01
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-11 17:17:11
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-17 14:47:06
 -->
 <template>
   <div>
@@ -36,6 +36,7 @@
         <el-table-column
           prop="contractTitle"
           label="合同主标题"
+          min-width="200"
         ></el-table-column>
         <el-table-column
           prop="titleOrRemark"
