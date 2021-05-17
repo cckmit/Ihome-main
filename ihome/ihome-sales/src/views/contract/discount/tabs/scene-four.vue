@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2021-03-04 10:59:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 17:16:11
+ * @LastEditTime: 2021-05-17 17:42:49
 -->
 <template>
   <section>
@@ -129,6 +129,7 @@
                 v-model="form.formList[1].cycleId"
                 :searchName="cycleName"
                 placeholder="请选择立项周期"
+                :params="{auditEnums: ['TermAdopt','ConstractAdopt']}"
                 @changeOption="(data) => {
                   form.formList[1].proId = data.proId;
                   getMethodByTermId(data.termId);
