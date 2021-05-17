@@ -3,11 +3,11 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-04-06 09:41:54
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-13 09:08:46
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-17 14:13:55
 -->
 <template>
-  <ih-page class="text-left">
+  <ih-page class="text-left normal-distribution">
     <template #info>
       <el-form
         ref="form"
@@ -330,7 +330,7 @@
           <el-form-item
             prop="agencyFeeRemark"
             label="备注："
-            label-width="70px"
+            label-width="80px"
           >
             <el-input
               class="textareaClass"
@@ -369,7 +369,7 @@
         <el-form-item
           label="7.1 代理期间成交的单位："
           prop='agencySettleCondtion'
-          label-width="185px"
+          label-width="210px"
         >
           <el-select
             v-model="info.agencySettleCondtion"
@@ -1194,5 +1194,12 @@ export default class NormalSalesApply extends Vue {
 .inline-block {
   display: inline-block;
   margin: 0 0 10px -90px;
+}
+</style>
+<style lang="scss">
+.normal-distribution {
+  .el-form-item__label {
+    font-size: 16px;
+  }
 }
 </style>

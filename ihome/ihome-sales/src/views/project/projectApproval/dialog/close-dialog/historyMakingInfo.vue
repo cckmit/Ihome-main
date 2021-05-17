@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-09 16:13:37
- * @LastEditors: wwq
- * @LastEditTime: 2021-04-27 11:41:10
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-17 11:48:39
 -->
 <template>
   <el-dialog
@@ -319,7 +319,7 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  get_his_settleCondition_getMakingType__termId,
+  post_his_settleCondition_getMakingTypeNew,
   post_partyAContract_getBuilding__termId,
   post_his_settleCondition_getMaking__settleId,
 } from "@/api/project/index";
@@ -357,9 +357,11 @@ export default class MakingInfo extends Vue {
   // 获取类型
   async getMakingType() {
     let obj: any = {};
-    obj = await get_his_settleCondition_getMakingType__termId({
+    obj = await post_his_settleCondition_getMakingTypeNew({
       termId: this.$route.query.id,
+      settleId: this.data.id,
     });
+    this.channelList = obj.companyItemListVOS;
     this.searchParams = {
       cycleCity: obj.city,
       departmentOrgId: obj.startDivisionId,
@@ -445,9 +447,9 @@ export default class MakingInfo extends Vue {
 
   // 获取渠道商信息
   async getChannel() {
-    this.channelList = await post_channel_getAllListByName({
-      ...this.searchParams,
-    });
+    // this.channelList = await post_channel_getAllListByName({
+    //   ...this.searchParams,
+    // });
   }
 
   async created() {
