@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:28
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-15 15:50:40
+ * @LastEditTime: 2021-05-17 15:00:14
 -->
 <template>
   <IhPage label-width="120px">
@@ -250,8 +250,8 @@
         <el-table-column
           label="状态"
           prop="status"
-          width="140"
-          align="center"
+          width="155"
+          class-name="status-class"
         >
           <template v-slot="{ row }">
             <!-- <div :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes' }">
@@ -263,6 +263,7 @@
                 warning: 'Unconfirm',
                 success: 'PaymentSuccessful',
               }"
+              :class="{ 'status-style': ['Unconfirm', 'BranchFinanceUnreview'].includes(row.status) && row.rejectionMark === 'Yes' }"
             >
               <div>{{row.status ? $root.dictAllName(row.status, "PayoffStatus") : '-'}}</div>
             </IhStatusComponent>
@@ -653,7 +654,7 @@ export default class PayoffList extends Vue {
   }
 }
 .ih-table {
-  /deep/ .is-center {
+  /deep/ .status-class {
     overflow: hidden;
   }
 }
