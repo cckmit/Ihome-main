@@ -8,7 +8,7 @@
     <el-row class="ih-info-line">
       <el-col :span="18">
         <el-row>
-          <el-col class="ih-info-item-right item-padding-left-0">录入人：{{resPageInfo.inputUser }}</el-col>
+          <el-col class="ih-info-item-right item-padding-left-0">录入人：{{resPageInfo.inputUserName }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="6" class="text-right">
