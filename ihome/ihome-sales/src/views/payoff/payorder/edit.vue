@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-14 12:05:36
+ * @LastEditTime: 2021-05-18 14:26:54
 -->
 <template>
   <IhPage>
@@ -792,7 +792,7 @@
           <el-table-column
             label="周期名称"
             prop="cycleName"
-            width="200"
+            min-width="200"
           >
             <template v-slot="{ row }">
               <el-link
@@ -807,7 +807,7 @@
           </el-table-column>
           <el-table-column
             label="合同信息"
-            width="250"
+            min-width="250"
           >
             <template v-slot="{ row }">
               <template v-for="(item, i) in row.paySummaryContractInfoList">
@@ -834,7 +834,7 @@
           <el-table-column
             label="模式属性"
             prop="modeAttributes"
-            width="230"
+            min-width="230"
           >
             <template v-slot="{ row }">
               {{$root.dictAllName(row.modeAttributes, 'Attribute')}}
@@ -848,17 +848,17 @@
           <el-table-column
             label="历史申请付款金额（含税）"
             prop="historicalApplicationAmount"
-            width="120"
+            width="135"
           ></el-table-column>
           <el-table-column
             label="历史实际付款金额（含税）"
             prop="historicalActualAmount"
-            width="120"
+            width="135"
           ></el-table-column>
           <el-table-column
             label="本期申请付款金额（含税）"
             prop="currentApplication"
-            width="120"
+            width="135"
           ></el-table-column>
           <el-table-column
             label="本期扣除金额（含税）"
@@ -873,17 +873,17 @@
           <el-table-column
             label="本期实际付款金额（含税）"
             prop="currentActual"
-            width="120"
+            width="135"
           ></el-table-column>
           <el-table-column
             label="累计申请付款金额（含税）"
             prop="cumulativeApplication"
-            width="120"
+            width="135"
           ></el-table-column>
           <el-table-column
             label="累计实际付款金额（含税）"
             prop="cumulativeActual"
-            width="120"
+            width="135"
           ></el-table-column>
         </el-table>
       </div>
