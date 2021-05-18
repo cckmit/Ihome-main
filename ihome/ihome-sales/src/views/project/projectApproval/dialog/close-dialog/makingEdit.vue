@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:12:21
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 10:54:40
+ * @LastEditTime: 2021-05-18 08:58:30
 -->
 <template>
   <el-dialog
@@ -333,7 +333,7 @@ import {
   post_settleCondition_addMaking,
   post_settleCondition_updateMaking,
 } from "@/api/project/index";
-import { post_channel_getAllListByName } from "@/api/channel/index";
+// import { post_channel_getAllListByName } from "@/api/channel/index";
 import { NoRepeatHttp } from "ihome-common/util/aop/no-repeat-http";
 import { Form as ElForm } from "element-ui";
 @Component({

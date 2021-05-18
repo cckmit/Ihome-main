@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-09 16:13:37
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 11:48:39
+ * @LastEditTime: 2021-05-18 08:58:46
 -->
 <template>
   <el-dialog
@@ -323,7 +323,7 @@ import {
   post_partyAContract_getBuilding__termId,
   post_his_settleCondition_getMaking__settleId,
 } from "@/api/project/index";
-import { post_channel_getAllListByName } from "@/api/channel/index";
+// import { post_channel_getAllListByName } from "@/api/channel/index";
 @Component({
   components: {},
 })

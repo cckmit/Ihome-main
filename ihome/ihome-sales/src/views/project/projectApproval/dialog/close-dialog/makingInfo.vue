@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-09 20:13:35
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 11:01:08
+ * @LastEditTime: 2021-05-18 08:58:13
 -->
 <template>
   <el-dialog
@@ -320,12 +320,12 @@
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
 import {
-  get_settleCondition_getMakingType__termId,
+  // get_settleCondition_getMakingType__termId,
   post_settleCondition_getMakingTypeNew,
   post_partyAContract_getBuilding__termId,
   post_settleCondition_getMaking__settleId,
 } from "@/api/project/index";
-import { post_channel_getAllListByName } from "@/api/channel/index";
+// import { post_channel_getAllListByName } from "@/api/channel/index";
 @Component({
   components: {},
 })
