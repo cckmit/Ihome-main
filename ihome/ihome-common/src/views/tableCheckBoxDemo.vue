@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2020-11-09 16:35:00
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 10:32:45
+ * @LastEditTime: 2021-05-18 08:58:11
 -->
 <template>
   <div class="table-checkbox-demo">
@@ -20,6 +20,7 @@
       :hasCheckedData="hasCheckedData"
       :rowKey="rowKey"
       :column="tableColumn"
+      :operation="operationData"
       :maxHeight="tableMaxHeight"
       @selection-change="selectionChange"
       :pageSize="pageSize"
@@ -81,6 +82,12 @@ export default class TableDemo extends Vue {
       minWidth: 100,
     },
   ];
+  private operationData = [
+    {btnName: '详情1', btnMethods: this.detail},
+    // {btnName: '详情2', btnMethods: this.detail},
+    // {btnName: '详情3', btnMethods: this.detail},
+    // {btnName: '详情4', btnMethods: this.detail},
+  ]; // table表格操作
   private pageSize = 10;
   private currentPage = 1;
   private pageTotal = 0;
@@ -92,12 +99,16 @@ export default class TableDemo extends Vue {
   }
 
   private selectEnable(row: any, index: any) {
-    console.log(row);
+    // console.log(row);
     if ([2,4,6].includes(index)) {
       return false;
     } else {
       return true;
     }
+  }
+
+  detail(row: any) {
+    console.log(row);
   }
 
   private pageChange(index: number) {

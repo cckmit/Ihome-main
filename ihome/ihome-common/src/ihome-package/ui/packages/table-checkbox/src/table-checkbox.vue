@@ -1,41 +1,41 @@
 <!--
- * @Description: 
+ * @Description: 表格多选，支持回显，显示选择项
  * @version: 
  * @Author: lsj
  * @Date: 2020-11-09 16:05:00
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-14 16:03:11
+ * @LastEditTime: 2021-05-18 09:38:28
 -->
 <template>
   <div class="ih-table-checkBox">
     <el-tabs
       type="border-card"
-      v-model="tabActive"
-    >
+      v-model="tabActive">
       <el-tab-pane
         label="选择项"
-        name="1"
-      >
+        name="1">
         <div class="ih-table">
           <el-table
+            class="ih-table"
             ref="checkTable"
             :height="height"
             :max-height="maxHeight"
             :data="data"
             :border="border"
+            :stripe="stripe"
+            :size="size"
             :row-key="getRowKeys"
             :row-class-name="rowClassName"
-            @selection-change="handleSelectChange"
-          >
+            @selection-change="handleSelectChange">
             <el-table-column
               fixed
               v-if="isSingle"
               width="50"
               min-width="50"
-              align="center"
-            >
+              align="center">
               <template slot-scope="scope">
                 <el-checkbox
+                  class="single-checkbox"
                   v-model="scope.row.checked"
                   @change="changSingle($event, scope)"
                 ></el-checkbox>
@@ -53,7 +53,7 @@
             ></el-table-column>
             <template v-for="(item, index) in column">
               <slot
-                v-if="item.slot"
+                v-if="item.slot && item.type !== 'selection'"
                 :name="item.slot"
               ></slot>
               <el-table-column
@@ -61,10 +61,48 @@
                 :key="index"
                 :prop="item.prop"
                 :label="item.label"
+                :width="item.width"
                 :min-width="item.minWidth"
                 :align="item.align"
               ></el-table-column>
             </template>
+            <el-table-column
+              v-if="operation.length"
+              fixed="right"
+              label="操作"
+              width="120">
+              <template slot-scope="scope">
+                <div v-if="operation.length > 2">
+                  <el-link
+                    class="margin-right-10"
+                    type="primary"
+                    @click.native.prevent="operation[0].btnMethods(scope)"
+                  >{{operation[0].btnName}}
+                  </el-link>
+                  <el-dropdown trigger="click">
+                  <span class="el-dropdown-link">
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item
+                        v-for="(item, index) in moreOperation" :key="index"
+                        @click.native.prevent="item.btnMethods(scope)"
+                      >{{item.btnName}}
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown>
+                </div>
+                <div v-else>
+                  <el-link
+                    v-for="(item, index) in operation" :key="index"
+                    class="margin-right-10"
+                    type="primary"
+                    @click.native.prevent="item.btnMethods(scope)">{{item.btnName}}
+                  </el-link>
+                </div>
+              </template>
+            </el-table-column>
           </el-table>
         </div>
         <el-pagination
@@ -82,17 +120,18 @@
       <el-tab-pane
         :label="checkedData.length ? `已选项(${checkedData.length})条` : '已选项'"
         name="2"
-        v-if="isSelection"
-      >
+        v-if="isSelection">
         <el-table
+          class="ih-table"
           :height="height"
           :max-height="maxHeight"
           :data="checkedData"
-          :border="border"
-        >
+          :stripe="stripe"
+          :size="size"
+          :border="border">
           <template v-for="(item, index) in column">
             <slot
-              v-if="item.slot"
+              v-if="item.slot && item.type !== 'selection'"
               :name="item.slot"
             ></slot>
             <el-table-column
@@ -100,6 +139,7 @@
               :key="index"
               :prop="item.prop"
               :label="item.label"
+              :width="item.width"
               :min-width="item.minWidth"
               :align="item.align"
             ></el-table-column>
@@ -107,14 +147,35 @@
           <el-table-column
             fixed="right"
             label="操作"
-            width="100"
-          >
+            width="120">
             <template slot-scope="scope">
-              <el-link
-                class="margin-right-10"
-                type="primary"
-                @click.native.prevent="remove(scope)">移除
-              </el-link>
+              <div v-if="operation.length">
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="remove(scope)">移除
+                </el-link>
+                <el-dropdown trigger="click">
+                  <span class="el-dropdown-link">
+                    更多
+                    <i class="el-icon-arrow-down el-icon--right"></i>
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                      v-for="(item, index) in operation" :key="index"
+                      @click.native.prevent="item.btnMethods(scope)"
+                    >{{item.btnName}}
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
+              </div>
+              <div v-else>
+                <el-link
+                  class="margin-right-10"
+                  type="primary"
+                  @click.native.prevent="remove(scope)">移除
+                </el-link>
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -124,12 +185,40 @@
   </div>
 </template>
 <script lang="ts">
+/**
+ * actionSheet 表格多选，支持回显，显示选择项
+ * @description 本组件基于Table组件的二次封装，主要用于显示已选择项。支持单选多选模式。
+ * @property {Array<Object>} operation 表格操作菜单按钮数组。没有则默认在已选项中显示一个【移除】按钮。
+ * @property {String/Number} height Table的高度，默认为自动高度。
+ * @property {String/Number} maxHeight Table的最大高度。
+ * @property {Array} data Table的选择项
+ * @property {Array} hasCheckedData Table的已选项
+ * @property {String} rowKey Table行数据的 Key，用来优化 Table 的渲染
+ * @property {Boolean} border 是否带有纵向边框，（默认false）。
+ * @property {Array<Object>} column Table的表头
+ * @property {Array<Object>} rowClassName 行的 className 的回调方法，也可以使用字符串为所有行设置一个固定的 className。
+ * @property {String} valueKey 单选/多选用于匹配数据的唯一值，不传默认id
+ * @property {Boolean} isSingle 是否单选，默认（默认false多选）。
+ * @property {Boolean} stripe 是否为斑马纹 table，（默认false）。
+ * @property {String} size Table 的尺寸
+ * @property {Boolean} isSelection 是否显示已选项，默认true。
+ * @property {Boolean} isPagination 是否显示分页组件，默认true。
+ * @property {Function(row, index)} columnSelectable 仅对 type=selection 的列有效，类型为 Function，Function 的返回值用来决定这一行的 CheckBox 是否可以勾选
+ * @property {Function(selection)} selection-change 当选择项发生变化时会触发该事件
+ */
+
 import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 
 @Component({
   components: {},
 })
 export default class IhTableCheckBox extends Vue {
+  @Prop({
+    default: () => {
+      return [];
+    }
+  })
+  operation?: any; // 表格操作栏按钮，数组对象，key：btnName --- 按钮名字；btnMethods --- 按钮方法。回参scope。
   @Prop() height?: string;
   @Prop() maxHeight?: string;
   @Prop() private data!: any; // 选择项
@@ -154,6 +243,14 @@ export default class IhTableCheckBox extends Vue {
     default: false,
   })
   border!: boolean;
+  @Prop({
+    default: false,
+  })
+  stripe!: boolean;
+  @Prop({
+    default: '',
+  })
+  size!: string;
   @Prop({
     default: true,
   })
@@ -200,6 +297,19 @@ export default class IhTableCheckBox extends Vue {
         });
       }
     }
+  }
+
+  get moreOperation() {
+    let list: any = [];
+    if (this.operation && this.operation.length > 1) {
+      this.operation.forEach((item: any, index: any) => {
+        if (index !== 0) {
+          list.push(item);
+        }
+      });
+    }
+    // console.log('moreOperation', list);
+    return list;
   }
 
   created() {
@@ -335,5 +445,16 @@ export default class IhTableCheckBox extends Vue {
   box-sizing: border-box;
   padding-top: 20px;
   color: #f90;
+}
+.single-checkbox {
+  /deep/.el-checkbox__inner {
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+  }
+  /deep/.el-checkbox__inner::after {
+    left: 5px;
+    top: 2px;
+  }
 }
 </style>
