@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-30 09:53:42
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-15 15:10:00
+ * @LastEditTime: 2021-05-18 19:03:18
 -->
 <template>
   <el-dialog
@@ -15,7 +15,7 @@
     :before-close="cancel"
     append-to-body
     width="75%"
-    title="申领渠道合同"
+    title="申领乙方合同"
     top="5vh"
   >
     <el-form label-width="120px">
@@ -54,7 +54,7 @@
       </el-row>
       <el-row>
         <el-col :span="8">
-          <el-form-item label="渠道合同类型">
+          <el-form-item label="乙方合同类型">
             <el-select
               v-model="queryPageParameters.contractKind"
               clearable
