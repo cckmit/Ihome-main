@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-18 15:17:21
+ * @LastEditTime: 2021-05-18 15:54:10
 -->
 <template>
   <IhPage>
@@ -1190,6 +1190,7 @@ export default class PayoffEdit extends Vue {
     agencyAccountBank: null,
     payerAccountBank: null,
     tax: 0,
+    companyKind: null,
   };
   form: any = {
     branchName1: null,
@@ -2223,7 +2224,7 @@ export default class PayoffEdit extends Vue {
             obj.reviewUpdateMainBody.paymentMethod = this.info.paymentMethod;
             obj.reviewUpdateMainBody.settlementMethod = this.info.settlementMethod;
             obj.reviewUpdateMainBody.tax = this.info.tax;
-            obj.payApplyVO.companyKind = this.info.companyKind;
+            obj.reviewUpdateMainBody.companyKind = this.info.companyKind;
             obj.reviewUpdateMainBody.taxRate = Number(this.info.taxRate);
             obj.payApplyDetailList = this.info.payApplyDetailList.map(
               (v: any) => ({
