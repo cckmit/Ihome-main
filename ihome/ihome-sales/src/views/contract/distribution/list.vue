@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-18 10:12:27
+ * @LastEditTime: 2021-05-18 11:16:07
 -->
 <template>
   <IhPage label-width="100px">
@@ -887,6 +887,9 @@ export default class DistributionList extends Vue {
     let params = { ...this.queryPageParameters };
     if (this.$route.name === "DistributionListByBusiness") {
       params.claimPower = "Business";
+      params.excelName = "业务线乙方合同列表";
+    } else {
+      params.excelName = "乙方合同列表";
     }
     axios({
       method: "POST",
@@ -912,7 +915,10 @@ export default class DistributionList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "乙方合同列表.xlsx";
+      $a.download =
+        this.$route.name === "DistributionListByBusiness"
+          ? "业务线乙方合同列表.xlsx"
+          : "乙方合同列表.xlsx";
       $a.click();
       $a.remove();
     });
@@ -964,7 +970,7 @@ export default class DistributionList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "乙方合同附件.zip";
+      $a.download = "附件.zip";
       $a.click();
       $a.remove();
     });
