@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-09-25 17:34:32
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-13 17:11:19
+ * @LastEditTime: 2021-05-18 10:12:27
 -->
 <template>
   <IhPage label-width="100px">
@@ -912,7 +912,7 @@ export default class DistributionList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "渠道分销协议列表.xlsx";
+      $a.download = "乙方合同列表.xlsx";
       $a.click();
       $a.remove();
     });
@@ -964,7 +964,7 @@ export default class DistributionList extends Vue {
       const href = window.URL.createObjectURL(res.data);
       const $a = document.createElement("a");
       $a.href = href;
-      $a.download = "渠道分销协议附件.zip";
+      $a.download = "乙方合同附件.zip";
       $a.click();
       $a.remove();
     });
