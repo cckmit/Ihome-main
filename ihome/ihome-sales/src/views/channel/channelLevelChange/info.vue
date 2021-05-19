@@ -4,7 +4,7 @@
  * @Author: ywl
  * @Date: 2020-10-19 09:04:33
  * @LastEditors: lsj
- * @LastEditTime: 2021-05-12 11:26:29
+ * @LastEditTime: 2021-05-19 11:43:50
 -->
 <template>
   <IhPage>
@@ -16,7 +16,7 @@
     <el-row class="ih-info-line">
       <el-col :span="18">
         <el-row>
-          <el-col class="ih-info-item-right item-padding-left-0">录入人：{{resPageInfo.inputUser }}</el-col>
+          <el-col class="ih-info-item-right item-padding-left-0">录入人：{{resPageInfo.inputUserName }}</el-col>
         </el-row>
       </el-col>
       <el-col :span="6" class="text-right">
