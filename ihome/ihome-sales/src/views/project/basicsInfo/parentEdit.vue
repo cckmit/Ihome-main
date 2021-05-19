@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-19 08:55:06
+ * @LastEditTime: 2021-05-19 15:15:43
 -->
 <template>
   <ih-page>
@@ -194,14 +194,14 @@
             }}</template>
           </el-table-column>
           <el-table-column fixed="right" prop="" label="操作" width="120">
-            <template v-slot="{ row }">
-              <el-link type="primary" @click.native.prevent="goInfo(row)"
+            <template slot-scope="scope">
+              <el-link type="primary" @click.native.prevent="goInfo(scope.row)"
                 >详情</el-link
               >
               <el-link
                 style="margin-left: 20px"
                 type="warning"
-                @click.native.prevent="remove(row.$index)"
+                @click.native.prevent="remove(scope.$index)"
                 >移除</el-link
               >
             </template>

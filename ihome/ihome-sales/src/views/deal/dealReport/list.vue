@@ -235,11 +235,11 @@
                 <div v-else>补充类型：-</div>
               </div>
               <div class="expand-item">
-                <div>渠道公司：{{props.row.channelName}}</div>
+                <div>渠道公司：{{props.row.companyKind === 'InfieldCompany' ? props.row.companyName : props.row.channelName }}</div>
                 <div>客户姓名：{{props.row.customerName}}</div>
               </div>
               <div class="expand-item">
-                <div>经纪人：{{props.row.brokerName}}</div>
+                <div>经纪人：{{props.row.brokerName ? props.row.brokerName : '-'}}</div>
                 <div>客户电话：{{props.row.customerPhone}}</div>
               </div>
             </div>
