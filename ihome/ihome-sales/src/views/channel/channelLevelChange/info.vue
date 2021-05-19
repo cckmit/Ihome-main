@@ -55,9 +55,6 @@
           <ChannelLog />
         </el-tab-pane>
       </el-tabs>
-      <div class="back-fixed">
-        <el-button type="primary" @click="$router.go(-1)">返回</el-button>
-      </div>
     </div>
 <!--    <template v-slot:info>
       <el-scrollbar>
@@ -142,14 +139,6 @@ export default class ChannelInfo extends Vue {
 }
 /deep/ .el-card__header {
   background: #f9f9f9;
-}
-.back-fixed {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  text-align: right;
-  padding-right: 20px;
-  margin: 0 20px;
 }
 .item-padding-left-0 {
   padding-left: 0px;

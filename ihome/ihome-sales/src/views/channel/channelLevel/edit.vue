@@ -18,7 +18,7 @@
         <el-col :span="18">
           <el-row>
             <el-col class="ih-info-item-right item-padding-left-0">
-              录入人：{{Id ? resPageInfo.inputUser : $root.userInfo.name}}
+              录入人：{{Id ? resPageInfo.inputUserName : $root.userInfo.name}}
             </el-col>
           </el-row>
         </el-col>
