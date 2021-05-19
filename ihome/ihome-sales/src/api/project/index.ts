@@ -1,6 +1,6 @@
 /* eslint-disable */
 /* 此脚本由swagger-ui的api-docs自动生成，请勿修改 */
-//2021-5-17 11:45:48 ├F10: AM┤
+//2021/5/19 上午9:03:43
 import { request } from '@/api/base'
 const basePath = "/sales-api/project"
 /**index*/
@@ -178,6 +178,10 @@ return await request.get<CompanyDetailVO,CompanyDetailVO>(basePath+'/company/get
 /**一手代理银行账户列表根据ID*/
 export async function post_company_getAccountById (d?: any) {
 return await request.post< CompanyBank[],CompanyBank[]> (basePath+'/company/getAccountById', d)
+}
+/**获取一手代理附件*/
+export async function post_company_getAttach (d?: any) {
+return await request.post< CompanyAttachment[],CompanyAttachment[]> (basePath+'/company/getAttach', d)
 }
 /**一手代理数据列表【模糊查询分页】*/
 export async function post_company_getFuzzyQuery (d?: any) {
@@ -702,6 +706,10 @@ return await request.post< number,number> (basePath+'/project/auditWait', d)
 /**联动项目-业管审核-审核通过(原来的状态必须是审核通过)*/
 export async function post_project_auditWaitManagement (d?: any) {
 return await request.post< number,number> (basePath+'/project/auditWaitManagement', d)
+}
+/**业管修改父项目*/
+export async function post_project_bussniessUpdateParent (d?: any) {
+return await request.post< number,number> (basePath+'/project/bussniessUpdateParent', d)
 }
 /**联动项目-撤回*/
 export async function post_project_cancel__proId (d?: any) {
@@ -1284,6 +1292,13 @@ fileId: string;
 fileName: string;
 /**(必填)文件类型(PartyAConfirm-甲方合同、IntermediaryLetter-中介启动函、CalcForm-立项测算表、PartyAContract-甲方合同/确认函/授权函附件、CrossPro-跨项目使用其他渠道费用授权函、LinkProSale-联动销售确认书/启动函、IntermediaryDistribut-中介分销协议、SubscriptTemplate-认购书模板、DiscountNotice-优惠告知书、OtherFile-其他附件)*/
 type: string;
+}
+/**AttachVO*/
+export interface AttachVO {
+/**开发商ID*/
+companyId: number;
+/**类型*/
+types: string[];
 }
 /**AuditVO*/
 export interface AuditVO {
@@ -2142,6 +2157,29 @@ startTime: string;
 state: string;
 /**立项周期ID*/
 termId: number;
+}
+/**CompanyAttachment*/
+export interface CompanyAttachment {
+/**开发商ID*/
+companyId: number;
+/**创建时间(yyyy-MM-dd HH:mm:ss)*/
+createTime: string;
+/**创建用户*/
+createUser: number;
+/**已删除*/
+deleted: number;
+/**文件ID*/
+fileId: string;
+/**undefined*/
+fileName: string;
+/**ID*/
+id: number;
+/**类型(Licence-营业执照、BankLicence-开户许可证、Other-其他附件)*/
+type: string;
+/**更新时间(yyyy-MM-dd HH:mm:ss)*/
+updateTime: string;
+/**更新用户*/
+updateUser: number;
 }
 /**CompanyAttachmentBaseVO*/
 export interface CompanyAttachmentBaseVO {

@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-15 14:21:19
+ * @LastEditTime: 2021-05-19 08:55:06
 -->
 <template>
   <ih-page>
@@ -213,7 +213,9 @@
         <el-button type="primary" @click="save" v-if="!baseReadOnly"
           >保 存</el-button
         >
-        <el-button type="success" @click="submit()">提交</el-button>
+        <el-button type="success" @click="submit()" v-if="!isYeGuan"
+          >提交</el-button
+        >
         <el-button @click="$goto({ path: '/projects/list' })">关 闭</el-button>
       </div>
     </template>
@@ -238,6 +240,7 @@ import {
   post_project_auditWait,
   post_project_auditWaitManagement,
   post_project_updateParentAndSonProject,
+  post_project_bussniessUpdateParent,
 } from "../../../api/project/index";
 
 @Component({
@@ -298,6 +301,9 @@ export default class EditBasicInfo extends Vue {
   get baseReadOnly() {
     //基础信息只读，变更子项目
     return this.$route.query.type == "cahngeSon";
+  }
+  get isYeGuan() {
+    return this.$route.query.type == "yeguanEdit";
   }
 
   created() {
@@ -449,7 +455,13 @@ export default class EditBasicInfo extends Vue {
       obj.sonProjecIds = this.form?.sonProjec?.map((item: any) => {
         return item.proId;
       });
-      await post_project_updateParent(obj);
+
+      if (this.isYeGuan) {
+        await post_project_bussniessUpdateParent(obj);
+      } else {
+        await post_project_updateParent(obj);
+      }
+
       this.$message.success("保存成功");
       this.$goto({ path: "/projects/list" });
     }
