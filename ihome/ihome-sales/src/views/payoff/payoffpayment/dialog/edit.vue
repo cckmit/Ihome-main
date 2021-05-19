@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-19 18:37:23
+ * @LastEditTime: 2021-05-19 19:01:55
 -->
 <template>
   <el-dialog
@@ -105,7 +105,7 @@
         <el-col :span="24">
           <el-form-item
             label="付款方名称:"
-            prop="companyName"
+            prop="companyId"
           >
             <IhSelectPageByPayer
               clearable
@@ -113,6 +113,12 @@
               :proId="info.belongOrgId"
               :search-name="info.companyName"
               @changeOption="getPayerInfo"
+              @clear="() => {
+                info.companyId = null;
+                info.companyName = null;
+                info.paymentAccount = null;
+                payerAccountOptions = [];
+              }"
             ></IhSelectPageByPayer>
           </el-form-item>
         </el-col>
