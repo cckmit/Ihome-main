@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-16 17:16:53
- * @LastEditors: wwq
- * @LastEditTime: 2021-03-13 15:16:25
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-19 18:37:23
 -->
 <template>
   <el-dialog
@@ -250,9 +250,10 @@ export default class Edit extends Vue {
   async getPayerInfo(item: any) {
     this.info.payerName = item.companyName;
     const res = await post_bankAccount_getByOrgId__orgId({
-      orgId: this.info.payerId,
+      orgId: item.id,
     });
     this.payerAccountOptions = res;
+    this.info.paymentAccount = null;
   }
 
   cancel() {
