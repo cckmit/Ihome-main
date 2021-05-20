@@ -37,7 +37,7 @@
             </el-input>
             <el-input
               v-if="['ChangeBasicInf', 'ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType)"
-              disabled v-model="postData.projectCycle"></el-input>
+              disabled v-model="postData.cycleName"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="8">
