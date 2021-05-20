@@ -4,10 +4,11 @@
  * @Author: zyc
  * @Date: 2020-06-22 11:46:23
  * @LastEditors: zyc
- * @LastEditTime: 2020-06-28 10:50:18
+ * @LastEditTime: 2021-05-20 15:55:56
 -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="robots" content="noarchive">
@@ -17,6 +18,9 @@
   <title>
     <%= htmlWebpackPlugin.options.title %>
   </title>
+  <script>
+    console.log('<%= htmlWebpackPlugin.options.timeStamp %>');
+  </script>
   <script>
     function getCookie(name) {
       var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");

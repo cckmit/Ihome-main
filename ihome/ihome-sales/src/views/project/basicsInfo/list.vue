@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-20 10:31:50
+ * @LastEditTime: 2021-05-20 17:48:36
 -->
 <template>
   <IhPage label-width="110px">
@@ -341,11 +341,11 @@ export default class ProjectList extends Vue {
     return Conduct;
   }
 
-  get emptyText() {
-    return this.resPageInfo.total === null
-      ? "正在加载数据..."
-      : "请点击查询加载数据";
-  }
+  // get emptyText() {
+  //   return this.resPageInfo.total === null
+  //     ? "正在加载数据..."
+  //     : "请点击查询加载数据";
+  // }
 
   search() {
     this.queryPageParameters.province = this.provinceOption[0];
