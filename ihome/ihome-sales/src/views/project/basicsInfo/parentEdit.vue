@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-05-20 10:00:02
+ * @LastEditTime: 2021-05-20 10:02:29
 -->
 <template>
   <ih-page>
@@ -365,7 +365,7 @@ export default class EditBasicInfo extends Vue {
     this.getInfo();
     if (this.$route.query.type == "yeguanEdit") {
       this.title = "父项目业管修改";
-    } else if (this.$route.query.type == "cahngeSon") {
+    } else if (this.$route.query.type == "changeSon") {
       this.title = "变更子项目关联页";
     }
   }
