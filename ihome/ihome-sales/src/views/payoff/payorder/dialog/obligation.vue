@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-29 11:04:59
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-17 16:49:04
+ * @LastEditTime: 2021-05-18 18:40:45
 -->
 <template>
   <el-dialog
@@ -267,6 +267,7 @@ export default class Obligation extends Vue {
     dealCode: null,
     cycleName: null,
     customer: null,
+    companyKind: null,
     isComm: "Yes",
     busModel: null,
     contType: null,
@@ -275,6 +276,8 @@ export default class Obligation extends Vue {
     timeList: [],
     agencyId: null,
     projectId: null,
+    oneAgentTeamId: null, // 一手代理公司使用
+    firstCompanyKind: null, // 一手代理公司使用
   };
   resPageInfo: any = {
     total: null,
@@ -407,14 +410,19 @@ export default class Obligation extends Vue {
   private async getList() {
     this.resPageInfo = await post_payDeal_getList({
       ...this.info,
-      companyKind: this.data.companyKind,
       pageNum: this.pageNum,
       pageSize: this.pageSize,
     });
   }
 
   created() {
-    this.info.agencyId = this.data.agencyId;
+    if (this.data.companyKind === "AgencyCompany") {
+      this.info.oneAgentTeamId = this.data.agencyId;
+      this.info.firstCompanyKind = this.data.companyKind;
+    } else {
+      this.info.agencyId = this.data.agencyId;
+      this.info.companyKind = this.data.companyKind;
+    }
     this.info.projectId = this.data.projectId;
     this.hasCheckedData = this.data.hasCheckedData;
     this.getList();

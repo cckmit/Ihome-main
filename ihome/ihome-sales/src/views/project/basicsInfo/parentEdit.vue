@@ -4,16 +4,16 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: wwq
- * @LastEditTime: 2021-05-20 09:35:51
+ * @LastEditTime: 2021-05-20 10:00:02
 -->
 <template>
   <ih-page>
     <template v-slot:info>
-      <p class="ih-info-title">父项目编辑</p>
+      <p class="ih-info-title">{{ title }}</p>
       <el-form
         ref="form"
         label-width="110px"
-        class="margin-top-30"
+        class="margin-top-30 parentEdit"
         :model="form"
         :rules="rules"
       >
@@ -303,6 +303,7 @@ import {
 export default class EditBasicInfo extends Vue {
   selectVisible = false;
   cunrentParams: any = {};
+  title = "父项目修改";
   form: any = {
     auditEnum: null,
     proNo: null,
@@ -362,6 +363,11 @@ export default class EditBasicInfo extends Vue {
 
   created() {
     this.getInfo();
+    if (this.$route.query.type == "yeguanEdit") {
+      this.title = "父项目业管修改";
+    } else if (this.$route.query.type == "cahngeSon") {
+      this.title = "变更子项目关联页";
+    }
   }
   addsonProject() {
     this.selectVisible = true;
@@ -444,14 +450,45 @@ export default class EditBasicInfo extends Vue {
       // post_project_auditWaitManagement,
       // post_project_updateParentAndSonProject,
       if (this.$route.query.type == "changeSon") {
-        //并更子项目
-        let postData = {
-          proId: obj.proId,
-          sonProjecIds: this.form.sonProjec.map((item: any) => {
-            return item.proId;
-          }),
-        };
-        await post_project_updateParentAndSonProject(postData);
+        //提交后子项目c、d、f将归属于父项目A，且父项目A需要重新审核，是否确认？
+        let textList = [];
+
+        for (let index = 0; index < this.form.sonProjec.length; index++) {
+          const element = this.form.sonProjec[index];
+          if (element.parentId && element.parentId != obj.proId) {
+            textList.push(element.proName);
+          }
+        }
+        if (textList.length > 0) {
+          let text = textList.join("、");
+          this.$confirm(
+            `提交后子项目 [${text}] 将归属于父项目，且父项目 [${this.form.proName}]需要重新审核，是否确认？`,
+            "提示",
+            {
+              confirmButtonText: "确定",
+              cancelButtonText: "取消",
+              type: "warning",
+            }
+          ).then(async () => {
+            //并更子项目
+            let postData = {
+              proId: obj.proId,
+              sonProjecIds: this.form.sonProjec.map((item: any) => {
+                return item.proId;
+              }),
+            };
+            this.changeSubmit(postData);
+          });
+        } else {
+          //并更子项目
+          let postData = {
+            proId: obj.proId,
+            sonProjecIds: this.form.sonProjec.map((item: any) => {
+              return item.proId;
+            }),
+          };
+          this.changeSubmit(postData);
+        }
       } else if (this.$route.query.type == "edit") {
         await post_project_updateParent(obj);
         //修改
@@ -460,6 +497,8 @@ export default class EditBasicInfo extends Vue {
           proId: obj.proId,
         };
         await post_project_auditWait(postData);
+        this.$message.success("修改成功");
+        this.$goto({ path: "/projects/list" });
       } else if (this.$route.query.type == "yeguanEdit") {
         //业管修改
         await post_project_updateParent(obj);
@@ -468,11 +507,11 @@ export default class EditBasicInfo extends Vue {
           proId: obj.proId,
         };
         await post_project_auditWaitManagement(postData);
+        this.$message.success("业管修改成功");
+        this.$goto({ path: "/projects/list" });
       } else {
         this.$message.warning("请从指定入口进入页面");
       }
-      this.$message.success("提交成功");
-      this.$goto({ path: "/projects/list" });
     } else {
       setTimeout(() => {
         let isError: any = document.getElementsByClassName("is-error");
@@ -482,6 +521,12 @@ export default class EditBasicInfo extends Vue {
       }, 100);
       return false;
     }
+  }
+  @NoRepeatHttp()
+  async changeSubmit(d: any) {
+    await post_project_updateParentAndSonProject(d);
+    this.$message.success("子项目关联变更成功");
+    this.$goto({ path: "/projects/list" });
   }
 
   async save() {
@@ -536,6 +581,16 @@ export default class EditBasicInfo extends Vue {
     top: 0px;
     left: 100px;
     transform: translate(0, -30%);
+  }
+}
+</style>
+<style lang="scss">
+.parentEdit {
+  input[readonly] {
+    background-color: #f5f7fa;
+    border-color: #e4e7ed;
+    color: #c0c4cc;
+    cursor: not-allowed;
   }
 }
 </style>

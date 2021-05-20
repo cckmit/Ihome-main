@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-18 14:26:54
+ * @LastEditTime: 2021-05-20 09:32:16
 -->
 <template>
   <IhPage>
@@ -951,7 +951,7 @@
                 :autosize="{ minRows: 5, maxRows: 10 }"
                 placeholder="请输入内容"
                 v-model="info.description"
-                maxlength="500"
+                maxlength="2000"
                 show-word-limit
               >
               </el-input>
@@ -2040,13 +2040,13 @@ export default class PayoffEdit extends Vue {
 
   addContacts() {
     if (this.info.agencyId && this.info.projectId) {
-      this.contactsDialogVisible = true;
       this.contactsData = {
         agencyId: this.info.agencyId,
         hasCheckedData: this.info.payApplyDetailList,
         projectId: this.info.projectId,
         companyKind: this.info.companyKind,
       };
+      this.contactsDialogVisible = true;
       // 获取本期需抵扣金额明细
       this.queryDeductionData(this.info.agencyId, this.info.projectId);
     } else {
