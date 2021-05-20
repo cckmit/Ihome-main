@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-11-03 11:52:41
  * @LastEditors: wwq
- * @LastEditTime: 2021-04-26 10:49:36
+ * @LastEditTime: 2021-05-20 09:31:04
 -->
 <template>
   <div>
@@ -764,8 +764,7 @@ export default class EditBasicInfo extends Vue {
         data.exMinyuan.toString()
       );
       window.sessionStorage.setItem("proName", this.form.proName);
-      this.isShowSubmit =
-        window.sessionStorage.getItem("editType") === "edit" ? true : false;
+      this.isShowSubmit = this.$route.query.type === "edit" ? true : false;
       this.form.provinceOption = [data.province, data.city, data.district];
       this.contantList = data.propertyArgs.map((v: any) => ({
         ...v,
