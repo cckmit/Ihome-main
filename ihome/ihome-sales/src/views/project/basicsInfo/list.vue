@@ -3,16 +3,13 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-20 09:32:59
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-05-20 10:31:50
 -->
 <template>
   <IhPage label-width="110px">
     <template v-slot:form>
-      <el-form
-        ref="form"
-        label-width="110px"
-      >
+      <el-form ref="form" label-width="110px">
         <el-row>
           <el-col :span="8">
             <el-form-item label="项目名称">
@@ -134,19 +131,14 @@
 
     <template v-slot:btn>
       <el-row class="el-row">
-        <el-button
-          type="primary"
-          @click="search()"
-        >查询</el-button>
+        <el-button type="primary" @click="search()">查询</el-button>
         <el-button
           type="success"
           @click="add()"
           v-has="'B.SALES.PROJECT.BASICLIST.ADD'"
-        >添加</el-button>
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+          >添加</el-button
+        >
+        <el-button type="info" @click="reset()">重置</el-button>
       </el-row>
     </template>
 
@@ -163,20 +155,13 @@
           label="盘编"
           width="150"
         ></el-table-column>
-        <el-table-column
-          fixed
-          label="项目名称"
-          min-width="250"
-        >
+        <el-table-column fixed label="项目名称" min-width="250">
           <template v-slot="{ row }">
             <div>{{ `推广名: ${row.proName}` }}</div>
             <div>{{ `备案名: ${row.proRecord ? row.proRecord : "-"}` }}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="exMarket"
-          width="150"
-        >
+        <el-table-column prop="exMarket" width="150">
           <template #header>
             <div>市场化项目</div>
             <div>关联明源</div>
@@ -186,10 +171,7 @@
             <div>{{ row.exMinyuan ? "是" : "否" }}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="明源信息"
-          min-width="200"
-        >
+        <el-table-column label="明源信息" min-width="200">
           <template v-slot="{ row }">
             <div>{{ `父/子：${row.exParent ? "父项目" : "子项目"}` }}</div>
             <div>{{ `楼盘名：${row.myName ? row.myName : "-"}` }}</div>
@@ -198,45 +180,28 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column
-          label="省市区"
-          width="150"
-        >
+        <el-table-column label="省市区" width="150">
           <template v-slot="{ row }">
             <div>{{ $root.getAreaName(row.province) }}</div>
             <div>{{ $root.getAreaName(row.city) }}</div>
             <div>{{ $root.getAreaName(row.district) }}</div>
           </template>
         </el-table-column>
-        <el-table-column
-          prop="proAddr"
-          label="项目地址"
-          width="300"
-        >
+        <el-table-column prop="proAddr" label="项目地址" width="300">
         </el-table-column>
-        <el-table-column
-          prop="auditEnum"
-          label="项目审核状态"
-          width="120"
-        >
+        <el-table-column prop="auditEnum" label="项目审核状态" width="120">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.auditEnum, "ProAudit")
           }}</template>
         </el-table-column>
-        <el-table-column
-          label="操作"
-          width="120"
-          fixed="right"
-        >
+        <el-table-column label="操作" width="120" fixed="right">
           <template v-slot="{ row }">
             <el-link
               type="primary"
               @click.native.prevent="routerTo(row, 'info')"
-            >详情</el-link>
-            <el-dropdown
-              trigger="click"
-              style="margin-left: 15px"
+              >详情</el-link
             >
+            <el-dropdown trigger="click" style="margin-left: 15px">
               <span class="el-dropdown-link">
                 更多
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -245,32 +210,38 @@
                 <el-dropdown-item
                   @click.native.prevent="edit(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.UPDATE'"
-                >修改</el-dropdown-item>
+                  >修改</el-dropdown-item
+                >
                 <el-dropdown-item
                   @click.native.prevent="routerTo(row, 'audit')"
                   :class="{ 'ih-data-disabled': !auditChange(row) }"
                   v-has="'B.SALES.PROJECT.BASICLIST.VERIFY'"
-                >审核</el-dropdown-item>
+                  >审核</el-dropdown-item
+                >
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !editChange(row) }"
                   @click.native.prevent="yeguanEdit(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.YGUPDATE'"
-                >业管修改</el-dropdown-item>
+                  >业管修改</el-dropdown-item
+                >
                 <el-dropdown-item
                   @click.native.prevent="changeSon(row)"
                   :class="{ 'ih-data-disabled': !editParentChange(row) }"
                   v-has="'B.SALES.PROJECT.BASICLIST.PROCHANGE'"
-                >变更子项目关联</el-dropdown-item>
+                  >变更子项目关联</el-dropdown-item
+                >
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !delChange(row) }"
                   @click.native.prevent="remove(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.DELETE'"
-                >删除</el-dropdown-item>
+                  >删除</el-dropdown-item
+                >
                 <el-dropdown-item
                   :class="{ 'ih-data-disabled': !recallChange(row) }"
                   @click.native.prevent="recall(row)"
                   v-has="'B.SALES.PROJECT.BASICLIST.RECALL'"
-                >撤回</el-dropdown-item>
+                  >撤回</el-dropdown-item
+                >
               </el-dropdown-menu>
             </el-dropdown>
           </template>
@@ -406,23 +377,14 @@ export default class ProjectList extends Vue {
   }
 
   edit(row: any) {
-    if (row.exMinyuan) {
-      if (!row.parentId) {
-        this.$router.push({
-          path: `/projects/parentEdit`,
-          query: {
-            id: row.proId,
-            type: "edit",
-          },
-        });
-      } else {
-        this.$router.push({
-          path: `/projects/childEdit`,
-          query: {
-            id: row.proId,
-          },
-        });
-      }
+    if (row.exParent == 1) {
+      this.$router.push({
+        path: `/projects/parentEdit`,
+        query: {
+          id: row.proId,
+          type: "edit",
+        },
+      });
     } else {
       this.$router.push({
         path: `/projects/childEdit`,
