@@ -294,6 +294,7 @@
           style="width: 100%"
           show-summary
           sum-text="合计"
+          :summary-method="getReceiveSummaries"
         >
           <el-table-column prop="type" label="类型" width="200">
             <template slot-scope="scope">
@@ -795,6 +796,37 @@ export default class RealDealDetails extends Vue {
     if (sums && sums.length) {
       sums[7] = sums[7] + '%';
     }
+    return sums;
+  }
+  // 计算收派金额总计
+  getReceiveSummaries(param: any) {
+    const {columns, data} = param;
+    const sums: any = [];
+    columns.forEach((column: any, index: any) => {
+      if (index === 0) {
+        sums[index] = '合计金额';
+        return;
+      }
+      if (![0, 1].includes(index)) {
+        const values = data.map((item: any) => Number(item[column.property]));
+        if (!values.every((value: any) => isNaN(value))) {
+          sums[index] = values.reduce((prev: any, curr: any) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
+              return total;
+            } else {
+              return ((prev * 1 * 100) / 100);
+            }
+          }, 0);
+          sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
+        } else {
+          sums[index] = '';
+        }
+      } else {
+        sums[index] = '';
+      }
+    });
     return sums;
   }
 }
