@@ -4,16 +4,16 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-19 15:15:43
+ * @LastEditTime: 2021-05-19 18:18:20
 -->
 <template>
   <ih-page>
     <template v-slot:info>
-      <p class="ih-info-title">父项目编辑</p>
+      <p class="ih-info-title">{{ title }}</p>
       <el-form
         ref="form"
         label-width="110px"
-        class="margin-top-30"
+        class="margin-top-30 parentEdit"
         :model="form"
         :rules="rules"
       >
@@ -249,6 +249,7 @@ import {
 export default class EditBasicInfo extends Vue {
   selectVisible = false;
   cunrentParams: any = {};
+  title = "父项目修改";
   form: any = {
     auditEnum: null,
     proNo: null,
@@ -308,6 +309,11 @@ export default class EditBasicInfo extends Vue {
 
   created() {
     this.getInfo();
+    if (this.$route.query.type == "yeguanEdit") {
+      this.title = "父项目业管修改";
+    } else if (this.$route.query.type == "cahngeSon") {
+      this.title = "变更子项目关联页";
+    }
   }
   addsonProject() {
     this.selectVisible = true;
@@ -482,6 +488,16 @@ export default class EditBasicInfo extends Vue {
     top: 0px;
     left: 100px;
     transform: translate(0, -30%);
+  }
+}
+</style>
+<style lang="scss">
+.parentEdit {
+  input[readonly] {
+    background-color: #F5F7FA;
+    border-color: #E4E7ED;
+    color: #C0C4CC;
+    cursor: not-allowed;
   }
 }
 </style>

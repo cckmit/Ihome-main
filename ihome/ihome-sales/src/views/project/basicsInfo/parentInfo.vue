@@ -4,12 +4,12 @@
  * @Author: wwq
  * @Date: 2020-11-10 10:34:18
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-15 14:09:44
+ * @LastEditTime: 2021-05-19 18:24:17
 -->
 <template>
   <ih-page>
     <template v-slot:info>
-      <p class="ih-info-title">父项目编辑</p>
+      <p class="ih-info-title">{{ title }}</p>
       <el-form
         ref="form"
         label-width="110px"
@@ -179,6 +179,7 @@ import {
   components: {},
 })
 export default class EditBasicInfo extends Vue {
+  title = "父项目详情";
   form: any = {
     proNo: null,
     proName: null,
@@ -210,6 +211,10 @@ export default class EditBasicInfo extends Vue {
   }
 
   created() {
+    if (this.$route.name === "projectParentAudit") {
+      this.title = "父项目审核";
+    }
+
     this.getInfo();
   }
   goInfo(item: any) {
