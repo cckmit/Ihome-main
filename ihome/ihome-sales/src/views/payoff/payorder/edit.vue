@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-18 18:47:30
+ * @LastEditTime: 2021-05-20 09:32:16
 -->
 <template>
   <IhPage>
@@ -951,7 +951,7 @@
                 :autosize="{ minRows: 5, maxRows: 10 }"
                 placeholder="请输入内容"
                 v-model="info.description"
-                maxlength="500"
+                maxlength="2000"
                 show-word-limit
               >
               </el-input>
