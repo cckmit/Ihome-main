@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-08-13 11:40:10
  * @LastEditors: zyc
- * @LastEditTime: 2021-05-20 17:48:36
+ * @LastEditTime: 2021-05-22 14:56:35
 -->
 <template>
   <IhPage label-width="110px">
@@ -63,68 +63,73 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="关联明源">
-              <el-select
-                v-model="queryPageParameters.exMinyuan"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in YesOrNoType"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="父/子项目">
-              <el-select
-                v-model="queryPageParameters.exParent"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              >
-                <el-option
-                  v-for="item in ParOrChild"
-                  :key="item.code"
-                  :label="item.name"
-                  :value="item.code"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="明源区域公司">
-              <el-input
-                clearable
-                v-model="queryPageParameters.companyName"
-                placeholder="模糊搜索"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="项目盘编">
-              <el-input
-                clearable
-                v-model="queryPageParameters.proNo"
-                placeholder="模糊搜索"
-              ></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="省市区">
-              <IhCascader
-                v-model="provinceOption"
-                clearable
-                placeholder="请选择"
-                class="width--100"
-              />
-            </el-form-item>
-          </el-col>
+
+          <el-collapse-transition>
+            <div v-show="searchOpen">
+              <el-col :span="8">
+                <el-form-item label="关联明源">
+                  <el-select
+                    v-model="queryPageParameters.exMinyuan"
+                    clearable
+                    placeholder="请选择"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in YesOrNoType"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="父/子项目">
+                  <el-select
+                    v-model="queryPageParameters.exParent"
+                    clearable
+                    placeholder="请选择"
+                    class="width--100"
+                  >
+                    <el-option
+                      v-for="item in ParOrChild"
+                      :key="item.code"
+                      :label="item.name"
+                      :value="item.code"
+                    ></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="明源区域公司">
+                  <el-input
+                    clearable
+                    v-model="queryPageParameters.companyName"
+                    placeholder="模糊搜索"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="项目盘编">
+                  <el-input
+                    clearable
+                    v-model="queryPageParameters.proNo"
+                    placeholder="模糊搜索"
+                  ></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="省市区">
+                  <IhCascader
+                    v-model="provinceOption"
+                    clearable
+                    placeholder="请选择"
+                    class="width--100"
+                  />
+                </el-form-item>
+              </el-col>
+            </div>
+          </el-collapse-transition>
         </el-row>
       </el-form>
     </template>
@@ -139,6 +144,13 @@
           >添加</el-button
         >
         <el-button type="info" @click="reset()">重置</el-button>
+
+        <el-link
+          type="primary"
+          class="float-right margin-right-40"
+          @click="openToggle()"
+          >{{ searchOpen ? "收起" : "展开" }}</el-link
+        >
       </el-row>
     </template>
 
@@ -313,6 +325,10 @@ export default class ProjectList extends Vue {
       name: "子项目",
     },
   ];
+  searchOpen = false;
+  openToggle() {
+    this.searchOpen = !this.searchOpen;
+  }
 
   editChange(row: any) {
     const Adopt = row.auditEnum === "Adopt";
@@ -390,6 +406,7 @@ export default class ProjectList extends Vue {
         path: `/projects/childEdit`,
         query: {
           id: row.proId,
+          type: "edit",
         },
       });
     }
