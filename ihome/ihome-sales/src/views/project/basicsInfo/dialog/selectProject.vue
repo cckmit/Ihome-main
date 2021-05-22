@@ -3,8 +3,8 @@
  * @version: 
  * @Author: zyc
  * @Date: 2021-05-14 14:09:50
- * @LastEditors: wwq
- * @LastEditTime: 2021-05-20 08:44:20
+ * @LastEditors: zyc
+ * @LastEditTime: 2021-05-22 11:45:28
 -->
 <template>
   <el-dialog
@@ -18,10 +18,7 @@
     title="选择关联子项目"
     top="5vh"
   >
-    <el-form
-      ref="form"
-      label-width="120px"
-    >
+    <el-form ref="form" label-width="120px">
       <el-row>
         <el-col :span="8">
           <el-form-item label="项目名称">
@@ -138,20 +135,15 @@
 
     <div style="padding-left: 120px">
       <el-row>
-        <el-button
-          type="primary"
-          @click="search()"
-        >查询</el-button>
+        <el-button type="primary" @click="search()">查询</el-button>
 
-        <el-button
-          type="info"
-          @click="reset()"
-        >重置</el-button>
+        <el-button type="info" @click="reset()">重置</el-button>
         <el-link
           type="primary"
           class="float-right margin-right-40"
           @click="openToggle()"
-        >{{ searchOpen ? "收起" : "展开" }}</el-link>
+          >{{ searchOpen ? "收起" : "展开" }}</el-link
+        >
       </el-row>
     </div>
     <br />
@@ -169,14 +161,26 @@
       @size-change="sizeChange"
     >
       <template #proNo>
-        <el-table-column
-          label="盘编"
-          min-width="150"
-        >
+        <el-table-column label="盘编" min-width="150">
           <template v-slot="{ row }">
-            <span
+            <span>
+              <span
+                v-if="
+                  row.parentStats == 'Conduct' &&
+                  row.parentId != parentId
+                "
+                style="color: red"
+              >
+                {{ row.proNo }}
+              </span>
+              <span v-else>
+                {{ row.proNo }}
+              </span>
+            </span>
+
+            <!-- <span
               class="proNo-text"
-              v-if="row.preParentId !== null && row.preParentId != parentId"
+              v-if="row.originalParentId !== null && row.originalParentId != parentId"
             >
               <el-tooltip
                 class="item"
@@ -187,29 +191,24 @@
                 <span> {{ row.proNo }}</span>
               </el-tooltip>
             </span>
-            <span v-if="row.preParentId == null || row.preParentId == parentId">
+            <span v-if="row.originalParentId == null || row.originalParentId == parentId">
               {{ row.proNo }}
-            </span>
+            </span> -->
           </template>
         </el-table-column>
       </template>
       <template #shichang>
-        <el-table-column
-          label="市场化项目/关联明源"
-          min-width="100"
-        >
+        <el-table-column label="市场化项目/关联明源" min-width="100">
           <template v-slot="{ row }">
             <div>
-              <span>{{ row.exMarket ? "是" : "否" }}</span>/<span>{{ row.exMinyuan ? "是" : "否" }}</span>
+              <span>{{ row.exMarket ? "是" : "否" }}</span
+              >/<span>{{ row.exMinyuan ? "是" : "否" }}</span>
             </div>
           </template>
         </el-table-column>
       </template>
       <template #mingyuan>
-        <el-table-column
-          label="明源信息"
-          min-width="200"
-        >
+        <el-table-column label="明源信息" min-width="200">
           <template v-slot="{ row }">
             <div>所属父项目：{{ row.parentName }}</div>
             <div>楼盘名：{{ row.myName }}</div>
@@ -218,10 +217,7 @@
         </el-table-column>
       </template>
       <template #area>
-        <el-table-column
-          label="省市区"
-          width="120"
-        >
+        <el-table-column label="省市区" width="120">
           <template v-slot="{ row }">
             <div>{{ $root.getAreaName(row.province) }}</div>
             <div>{{ $root.getAreaName(row.city) }}</div>
@@ -230,38 +226,25 @@
         </el-table-column>
       </template>
       <template #shenhe>
-        <el-table-column
-          prop="auditEnum"
-          label="项目审核状态"
-          width="180"
-        >
+        <el-table-column prop="auditEnum" label="项目审核状态" width="180">
           <template v-slot="{ row }">{{
             $root.dictAllName(row.auditEnum, "ProAudit")
           }}</template>
         </el-table-column>
       </template>
       <template #caozuo>
-        <el-table-column
-          fixed="right"
-          prop=""
-          label="操作"
-          width="60"
-        >
+        <el-table-column fixed="right" prop="" label="操作" width="60">
           <template v-slot="{ row }">
-            <el-link
-              type="primary"
-              @click.native.prevent="goInfo(row)"
-            >详情</el-link>
+            <el-link type="primary" @click.native.prevent="goInfo(row)"
+              >详情</el-link
+            >
           </template>
         </el-table-column>
       </template>
     </IhTableCheckBox>
     <template #footer>
       <el-button @click="cancel()">取 消</el-button>
-      <el-button
-        type="primary"
-        @click="finish()"
-      >确 定</el-button>
+      <el-button type="primary" @click="finish()">确 定</el-button>
     </template>
   </el-dialog>
 </template>
