@@ -68,6 +68,7 @@
             <el-col :span="8">
               <el-form-item label="关联明源">
                 <el-select
+                  :disabled="true"
                   v-model="queryPageParameters.exMinyuan"
                   clearable
                   placeholder="请选择"
@@ -268,7 +269,7 @@ export default class SelectProject extends Vue {
     proName: null,
     auditEnum: null,
     exMarket: null,
-    exMinyuan: null,
+    exMinyuan: 1,
     exParent: 0,
     companyName: null,
     proNo: null,
