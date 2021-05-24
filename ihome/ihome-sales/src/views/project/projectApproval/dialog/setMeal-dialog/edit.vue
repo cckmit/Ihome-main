@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-04 09:40:47
  * @LastEditors: wwq
- * @LastEditTime: 2021-05-06 14:36:45
+ * @LastEditTime: 2021-05-24 11:49:48
 -->
 <template>
   <el-dialog
@@ -1185,11 +1185,11 @@ export default class SetMealEdit extends Vue {
       distributeAchieveAmount +
       (distributeAchievePoint / 100) * estimatedTransactionPrice * 10000;
     let computed =
-      (isNaN(total) ? 0 : total) -
-      ((isNaN(num1) ? 0 : num1) +
-        (isNaN(num2) ? 0 : num2) +
-        (isNaN(num3) ? 0 : num3) +
-        (isNaN(num4) ? 0 : num4));
+      (isNaN(total) ? 0 : this.$math.tofixed(total, 2)) -
+      (isNaN(num1) ? 0 : this.$math.tofixed(num1, 2)) -
+      (isNaN(num2) ? 0 : this.$math.tofixed(num2, 2)) -
+      (isNaN(num3) ? 0 : this.$math.tofixed(num3, 2)) -
+      (isNaN(num4) ? 0 : this.$math.tofixed(num4, 2));
     row.otherChannelAmount = computed;
     return isNaN(computed) ? 0 : this.$math.tofixed(computed, 2);
   }
