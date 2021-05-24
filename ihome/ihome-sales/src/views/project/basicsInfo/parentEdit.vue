@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-11-10 10:21:03
- * @LastEditors: zyc
- * @LastEditTime: 2021-05-22 11:44:11
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-05-24 14:51:47
 -->
 <template>
   <ih-page>
@@ -13,7 +13,7 @@
       <el-form
         ref="form"
         label-width="110px"
-        class="margin-top-30 parentEdit"
+        class="margin-top-30"
         :model="form"
         :rules="rules"
       >
@@ -26,29 +26,34 @@
                 v-model="form.proNo"
                 placeholder="盘编"
                 disabled
-                :readonly="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目推广名" prop="proName">
+            <el-form-item
+              label="项目推广名"
+              prop="proName"
+            >
               <el-input
                 clearable
                 maxlength="50"
                 v-model="form.proName"
                 placeholder="项目推广名"
-                :readonly="baseReadOnly"
+                :disabled="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目备案名" prop="proRecord">
+            <el-form-item
+              label="项目备案名"
+              prop="proRecord"
+            >
               <el-input
                 clearable
                 maxlength="50"
                 v-model="form.proRecord"
                 placeholder="项目备案名"
-                :readonly="baseReadOnly"
+                :disabled="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -58,12 +63,14 @@
                 disabled
                 v-model="form.developerNames"
                 placeholder="自动生成"
-                :readonly="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="市场化项目" prop="exMarket">
+            <el-form-item
+              label="市场化项目"
+              prop="exMarket"
+            >
               <el-select
                 v-model="form.exMarket"
                 clearable
@@ -80,13 +87,15 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="关联明源" prop="exMinyuan">
+            <el-form-item
+              label="关联明源"
+              prop="exMinyuan"
+            >
               <el-select
                 v-model="form.exMinyuan"
                 clearable
                 class="width--100"
                 disabled
-                :readonly="baseReadOnly"
               >
                 <el-option
                   v-for="item in YesOrNoType"
@@ -104,21 +113,25 @@
                 v-model="form.buildingGuidName"
                 placeholder="明源楼盘名"
                 disabled
-                :readonly="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8" v-if="form.exMinyuan">
+          <el-col
+            :span="8"
+            v-if="form.exMinyuan"
+          >
             <el-form-item label="明源区域公司">
               <el-input
                 v-model="form.companyName"
                 disabled
-                :readonly="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="省市区" prop="provinceOption">
+            <el-form-item
+              label="省市区"
+              prop="provinceOption"
+            >
               <IhCascader
                 v-model="form.provinceOption"
                 :checkStrictly="false"
@@ -127,13 +140,16 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="项目地址" prop="proAddr">
+            <el-form-item
+              label="项目地址"
+              prop="proAddr"
+            >
               <el-input
                 clearable
                 maxlength="200"
                 v-model="form.proAddr"
                 placeholder="项目地址"
-                :readonly="baseReadOnly"
+                :disabled="baseReadOnly"
               ></el-input>
             </el-form-item>
           </el-col>
@@ -147,15 +163,25 @@
           class="add-btn"
           size="small"
           @click.native="addsonProject()"
-          >添加</el-button
-        >
+        >添加</el-button>
       </p>
 
       <div style="margin: 0 20px">
-        <el-table :data="form.sonProjec" style="width: 100%">
-          <el-table-column prop="proNo" label="盘编" width="180">
+        <el-table
+          :data="form.sonProjec"
+          style="width: 100%"
+        >
+          <el-table-column
+            prop="proNo"
+            label="盘编"
+            width="180"
+          >
           </el-table-column>
-          <el-table-column prop="" label="项目名称" width="300">
+          <el-table-column
+            prop=""
+            label="项目名称"
+            width="300"
+          >
             <template v-slot="{ row }">
               <div>推广名：{{ row.proName }}</div>
               <div>备案名：{{ row.proRecord }}</div>
@@ -168,54 +194,77 @@
           >
             <template v-slot="{ row }">
               <div>
-                <span>{{ row.exMarket ? "是" : "否" }}</span
-                >/<span>{{ row.exMinyuan ? "是" : "否" }}</span>
+                <span>{{ row.exMarket ? "是" : "否" }}</span>/<span>{{ row.exMinyuan ? "是" : "否" }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="明源信息" width="180">
+          <el-table-column
+            prop="date"
+            label="明源信息"
+            width="180"
+          >
             <template v-slot="{ row }">
               <div>所属父项目：{{ row.parentName }}</div>
               <div>楼盘名：{{ row.myName }}</div>
               <div>区域公司：{{ row.companyName }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="date" label="省市区" width="100">
+          <el-table-column
+            prop="date"
+            label="省市区"
+            width="100"
+          >
             <template v-slot="{ row }">
               <div>{{ $root.getAreaName(row.province) }}</div>
               <div>{{ $root.getAreaName(row.city) }}</div>
               <div>{{ $root.getAreaName(row.district) }}</div>
             </template>
           </el-table-column>
-          <el-table-column prop="proAddr" label="项目地址"> </el-table-column>
-          <el-table-column prop="auditEnum" label="项目审核状态" width="180">
+          <el-table-column
+            prop="proAddr"
+            label="项目地址"
+          > </el-table-column>
+          <el-table-column
+            prop="auditEnum"
+            label="项目审核状态"
+            width="180"
+          >
             <template v-slot="{ row }">{{
               $root.dictAllName(row.auditEnum, "ProAudit")
             }}</template>
           </el-table-column>
-          <el-table-column fixed="right" prop="" label="操作" width="120">
+          <el-table-column
+            fixed="right"
+            prop=""
+            label="操作"
+            width="120"
+          >
             <template slot-scope="scope">
-              <el-link type="primary" @click.native.prevent="goInfo(scope.row)"
-                >详情</el-link
-              >
+              <el-link
+                type="primary"
+                @click.native.prevent="goInfo(scope.row)"
+              >详情</el-link>
               <el-link
                 style="margin-left: 20px"
                 type="warning"
                 @click.native.prevent="remove(scope.$index)"
-                >移除</el-link
-              >
+              >移除</el-link>
             </template>
           </el-table-column>
         </el-table>
       </div>
 
       <div class="margin-top-20">
-        <el-button type="primary" @click="save" v-if="!baseReadOnly"
-          >保 存</el-button
-        >
-        <el-button type="success" @click="submit()" v-if="!isYeGuan"
-          >提交</el-button
-        >
+        <el-button
+          type="primary"
+          @click="save"
+          v-if="!baseReadOnly"
+        >保 存</el-button>
+        <el-button
+          type="success"
+          @click="submit()"
+          v-if="!isYeGuan"
+        >提交</el-button>
         <el-button @click="$goto({ path: '/projects/list' })">关 闭</el-button>
       </div>
     </template>
@@ -298,10 +347,10 @@ export default class EditBasicInfo extends Vue {
   }
   get baseReadOnly() {
     //基础信息只读，变更子项目
-    return this.$route.query.type == "changeSon";
+    return this.$route.query.type === "changeSon";
   }
   get isYeGuan() {
-    return this.$route.query.type == "yeguanEdit";
+    return this.$route.query.type === "yeguanEdit";
   }
 
   created() {
@@ -381,9 +430,7 @@ export default class EditBasicInfo extends Vue {
         this.form.provinceOption[2]
       );
       obj.proId = this.projectId;
-      obj.sonProjecIds = this.form.sonProjec.map((item: any) => {
-        return item.proId;
-      });
+      obj.sonProjecIds = this.form.sonProjec.map((item: any) => item.proId);
 
       //修改，业管修改，并更子项目
       // post_project_auditWait,
@@ -412,9 +459,7 @@ export default class EditBasicInfo extends Vue {
             //并更子项目
             let postData = {
               proId: obj.proId,
-              sonProjecIds: this.form.sonProjec.map((item: any) => {
-                return item.proId;
-              }),
+              sonProjecIds: this.form.sonProjec.map((item: any) => item.proId),
             };
             this.changeSubmit(postData);
           });
@@ -422,9 +467,7 @@ export default class EditBasicInfo extends Vue {
           //并更子项目
           let postData = {
             proId: obj.proId,
-            sonProjecIds: this.form.sonProjec.map((item: any) => {
-              return item.proId;
-            }),
+            sonProjecIds: this.form.sonProjec.map((item: any) => item.proId),
           };
           this.changeSubmit(postData);
         }
@@ -494,9 +537,7 @@ export default class EditBasicInfo extends Vue {
         this.form.provinceOption[2]
       );
       obj.proId = this.projectId;
-      obj.sonProjecIds = this.form?.sonProjec?.map((item: any) => {
-        return item.proId;
-      });
+      obj.sonProjecIds = this.form?.sonProjec?.map((item: any) => item.proId);
 
       // if (this.isYeGuan) {
       //   await post_project_bussniessUpdateParent(obj);
@@ -530,12 +571,4 @@ export default class EditBasicInfo extends Vue {
 }
 </style>
 <style lang="scss">
-.parentEdit {
-  input[readonly] {
-    background-color: #f5f7fa;
-    border-color: #e4e7ed;
-    color: #c0c4cc;
-    cursor: not-allowed;
-  }
-}
 </style>

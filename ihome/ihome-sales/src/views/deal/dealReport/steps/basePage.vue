@@ -151,7 +151,20 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="成交阶段" prop="stage">
-            <div class="div-disabled">签约</div>
+<!--            <div class="div-disabled">签约</div>-->
+            <el-select
+              v-model="postData.stage"
+              :disabled="['ChangeInternalAchieveInf', 'RetreatRoom'].includes(changeType) || isDisabled('dealStage', 'dealVO')"
+              no-data-text="请先选择项目周期"
+              placeholder="请选择成交阶段"
+              class="width--100">
+              <el-option
+                v-for="item in dealStageList"
+                :key="item.code"
+                :label="item.name"
+                :value="item.code"
+              ></el-option>
+            </el-select>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -1210,7 +1223,14 @@
         <el-table
           class="ih-table"
           :data="postData.uploadDocumentList">
-          <el-table-column prop="name" label="类型" width="200"></el-table-column>
+          <el-table-column prop="name" label="类型" width="200">
+            <template slot-scope="scope">
+              <div>{{scope.row.name}}</div>
+              <div v-if="scope.row.code !== 'ContractInfo'">
+                <el-button type="primary" size="mini" @click="reLoad(scope.row)">重新加载</el-button>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
@@ -2298,7 +2318,7 @@
         this.postData.signType = baseInfo?.myReturnVO?.dealVO?.signType;
       }
       // 成交阶段  --- 2021-03-01 补充成交只有签约状态
-      // this.postData.stage = baseInfo.myReturnVO.dealStage;
+      this.postData.stage = baseInfo?.myReturnVO?.dealVO?.dealStage;
       // 现场销售
       this.postData.sceneSales = baseInfo.myReturnVO.dealVO?.sceneSales;
       // 房款回笼比例(%)
@@ -2355,13 +2375,19 @@
         let DealStageList: any = (this as any).$root.dictAllList('DealStage');
         if (DealStageList && DealStageList.length > 0) {
           // 认购周期 --- 只有认购+签约
-          this.dealStageList = DealStageList.filter((item: any) => {
-            return item.code !== 'Recognize';
-          });
+          // this.dealStageList = DealStageList.filter((item: any) => {
+          //   return item.code !== 'Recognize';
+          // });
           switch(baseInfo.termStageEnum){
             case 'Recognize':
-              // 清空优惠告知书 --- 认筹周期需要自己手动添加
-              // this.postData.offerNoticeVO = [];
+              // 认筹周期 --- 全部
+              this.dealStageList = JSON.parse(JSON.stringify(DealStageList));
+              break;
+            case 'Subscription':
+              // 认购周期 --- 只有认购+签约
+              this.dealStageList = DealStageList.filter((item: any) => {
+                return item.code !== 'Recognize';
+              });
               break;
           }
         }
@@ -2612,7 +2638,7 @@
           if (showList && showList.length) {
             showList.forEach((item: any) => {
               if (item.fileType === vo.code) {
-                item.exAuto = true; // 不能删除
+                item.exAuto = vo.code === 'ContractInfo'; // 不能删除
                 // item.name = item.fileName; // 名字
                 vo.defaultFileList.push(item);
               }
@@ -2621,7 +2647,7 @@
           if (list && list.length) {
             list.forEach((item: any) => {
               if (item.fileType === vo.code) {
-                item.exAuto = true; // 不能删除
+                item.exAuto = vo.code === 'ContractInfo'; // 不能删除
                 // item.name = item.fileName; // 名字
                 vo.defaultFileList.push(item);
               }
@@ -3184,7 +3210,7 @@
                 {
                   ...item,
                   // name: item.fileName,
-                  exAuto: true, // 是否可以删除
+                  // exAuto: true, // 是否可以删除
                 }
               )
             }
@@ -3994,6 +4020,11 @@
       }
     }
 
+    // 重新加载附件
+    reLoad(row: any) {
+      console.log(row);
+    }
+
     // 获取最新的上传附件
     getNewFile(data: any, type?: any) {
       // console.log(data);
@@ -4257,7 +4288,7 @@
         dealVO: {
           ...this.postData,
           id: this.btnType === "edit" ? this.id : null,
-          stage: 'SignUp', // 2021-03-01 补充成交只有签约状态
+          stage: this.postData.stage, // 2021-03-01 补充成交只有签约状态
           isMat: this.postData.contType === 'DistriDeal' ? this.postData.isMat : null, // 分销成交再传
           contNo: this.postData.contType === 'DistriDeal' ? this.postData.contNo : null, // 分销成交再传
           noticeIds: [], // 优惠告知书Ids

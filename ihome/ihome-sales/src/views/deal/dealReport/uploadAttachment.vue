@@ -4,7 +4,7 @@
  * @Author: lsj
  * @Date: 2021-04-01 19:12:01
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-09 11:57:33
+ * @LastEditTime: 2021-05-21 17:22:13
 -->
 <template>
   <IhPage>
@@ -94,7 +94,7 @@ export default class UploadAttachment extends Vue {
   async init() {
     this.infoFrom = await get_deal_get__id({id: this.dealId});
     // 初始化附件
-    this.uploadList = this.initDocumentList(this.infoFrom.documentList);
+    this.uploadList = this.initDocumentList();
   }
 
   // 获取日期年月日
@@ -105,26 +105,26 @@ export default class UploadAttachment extends Vue {
   }
 
   // 构建附件信息
-  initDocumentList(list: any = []) {
+  initDocumentList() {
     let fileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
     // 附件类型增加key
     if (fileList.length > 0) {
       fileList.forEach((vo: any) => {
         this.$set(vo, 'fileList', []);
         // vo.fileList = []; // 存放新上传的数据
-        if (list && list.length > 0) {
-          list.forEach((item: any) => {
-            if (vo.code === item.fileType) {
-              vo.fileList.push(
-                {
-                  ...item,
-                  name: item.fileName,
-                  exAuto: true // 是否可以删除
-                }
-              );
-            }
-          });
-        }
+        // if (list && list.length > 0) {
+        //   list.forEach((item: any) => {
+        //     if (vo.code === item.fileType) {
+        //       vo.fileList.push(
+        //         {
+        //           ...item,
+        //           name: item.fileName,
+        //           exAuto: true // 是否可以删除
+        //         }
+        //       );
+        //     }
+        //   });
+        // }
       });
     }
     return fileList;
