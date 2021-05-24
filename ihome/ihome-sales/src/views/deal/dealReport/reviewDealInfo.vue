@@ -2,535 +2,89 @@
  * @Description:
  * @version: 
  * @Author: lsj
- * @Date: 2020-11-11 08:48:35
+ * @Date: 2021-05-24 17:20:02
  * @LastEditors: lsj
- * @LastEditTime: 2021-04-09 10:23:02
+ * @LastEditTime: 2021-05-24 20:02:11
 -->
 <template>
-  <ih-page class="text-left">
-    <div id="anchor-1" v-if="!['achieveDeal'].includes(currentType)">
-      <p class="ih-info-title">成交信息</p>
-      <el-form
-        label-width="150px"
-        class="demo-ruleForm">
-        <el-row>
-          <el-col :span="8">
-            <el-form-item label="成交报告编号">{{postData.dealCode}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="项目周期">
-              <div class="cycle-name-wrapper" :title="postData.cycleName">{{postData.cycleName}}</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="业务模式">
-              {{$root.dictAllName(postData.modelCode, 'BusinessModel')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="细分业务模式">
-              {{$root.dictAllName(postData.refineModel, 'Subdivide')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="是否代销">
-              {{$root.dictAllName(postData.isConsign, 'YesOrNoType')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="是否市场化项目">
-              {{$root.dictAllName(postData.isMarketProject, 'YesOrNoType')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="一手代理公司">{{postData.oneAgentTeam}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="一手代理合同">
-              <div class="contNo-wrapper">
-                <div class="no cycle-name-wrapper" :title="postData.firstContTitle">{{postData.firstContTitle}}</div>
-                <div v-if="postData.firstContNo">
-                  <el-link
-                    class="margin-left-10"
-                    type="primary"
-                    @click.native.prevent="viewContNoDetail(postData.firstContNo, 'firstContNo')"
-                  >查看
-                  </el-link>
-                </div>
-              </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="物业类型">
-              {{$root.dictAllName(postData.house.propertyType, 'Property')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交阶段">
-              {{$root.dictAllName(postData.stage, 'DealStage')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="栋座">{{postData.house.buildingName}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="房号">{{postData.house.roomNo}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="合同类型">
-              {{$root.dictAllName(postData.contType, 'ContType')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道公司">
-              <div v-if="postData.agencyList && postData.agencyList.length">
-                {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].companyKind === 'InfieldCompany' ? postData.agencyList[0].companyName : postData.agencyList[0].agencyName : '-'}}
-                <span style="color: red">[{{postData.agencyList && postData.agencyList.length ? $root.dictAllName(postData.agencyList[0].companyKind, 'CompanyKind') : '-'}}]</span>
-              </div>
-              <div v-else>-</div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="经纪人" v-if="postData.contType === 'DistriDeal' && postData.companyKind === 'ChannelCompany'">
-              {{postData.agencyList && postData.agencyList.length ? postData.agencyList[0].broker : ''}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="渠道分销合同">
-              <div class="contNo-wrapper">
-                <div class="no cycle-name-wrapper" :title="postData.contNo">{{postData.contTitle}}</div>
-                <div v-if="postData.contNo">
-                  <el-link
-                    class="margin-left-10"
-                    type="primary"
-                    @click.native.prevent="viewContNoDetail(postData.contNo, 'contNo')"
-                  >查看
-                  </el-link>
-                </div>
-              </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="是否垫佣">
-              {{$root.dictAllName(postData.isMat, 'PadCommission')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="备案情况">
-              {{$root.dictAllName(postData.recordState, 'HasOrNoType')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="建筑面积">{{postData.house.area}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="户型">
-              <div class="home-type-wrapper">
-                <div>{{postData.house.room}}室</div>
-                <div>{{postData.house.hall}}厅</div>
-                <div>{{postData.house.toilet}}卫</div>
-              </div>
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="房产证/预售合同编号">{{postData.house.propertyNo}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="现场销售">{{postData.sceneSales}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="签约类型">
-              {{$root.dictAllName(postData.signType, 'SignUp')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="房款回笼比例">{{postData.returnRatio ? postData.returnRatio : 0}}%</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="认购价格">{{postData.subscribePrice}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="认购日期">{{postData.subscribeDate}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="签约价格">{{postData.signPrice}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="签约日期">{{postData.signDate}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交组织">{{postData.dealOrg}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入人">{{postData.entryPerson}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="录入日期">{{postData.entryDate}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="数据标志">
-              {{$root.dictAllName(postData.dataSign, 'DealDataFlag')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="成交状态">
-              {{$root.dictAllName(postData.status, 'DealStatus')}}
-            </el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="业绩分配人">{{postData.alloter}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="业绩分配日期">{{postData.allotDate}}</el-form-item>
-          </el-col>
-          <el-col :span="8">
-            <el-form-item label="计算方式">
-              {{$root.dictAllName(postData.calculation, 'DealCalculateWay')}}
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-    </div>
-    <div id="anchor-2" v-if="!['achieveDeal'].includes(currentType) && postData.charge !== 'Agent'">
-      <p class="ih-info-title">优惠告知书信息</p>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            :data="postData.offerNoticeList">
-            <el-table-column prop="notificationType" label="名称" min-width="120">
-              <template slot-scope="scope">
-                <div>
-                  {{$root.dictAllName(scope.row.notificationType, 'NotificationType')}}
-                  <span
-                    class="color-red"
-                    v-if="scope.row.promotionMethod && scope.row.promotionMethod === 'Manual'">(自定义优惠)</span>
-                </div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="noticeNo" label="优惠告知书编号" min-width="120"></el-table-column>
-            <el-table-column prop="notificationStatus" label="优惠告知书状态" min-width="120">
-              <template v-slot="{ row }">
-                {{$root.dictAllName(row.notificationStatus, 'NotificationStatus')}}
-              </template>
-            </el-table-column>
-            <el-table-column fixed="right" label="操作" width="130">
-              <template slot-scope="scope">
-                <el-link
-                  class="margin-right-10"
-                  type="primary"
-                  @click.native.prevent="preview(scope)"
-                >预览
-                </el-link>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-    </div>
-    <div id="anchor-3" v-if="!['achieveDeal'].includes(currentType)">
-      <p class="ih-info-title">客户信息</p>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            :data="postData.customerList">
-            <el-table-column prop="customerNo" label="客户编号" min-width="120"></el-table-column>
-            <el-table-column prop="customerType" label="客户类型" min-width="120">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.customerType, 'CustType')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="customerName" label="客户名称" min-width="120"></el-table-column>
-            <el-table-column prop="customerPhone" label="手机号码" min-width="120"></el-table-column>
-            <el-table-column prop="cardType" label="证件类型" min-width="150">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.cardType, 'CardType')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="cardNo" label="证件编号" min-width="150"></el-table-column>
-            <el-table-column prop="email" label="邮箱" min-width="150"></el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-    </div>
-    <div id="anchor-4" v-if="!['baseDeal', 'achieveDeal'].includes(currentType)">
-      <p class="ih-info-title">收派金额</p>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            show-summary
-            sum-text="合计金额"
-            :summary-method="getReceiveSummaries"
-            :data="postData.receiveList">
-            <el-table-column prop="type" label="类型" min-width="120">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.type, 'FeeType')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="partyACustomerName" label="甲方/客户" min-width="120">
-              <template slot-scope="scope">
-                <div>{{scope.row.type === "ServiceFee" ? '客户' : scope.row.partyACustomerName}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="packageId" label="收派套餐" min-width="140">
-              <template slot-scope="scope">
-                <div v-if="postData.calculation === 'Auto'">
-                  <el-tooltip placement="top" effect="light">
-                    <div slot="content">
-                      <el-table :data="scope.row.showData" style="width: 100%">
-                        <el-table-column label="类型" prop="typeName" min-width="100"></el-table-column>
-                        <el-table-column label="合同类型" prop="contractEnum" min-width="100">
-                          <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.contractEnum, 'ContType')}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="客户类型" prop="transactionEnum" min-width="100">
-                          <template slot-scope="scope">
-                            <div>{{$root.dictAllName(scope.row.transactionEnum, 'Transaction')}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="条件" prop="condition" min-width="200"></el-table-column>
-                        <el-table-column label="应收金额" prop="receivableAmout" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.receivableAmout}}</div>
-                            <div>点数：{{scope.row.receivablePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="派发佣金" prop="sendAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.sendAmount}}</div>
-                            <div>点数：{{scope.row.sendPoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="派发内场奖励" prop="sendInAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.sendInAmount}}</div>
-                            <div>点数：{{scope.row.sendInPoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="总包业绩" prop="generalAchieveAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.generalAchieveAmount}}</div>
-                            <div>点数：{{scope.row.generalAchievePoint}}</div>
-                          </template>
-                        </el-table-column>
-                        <el-table-column label="分销业绩" prop="distributeAchieveAmount" min-width="200">
-                          <template slot-scope="scope">
-                            <div>金额：{{scope.row.distributeAchieveAmount}}</div>
-                            <div>点数：{{scope.row.distributeAchievePoint}}</div>
-                          </template>
-                        </el-table-column>
-                      </el-table>
-                    </div>
-                    <el-input
-                      readonly
-                      placeholder="收派标准">
-                      <el-button slot="append" icon="el-icon-view"></el-button>
-                    </el-input>
-                  </el-tooltip>
-                </div>
-                <div v-else>---</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="receiveAmount" label="应收金额" min-width="180"></el-table-column>
-            <el-table-column prop="commAmount" label="派发佣金金额" min-width="180"></el-table-column>
-            <el-table-column prop="rewardAmount" label="派发内场奖励金额" min-width="180"></el-table-column>
-            <el-table-column prop="totalPackageAmount" label="总包业绩金额" min-width="180"></el-table-column>
-            <el-table-column prop="distributionAmount" label="分销业绩金额" min-width="180"></el-table-column>
-            <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-      <el-row style="padding-left: 20px; margin-top: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            :data="postData.receiveAchieveList">
-            <el-table-column prop="receiveAmount" label="本单应收" min-width="120"></el-table-column>
-            <el-table-column prop="achieveAmount" label="本单业绩" min-width="120"></el-table-column>
-            <el-table-column prop="otherChannelFees" label="其他渠道费用(正数为产生，负数为使用)" min-width="150"></el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-    </div>
-    <div id="anchor-5" v-if="!['baseDeal', 'achieveDeal'].includes(currentType)">
-      <p class="ih-info-title">对外拆佣</p>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            show-summary
-            sum-text="合计金额"
-            :summary-method="getCommissionSummaries"
-            :data="postData.channelCommList">
-            <el-table-column prop="target" label="拆佣对象" min-width="120">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.target, 'CommObjectType')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="agencyName" label="收款方" min-width="120"></el-table-column>
-            <el-table-column prop="feeType" label="费用类型" min-width="120">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.feeType, 'FeeType')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="partyACustomerName" label="费用来源(客户/甲方)" min-width="120">
-              <template slot-scope="scope">
-                <div v-if="scope.row.feeType === 'ServiceFee'">客户</div>
-                <div v-else>{{scope.row.partyACustomerName}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="amount" label="金额" min-width="150"></el-table-column>
-            <el-table-column prop="remarks" label="备注" min-width="150"></el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-    </div>
-    <div id="anchor-6" v-if="!['baseDeal'].includes(currentType)">
-      <p class="ih-info-title">平台费用</p>
-      <div class="ih-type-wrapper">
-        <div class="ih-info-title">总包</div>
+  <ih-page class="text-left margin-bottom-30">
+    <el-row class="ih-info-line">
+      <el-col :span="12" class="text-left">
+        <h3>成交报告编号：{{ postData.dealCode }}</h3>
+      </el-col>
+      <el-col :span="12" class="text-right">
+        <h3>【{{ postData.dealOrg }}】</h3>
+      </el-col>
+    </el-row>
+    <div class="deal-info-title">
+      <div>
+        <div>录入人：{{postData.entryPerson }}</div>
+        <div>录入日期：{{postData.createTime ? postData.createTime.substring(0, 10) : '-'}}</div>
       </div>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            show-summary
-            sum-text="合计金额"
-            :summary-method="getAchieveSummaries"
-            :data="postData.achieveTotalBagList">
-            <el-table-column prop="roleType" label="角色类型" min-width="120">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-            <el-table-column prop="rolerName" label="角色人" min-width="150">
-              <template slot-scope="scope">
-                <div>{{scope.row.rolerName}}</div>
-                <div>{{scope.row.rolerPosition}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
-            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120">
-              <template slot-scope="scope">
-                <div v-if="postData.id === postData.parentId">{{scope.row.roleAchieveRatio}}</div>
-                <div v-else>-</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="postData.id === postData.parentId">{{scope.row.commFeesRatio}}</div>
-                <div v-else>-</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
-              <template slot-scope="scope">
-                <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                  <div class="fee">{{item.achieveFees}}</div>
-                  <div v-if="postData.id === postData.parentId" class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
-                  <div v-else class="ratio">-</div>
-                  <div class="name">
-                    <span>{{item.manager ? item.manager : '---'}}</span>
-                    (<span>{{item.managerPosition}}</span>)
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
-      <div class="ih-type-wrapper">
-        <div class="ih-info-title">分销</div>
+      <div>
+        <div>业绩分配人：{{postData.alloter }}</div>
+        <div>业绩分配日期：{{postData.allotDate ? postData.allotDate.substring(0, 10) : '-'}}</div>
       </div>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            show-summary
-            sum-text="合计金额"
-            :summary-method="getAchieveSummaries"
-            :data="postData.achieveDistriList">
-            <el-table-column prop="roleType" label="角色类型" min-width="120">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.roleType, 'DealRole')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="roleAchieveCap" label="角色业绩上限" min-width="150"></el-table-column>
-            <el-table-column prop="rolerName" label="角色人" min-width="150">
-              <template slot-scope="scope">
-                <div>{{scope.row.rolerName}}</div>
-                <div>{{scope.row.rolerPosition}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="corporateAchieve" label="角色人业绩" min-width="120"></el-table-column>
-            <el-table-column prop="roleAchieveRatio" label="角色业绩比例（%）" min-width="120">
-              <template slot-scope="scope">
-                <div v-if="postData.id === postData.parentId">{{scope.row.roleAchieveRatio}}</div>
-                <div v-else>-</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="commFees" label="拆佣金额" min-width="150"></el-table-column>
-            <el-table-column prop="commFeesRatio" label="拆佣比例（%）" min-width="150">
-              <template slot-scope="scope">
-                <div v-if="postData.id === postData.parentId">{{scope.row.commFeesRatio}}</div>
-                <div v-else>-</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="belongOrgName" label="店组" min-width="150"></el-table-column>
-            <el-table-column prop="managerAchieveList" label="管理岗" min-width="280">
-              <template slot-scope="scope">
-                <div class="manager-list" v-for="(item, index) in scope.row.managerAchieveList" :key="index">
-                  <div class="fee">{{item.achieveFees}}</div>
-                  <div v-if="postData.id === postData.parentId" class="ratio">{{item.ratio ? item.ratio : 0}}%</div>
-                  <div v-else class="ratio">-</div>
-                  <div class="name">
-                    <span>{{item.manager ? item.manager : '---'}}</span>
-                    (<span>{{item.managerPosition}}</span>)
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
+      <div>
+        <div>业绩确认日期：{{postData.alloter }}</div>
+      </div>
+      <div class="status-wrapper">
+        <div>状态</div>
+        <div class="status">
+          <IhStatusComponent
+            :status="postData.status"
+            :status-obj="{
+                warning: 'Draft',
+                success: 'ReviewPassed'
+            }">
+            <div>{{ $root.dictAllName(postData.status, "DealStatus") }}</div>
+          </IhStatusComponent>
+        </div>
+      </div>
+      <div class="status-wrapper">
+        <div>计算方式</div>
+        <div class="status">
+          <IhStatusComponent
+            :status="postData.calculation"
+            :status-obj="{
+                warning: 'Manual',
+                success: 'Auto'
+            }">
+            <div>{{ $root.dictAllName(postData.calculation, "DealCalculateWay") }}</div>
+          </IhStatusComponent>
+        </div>
+      </div>
+      <div class="status-wrapper">
+        <div>数据标志</div>
+        <div class="status">
+          <IhStatusComponent
+            :status="postData.dataSign"
+            :status-obj="{
+                warning: 'NoMingYuan',
+                success: 'WholeMingYuan'
+            }">
+            <div>{{ $root.dictAllName(postData.dataSign, "DealDataFlag") }}</div>
+          </IhStatusComponent>
+        </div>
+      </div>
     </div>
-    <div id="anchor-7" v-if="!['achieveDeal'].includes(currentType)">
-      <p class="ih-info-title">上传附件</p>
-      <el-row style="padding-left: 20px">
-        <el-col>
-          <el-table
-            class="ih-table"
-            :data="postData.documentLists">
-            <el-table-column prop="fileType" label="类型" width="200">
-              <template slot-scope="scope">
-                <div>{{$root.dictAllName(scope.row.code, 'DealFileType')}}</div>
-              </template>
-            </el-table-column>
-            <el-table-column prop="fileId" label="附件" min-width="300">
-              <template slot-scope="scope">
-                <IhUpload
-                  :removePermi="false"
-                  size="100px"
-                  :editPermi="false"
-                  :limit="scope.row.fileList.length"
-                  :file-size="10"
-                  v-model="scope.row.fileList"
-                  :file-type="scope.row.code"
-                  :upload-show="!!scope.row.fileList.length"
-                ></IhUpload>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-col>
-      </el-row>
+    <br />
+    <div v-for="(item, index) in componentList" :key="index">
+      <component
+        :key="index"
+        v-if="item.isShowList.includes(currentType) && (!item.charge || item.charge !== postData.charge)"
+        :infoForm="postData"
+        v-bind:is="item.componentName"></component>
     </div>
-    <div class="audit-info-wrapper">
-      <p class="ih-info-title">审核意见</p>
+
+    <el-card class="box-card">
+      <div slot="header" class="clearfix card-header">
+        <span>审核意见</span>
+        <div class="">
+          <el-button type="primary" @click="handleViewReviewDetail">查看审核详情</el-button>
+          <el-button type="primary" @click="handleViewInfoDetail">查看原成交详情</el-button>
+        </div>
+      </div>
       <el-form
         :model="postData"
         :rules="rules"
@@ -538,41 +92,26 @@
         label-width="20px"
         class="demo-ruleForm">
         <el-row class="audit-info">
-          <el-col :span="12">
+          <el-col>
             <el-form-item label="" :prop="failBtn ? 'postRemarks' : 'empty'">
               <el-input
                 type="textarea"
-                :rows="3"
+                :rows="6"
+                :maxlength="500"
+                show-word-limit
                 v-model="postData.postRemarks"
                 placeholder="请输入审核意见"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
-            <el-form-item label="">
-              <el-button type="primary" @click="handleViewReviewDetail">查看审核详情</el-button>
-              <el-button type="primary" @click="handleViewInfoDetail">查看原成交详情</el-button>
-            </el-form-item>
-          </el-col>
         </el-row>
       </el-form>
-    </div>
-    <div class="text-center btn-top">
+    </el-card>
+    <br />
+
+    <div class="btn-wrapper">
       <el-button :loading="btnLoading" @click="handleBack()">取消</el-button>
       <el-button :loading="btnLoading" type="danger" @click="handleFail()">驳回</el-button>
       <el-button :loading="btnLoading" type="success" @click="handlePass()">通过</el-button>
-    </div>
-    <div v-if="currentType === 'mainDeal'" class="nav-box">
-      <div class="nav-icon el-button--success" @click="navFlag = !navFlag " :title="navFlag ? '收起' : '展开'">
-        <i :class="navFlag ? 'el-icon-d-arrow-right' : 'el-icon-d-arrow-left'"></i>
-      </div>
-      <div :class="navFlag ? 'nav-wrapper' : 'nav-wrapper nav-transition'">
-        <div
-          @click="goAnchor(item.id, index)"
-          v-for="(item, index) in navList"
-          :key="item.id"
-          :class="currentActiveIndex === index ? 'el-button--warning' : ''"
-          class="nav-item el-button--success">{{item.name}}</div>
-      </div>
     </div>
     <ih-dialog :show="dialogReviewDeal" desc="成交审核操作记录信息">
       <ReviewDetailsDialog
@@ -593,12 +132,6 @@
           "
       />
     </ih-dialog>
-    <IhImgViews
-      v-if="isShowImg"
-      :url-list="srcList"
-      :viewer-msg="srcData"
-      :onClose="() => (isShowImg = false)"
-    ></IhImgViews>
   </ih-page>
 </template>
 <script lang="ts">
@@ -620,10 +153,40 @@
     components: {ReviewDate, ReviewDetailsDialog},
   })
   export default class ReviewDealInfo extends Vue {
-    private isShowImg = false;
     private btnLoading = false;
-    private srcList: any = [];
-    private srcData: any = [];
+
+    private componentList: any = [
+      {
+        isShowList: ['mainDeal', 'baseDeal'], // 展示组件的逻辑列表
+        componentName: () => import('./info-components/baseInfo.vue'), // 成交信息
+      },
+      {
+        charge: 'Agent', // 纯代理费不显示优惠告知书信息
+        isShowList: ['mainDeal', 'baseDeal'],
+        componentName: () => import('./info-components/noticeInfo.vue'), // 优惠告知书信息
+      },
+      {
+        isShowList: ['mainDeal', 'baseDeal'],
+        componentName: () => import('./info-components/customerInfo.vue'), // 客户信息
+      },
+      {
+        isShowList: ['mainDeal'],
+        componentName: () => import('./info-components/receiveInfo.vue'), // 收派信息
+      },
+      {
+        isShowList: ['ChangeAchieveInf', 'RetreatRoom'],
+        componentName: () => import('./info-components/channelCommInfo.vue'), // 拆佣信息
+      },
+      {
+        isShowList: ['mainDeal', 'achieveDeal'],
+        componentName: () => import('./info-components/achieveInfo.vue'), // 平台费用信息
+      },
+      {
+        isShowList: ['mainDeal', 'baseDeal'],
+        componentName: () => import('./info-components/documentInfo.vue'), // 附件信息
+      }
+    ]; // 详情的各个模块
+
     postData: any = {
       contractKind: null,
       charge: null, // 收费类型 --- 用于是否展示优惠告知书：纯代理费不展示优惠告知书
@@ -657,38 +220,6 @@
     dialogSelectDate: any = false; // 选择业绩确认时间
     selectData: any = null; // 业绩时间
     reviewData: any = null; // 审核详情
-    navFlag: any = false; // 是否折叠锚点
-    navList: any = [
-      {
-        id: 1,
-        name: '成交信息'
-      },
-      {
-        id: 2,
-        name: '优惠告知书'
-      },
-      {
-        id: 3,
-        name: '客户信息'
-      },
-      {
-        id: 4,
-        name: '收派金额'
-      },
-      {
-        id: 5,
-        name: '对外拆佣'
-      },
-      {
-        id: 6,
-        name: '平台费用'
-      },
-      {
-        id: 7,
-        name: '上传附件'
-      }
-    ]; // 锚点列表
-    currentActiveIndex: any = 0; // 当前激活的nav
     failBtn: any = false; // 点击通过/驳回按钮
 
     async created() {
@@ -709,72 +240,9 @@
         ...info
       };
       // 初始化优惠告知书信息
-      if (info && info.charge === 'Agent') {
-        // 纯代理费没有优惠告知书
-        this.navList = this.navList.filter((list: any) => {
-          return list.id !== 2;
-        });
-      } else {
+      if (info && info.charge !== 'Agent') {
         await this.getInformation(info?.id, info?.parentId, info?.cycleId);
       }
-      // console.log(this.postData);
-      // 收派金额数据整理 showData
-      if (this.postData.receiveList && this.postData.receiveList.length > 0) {
-        this.postData.receiveList.forEach((list: any) => {
-          this.$set(list, 'showData', [
-            {
-              ...list.collectandsendDetailDealVO,
-              typeName: (this as any).$root.dictAllName(list.type, 'FeeType')
-            }
-          ]);
-        });
-      }
-      // 对外拆佣信息
-      if (info.channelCommList && info.channelCommList.length) {
-        this.postData.channelCommList = info.channelCommList;
-      } else {
-        this.postData.channelCommList = [];
-      }
-      // 平台费用 - 拆分总包和分销数据
-      this.postData.achieveTotalBagList = [];
-      this.postData.achieveDistriList = [];
-      if (this.postData.achieveList && this.postData.achieveList.length > 0) {
-        this.postData.achieveList.forEach((list: any) => {
-          if (list.type === 'TotalBag') {
-            this.postData.achieveTotalBagList.push(list);
-          } else if (list.type === 'Distri') {
-            this.postData.achieveDistriList.push(list);
-          }
-        })
-      }
-      this.postData.documentLists = await this.initDocumentList(info.documentList);
-      console.log(this.postData.documentLists);
-    }
-
-    // 构建附件信息
-    initDocumentList(list: any = []) {
-      let DealFileList: any = (this as any).$root.dictAllList('DealFileType'); // 附件类型
-      // 附件类型增加key
-      if (DealFileList.length > 0) {
-        DealFileList.forEach((vo: any) => {
-          this.$set(vo, 'fileList', []);
-          // vo.fileList = []; // 存放原来的数据
-          if (list && list.length > 0) {
-            list.forEach((item: any) => {
-              if (vo.code === item.fileType) {
-                vo.fileList.push(
-                  {
-                    ...item,
-                    // name: item.fileName,
-                    exAuto: true // 是否可以删除
-                  }
-                );
-              }
-            });
-          }
-        });
-      }
-      return DealFileList;
     }
 
     // 根据成交id获取优惠告知书列表
@@ -796,125 +264,6 @@
       }
     }
 
-    // 计算收派金额总计
-    getReceiveSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计金额';
-          return;
-        }
-        if (![0, 1, 2].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
-                return total;
-              } else {
-                return ((prev * 1 * 100) / 100);
-              }
-            }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
-    }
-
-    // 计算对外拆佣合计
-    getCommissionSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计';
-          return;
-        }
-        if ([4].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
-                return total;
-              } else {
-                return ((prev * 1 * 100) / 100);
-              }
-            }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
-    }
-
-    // 计算平台费用-总包/分销合计
-    getAchieveSummaries(param: any) {
-      const {columns, data} = param;
-      const sums: any = [];
-      columns.forEach((column: any, index: any) => {
-        if (index === 0) {
-          sums[index] = '合计';
-          return;
-        }
-        if ([3, 5, 6].includes(index)) {
-          const values = data.map((item: any) => Number(item[column.property]));
-          if (!values.every((value: any) => isNaN(value))) {
-            sums[index] = values.reduce((prev: any, curr: any) => {
-              const value = Number(curr);
-              if (!isNaN(value)) {
-                let total = (prev * 1 * 100 + curr * 1 * 100) / 100;
-                return total;
-              } else {
-                return ((prev * 1 * 100) / 100);
-              }
-            }, 0);
-            sums[index] = Math.round(sums[index] * 100) / 100; // 解决精度缺失问题
-          } else {
-            sums[index] = '';
-          }
-        } else {
-          sums[index] = '';
-        }
-      });
-      return sums;
-    }
-
-    // 预览-优惠告知书
-    preview(scope: any) {
-      if (scope.row.templateType === "ElectronicTemplate") {
-        window.open(
-          `/sales-api/sales-document-cover/file/browse/${scope.row.templateId}`
-        );
-      } else {
-        let imgList = scope.row.noticeAttachmentList;
-        this.srcList = imgList.map(
-          (i: any) => `/sales-api/sales-document-cover/file/browse/${i.fileNo}`
-        );
-        this.srcData = imgList.map((v: any) => ({
-          fileName: v.attachmentSuffix,
-          preFileName: "优惠告知书",
-        }));
-        if (this.srcList.length) {
-          this.isShowImg = true;
-        } else {
-          this.$message.warning("暂无图片");
-        }
-      }
-    }
-
     // 查看审核记录
     handleViewReviewDetail() {
       this.dialogReviewDeal = true;
@@ -923,13 +272,8 @@
 
     // 查看原成交详情
     handleViewInfoDetail() {
-      this.$router.push({
-        path: "/dealReport/info",
-        query: {
-          id: this.postData.parentId,
-          type: "ID"
-        }
-      });
+      console.log(this.postData.parentId);
+      window.open(`/web-sales/dealReport/info?id=${this.postData.parentId}&type=ID`);
     }
 
     // 通过
@@ -1095,163 +439,173 @@
   }
 </script>
 <style lang="scss" scoped>
-  .color-red {
-    color: red;
-  }
+.deal-info-title {
+  //width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  box-sizing: border-box;
+  padding: 0 15px 0px 20px;
 
-  .cycle-name-wrapper {
-    width: 97%;
-    overflow: hidden;
-    text-overflow:ellipsis;
-    white-space: nowrap;
-  }
-
-  .manager-list {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    div {
-      //flex: 1;
-      &:not(:last-child) {
-        margin-right: 10px;
-      }
-    }
-
-    .fee {
-      width: 30%;
-    }
-
-    .ratio{
-      width: 20%;
-    }
-
-    .name{
-      width: 50%;
-    }
-  }
-
-  .contNo-wrapper {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-    .no {
-      flex: 1;
-    }
-  }
-
-  .home-type-wrapper {
-    width: 100%;
-    display: flex;
-
-    div {
-      flex: 1;
-      text-align: center;
-
-      /deep/ .el-input-number {
-        box-sizing: border-box;
-        margin-right: 5px;
-      }
-    }
-  }
-
-  .btn-top {
-    box-sizing: border-box;
-    margin-top: 20px;
-  }
-
-  .ih-type-wrapper {
-    width: 100%;
-    box-sizing: border-box;
-    padding-left: 20px;
-    margin: 15px 0px;
-    text-align: left;
-    display: flex;
-    align-items: center;
-
-    .title {
-      margin-right: 20px;
+  &>div {
+    flex: 3;
+    &>div {
       box-sizing: border-box;
-      border-left: 5px solid #F90;
-      padding-left: 5px;
-      color: #f90;
-      margin-left: 20px;
+      margin-bottom: 8px;
     }
   }
 
-  .audit-info-wrapper {
-    box-sizing: border-box;
-    margin-top: 20px;
+  .status-wrapper {
+    text-align: right;
+    flex: 1;
 
-    .audit-info {
-      display: flex;
-      align-items: center;
-    }
-  }
+    .status {
+      //font-size: 16px;
+      font-weight: 700;
 
-  .nav-box {
-    position: fixed;
-    right: 37px;
-    top: 30%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    //align-items: center;
-    //border: 1px solid #ffffff;
-    z-index: 200;
-
-    .nav-icon {
-      width: 24px;
-      height: 46px;
-      line-height: 47px;
-      border-radius: 50px 0 0 50px;
-      cursor: pointer;
-      //background-color: #2B4558;
-      color: #ffffff;
-      font-size: 12px;
-      text-align: center;
-    }
-
-    .nav-wrapper {
-      //width: 133px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      background-color: #2B4558;
-      color: #ffffff;
-      visibility: visible;
-      transform: scaleX(1);
-      transition: all 0.3s;
-      transform-origin: left bottom;
-
-      .nav-item {
-        width: 44px;
-        //height: 40px;
-        //line-height: 40px;
-        text-align: center;
-        font-size: 14px;
-        box-sizing: border-box;
-        padding: 5px 5px;
-        cursor: pointer;
-        border-left: 1px solid #ffffff;
-        border-bottom: 1px solid #ffffff;
-
-        &:not(:last-child) {
-          border-bottom: 1px solid #ffffff;
-        }
+      /deep/.ih-status-dot {
+        justify-content: flex-end;
       }
     }
-
-    .nav-transition {
-      width: 0;
-      visibility: hidden;
-      transform: scaleX(0);
-      transition: all 0.3s;
-      transform-origin: left bottom;
-    }
   }
+}
+
+/deep/ .ih-info-line {
+  padding: 0 10px 10px 10px;
+}
+/deep/ .el-card__header {
+  background: #f9f9f9;
+}
+
+.btn-wrapper {
+  //width: 100%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  text-align: right;
+  padding-right: 20px;
+  margin: 0 20px;
+  //text-align: center;
+  box-sizing: border-box;
+  //margin-top: 20px;
+  z-index: 10;
+}
+</style>
+<style lang="scss">
+.font-weight-600 {
+  font-weight: 600;
+  font-size: 15px;
+}
+.card-header {
+  text-align: left;
+  font-weight: 600;
+  font-size: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+
+  &>div {
+    flex: 1;
+    text-align: right;
+  }
+}
+.p-title {
+  font-weight: 600;
+  text-align: left;
+}
+.line-item {
+  text-align: left;
+  padding-bottom: 15px;
+}
+.line-item-bottom {
+  font-weight: 600;
+}
+.line {
+  border-top: 1px solid #eee;
+}
+
+.red {
+  color: red;
+  margin-left: 10px;
+}
+.file-list {
+  text-align: left;
+}
+.file-item-border {
+  padding: 8px;
+  display: inline-block;
+  width: 25%;
+  box-sizing: border-box;
+}
+
+.file-item {
+  padding: 10px;
+  border: 1px solid #eee;
+  width: 100%;
+  display: inline-block;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+}
+.file-item-border :hover {
+  .floating-layer {
+    display: block;
+  }
+}
+.floating-layer {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background: rgba($color: #000000, $alpha: 0.5);
+  left: 0px;
+  top: 0px;
+  z-index: 10;
+  display: none;
+}
+.file-pre {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.file-pre-btn {
+  color: #fff;
+  text-decoration: none;
+}
+
+.file-item-1 {
+  display: flex;
+  position: relative;
+}
+.file-item-1-left {
+  width: 80px;
+  text-align: left;
+}
+.file-item-1-right {
+  flex: 1;
+  text-align: right;
+}
+.special {
+  width: 80px;
+  height: 28px;
+  text-align: center;
+  display: inline-block;
+  background: red;
+  color: #fff;
+  transform: rotate(45deg);
+  position: absolute;
+  left: -41px;
+  bottom: -13px;
+  font-size: 12px;
+}
+.Invalidation {
+}
+.WaitBeSigned {
+  color: #f56c6c;
+}
+.BecomeEffective {
+  color: #19be6b;
+}
 </style>
