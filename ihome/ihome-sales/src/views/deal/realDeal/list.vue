@@ -23,8 +23,10 @@
           <el-col :span="8">
             <el-form-item label="成交状态">
               <el-select
-                  v-model="queryPageParameters.status"
+                  v-model="queryPageParameters.statusList"
                   clearable
+                  multiple
+                  collapse-tags
                   placeholder="请选择"
                   class="width--100"
               >
@@ -44,8 +46,10 @@
               <el-col :span="8">
                 <el-form-item label="合同类型">
                   <el-select
-                      v-model="queryPageParameters.contType"
+                      v-model="queryPageParameters.contTypeList"
                       clearable
+                      multiple
+                      collapse-tags
                       placeholder="请选择"
                       class="width--100"
                   >
@@ -61,8 +65,10 @@
               <el-col :span="8">
                 <el-form-item label="成交阶段">
                   <el-select
-                      v-model="queryPageParameters.stage"
+                      v-model="queryPageParameters.stageList"
                       clearable
+                      multiple
+                      collapse-tags
                       placeholder="请选择"
                       class="width--100"
                   >
@@ -423,12 +429,12 @@ export default class RealDealList extends Vue {
   queryPageParameters: any = {
     dealCode: null,
     phoneOrCusName: null,
-    contType: null,
-    status: null,
+    contTypeList: [],
+    statusList: [],
     suppContType: null,
     dealOrgId: null,
     agencyId: null, // 渠道商id
-    stage: null,
+    stageList: [],
     projectCycle: null,
     proId: null,
     buildingId: null,
@@ -540,12 +546,12 @@ export default class RealDealList extends Vue {
     this.queryPageParameters = {
       dealCode: null,
       phoneOrCusName: null,
-      contType: null,
-      status: null,
+      contTypeList: [],
+      statusList: [],
       suppContType: null,
       dealOrgId: null,
       agencyId: null, // 渠道商id
-      stage: null,
+      stageList: [],
       projectCycle: null,
       proId: null,
       buildingId: null,
