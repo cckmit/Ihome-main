@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2021-01-18 16:30:42
- * @LastEditors: wwq
- * @LastEditTime: 2021-02-18 14:25:13
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-24 17:14:22
 -->
 <template>
   <el-dialog
@@ -66,7 +66,7 @@ export default class Progress extends Vue {
     },
     {
       name: "0A流程审核",
-      code: "OAReviewing",
+      code: "ReviewPass",
     },
     {
       name: "支付推送",
@@ -103,7 +103,7 @@ export default class Progress extends Vue {
 
   created() {
     if (["ReviewPass"].includes(this.data.status)) {
-      this.form = { ...this.data, status: "OAReviewing" };
+      this.form = { ...this.data, status: "ReviewPass" };
     } else {
       this.form = { ...this.data };
     }
