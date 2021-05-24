@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: ywl
- * @LastEditTime: 2021-05-22 16:40:21
+ * @LastEditors: wwq
+ * @LastEditTime: 2021-05-24 11:20:58
 -->
 <template>
   <IhPage>
@@ -1310,9 +1310,7 @@ export default class PayoffEdit extends Vue {
 
   @Watch("info.payerId", { deep: true })
   getPayerAccountOptions(val: any) {
-    if (val) {
-      this.getPayerInfo(val);
-    } else {
+    if (!val) {
       this.info.payerName = null;
       this.info.payerAccountBank = null;
       this.info.paymentAccount = null;
@@ -1751,6 +1749,10 @@ export default class PayoffEdit extends Vue {
       this.settlementMethodChange(res.settlementMethod);
       this.getCommpanyInfo(res);
       this.getPayerBranch(res);
+      this.getPayerInfo({
+        id: res.payerId,
+        name: res.payerName,
+      });
     } else {
       this.info.maker = (this.$root as any).userInfo.name;
       this.info.makerId = (this.$root as any).userInfo.id;
