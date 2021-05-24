@@ -201,7 +201,7 @@
               @change="changeBuild"
               @changeOption="(data) => {postData.buildingName = data.buildingName}"
               v-model="postData.buildingId"
-              :proId="postData.projectId"
+              :proId="postData.proId"
               :propertyEnum="postData.propertyType"
               :isCascade="true"
               cascadeType="build"
@@ -221,7 +221,7 @@
               @change="changeRoom"
               @changeOption="(data) => {postData.roomNo = data.roomNo}"
               v-model="postData.roomId"
-              :proId="postData.projectId"
+              :proId="postData.proId"
               :buildingId="postData.buildingId"
               :props="{
                 key: 'roomId',
@@ -1432,7 +1432,6 @@
       cycleId: null,
       cycleName: null, // 周期名称 - 选择
       projectCycle: null, // 项目周期名称 - 只读显示
-      projectId: null, // 项目id
       modelCode: null,
       contType: null,
       refineModel: null,
@@ -1950,7 +1949,6 @@
       this.editFlag = false;
       this.tipsFlag = true;
       this.dividerTips = '业绩分配';
-      this.postData.proId = res?.projectId;
       this.isSameFlag = res?.scheme?.isSame === "Yes"; // 分销总包是否一致
       this.postData.area = res?.house?.area;
       this.postData.buildingId = res?.house?.buildingId;
@@ -2394,7 +2392,7 @@
       }
       // 如果周期改变了，就执行以下逻辑
       if (this.hasChangeProCycleFlag) {
-        this.postData.projectId = baseInfo.proId;
+        this.postData.proId = baseInfo.proId;
         // 业务模式
         this.postData.modelCode = baseInfo.busEnum;
         this.contTypeList = await this.getContTypeList(this.postData.modelCode); // 根据业务模式获取合同类型
