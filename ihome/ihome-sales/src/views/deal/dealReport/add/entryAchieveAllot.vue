@@ -1052,7 +1052,14 @@
         <el-table
           class="ih-table"
           :data="postData.documentVO">
-          <el-table-column prop="name" label="类型" width="200"></el-table-column>
+          <el-table-column prop="name" label="类型" width="200">
+            <template slot-scope="scope">
+              <div>{{scope.row.name}}</div>
+              <div v-if="scope.row.code !== 'ContractInfo'">
+                <el-button type="primary" size="mini" @click="reLoad(scope.row)">重新加载</el-button>
+              </div>
+            </template>
+          </el-table-column>
           <el-table-column prop="fileName" label="附件" min-width="300">
             <template slot-scope="scope">
               <IhUpload
@@ -1968,7 +1975,7 @@
                   {
                     ...item,
                     // name: item.fileName,
-                    exAuto: true
+                    exAuto: vo.code === 'ContractInfo'
                   }
                 );
               }
@@ -2985,7 +2992,7 @@
                 {
                   ...item,
                   // name: item.fileName,
-                  exAuto: true, // 是否可以删除
+                  // exAuto: true, // 是否可以删除
                 }
               )
             }
@@ -3357,7 +3364,7 @@
                   L.fileType = 'Notice';
                   L.fileName = L.attachmentSuffix;
                   L.fileId = L.fileNo;
-                  L.exAuto = true;
+                  // L.exAuto = true;
                   L.isAddNoticeAnnex = true; // 用来判断是不是优惠告知书信息带出来的附件 - 后面用于重复删除
                   L.notSave = true; // 后端不存数据的标识
                   vo.defaultFileList.push(L);
@@ -3809,6 +3816,11 @@
         }
       });
       return sums;
+    }
+
+    // 重新加载附件
+    reLoad(row: any) {
+      console.log(row);
     }
 
     // 上传图片/文件
