@@ -4,7 +4,7 @@
  * @Author: zyc
  * @Date: 2020-06-22 14:34:07
  * @LastEditors: zyc
- * @LastEditTime: 2021-02-15 11:17:11
+ * @LastEditTime: 2021-05-20 15:56:47
  */
 
 console.log('\033[42;30m 这是main ts主应用')
@@ -88,6 +88,7 @@ module.exports = {
             // title: 'Index Page',
 
             title: '居恒·新房分销系统',
+            timeStamp: new Date().getTime(),
             // 在这个页面中包含的块，默认情况下会包含
             // 提取出来的通用 chunk 和 vendor chunk。
             chunks: ['chunk-vendors', 'chunk-common', 'index']

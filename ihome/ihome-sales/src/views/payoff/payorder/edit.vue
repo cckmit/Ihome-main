@@ -4,7 +4,7 @@
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
  * @LastEditors: ywl
- * @LastEditTime: 2021-05-20 09:32:16
+ * @LastEditTime: 2021-05-22 10:15:23
 -->
 <template>
   <IhPage>
@@ -2150,7 +2150,7 @@ export default class PayoffEdit extends Vue {
   }
 
   async getChannelInfo(item: any, type: any) {
-    this.info.agencyName = item.name;
+    this.info.agencyName = item.name || item.companyName;
     let res: any = [];
     switch (this.info.companyKind) {
       case "ChannelCompany":

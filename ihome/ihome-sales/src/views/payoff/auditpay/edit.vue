@@ -3,8 +3,8 @@
  * @version: 
  * @Author: wwq
  * @Date: 2020-12-26 11:11:23
- * @LastEditors: zyc
- * @LastEditTime: 2021-05-20 09:20:26
+ * @LastEditors: ywl
+ * @LastEditTime: 2021-05-22 16:40:21
 -->
 <template>
   <IhPage>
@@ -1649,7 +1649,7 @@ export default class PayoffEdit extends Vue {
   }
 
   async getChannelInfo(item: any) {
-    this.info.agencyName = item.name;
+    this.info.agencyName = item.name || item.companyName;
     let res = await get_channelBank_getAll__channelId({ channelId: item.id });
     this.channelAccountOptions = res;
     if (res.length === 1) {

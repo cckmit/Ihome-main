@@ -21,7 +21,7 @@
             <el-form-item label="成交报告编号">{{infoForm.dealCode}}</el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="项目周期">{{infoForm.projectCycle}}</el-form-item>
+            <el-form-item label="项目周期">{{infoForm.cycleName}}</el-form-item>
           </el-col>
           <el-col :span="8">
             <el-form-item label="业务模式">

@@ -19,7 +19,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="项目周期">
-              <div class="cycle-name-wrapper" :title="postData.cycleName">{{postData.projectCycle}}</div>
+              <div class="cycle-name-wrapper" :title="postData.cycleName">{{postData.cycleName}}</div>
             </el-form-item>
           </el-col>
           <el-col :span="8">
