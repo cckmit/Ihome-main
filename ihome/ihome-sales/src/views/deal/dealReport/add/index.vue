@@ -241,6 +241,7 @@
           noticeId: data[0].id
         }
         let noticeInfo: any = await post_notice_deal_details__noticeId(postData);
+        noticeInfo.noticeId = data[0].id;
         if (noticeInfo.dealNotices && noticeInfo.dealNotices.length) {
           noticeInfo.dealNotices.forEach((item: any) => {
             // 存放优惠告知书带出的客户信息 - 后面提交/保存接口需要用到
