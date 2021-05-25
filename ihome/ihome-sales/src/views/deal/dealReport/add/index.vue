@@ -110,8 +110,7 @@
   import DealInfo from "@/views/deal/dealReport/dialog/dealInfo.vue";
   import {
     post_buModelContType_getList,
-    post_buModelContType_subList,
-    post_pageData_initDistribution // 选择渠道商后带出分销协议
+    post_buModelContType_subList
   } from "@/api/deal";
   import {
     post_notice_deal_details__noticeId // 选择优惠告知书后获取关联的优惠告知书
@@ -227,70 +226,6 @@
         await (this as any).$refs.child.finishAddProjectCycle(data);
       }
       this.dialogAddProjectCycle = false;
-    }
-
-    // 选择渠道公司
-    selectAgency(info: any = {}) {
-      if (info.selectableChannelIds && info.selectableChannelIds.length) {
-        this.dialogAddAgency = true;
-        this.agentCompanyData = info;
-      } else {
-        this.agentCompanyData.selectableChannelIds = [];
-        this.agentCompanyData.cycleId = null;
-        this.agentCompanyData.property = null;
-        this.$message.warning('暂无可选的渠道商信息');
-      }
-    }
-
-    // 确定选择渠道公司
-    async finishAddAgency(data: any) {
-      // console.log('data', data);
-      let postData: any = {
-        agencyData: [], // 渠道商信息
-        contNoList: [] // 分销协议列表
-      }
-      if (data && data.length > 0) {
-        let objData: any = {
-          channelId: data[0].channelId, // 渠道商公司ID
-          cycleId: this.agentCompanyData.cycleId, // 周期ID
-          property: this.agentCompanyData.property // 物业类型
-        }
-        const info: any = await post_pageData_initDistribution(objData);
-        postData.agencyData = data;
-        postData.contNoList = info.contracts;
-        await (this as any).$refs.child.finishAddAgency(postData);
-        this.dialogAddAgency = false;
-      }
-    }
-
-    // 编辑 --- 获取分销协议编号和对应的packageIDs
-    async getContNoList(data: any) {
-      let info: any = await post_pageData_initDistribution(data);
-      // console.log(info);
-      if (info && info.contracts && info.contracts.length) {
-        return info;
-      } else {
-        return null;
-      }
-    }
-
-    // 选择经纪人
-    selectBroker(data: any = null) {
-      if (data) {
-        this.channelId = data;
-      } else {
-        this.channelId = null;
-      }
-      this.dialogAddBroker = true;
-    }
-
-    // 确定选择经纪人
-    async finishAddBroker(data: any) {
-      // console.log('data', data);
-      if (data && data.length > 0) {
-        await (this as any).$refs.child.finishAddBroker(data);
-      }
-      this.dialogAddBroker = false;
     }
 
     // 添加优惠告知书
