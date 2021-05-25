@@ -1226,7 +1226,7 @@
           <el-table-column prop="name" label="类型" width="200">
             <template slot-scope="scope">
               <div>{{scope.row.name}}</div>
-              <div v-if="scope.row.code !== 'ContractInfo'">
+              <div v-if="['Notice', 'SubscribeBook'].includes(scope.row.code)">
                 <el-button type="primary" size="mini" @click="reLoad(scope.row)">重新加载</el-button>
               </div>
             </template>
@@ -1370,6 +1370,7 @@
     post_suppDeal_previewUpdateStaffAchieveChange, // 预览修改内部员工业绩变更
     post_pageData_getMingYuanData, // 获取明源数据
     post_pageData_calculateReceiveAmounts, // 编辑 - 重算收派金额
+    post_deal_refreshDocs, // 重载附件
   } from "@/api/deal";
   import {
     get_org_get__id,
@@ -1597,6 +1598,7 @@
       notEmpty: []
     };
     id: any = null;
+    noticeId: any = null; // 主优惠告知书的id
     firstAgencyCompanyList: any = []; // 一手代理团队选项
     firstAgencyCompanyContList: any = []; // 一手代理合同选项
     companyKindOption: any = []; // 渠道公司类型
@@ -2257,6 +2259,7 @@
       }
       // 多分优惠告知书情况
       this.postData.contNo = null; // 重置选择的编号
+      this.noticeId = baseInfo?.noticeId;
       // 2021-03-01 补充成交不改变优惠告知书，先暂时屏蔽
       // if (baseInfo.dealNoticeStatus === 'MultipleNotice') {
       //   this.$message.warning('同房号存在多份已生效的优惠告知书。(分销成交模式，请选择分销协议编号后方可手动选择优惠告知书)');
@@ -2580,8 +2583,10 @@
       // 附件类型增加key
       if (fileList && fileList.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.defaultFileList = []; // 存放原来的数据
-          vo.fileList = []; // 存放新上传的数据
+          this.$set(vo, 'defaultFileList', []);
+          this.$set(vo, 'fileList', []);
+          // vo.defaultFileList = []; // 存放原来的数据
+          // vo.fileList = []; // 存放新上传的数据
         });
       }
       // 保存来访确认单和成交确认单
@@ -2630,8 +2635,10 @@
       }
       if (fileList && fileList.length > 0) {
         fileList.forEach((vo: any) => {
-          vo.defaultFileList = []; // 存放原来的数据
-          vo.fileList = []; // 存放新上传的数据
+          this.$set(vo, 'defaultFileList', []);
+          this.$set(vo, 'fileList', []);
+          // vo.defaultFileList = []; // 存放原来的数据
+          // vo.fileList = []; // 存放新上传的数据
           if (showList && showList.length) {
             showList.forEach((item: any) => {
               if (item.fileType === vo.code) {
@@ -4008,8 +4015,28 @@
     }
 
     // 重新加载附件
-    reLoad(row: any) {
+    async reLoad(row: any) {
       console.log(row);
+      try {
+        await this.$confirm(`本操作会重置【${row.name}】类型的附件信息，是否执行?`, "提示");
+        let postData: any = {
+          dealId: this.id ? this.id : null,
+          fileType: row.code,
+          noticeId: this.noticeId // 主优惠告知书的id
+        }
+        let docList: any = await post_deal_refreshDocs(postData);
+        console.log('docList', docList);
+        if (docList && this.postData.uploadDocumentList && this.postData.uploadDocumentList.length) {
+          this.postData.documentVO.forEach((vo: any) => {
+            if (vo.code === row.code) {
+              vo.fileList = [];
+              vo.defaultFileList = docList;
+            }
+          });
+        }
+      } catch (error) {
+        console.log(error);
+      }
     }
 
     // 获取最新的上传附件
